@@ -5,7 +5,7 @@
   </a>
 </p>
 
-<h1 align="center"><b>CoffeeManagement</b></h>
+<h1 align="center"><b>CoffeeShopManagement</b></h>
 
 ## THÀNH VIÊN NHÓM
 

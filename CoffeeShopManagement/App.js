@@ -1,12 +1,18 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
+import ProfileDetails from "./screens/Client/ProfileDetails";
+import Other from "./screens/Client/Other";
 
 import AppNavigator from "./navigation/AppNavigator";
 
 export default function App() {
-    const role = "cashier";
-    return <AppNavigator role={role} />;
+
+    return (
+        <View style={styles.container}>
+            <ProfileDetails/>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
