@@ -1,19 +1,13 @@
-
 import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import ProfileDetails from "./screens/Client/ProfileDetails";
-import Other from "./screens/Client/Other";
 
 import AppNavigator from "./navigation/AppNavigator";
+import AuthNavigator from "./navigation/AuthNavigator";
 
 export default function App() {
-
-    return (
-        <View style={styles.container}>
-            <ProfileDetails/>
-        </View>
-    );
+    const role = "user";
+    return <AppNavigator role={role} />;
 }
 
 const styles = StyleSheet.create({
@@ -30,4 +24,3 @@ const styles = StyleSheet.create({
         color: "black",
     },
 });
-
