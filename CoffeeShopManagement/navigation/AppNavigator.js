@@ -1,11 +1,15 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { Text, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "react-native-paper";
 
-const Tab = createBottomTabNavigator();
+import UserOtherScreen from "../screens/Client/Other";
+
+const Tab = createMaterialBottomTabNavigator();
 const UserStack = createStackNavigator();
 const AdminStack = createStackNavigator();
 const CashierStack = createStackNavigator();
@@ -20,10 +24,6 @@ function UserOrdersScreen() {
 
 function UserCouponsScreen() {
     return <Text style={styles.text}>User Coupons Screen</Text>;
-}
-
-function UserOthersScreen() {
-    return <Text style={styles.text}>User Others Screen</Text>;
 }
 
 function AdminHomeScreen() {
@@ -61,7 +61,12 @@ function CashierHistoryScreen() {
 function UserTabNavigator() {
     return (
         <Tab.Navigator
+            shifting={true}
+            activeColor="#006C5E"
+            inactiveColor="#CBCBD4"
+            barStyle={styles.bottomTabBar}
             screenOptions={({ route }) => ({
+                headerShown: true,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
@@ -76,19 +81,14 @@ function UserTabNavigator() {
                             ? "reorder-three"
                             : "reorder-three-outline";
                     }
-
-                    return (
-                        <Ionicons name={iconName} size={size} color={color} />
-                    );
+                    return <Ionicons name={iconName} size={28} color={color} />;
                 },
-                tabBarActiveTintColor: "#006C5E",
-                tabBarInactiveTintColor: "#CBCBD4",
             })}
         >
             <Tab.Screen name="Home" component={UserHomeScreen} />
             <Tab.Screen name="Orders" component={UserOrdersScreen} />
             <Tab.Screen name="Coupons" component={UserCouponsScreen} />
-            <Tab.Screen name="Others" component={UserOthersScreen} />
+            <Tab.Screen name="Others" component={UserOtherScreen} />
         </Tab.Navigator>
     );
 }
@@ -108,6 +108,10 @@ function UserNavigator() {
 function AdminTabNavigator() {
     return (
         <Tab.Navigator
+            shifting={true}
+            activeColor="#006C5E"
+            inactiveColor="#CBCBD4"
+            barStyle={{ backgroundColor: colors.surface }}
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
@@ -130,8 +134,6 @@ function AdminTabNavigator() {
                         <Ionicons name={iconName} size={size} color={color} />
                     );
                 },
-                tabBarActiveTintColor: "#006C5E",
-                tabBarInactiveTintColor: "#CBCBD4",
             })}
         >
             <Tab.Screen name="Home" component={AdminHomeScreen} />
@@ -156,8 +158,12 @@ function AdminNavigator() {
 }
 
 function CashierTabNavigator() {
+    const { colors } = useTheme();
     return (
         <Tab.Navigator
+            activeColor="#006C5E"
+            inactiveColor="#CBCBD4"
+            barStyle={{ backgroundColor: colors.surface }}
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
@@ -174,8 +180,6 @@ function CashierTabNavigator() {
                         <Ionicons name={iconName} size={size} color={color} />
                     );
                 },
-                tabBarActiveTintColor: "#006C5E",
-                tabBarInactiveTintColor: "#CBCBD4",
             })}
         >
             <Tab.Screen name="Home" component={CashierHomeScreen} />
@@ -232,5 +236,11 @@ const styles = StyleSheet.create({
         marginTop: 250,
         fontSize: 20,
         color: "black",
+    },
+    bottomTabBar: {
+        backgroundColor: "white",
+        borderTopColor: "#CBCBD4",
+        borderTopWidth: 1,
+        borderOpacity: 0.5,
     },
 });
