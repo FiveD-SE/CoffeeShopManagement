@@ -1,11 +1,10 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
 import InputField from "../../components/Client/InputField";
 import PasswordInput from "../../components/Client/PasswordInput";
 import BrownButton from "../../components/Client/BrownButton";
-import IconButton from "../../components/Client/IconButton";
 import BrownTextButton from "../../components/Client/BrownTextButton";
 
 const GOOGLE_ICON_SOURCE = require("../../assets/google.png");
@@ -52,7 +51,9 @@ const SignInScreen = () => {
           <Text style={styles.label}>hoặc đăng nhập bằng</Text>
           <View style={styles.divider}></View>
         </View>
-        <IconButton iconSource={GOOGLE_ICON_SOURCE} />
+        <Pressable style={styles.iconButton}>
+          <Image source={GOOGLE_ICON_SOURCE} style={styles.icon} />
+        </Pressable>
         <View style={styles.helperContainer}>
           <Text style={styles.helperText}>Khách hàng mới?</Text>
           <View style={{ marginLeft: "2%" }}>
@@ -118,5 +119,19 @@ const styles = StyleSheet.create({
     color: "#3a3a3a",
     fontSize: 12,
     fontWeight: "500",
+  },
+  iconButton: {
+    marginTop: "5%",
+    borderWidth: 1,
+    borderRadius: 30,
+    padding: "2%",
+    borderColor: "rgba(58,58,58,0.2)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icon: {
+    resizeMode: "cover",
+    width: 24,
+    height: 24,
   },
 });
