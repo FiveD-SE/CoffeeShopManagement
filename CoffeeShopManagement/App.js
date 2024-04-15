@@ -1,17 +1,15 @@
+import React from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import ProfileDetails from "./screens/Client/ProfileDetails";
-import Other from "./screens/Client/Other";
-import EditProfile from "./screens/Client/EditProfile";
-import FeedbackAndHelp from "./screens/Client/FeedbackAndHelp";
-import Setting from "./screens/Client/Setting";
-import ChangePassword from "./screens/Client/ChangePassword";
+
+
+import AppNavigator from "./navigation/AppNavigator";
+import AuthNavigator from "./navigation/AuthNavigator";
+
 export default function App() {
-    return (
-        <View style={styles.container}>
-            <ChangePassword />
-        </View>
-    );
+    const role = "user";
+    return <AppNavigator role={role} />;
+
 }
 
 const styles = StyleSheet.create({
@@ -20,5 +18,11 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
+    },
+
+    text: {
+        marginTop: 250,
+        fontSize: 20,
+        color: "black",
     },
 });

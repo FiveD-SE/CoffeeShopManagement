@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import SwitchToggle from 'toggle-switch-react-native'
+    StyleSheet,
+    SafeAreaView,
+    View,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    Image,
+} from "react-native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import SwitchToggle from "toggle-switch-react-native";
 
 export default function ProfileDetails() {
+
   const [isToggled, setIsToggled] = useState(false);
 
-  const handleToggle = () => {
-    setIsToggled(!isToggled);
-  };
+
+    const handleToggle = () => {
+        setIsToggled(!isToggled);
+    };
+
 
   const flag = require('/Users/nguyenquocthang/Documents/COFFEESHOP/CoffeeShopManagement/assets/vietnam.png');
   return (
@@ -67,24 +70,40 @@ export default function ProfileDetails() {
             </View>
           </View>
 
-          <View style={styles.section}>
-            <View style={styles.row}>
-              <View style={[styles.rowLabelText, { width: '100%'}]}>
-                <Text style={styles.text}>Nam</Text>
-              </View>
-            </View>
-          </View>
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "48%" }]}
+                            >
+                                <Text style={styles.text}>Nguyen Quoc</Text>
+                            </View>
+                            <View
+                                style={[styles.rowLabelText, { width: "48%" }]}
+                            >
+                                <Text style={styles.text}>Thang</Text>
+                            </View>
+                        </View>
+                    </View>
 
-          <View style={styles.section}>
-            <View style={styles.row}>
-              <View style={[styles.rowLabelText, { width: '100%'}]}>
-                <Text style={styles.text}>01/01/2024</Text>
-              </View>
-            </View>
-          </View>
+                    <View style={styles.section}>
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "100%" }]}
+                            >
+                                <Text style={styles.text}>Nam</Text>
+                            </View>
+                        </View>
+                    </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Số điện thoại</Text>
+                    <View style={styles.section}>
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "100%" }]}
+                            >
+                                <Text style={styles.text}>01/01/2024</Text>
+                            </View>
+                        </View>
+                    </View>
+
 
             <View style={styles.row}>
               <View style={[styles.rowLabelText, { width: '100%', gap: 10}]}>
@@ -95,18 +114,34 @@ export default function ProfileDetails() {
             </View>
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Email</Text>
 
-            <View style={styles.row}>
-              <View style={[styles.rowLabelText, { width: '100%'}]}>
-                <Text style={styles.text}>22521337@gm.uit.edu.vn</Text>
-              </View>
-            </View>
-          </View>
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "100%" }]}
+                            >
+                                <Image
+                                    style={{ height: 24, width: 24 }}
+                                    src="./assets/vietnam.png"
+                                />
+                                <Text style={styles.text}>0346129897</Text>
+                            </View>
+                        </View>
+                    </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Tài khoản liên kết</Text>
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Email</Text>
+
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "100%" }]}
+                            >
+                                <Text style={styles.text}>
+                                    22521337@gm.uit.edu.vn
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
+
 
             <View style={styles.row_space_between}>
               <View style={styles.row_space_between}>
@@ -123,17 +158,14 @@ export default function ProfileDetails() {
                 value={isToggled}
                 onToggle={handleToggle}
               />
+
             </View>
-          </View>
-
-
-        </ScrollView>
-      </View>
-    </SafeAreaView>
-  );
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
+
   container: {
     padding: 0,
     flexGrow: 1,
@@ -271,3 +303,4 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
 });
+
