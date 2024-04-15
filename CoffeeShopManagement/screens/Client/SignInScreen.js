@@ -11,39 +11,69 @@ const GOOGLE_ICON_SOURCE = require("../../assets/google.png");
 const BACKGROUND_SOURCE = require("../../assets/background.png");
 
 const SignInScreen = () => {
-  const navigation = useNavigation();
-  const [isChecked, setChecked] = useState(false);
+    const navigation = useNavigation();
+    const [isChecked, setChecked] = useState(false);
 
-  const goToForgotPassword = () => {
-    navigation.navigate("SendOTP");
-  };
+    const goToForgotPassword = () => {
+        navigation.navigate("SendOTP");
+    };
 
-  const goToSignUp = () => {
-    navigation.navigate("SignUpScreen");
-  };
+    const goToSignUp = () => {
+        navigation.navigate("SignUpScreen");
+    };
 
-  const handleRememberMe = () => {
-    setChecked(!isChecked);
-  };
+    const handleRememberMe = () => {
+        setChecked(!isChecked);
+    };
 
-  return (
-    <View style={styles.container}>
-      <Image style={styles.header} source={BACKGROUND_SOURCE} />
-      <View style={styles.main}>
-        <Text style={styles.title}>Đăng nhập</Text>
-        <InputField placeholder="Số điện thoại" keyboardType="phone-pad" />
-        <PasswordInput placeholder="Mật khẩu" />
-        <View style={styles.helperContainer}>
-          <View style={{ flex: 1, flexDirection: "row", marginRight: "auto" }}>
-            <Checkbox
-              style={styles.checkbox}
-              value={isChecked}
-              color={isChecked ? "#a8a19b" : undefined}
-              onValueChange={handleRememberMe}
-            />
-            <Text style={styles.helperText}>Ghi nhớ tôi</Text>
-          </View>
-          <BrownTextButton text="Quên mật khẩu?" onPress={goToForgotPassword} />
+    return (
+        <View style={styles.container}>
+            <Image style={styles.header} source={BACKGROUND_SOURCE} />
+            <View style={styles.main}>
+                <Text style={styles.title}>Đăng nhập</Text>
+                <InputField
+                    placeholder="Số điện thoại"
+                    keyboardType="phone-pad"
+                />
+                <PasswordInput placeholder="Mật khẩu" />
+                <View style={styles.helperContainer}>
+                    <View
+                        style={{
+                            flex: 1,
+                            flexDirection: "row",
+                            marginRight: "auto",
+                        }}
+                    >
+                        <Checkbox
+                            style={styles.checkbox}
+                            value={isChecked}
+                            color={isChecked ? "#a8a19b" : undefined}
+                            onValueChange={handleRememberMe}
+                        />
+                        <Text style={styles.helperText}>Ghi nhớ tôi</Text>
+                    </View>
+                    <BrownTextButton
+                        text="Quên mật khẩu?"
+                        onPress={goToForgotPassword}
+                    />
+                </View>
+                <BrownButton text="Đăng nhập" />
+                <View style={styles.labelContainer}>
+                    <View style={styles.divider}></View>
+                    <Text style={styles.label}>hoặc đăng nhập bằng</Text>
+                    <View style={styles.divider}></View>
+                </View>
+                <IconButton iconSource={GOOGLE_ICON_SOURCE} />
+                <View style={styles.helperContainer}>
+                    <Text style={styles.helperText}>Khách hàng mới?</Text>
+                    <View style={{ marginLeft: "2%" }}>
+                        <BrownTextButton
+                            text="Tạo một tài khoản mới"
+                            onPress={goToSignUp}
+                        />
+                    </View>
+                </View>
+            </View>
         </View>
         <BrownButton text="Đăng nhập" />
         <View style={styles.labelContainer}>

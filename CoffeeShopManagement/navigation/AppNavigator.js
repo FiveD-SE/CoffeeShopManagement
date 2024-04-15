@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
+import UserOtherScreen from "../screens/Client/Other";
+import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
+import CashierHome from "../screens/Staff/CashierHome";
 
 const Tab = createBottomTabNavigator();
 const UserStack = createStackNavigator();
@@ -22,10 +26,6 @@ function UserCouponsScreen() {
     return <Text style={styles.text}>User Coupons Screen</Text>;
 }
 
-function UserOthersScreen() {
-    return <Text style={styles.text}>User Others Screen</Text>;
-}
-
 function AdminHomeScreen() {
     return <Text style={styles.text}>Admin Home Screen</Text>;
 }
@@ -42,14 +42,6 @@ function AdminBillingScreen() {
     return <Text style={styles.text}>Admin Billing Screen</Text>;
 }
 
-function AdminOthersScreen() {
-    return <Text style={styles.text}>Admin Others Screen</Text>;
-}
-
-function CashierHomeScreen() {
-    return <Text style={styles.text}>Cashier Home Screen</Text>;
-}
-
 function CashierBillingScreen() {
     return <Text style={styles.text}>Cashier Billing Screen</Text>;
 }
@@ -58,37 +50,83 @@ function CashierHistoryScreen() {
     return <Text style={styles.text}>Cashier History Screen</Text>;
 }
 
+function TabBarIcon({ focused, name, color }) {
+    const [isPressed, setIsPressed] = useState(false);
+    const iconAnimation = useRef(new Animated.Value(focused ? 1 : 0)).current;
+
+    const handlePressIn = () => {
+        setIsPressed(true);
+        Animated.timing(iconAnimation, {
+            toValue: 1,
+            duration: 100,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const handlePressOut = () => {
+        setIsPressed(false);
+        Animated.timing(iconAnimation, {
+            toValue: focused ? 1 : 0,
+            duration: 200,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const iconStyle = {
+        opacity: iconAnimation.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0.5, 1],
+        }),
+    };
+
+    return (
+        <Animated.View style={iconStyle}>
+            <Ionicons
+                name={isPressed || focused ? name : `${name}-outline`}
+                size={28}
+                color={color}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+            />
+        </Animated.View>
+    );
+}
+
 function UserTabNavigator() {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#006C5E",
+                tabBarInactiveTintColor: "#CBCBD4",
+                tabBarStyle: styles.bottomTabBar,
+                tabBarShowLabel: true,
+                headerShown: false,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
                     if (route.name === "Home") {
-                        iconName = focused ? "home" : "home-outline";
+                        iconName = "home";
                     } else if (route.name === "Orders") {
-                        iconName = focused ? "cart" : "cart-outline";
+                        iconName = "cart";
                     } else if (route.name === "Coupons") {
-                        iconName = focused ? "bookmark" : "bookmark-outline";
+                        iconName = "bookmark";
                     } else if (route.name === "Others") {
-                        iconName = focused
-                            ? "reorder-three"
-                            : "reorder-three-outline";
+                        iconName = "reorder-three";
                     }
-
                     return (
-                        <Ionicons name={iconName} size={size} color={color} />
+                        <TabBarIcon
+                            focused={focused}
+                            name={iconName}
+                            color={color}
+                        />
                     );
                 },
-                tabBarActiveTintColor: "#006C5E",
-                tabBarInactiveTintColor: "#CBCBD4",
             })}
         >
             <Tab.Screen name="Home" component={UserHomeScreen} />
             <Tab.Screen name="Orders" component={UserOrdersScreen} />
             <Tab.Screen name="Coupons" component={UserCouponsScreen} />
-            <Tab.Screen name="Others" component={UserOthersScreen} />
+            <Tab.Screen name="Others" component={UserOtherScreen} />
         </Tab.Navigator>
     );
 }
@@ -109,36 +147,41 @@ function AdminTabNavigator() {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#006C5E",
+                tabBarInactiveTintColor: "#CBCBD4",
+                tabBarStyle: styles.bottomTabBar,
+                tabBarShowLabel: true,
+                headerShown: false,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
                     if (route.name === "Home") {
-                        iconName = focused ? "home" : "home-outline";
+                        iconName = "home";
                     } else if (route.name === "Sales") {
-                        iconName = focused ? "cart" : "cart-outline";
+                        iconName = "cart";
                     } else if (route.name === "Warehouse") {
-                        iconName = focused ? "cube" : "cube-outline";
+                        iconName = "cube";
                     } else if (route.name === "Billing") {
-                        iconName = focused ? "receipt" : "receipt-outline";
+                        iconName = "receipt";
                     } else if (route.name === "Others") {
-                        iconName = focused
-                            ? "reorder-three"
-                            : "reorder-three-outline";
+                        iconName = "reorder-three";
                     }
 
                     return (
-                        <Ionicons name={iconName} size={size} color={color} />
+                        <TabBarIcon
+                            focused={focused}
+                            name={iconName}
+                            color={color}
+                        />
                     );
                 },
-                tabBarActiveTintColor: "#006C5E",
-                tabBarInactiveTintColor: "#CBCBD4",
             })}
         >
             <Tab.Screen name="Home" component={AdminHomeScreen} />
             <Tab.Screen name="Sales" component={AdminSalesScreen} />
             <Tab.Screen name="Warehouse" component={AdminWarehouseScreen} />
             <Tab.Screen name="Billing" component={AdminBillingScreen} />
-            <Tab.Screen name="Others" component={AdminOthersScreen} />
+            <Tab.Screen name="Others" component={AdminOtherScreen} />
         </Tab.Navigator>
     );
 }
@@ -159,26 +202,33 @@ function CashierTabNavigator() {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#006C5E",
+                tabBarInactiveTintColor: "#CBCBD4",
+                tabBarStyle: styles.bottomTabBar,
+                tabBarShowLabel: true,
+                headerShown: false,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
                     if (route.name === "Home") {
-                        iconName = focused ? "home" : "home-outline";
+                        iconName = "home";
                     } else if (route.name === "Bill") {
-                        iconName = focused ? "receipt" : "receipt-outline";
+                        iconName = "receipt";
                     } else if (route.name === "History") {
-                        iconName = focused ? "time" : "time-outline";
+                        iconName = "time";
                     }
 
                     return (
-                        <Ionicons name={iconName} size={size} color={color} />
+                        <TabBarIcon
+                            focused={focused}
+                            name={iconName}
+                            color={color}
+                        />
                     );
                 },
-                tabBarActiveTintColor: "#006C5E",
-                tabBarInactiveTintColor: "#CBCBD4",
             })}
         >
-            <Tab.Screen name="Home" component={CashierHomeScreen} />
+            <Tab.Screen name="Home" component={CashierHome} />
             <Tab.Screen name="Bill" component={CashierBillingScreen} />
             <Tab.Screen name="History" component={CashierHistoryScreen} />
         </Tab.Navigator>
@@ -198,25 +248,13 @@ function CashierNavigator() {
 }
 
 function AppNavigator({ role }) {
-    if (role === "user") {
-        return (
-            <NavigationContainer>
-                <UserNavigator />
-            </NavigationContainer>
-        );
-    } else if (role === "admin") {
-        return (
-            <NavigationContainer>
-                <AdminNavigator />
-            </NavigationContainer>
-        );
-    } else if (role === "cashier") {
-        return (
-            <NavigationContainer>
-                <CashierNavigator />
-            </NavigationContainer>
-        );
-    }
+    return (
+        <NavigationContainer>
+            {role === "user" && <UserNavigator />}
+            {role === "admin" && <AdminNavigator />}
+            {role === "cashier" && <CashierNavigator />}
+        </NavigationContainer>
+    );
 }
 
 export default AppNavigator;
@@ -232,5 +270,12 @@ const styles = StyleSheet.create({
         marginTop: 250,
         fontSize: 20,
         color: "black",
+    },
+    bottomTabBar: {
+        backgroundColor: "white",
+        borderTopColor: "#CBCBD4",
+        borderTopWidth: 1,
+        borderOpacity: 0.5,
+        height: 83,
     },
 });
