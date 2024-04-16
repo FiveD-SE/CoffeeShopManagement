@@ -7,12 +7,18 @@ import EnterOTP from "../screens/Client/EnterOTP";
 import ResetPassword from "../screens/Client/ResetPassword";
 import SuccessScreen from "../screens/Client/SuccessScreen";
 import SignUpScreen from "../screens/Client/SignUpScreen";
+import OnBoardingScreen from "../screens/Client/OnBoardingScreen";
 
 const Stack = createNativeStackNavigator();
 
 const AuthNavigator = () => {
     return (
-        <Stack.Navigator initialRouteName="SignInScreen">
+        <Stack.Navigator initialRouteName="SignIn">
+            <Stack.Screen
+                name="Onboarding"
+                component={OnBoardingScreen}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
                 name="SignInScreen"
                 component={SignInScreen}
