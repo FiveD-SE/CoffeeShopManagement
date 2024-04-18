@@ -1,7 +1,20 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Image, Button, TouchableOpacity, SafeAreaView, FlatList } from "react-native";
 import Icon from 'react-native-vector-icons/Entypo'
+import HeaderBackButton from "../../navigation/components/HeaderBackButton";
+import { useNavigation } from "@react-navigation/native";
 export default function CashierHome() {
+
+    const navigation = useNavigation();
+    const handleNotification = () => {
+        navigation.navigate('CashierNotification')
+    }
+    const handleDetailOrder = () => {
+        navigation.navigate('OrderScreen')
+    }
+    const handleCashierInfor = () => {
+        navigation.navigate('CashierInformation')
+    }
     const DATA = [
         {
             orderId: '#12345',
@@ -36,10 +49,13 @@ export default function CashierHome() {
             <View style={styles.container}>
                 <View style={styles.topApp}>
                     <View>
-                        <Image 
-                        source={require('../../assets/account_icon.png')}
-                        style={{height: 60, width: 60}}
-                        />
+                        <TouchableOpacity
+                        onPress={handleCashierInfor}>
+                            <Image 
+                            source={require('../../assets/account_icon.png')}
+                            style={{height: 60, width: 60}}
+                            />
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.accountName}>
                         <Text style={{fontSize: 18, fontWeight: 400}}>TRẦN TUỆ TÁNH</Text>
@@ -47,6 +63,7 @@ export default function CashierHome() {
                     </View>
                     <View>
                         <TouchableOpacity 
+                        onPress={handleNotification}
                         style={{ 
                         borderRadius: 20, 
                         borderWidth: 0.1,
@@ -75,7 +92,9 @@ export default function CashierHome() {
                         data = {DATA}
                         
                         renderItem={({item}) => (
-                            <TouchableOpacity style={styles.orderDetail}>
+                            <TouchableOpacity 
+                            onPress={handleDetailOrder}
+                            style={styles.orderDetail}>
                                 <View style={{flexDirection:'column', color: '#3A3A3A'}}>
                                     <Text style={{fontSize: 16}}>Mã đơn hàng: {item.orderId}</Text>
                                     <Text style={{color: 'rgba(58, 58, 58, 0.50)', marginTop:5, marginBottom: 5}}>Thời gian: {item.time}</Text>
