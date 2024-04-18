@@ -203,46 +203,16 @@ function CashierNavigator() {
     );
 }
 
+import CashierNavigator from "./CashierNavigator";
+
 function AppNavigator({ role }) {
     if (role === "user") {
-        return (
-            <NavigationContainer>
-                <UserNavigator />
-            </NavigationContainer>
-        );
+        return <UserNavigator />;
+        // } else if (role === "cashier") {
+        //     return <CashierNavigator />;
     } else if (role === "admin") {
-        return (
-            <NavigationContainer>
-                <AdminNavigator />
-            </NavigationContainer>
-        );
-    } else if (role === "cashier") {
-        return (
-            <NavigationContainer>
-                <CashierNavigator />
-            </NavigationContainer>
-        );
+        return <AdminNavigator />;
     }
 }
 
 export default AppNavigator;
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    text: {
-        marginTop: 250,
-        fontSize: 20,
-        color: "black",
-    },
-    bottomTabBar: {
-        backgroundColor: "white",
-        borderTopColor: "#CBCBD4",
-        borderTopWidth: 1,
-        borderOpacity: 0.5,
-    },
-});

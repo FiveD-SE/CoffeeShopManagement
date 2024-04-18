@@ -19,8 +19,11 @@
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-native": "0.73.6",
+    "react-native-animatable": "^1.4.0",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-paper": "^5.12.3",
+    "react-native-splash-screen": "^3.3.0",
+    "react-native-vector-icons": "^10.0.3",
     "toggle-switch-react-native": "^3.3.0"
   },
   "devDependencies": {

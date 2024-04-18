@@ -13,10 +13,9 @@ import FontAwesome6 from "react-native-vector-icons/FontAwesome6";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
 import { useNavigation } from "@react-navigation/native";
 
-export default function UserOtherScreen() {
+export default function AdminOtherScreen() {
     const navigation = useNavigation();
 
     const [form, setForm] = useState({
@@ -46,11 +45,11 @@ export default function UserOtherScreen() {
 
                                 <View style={styles.profileBody}>
                                     <Text style={styles.profileName}>
-                                        Yua Mikami
+                                        Truong Le Vinh Phuc
                                     </Text>
 
                                     <Text style={styles.profileHandle}>
-                                        yua.mikami@gmail.com
+                                        truonglevinhphuc2006@gmail.com
                                     </Text>
                                 </View>
                             </TouchableOpacity>
@@ -61,7 +60,13 @@ export default function UserOtherScreen() {
                         <Text style={styles.sectionTitle}>Tài khoản</Text>
 
                         <View style={styles.sectionBody}>
-                            <View style={[styles.rowWrapper, styles.rowFirst]}>
+                            <View
+                                style={[
+                                    styles.rowWrapper,
+                                    styles.rowFirst,
+                                    styles.rowLast,
+                                ]}
+                            >
                                 <TouchableOpacity
                                     onPress={() => {
                                         navigation.navigate("EditProfile");
@@ -86,8 +91,20 @@ export default function UserOtherScreen() {
                                     />
                                 </TouchableOpacity>
                             </View>
+                        </View>
+                    </View>
 
-                            <View style={styles.rowWrapper}>
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Nhân viên</Text>
+
+                        <View style={styles.sectionBody}>
+                            <View
+                                style={[
+                                    styles.rowWrapper,
+                                    styles.rowFirst,
+                                    styles.rowLast,
+                                ]}
+                            >
                                 <TouchableOpacity
                                     onPress={() => {
                                         // handle onPress
@@ -96,11 +113,94 @@ export default function UserOtherScreen() {
                                 >
                                     <FontAwesome6
                                         color="#006C5E"
-                                        name="map-location"
+                                        name="user-large"
                                         size={19}
                                         marginRight={10}
                                     />
-                                    <Text style={styles.rowLabel}>Địa chỉ</Text>
+                                    <Text style={styles.rowLabel}>
+                                        Nhân viên
+                                    </Text>
+
+                                    <View style={styles.rowSpacer} />
+
+                                    <FeatherIcon
+                                        color="#bcbcbc"
+                                        name="chevron-right"
+                                        size={19}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        // handle onPress
+                                    }}
+                                    style={styles.row}
+                                >
+                                    <Ionicons
+                                        color="#006C5E"
+                                        name="calendar"
+                                        size={19}
+                                        marginRight={10}
+                                    />
+                                    <Text style={styles.rowLabel}>
+                                        Lịch biểu
+                                    </Text>
+
+                                    <View style={styles.rowSpacer} />
+
+                                    <FeatherIcon
+                                        color="#bcbcbc"
+                                        name="chevron-right"
+                                        size={19}
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        // handle onPress
+                                    }}
+                                    style={styles.row}
+                                >
+                                    <Ionicons
+                                        color="#006C5E"
+                                        name="cash"
+                                        size={19}
+                                        marginRight={10}
+                                    />
+                                    <Text style={styles.rowLabel}>
+                                        Tính lương
+                                    </Text>
+
+                                    <View style={styles.rowSpacer} />
+
+                                    <FeatherIcon
+                                        color="#bcbcbc"
+                                        name="chevron-right"
+                                        size={19}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Quản lý</Text>
+
+                        <View style={styles.sectionBody}>
+                            <View style={[styles.rowWrapper, styles.rowFirst]}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        // handle onPress
+                                    }}
+                                    style={styles.row}
+                                >
+                                    <Ionicons
+                                        color="#006C5E"
+                                        name="storefront"
+                                        size={19}
+                                        marginRight={10}
+                                    />
+                                    <Text style={styles.rowLabel}>
+                                        Chi nhánh
+                                    </Text>
 
                                     <View style={styles.rowSpacer} />
 
@@ -121,111 +221,12 @@ export default function UserOtherScreen() {
                                 >
                                     <Ionicons
                                         color="#006C5E"
-                                        name="settings"
-                                        size={19}
-                                        marginRight={10}
-                                    />
-                                    <Text style={styles.rowLabel}>Cài đặt</Text>
-
-                                    <View style={styles.rowSpacer} />
-
-                                    <FeatherIcon
-                                        color="#bcbcbc"
-                                        name="chevron-right"
-                                        size={19}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Tương tác</Text>
-
-                        <View style={styles.sectionBody}>
-                            <View
-                                style={[
-                                    styles.rowWrapper,
-                                    styles.rowFirst,
-                                    styles.rowLast,
-                                ]}
-                            >
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        // handle onPress
-                                    }}
-                                    style={styles.row}
-                                >
-                                    <Fontisto
-                                        color="#006C5E"
-                                        name="history"
+                                        name="cube"
                                         size={19}
                                         marginRight={10}
                                     />
                                     <Text style={styles.rowLabel}>
-                                        Lịch sử đơn hàng
-                                    </Text>
-
-                                    <View style={styles.rowSpacer} />
-
-                                    <FeatherIcon
-                                        color="#bcbcbc"
-                                        name="chevron-right"
-                                        size={19}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>
-                            Trung tâm trợ giúp
-                        </Text>
-
-                        <View style={styles.sectionBody}>
-                            <View style={[styles.rowWrapper, styles.rowFirst]}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        // handle onPress
-                                    }}
-                                    style={styles.row}
-                                >
-                                    <MaterialCommunityIcons
-                                        color="#006C5E"
-                                        name="frequently-asked-questions"
-                                        size={19}
-                                        marginRight={10}
-                                    />
-                                    <Text style={styles.rowLabel}>
-                                        Câu hỏi thường gặp
-                                    </Text>
-
-                                    <View style={styles.rowSpacer} />
-
-                                    <FeatherIcon
-                                        color="#bcbcbc"
-                                        name="chevron-right"
-                                        size={19}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-
-                            <View style={[styles.rowWrapper, styles.rowLast]}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        // handle onPress
-                                    }}
-                                    style={styles.row}
-                                >
-                                    <FontAwesome6
-                                        color="#006C5E"
-                                        name="headset"
-                                        size={19}
-                                        marginRight={10}
-                                    />
-                                    <Text style={styles.rowLabel}>
-                                        Phản hồi và hỗ trợ
+                                        Kho hàng
                                     </Text>
 
                                     <View style={styles.rowSpacer} />
