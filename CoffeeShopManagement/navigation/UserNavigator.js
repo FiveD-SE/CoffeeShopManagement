@@ -25,6 +25,12 @@ const OtherStack = () => (
     </Stack.Navigator>
 );
 
+const HomeStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen name="Home" component={UserHomeScreen} />
+    </Stack.Navigator>
+);
+
 function UserNavigator() {
     return (
         <NavigationContainer>
