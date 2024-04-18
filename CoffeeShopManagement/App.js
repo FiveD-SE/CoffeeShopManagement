@@ -6,13 +6,13 @@ import OnBoardingScreen from "./screens/Client/OnBoardingScreen";
 
 import AppNavigator from "./navigation/AppNavigator";
 import AuthNavigator from "./navigation/AuthNavigator";
+import UserNavigator from "./navigation/UserNavigator";
+import CashierNavigator from "./navigation/CashierNavigator";
 
 export default function App() {
-    return (
-        <NavigationContainer>
-            <AuthNavigator/>
-        </NavigationContainer>
-    );
+    const role = "user";
+
+    return <AppNavigator role={role} />;
 }
 
 const styles = StyleSheet.create({
