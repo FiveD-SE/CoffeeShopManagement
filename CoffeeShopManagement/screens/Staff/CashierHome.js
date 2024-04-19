@@ -1,18 +1,22 @@
 import { StatusBar } from "expo-status-bar";
-import {
-    StyleSheet,
-    Text,
-    View,
-    Image,
-    Button,
-    TouchableOpacity,
-    SafeAreaView,
-    FlatList,
-} from "react-native";
 
-import Icon from "react-native-vector-icons/Entypo";
+import { StyleSheet, Text, View, Image, Button, TouchableOpacity, SafeAreaView, FlatList } from "react-native";
+import Icon from 'react-native-vector-icons/Entypo'
+import HeaderBackButton from "../../navigation/components/HeaderBackButton";
+import { useNavigation } from "@react-navigation/native";
 
 export default function CashierHome() {
+
+    const navigation = useNavigation();
+    const handleNotification = () => {
+        navigation.navigate('CashierNotification')
+    }
+    const handleDetailOrder = () => {
+        navigation.navigate('OrderScreen')
+    }
+    const handleCashierInfor = () => {
+        navigation.navigate('CashierInformation')
+    }
     const DATA = [
         {
             orderId: "#12345",
@@ -49,10 +53,15 @@ export default function CashierHome() {
             <View style={styles.container}>
                 <View style={styles.topApp}>
                     <View>
-                        <Image
-                            source={require("../../assets/account_icon.png")}
-                            style={{ height: 60, width: 60 }}
-                        />
+
+                        <TouchableOpacity
+                        onPress={handleCashierInfor}>
+                            <Image 
+                            source={require('../../assets/account_icon.png')}
+                            style={{height: 60, width: 60}}
+                            />
+                        </TouchableOpacity>
+
                     </View>
                     <View style={styles.accountName}>
                         <Text style={{ fontSize: 18, fontWeight: 400 }}>
@@ -68,27 +77,26 @@ export default function CashierHome() {
                         </Text>
                     </View>
                     <View>
-                        <TouchableOpacity
-                            style={{
-                                borderRadius: 20,
-                                borderWidth: 0.1,
-                                width: 60,
-                                height: 60,
-                                justifyContent: "center",
-                                shadowColor: "#000",
-                                paddingStart: 10,
-                                shadowOffset: {
-                                    width: 0,
-                                    height: 1,
-                                },
-                                shadowOpacity: 0.2,
-                                shadowRadius: 1.41,
-                            }}
-                        >
-                            <Image
-                                source={require("../../assets/notification_button.png")}
-                                style={{ height: 40, width: 40 }}
-                            />
+
+                        <TouchableOpacity 
+                        onPress={handleNotification}
+                        style={{ 
+                        borderRadius: 20, 
+                        borderWidth: 0.1,
+                        width: 60, height: 60, 
+                        justifyContent:'center',
+                        shadowColor: '#000',
+                        paddingStart: 10,
+                        shadowOffset: {
+                            width: 0,
+                            height: 1,
+                        },
+                        shadowOpacity: 0.2,
+                        shadowRadius: 1.41,}}>
+                            <Image 
+                                source={require('../../assets/notification_button.png')} 
+                                style={{height: 40, width: 40}}/>
+
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -98,51 +106,32 @@ export default function CashierHome() {
                     </View>
                     <View style={{ margin: 10 }}>
                         <FlatList
-                            data={DATA}
-                            renderItem={({ item }) => (
-                                <TouchableOpacity style={styles.orderDetail}>
-                                    <View
-                                        style={{
-                                            flexDirection: "column",
-                                            color: "#3A3A3A",
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: 16 }}>
-                                            Mã đơn hàng: {item.orderId}
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                color: "rgba(58, 58, 58, 0.50)",
-                                                marginTop: 5,
-                                                marginBottom: 5,
-                                            }}
-                                        >
-                                            Thời gian: {item.time}
-                                        </Text>
-                                        <Text>Loại đơn: {item.orderType}</Text>
-                                        <Text>Người nhận: {item.customer}</Text>
-                                        <Text>SDT Người nhận: {item.sdt}</Text>
-                                        <Text style={{ marginBottom: 5 }}>
-                                            Trạng thái thanh toán:{" "}
-                                            {item.orderState}
-                                        </Text>
-                                        <Text>
-                                            <Text>Trạng thái: </Text>
-                                            <Text style={{ color: "#FFA730" }}>
-                                                {item.state}
-                                            </Text>
-                                        </Text>
-                                    </View>
-                                    <View style={{ justifyContent: "center" }}>
-                                        <Icon
-                                            name="chevron-small-right"
-                                            size={48}
-                                        />
-                                    </View>
-                                </TouchableOpacity>
-                            )}
-                            keyExtractor={(item) => item.orderId}
-                        />
+
+                        data = {DATA}
+                        
+                        renderItem={({item}) => (
+                            <TouchableOpacity 
+                            onPress={handleDetailOrder}
+                            style={styles.orderDetail}>
+                                <View style={{flexDirection:'column', color: '#3A3A3A'}}>
+                                    <Text style={{fontSize: 16}}>Mã đơn hàng: {item.orderId}</Text>
+                                    <Text style={{color: 'rgba(58, 58, 58, 0.50)', marginTop:5, marginBottom: 5}}>Thời gian: {item.time}</Text>
+                                    <Text>Loại đơn: {item.orderType}</Text>
+                                    <Text>Người nhận: {item.customer}</Text>
+                                    <Text>SDT Người nhận: {item.sdt}</Text>
+                                    <Text style={{marginBottom: 5}}>Trạng thái thanh toán: {item.orderState}</Text>
+                                    <Text>
+                                        <Text>Trạng thái: </Text>
+                                        <Text style={{color: '#FFA730'}}>{item.state}</Text>
+                                    </Text>
+                                </View>
+                                <View style={{justifyContent: 'center'}}>
+                                    <Icon name="chevron-small-right" size={48}/>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+                        keyExtractor={item => item.orderId}/>
+
                     </View>
                 </View>
             </View>
