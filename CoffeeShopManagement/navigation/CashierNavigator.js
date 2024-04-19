@@ -1,16 +1,17 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, { useState, useRef } from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import CashierHome from '../screens/Staff/CashierHome'
-import CashierBillingScreen from '../screens/Staff/CashierBillingScreen'
-import CashierInformation from '../screens/Staff/CashierInformation'
-import CashierHistoryScreen from '../screens/Staff/CashierHistoryScreen'
-import OrderScreen from '../screens/Staff/OrderScreen'
-import CashierNotification from '../screens/Staff/CashierNotification'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { NavigationContainer } from '@react-navigation/native'
+import { StyleSheet } from "react-native";
+import React, { useState, useRef } from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
 import { Animated } from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons'
+import { FontAwesome5 } from "@expo/vector-icons";
+
+import CashierHome from "../screens/Staff/CashierHome";
+import CashierBillingScreen from "../screens/Staff/CashierBillingScreen";
+import CashierInformation from "../screens/Staff/CashierInformation";
+import CashierHistoryScreen from "../screens/Staff/CashierHistoryScreen";
+import OrderScreen from "../screens/Staff/OrderScreen";
+import CashierNotification from "../screens/Staff/CashierNotification";
 
 const Stack = createNativeStackNavigator();
 
@@ -58,65 +59,80 @@ function TabBarIcon({ focused, name, color }) {
 }
 const HomeStack = () => {
     return (
-            <Stack.Navigator initialRouteName='CashierHome'>
+        <Stack.Navigator initialRouteName="CashierHome">
             <Stack.Screen
-            name="CashierHome"
-            component={CashierHome}
-            options={{headerShown: false}}/>
+                name="CashierHome"
+                component={CashierHome}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
-            name="CashierNotification"
-            component={CashierNotification}
-            options={{headerShown: false}}/>
+                name="CashierNotification"
+                component={CashierNotification}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
-            name="CashierInformation"
-            component={CashierInformation}
-            options={{headerShown: false}}/>
+                name="CashierInformation"
+                component={CashierInformation}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
-            name="OrderScreen"
-            component={OrderScreen}
-            options={{headerShown: false}}/>
-            </Stack.Navigator>
-    )
-}
+                name="OrderScreen"
+                component={OrderScreen}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
+    );
+};
 
 const CashierNavigator = () => {
     return (
         <NavigationContainer>
             <Tab.Navigator
-            screenOptions={({ route }) => ({
-                tabBarActiveTintColor: "#006C5E",
-                tabBarInactiveTintColor: "#CBCBD4",
-                tabBarStyle: styles.bottomTabBar,
-                tabBarShowLabel: true,
-                headerShown: false,
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
+                screenOptions={({ route }) => ({
+                    tabBarActiveTintColor: "#006C5E",
+                    tabBarInactiveTintColor: "#CBCBD4",
+                    tabBarStyle: styles.bottomTabBar,
+                    tabBarShowLabel: true,
+                    headerShown: false,
+                    tabBarIcon: ({ focused, color, size }) => {
+                        let iconName;
 
-                    if (route.name === "Home") {
-                        iconName = "home";
-                    } else if (route.name === "Bill") {
-                        iconName = "bars";
-                    } else if (route.name === "History") {
-                        iconName = "history";
-                    }
-                    return (
-                        <TabBarIcon
-                            focused={focused}
-                            name={iconName}
-                            color={color}
-                        />
-                    );
-                },
-            })}
->
-                <Tab.Screen options={{headerShown: false}} name="Home" component={HomeStack} />
-                <Tab.Screen options={{headerShown: false}} name="Bill" component={CashierBillingScreen} />
-                <Tab.Screen options={{headerShown: false}} name="History" component={CashierHistoryScreen} />
+                        if (route.name === "Home") {
+                            iconName = "home";
+                        } else if (route.name === "Bill") {
+                            iconName = "bars";
+                        } else if (route.name === "History") {
+                            iconName = "history";
+                        }
+                        return (
+                            <TabBarIcon
+                                focused={focused}
+                                name={iconName}
+                                color={color}
+                            />
+                        );
+                    },
+                })}
+            >
+                <Tab.Screen
+                    options={{ headerShown: false }}
+                    name="Home"
+                    component={HomeStack}
+                />
+                <Tab.Screen
+                    options={{ headerShown: false }}
+                    name="Bill"
+                    component={CashierBillingScreen}
+                />
+                <Tab.Screen
+                    options={{ headerShown: false }}
+                    name="History"
+                    component={CashierHistoryScreen}
+                />
             </Tab.Navigator>
         </NavigationContainer>
-    )
-
-}
+    );
+};
 
 const styles = StyleSheet.create({
     bottomTabBar: {
@@ -128,5 +144,4 @@ const styles = StyleSheet.create({
     },
 });
 
-
-export default CashierNavigator
+export default CashierNavigator;

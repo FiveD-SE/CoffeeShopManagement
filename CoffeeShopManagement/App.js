@@ -4,13 +4,10 @@ import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { StyleSheet, Text, View } from "react-native";
 import OnBoardingScreen from "./screens/Client/OnBoardingScreen";
-
-
-import CashierNavigator from "./navigation/CashierNavigator";
+import AppNavigator from "./navigation/AppNavigator";
 
 export default function App() {
-
-    const role = "admin";
+    const role = "user";
 
     return <AppNavigator role={role} />;
 }
@@ -29,4 +26,3 @@ const styles = StyleSheet.create({
         color: "black",
     },
 });
-
