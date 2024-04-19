@@ -10,34 +10,41 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome6";
 import React from "react";
 
-const UserHomeScreenHeader = () => {
+const UserHomeScreenHeader = ({
+  username,
+  userImageSource,
+  totalPoint,
+  onPressBean,
+  onPressNotify,
+  onPressFavorite,
+}) => {
   return (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
         <View style={styles.imageContainer}>
           <Image
-            source={require("../../assets/google.png")}
+            source={userImageSource}
             style={styles.userImage}
             resizeMode="stretch"
           />
         </View>
         <View>
           <Text style={styles.welcomeText}>Xin chào,</Text>
-          <Text style={styles.usernameText}>Trương Lê Vĩnh Phúc</Text>
+          <Text style={styles.usernameText}>{username}</Text>
         </View>
       </View>
       <View style={styles.headerRight}>
-        <Pressable style={styles.iconContainer}>
+        <Pressable style={styles.iconContainer} onPress={onPressBean}>
           <Image
             source={require("../../assets/coffee-bean.png")}
             style={styles.icon}
           />
-          <Text style={styles.iconText}>20</Text>
+          <Text style={styles.iconText}>{totalPoint}</Text>
         </Pressable>
-        <Pressable style={styles.iconContainer}>
+        <Pressable style={styles.iconContainer} onPress={onPressNotify}>
           <Icon name="bell" size={20} />
         </Pressable>
-        <Pressable style={styles.iconContainer}>
+        <Pressable style={styles.iconContainer} onPress={onPressFavorite}>
           <Icon name="heart" size={20} />
         </Pressable>
       </View>

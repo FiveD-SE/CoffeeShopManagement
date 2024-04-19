@@ -2,13 +2,19 @@ import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
 
-const Section = ({ title, showSubtitle, subtitle, children }) => {
+const Section = ({
+  title,
+  showSubtitle,
+  subtitle,
+  children,
+  onPressSubtitle,
+}) => {
   return (
     <View style={styles.sectionContainer}>
       <View style={styles.headerContainer}>
         <Text style={styles.title}>{title}</Text>
         {showSubtitle && (
-          <Pressable style={styles.subtitleContainer}>
+          <Pressable style={styles.subtitleContainer} onPress={onPressSubtitle}>
             <Text style={styles.subtitle}>{subtitle}</Text>
             <Icon name="chevron-right" color="#00A188" size={12} />
           </Pressable>
