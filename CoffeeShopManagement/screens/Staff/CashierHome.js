@@ -1,8 +1,10 @@
 import { StatusBar } from "expo-status-bar";
+
 import { StyleSheet, Text, View, Image, Button, TouchableOpacity, SafeAreaView, FlatList } from "react-native";
 import Icon from 'react-native-vector-icons/Entypo'
 import HeaderBackButton from "../../navigation/components/HeaderBackButton";
 import { useNavigation } from "@react-navigation/native";
+
 export default function CashierHome() {
 
     const navigation = useNavigation();
@@ -17,38 +19,41 @@ export default function CashierHome() {
     }
     const DATA = [
         {
-            orderId: '#12345',
-            time: '10:45 SA 16/03/2024',
-            orderType: 'Tự đến lấy hàng',
-            customer: 'Tánh',
-            sdt: '0352085655',
-            orderState: 'Chưa thanh toán',
-            state: 'Chờ xác nhận'
+            orderId: "#12345",
+            time: "10:45 SA 16/03/2024",
+            orderType: "Tự đến lấy hàng",
+            customer: "Tánh",
+            sdt: "0352085655",
+            orderState: "Chưa thanh toán",
+            state: "Chờ xác nhận",
         },
         {
-            orderId: '#12346',
-            time: '10:45 SA 16/03/2024',
-            orderType: 'Tự đến lấy hàng',
-            customer: 'Tánh',
-            sdt: '0352085655',
-            orderState: 'Chưa thanh toán',
-            state: 'Chờ xác nhận'
+            orderId: "#12346",
+            time: "10:45 SA 16/03/2024",
+            orderType: "Tự đến lấy hàng",
+            customer: "Tánh",
+            sdt: "0352085655",
+            orderState: "Chưa thanh toán",
+            state: "Chờ xác nhận",
         },
         {
-            orderId: '#12347',
-            time: '10:45 SA 16/03/2024',
-            orderType: 'Tự đến lấy hàng',
-            customer: 'Tánh',
-            sdt: '0352085655',
-            orderState: 'Chưa thanh toán',
-            state: 'Chờ xác nhận'
+            orderId: "#12347",
+            time: "10:45 SA 16/03/2024",
+            orderType: "Tự đến lấy hàng",
+            customer: "Tánh",
+            sdt: "0352085655",
+            orderState: "Chưa thanh toán",
+            state: "Chờ xác nhận",
         },
-    ]
+    ];
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: 'white', paddingTop: 30}}>
+        <SafeAreaView
+            style={{ flex: 1, backgroundColor: "white", paddingTop: 30 }}
+        >
             <View style={styles.container}>
                 <View style={styles.topApp}>
                     <View>
+
                         <TouchableOpacity
                         onPress={handleCashierInfor}>
                             <Image 
@@ -56,12 +61,23 @@ export default function CashierHome() {
                             style={{height: 60, width: 60}}
                             />
                         </TouchableOpacity>
+
                     </View>
                     <View style={styles.accountName}>
-                        <Text style={{fontSize: 18, fontWeight: 400}}>TRẦN TUỆ TÁNH</Text>
-                        <Text style={{fontSize: 14, color: 'rgba(58, 58, 58, 0.50)'}}>Cashier</Text>
+                        <Text style={{ fontSize: 18, fontWeight: 400 }}>
+                            TRẦN TUỆ TÁNH
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: 14,
+                                color: "rgba(58, 58, 58, 0.50)",
+                            }}
+                        >
+                            Cashier
+                        </Text>
                     </View>
                     <View>
+
                         <TouchableOpacity 
                         onPress={handleNotification}
                         style={{ 
@@ -80,6 +96,7 @@ export default function CashierHome() {
                             <Image 
                                 source={require('../../assets/notification_button.png')} 
                                 style={{height: 40, width: 40}}/>
+
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -87,8 +104,9 @@ export default function CashierHome() {
                     <View>
                         <Text style={styles.headerText}>Chờ xác nhận</Text>
                     </View>
-                    <View style={{margin: 10}}>
+                    <View style={{ margin: 10 }}>
                         <FlatList
+
                         data = {DATA}
                         
                         renderItem={({item}) => (
@@ -113,6 +131,7 @@ export default function CashierHome() {
                             </TouchableOpacity>
                         )}
                         keyExtractor={item => item.orderId}/>
+
                     </View>
                 </View>
             </View>
@@ -123,27 +142,26 @@ export default function CashierHome() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
-        backgroundColor: 'white'
+        flexDirection: "column",
+        backgroundColor: "white",
     },
     topApp: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: "row",
         margin: 15,
         marginTop: 20,
-        justifyContent: 'space-between',
-        
+        justifyContent: "space-between",
     },
     bodyApp: {
-        flex: 11, 
-        flexDirection: 'column',
+        flex: 11,
+        flexDirection: "column",
         margin: 15,
     },
     accountName: {
-        flexDirection: 'column',
+        flexDirection: "column",
         height: 60,
         width: 250,
-        justifyContent: 'space-between',        
+        justifyContent: "space-between",
     },
     headerText: {
         margin: 10,
@@ -153,8 +171,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 20,
         padding: 12,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
+        flexDirection: "row",
+        justifyContent: "space-between",
         marginTop: 10,
-    }
+    },
 });

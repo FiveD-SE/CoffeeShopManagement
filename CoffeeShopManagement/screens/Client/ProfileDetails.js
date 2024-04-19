@@ -1,30 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
-  StyleSheet,
-  SafeAreaView,
-  View,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import SwitchToggle from 'toggle-switch-react-native'
+    StyleSheet,
+    SafeAreaView,
+    View,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    Image,
+} from "react-native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import SwitchToggle from "toggle-switch-react-native";
 
-export default function Example() {
+export default function ProfileDetails() {
+
   const [isToggled, setIsToggled] = useState(false);
 
-  const handleToggle = () => {
-    setIsToggled(!isToggled);
-  };
 
+    const handleToggle = () => {
+        setIsToggled(!isToggled);
+    };
+
+
+  const flag = require('/Users/nguyenquocthang/Documents/COFFEESHOP/CoffeeShopManagement/assets/vietnam.png');
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#F8F7FA' }}>
       <View style={styles.container}>
 
         <ScrollView contentContainerStyle={styles.content}>
-          <View style={[styles.section, { paddingTop: 60 , alignItems: 'center', justifyContent: 'center'}]}>
-            <View style={styles.sectionBody}>
+          <View style={[styles.section, { paddingTop: 60 , alignItems: 'center', justifyContent: 'center', paddingBottom: 50}]}>
+            <View style={styles.sectionBody}> 
               <TouchableOpacity
                 onPress={() => {
                   // handle onPress
@@ -41,7 +45,20 @@ export default function Example() {
           </View>
 
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Thông tin chung</Text>
+            <View style={styles.row_space_between}>
+              <Text style={ styles.sectionTitle }>Thông tin chung</Text>
+              <TouchableOpacity>
+                <Text style={{
+                    color: '#006C5E',
+                    fontFamily: 'Lato',
+                    fontSize: 16,
+                    fontStyle: 'normal',
+                    fontWeight: 'bold', // Use 'bold' for fontWeight: 600 in React Native
+                    lineHeight: 20,  
+                    marginBottom: 15
+                }}>Sửa</Text>
+              </TouchableOpacity>
+            </View>
 
             <View style={styles.row}>
               <View style={[styles.rowLabelText, { width: '48%'}]}>
@@ -53,49 +70,81 @@ export default function Example() {
             </View>
           </View>
 
-          <View style={styles.section}>
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "48%" }]}
+                            >
+                                <Text style={styles.text}>Nguyen Quoc</Text>
+                            </View>
+                            <View
+                                style={[styles.rowLabelText, { width: "48%" }]}
+                            >
+                                <Text style={styles.text}>Thang</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={styles.section}>
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "100%" }]}
+                            >
+                                <Text style={styles.text}>Nam</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={styles.section}>
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "100%" }]}
+                            >
+                                <Text style={styles.text}>01/01/2024</Text>
+                            </View>
+                        </View>
+                    </View>
+
+
             <View style={styles.row}>
-              <View style={[styles.rowLabelText, { width: '100%'}]}>
-                <Text style={styles.text}>Nam</Text>
+              <View style={[styles.rowLabelText, { width: '100%', gap: 10}]}>
+                <Image style={{ height: 32, width: 32}} source={flag} resizeMode='contain'/>
+                <Text style={styles.text}>+84</Text>
+                <Text style={styles.text}>346129897</Text>
               </View>
             </View>
           </View>
 
-          <View style={styles.section}>
-            <View style={styles.row}>
-              <View style={[styles.rowLabelText, { width: '100%'}]}>
-                <Text style={styles.text}>01/01/2024</Text>
-              </View>
-            </View>
-          </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Số điện thoại</Text>
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "100%" }]}
+                            >
+                                <Image
+                                    style={{ height: 24, width: 24 }}
+                                    src="./assets/vietnam.png"
+                                />
+                                <Text style={styles.text}>0346129897</Text>
+                            </View>
+                        </View>
+                    </View>
 
-            <View style={styles.row}>
-              <View style={[styles.rowLabelText, { width: '100%'}]}>
-                <Image style={{ height: 24, width: 24 }} src='/Users/nguyenquocthang/Documents/COFFEESHOP/CoffeeShopManagement/assets/vietnam.png'/>
-                <Text style={styles.text}>0346129897</Text>
-              </View>
-            </View>
-          </View>
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Email</Text>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Email</Text>
+                        <View style={styles.row}>
+                            <View
+                                style={[styles.rowLabelText, { width: "100%" }]}
+                            >
+                                <Text style={styles.text}>
+                                    22521337@gm.uit.edu.vn
+                                </Text>
+                            </View>
+                        </View>
+                    </View>
 
-            <View style={styles.row}>
-              <View style={[styles.rowLabelText, { width: '100%'}]}>
-                <Text style={styles.text}>22521337@gm.uit.edu.vn</Text>
-              </View>
-            </View>
-          </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Tài khoản liên kết</Text>
-
-            <View style={styles.rowLabelToggle}>
-
-              <View style={styles.rowLabelToggle}>
+            <View style={styles.row_space_between}>
+              <View style={styles.row_space_between}>
                 <View style={styles.iconContainer}>
                   <FontAwesome name='google' size={32} />
                 </View>
@@ -109,17 +158,14 @@ export default function Example() {
                 value={isToggled}
                 onToggle={handleToggle}
               />
+
             </View>
-          </View>
-
-
-        </ScrollView>
-      </View>
-    </SafeAreaView>
-  );
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
+
   container: {
     padding: 0,
     flexGrow: 1,
@@ -132,7 +178,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    paddingHorizontal: 16,
   },
   headerAction: {
     width: 40,
@@ -218,11 +263,12 @@ const styles = StyleSheet.create({
     borderColor: '#EBEBEB',
     borderRadius: 10,
   },
-  rowLabelToggle: {
+  row_space_between: {
     alignItems: 'center', 
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
+    paddingRight: 10,
+    paddingLeft: 10,
   },  
   /** button */
   button: {
@@ -234,6 +280,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
   },
+
   buttonText: {
     width: '100%',
     fontSize: 16,
@@ -243,9 +290,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Lato',
     fontStyle: 'normal'
   },
+
   iconContainer: { 
     marginRight: 10,
   },
+
   text: {
     color: '#000',
     fontFamily: 'Lato',
@@ -254,3 +303,4 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
 });
+
