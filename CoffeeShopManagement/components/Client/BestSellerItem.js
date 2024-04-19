@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     maxWidth: 200,
-    marginRight: "2%",
+    marginRight: "3%",
+    marginBottom: "5%",
   },
   imageContainer: {
     borderRadius: 10,
