@@ -8,7 +8,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "react-native-paper";
 
 import UserOtherScreen from "../screens/Client/Other";
-import SelectAddress from "../screens/Client/SelectAddress";
+
 
 const Tab = createMaterialBottomTabNavigator();
 const UserStack = createStackNavigator();
@@ -89,8 +89,7 @@ function UserTabNavigator() {
             <Tab.Screen name="Home" component={UserHomeScreen} />
             <Tab.Screen name="Orders" component={UserOrdersScreen} />
             <Tab.Screen name="Coupons" component={UserCouponsScreen} />
-            {/* <Tab.Screen name="Others" component={UserOtherScreen} /> */}
-            <Tab.Screen name="Others" component={SelectAddress} />
+            <Tab.Screen name="Others" component={UserOtherScreen} />
         </Tab.Navigator>
     );
 }
