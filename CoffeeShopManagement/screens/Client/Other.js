@@ -46,11 +46,11 @@ export default function UserOtherScreen() {
 
                                 <View style={styles.profileBody}>
                                     <Text style={styles.profileName}>
-                                        Yua Mikami
+                                        Truong Le Vinh Phuc
                                     </Text>
 
                                     <Text style={styles.profileHandle}>
-                                        yua.mikami@gmail.com
+                                        truonglevinhphuc2006@gmail.com
                                     </Text>
                                 </View>
                             </TouchableOpacity>
@@ -90,7 +90,7 @@ export default function UserOtherScreen() {
                             <View style={styles.rowWrapper}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("SelectAddress");
                                     }}
                                     style={styles.row}
                                 >
@@ -115,7 +115,7 @@ export default function UserOtherScreen() {
                             <View style={[styles.rowWrapper, styles.rowLast]}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("Settings");
                                     }}
                                     style={styles.row}
                                 >
@@ -152,7 +152,7 @@ export default function UserOtherScreen() {
                             >
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("OrderHistory");
                                     }}
                                     style={styles.row}
                                 >
@@ -214,7 +214,7 @@ export default function UserOtherScreen() {
                             <View style={[styles.rowWrapper, styles.rowLast]}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("FeedbackAndHelp");
                                     }}
                                     style={styles.row}
                                 >
@@ -337,7 +337,7 @@ export default function UserOtherScreen() {
                             >
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("Logout");
                                     }}
                                     style={styles.row}
                                 >
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#3A3A3A",
         textTransform: "uppercase",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
     },
     sectionBody: {
         borderRadius: 12,
@@ -441,14 +441,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
         color: "#292929",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
     },
     profileHandle: {
         marginTop: 2,
         fontSize: 16,
         fontWeight: "400",
         color: "#858585",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
     },
     /** Row */
     row: {
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         letterSpacing: 0.24,
         color: "#000",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
     },
     rowSpacer: {
         flexGrow: 1,
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: "600",
         color: "#dc2626",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
     },
     /** button */
     button: {
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#fff",
         textAlign: "center",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
         fontStyle: "normal",
     },
 });

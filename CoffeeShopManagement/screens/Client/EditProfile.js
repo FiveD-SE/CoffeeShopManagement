@@ -71,7 +71,7 @@ export default function EditProfile() {
                                 <Text
                                     style={{
                                         color: "#006C5E",
-                                        fontFamily: "Lato",
+                                        fontFamily: "Lato-Bold",
                                         fontSize: 16,
                                         fontStyle: "normal",
                                         fontWeight: "bold",
@@ -285,7 +285,7 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         color: "#000",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Bold",
         fontSize: 16,
         fontStyle: "normal",
         fontWeight: "bold", // Use 'bold' for fontWeight: 600 in React Native
@@ -323,14 +323,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
         color: "#292929",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Bold",
     },
     profileHandle: {
         marginTop: 2,
         fontSize: 16,
         fontWeight: "400",
         color: "#858585",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
     },
     /** Row */
     row: {
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#fff",
         textAlign: "center",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Bold",
         fontStyle: "normal",
     },
 
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
         color: "#000",
         width: "auto",
         height: "100%",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
         fontSize: 16,
         fontStyle: "normal",
         fontWeight: "400",
