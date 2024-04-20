@@ -11,7 +11,7 @@
 
 | STT |   MSSV   | Họ và Tên           |    Chức Vụ |                                                                                                                         Github |                  Email |
 | --- | :------: | ------------------- | ---------: | -----------------------------------------------------------------------------------------------------------------------------: | ---------------------: |
-| 1   | 22520103 | Huỳnh Gia Bảo       | Thành viên |         [![](https://img.shields.io/badge/HGB--Tder-%2324292f.svg?style=flat-square&logo=github)](https://github.com/HGB-Tder) | 22520103@gm.uit.edu.vn |
+| 1   | 22520103 | Huỳnh Gia Bảo       | Thành viên |         [![](https://img.shields.io/badge/hgbaooo-%2324292f.svg?style=flat-square&logo=github)](https://github.com/hgbaooo) | 22520103@gm.uit.edu.vn |
 | 2   | 22521337 | Nguyễn Quốc Thắng   | Thành viên |    [![](https://img.shields.io/badge/nguynqthawq-%2324292f.svg?style=flat-square&logo=github)](https://github.com/nguynqthawq) | 22521337@gm.uit.edu.vn |
 | 3   | 22521282 | Nguyễn Thành Tài    | Thành viên | [![](https://img.shields.io/badge/not--thanhtai-%2324292f.svg?style=flat-square&logo=github)](https://github.com/not-thanhtai) | 22521282@gm.uit.edu.vn |
 | 4   | 22521145 | Trương Lê Vĩnh Phúc | Thành viên |          [![](https://img.shields.io/badge/sloweyyy-%2324292f.svg?style=flat-square&logo=github)](https://github.com/sloweyyy) | 22521145@gm.uit.edu.vn |

@@ -10,7 +10,7 @@ const SuccessScreen = () => {
   const navigation = useNavigation();
 
   const handleQuit = () => {
-    navigation.popToTop();
+    navigation.navigate("SignInScreen");
   };
 
   return (
