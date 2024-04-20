@@ -7,7 +7,7 @@ import OnBoardingScreen from "./screens/Client/OnBoardingScreen";
 import AppNavigator from "./navigation/AppNavigator";
 
 export default function App() {
-    const role = "user";
+    const role = "admin";
 
     return <AppNavigator role={role} />;
 }
