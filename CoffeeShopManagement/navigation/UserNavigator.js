@@ -97,7 +97,7 @@ const OtherStack = () => (
             component={Other}
             options={{ headerShown: false }}
         />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="AdminEditProfile" component={EditProfile} />
         <Stack.Screen
             name="Settings"
             component={Setting}
