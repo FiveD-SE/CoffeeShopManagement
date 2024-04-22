@@ -10,6 +10,8 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome6";
 import React from "react";
 
+const COFFEE_BEAN_ICONS = require("../../../assets/coffee-bean.png");
+
 const UserHomeScreenHeader = ({
   username,
   userImageSource,
@@ -35,10 +37,7 @@ const UserHomeScreenHeader = ({
       </View>
       <View style={styles.headerRight}>
         <Pressable style={styles.iconContainer} onPress={onPressBean}>
-          <Image
-            source={require("../../assets/coffee-bean.png")}
-            style={styles.icon}
-          />
+          <Image source={COFFEE_BEAN_ICONS} style={styles.icon} />
           <Text style={styles.iconText}>{totalPoint}</Text>
         </Pressable>
         <Pressable style={styles.iconContainer} onPress={onPressNotify}>

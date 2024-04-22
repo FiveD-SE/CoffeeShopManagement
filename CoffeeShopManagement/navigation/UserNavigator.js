@@ -11,13 +11,14 @@ import UserSearchScreen from "../screens/Client/Home/UserSearchScreen";
 import UserBestSellerScreen from "../screens/Client/Home/UserBestSellerScreen";
 import UserFavoriteItemScreen from "../screens/Client/Home/UserFavoriteItemScreen";
 
-import UserPlaceOrderScreen from "../screens/Client/UserPlaceOrderScreen";
+import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScreen";
 
 import EditProfile from "../screens/Client/EditProfile";
 import Other from "../screens/Client/Other";
 
 import TabBarIcon from "./components/TabBarIcon";
 import HeaderBackButton from "./components/HeaderBackButton";
+import UserCartScreen from "../screens/Client/PlaceOrder/UserCartScreen";
 
 const UserCouponsScreen = () => {
   return <Text>User Coupons Screen</Text>;
@@ -85,6 +86,43 @@ const HomeStack = () => (
   </Stack.Navigator>
 );
 
+const OrderStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="UserPlaceOrderScreen"
+      component={UserPlaceOrderScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="UserSearchScreen"
+      component={UserSearchScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="UserFavoriteItemScreen"
+      component={UserFavoriteItemScreen}
+      options={{
+        headerTitle: "Sản phẩm yêu thích",
+        headerLeftContainerStyle: {
+          padding: "5%",
+        },
+        headerLeft: () => <HeaderBackButton />,
+      }}
+    />
+    <Stack.Screen
+      name="UserCartScreen"
+      component={UserCartScreen}
+      options={{
+        headerTitle: "Giỏ hàng",
+        headerLeftContainerStyle: {
+          padding: "5%",
+        },
+        headerLeft: () => <HeaderBackButton />,
+      }}
+    />
+  </Stack.Navigator>
+);
+
 const OtherStack = () => (
   <Stack.Navigator>
     <Stack.Screen name="Other" component={Other} />
@@ -121,7 +159,7 @@ function UserNavigator() {
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Orders" component={UserPlaceOrderScreen} />
+        <Tab.Screen name="Orders" component={OrderStack} />
         <Tab.Screen name="Coupons" component={UserCouponsScreen} />
         <Tab.Screen name="Others" component={OtherStack} />
       </Tab.Navigator>

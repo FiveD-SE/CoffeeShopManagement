@@ -4,8 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
 import InputField from "../../components/Client/InputField";
 import PasswordInput from "../../components/Client/PasswordInput";
-import BrownButton from "../../components/Client/BrownButton";
-import BrownTextButton from "../../components/Client/BrownTextButton";
+import BrownButton from "../../components/Client/Button/BrownButton";
+import BrownTextButton from "../../components/Client/Button/BrownTextButton";
 
 const GOOGLE_ICON_SOURCE = require("../../assets/google.png");
 const BACKGROUND_SOURCE = require("../../assets/background.png");

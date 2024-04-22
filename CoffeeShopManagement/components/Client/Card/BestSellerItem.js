@@ -1,42 +1,48 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import Icon from "react-native-vector-icons/FontAwesome6";
-const ProductCardVertical = ({ title, price, imageSource }) => {
+
+const BestSellerItem = ({ title, price, imageSource }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={imageSource} resizeMode="cover" />
       </View>
       <View style={styles.main}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+          {title}
+        </Text>
         <Text style={styles.price}>{price}</Text>
       </View>
       <Pressable style={styles.addButton}>
-        <Icon name="plus" color="#FFFFFF" />
+        <Text style={styles.addButtonText}>Chọn</Text>
       </Pressable>
     </View>
   );
 };
 
-export default ProductCardVertical;
+export default BestSellerItem;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: "2%",
+    flex: 1,
+    flexDirection: "column",
+    maxWidth: 200,
+    marginRight: "3%",
+    marginBottom: "5%",
   },
   imageContainer: {
-    flex: 0.7,
+    borderRadius: 10,
+    overflow: "hidden",
+    maxHeight: 120,
   },
   image: {
     width: "100%",
-    height: 100,
-    borderRadius: 10,
+    height: "100%",
   },
   main: {
     flex: 1,
-    paddingHorizontal: "5%",
+    flexDirection: "column",
+    marginTop: "5%",
   },
   title: {
     width: "100%",
@@ -54,8 +60,15 @@ const styles = StyleSheet.create({
   addButton: {
     justifyContent: "center",
     alignItems: "center",
-    padding: "2%",
-    backgroundColor: "#FFA730",
-    borderRadius: 100,
+    paddingVertical: "4%",
+    paddingHorizontal: "6%",
+    marginTop: "8%",
+    backgroundColor: "#FFE8D2",
+    borderRadius: 5,
+  },
+  addButtonText: {
+    color: "#FFA730",
+    fontSize: 12,
+    fontWeight: "600",
   },
 });

@@ -1,49 +1,49 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome6";
+const MustTryItemCard = ({ title, price, imageSource, onPress }) => {
+  const navigation = useNavigation();
 
-const BestSellerItem = ({ title, price, imageSource }) => {
+  const goToItemDetail = () => {
+    navigation.navigate("ItemDetailScreen");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={imageSource} resizeMode="cover" />
       </View>
       <View style={styles.main}>
-        <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
-          {title}
-        </Text>
+        <Text style={styles.title}>{title}</Text>
         <Text style={styles.price}>{price}</Text>
       </View>
-      <Pressable style={styles.addButton}>
-        <Text style={styles.addButtonText}>Chọn</Text>
+      <Pressable style={styles.addButton} onPress={onPress}>
+        <Icon name="plus" color="#FFFFFF" />
       </Pressable>
     </View>
   );
 };
 
-export default BestSellerItem;
+export default MustTryItemCard;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: "column",
-    maxWidth: 200,
-    marginRight: "3%",
-    marginBottom: "5%",
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: "2%",
   },
   imageContainer: {
-    borderRadius: 10,
-    overflow: "hidden",
-    maxHeight: 120,
+    flex: 0.7,
   },
   image: {
     width: "100%",
-    height: "100%",
+    height: 100,
+    borderRadius: 10,
   },
   main: {
     flex: 1,
-    flexDirection: "column",
-    marginTop: "5%",
+    paddingHorizontal: "5%",
   },
   title: {
     width: "100%",
@@ -61,15 +61,8 @@ const styles = StyleSheet.create({
   addButton: {
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: "4%",
-    paddingHorizontal: "6%",
-    marginTop: "8%",
-    backgroundColor: "#FFE8D2",
-    borderRadius: 5,
-  },
-  addButtonText: {
-    color: "#FFA730",
-    fontSize: 12,
-    fontWeight: "600",
+    padding: "2%",
+    backgroundColor: "#FFA730",
+    borderRadius: 100,
   },
 });

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, FlatList } from "react-native";
 import React from "react";
 
 import Section from "../../../components/Client/Section";
-import VoucherCard from "../../../components/Client/VoucherCard";
+import VoucherCard from "../../../components/Client/Card/VoucherCard";
 
 const UserExchangeVoucherScreen = () => {
   const voucherItemList = [
