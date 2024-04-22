@@ -13,17 +13,17 @@ export default CategoryIcon;
 
 const styles = StyleSheet.create({
   iconButton: {
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "5%",
-    margin: "2%",
+    width: 48,
+    height: 48,
+    padding: "2%",
     borderRadius: 30,
     borderWidth: 1,
+    margin: "2%",
     borderColor: "rgba(58,58,58,0.2)",
   },
   icon: {
-    width: 24,
-    height: 24,
+    width: "100%",
+    height: "100%",
     resizeMode: "cover",
   },
 });

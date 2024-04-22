@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import BrownButton from "../../components/Client/BrownButton";
+import BrownButton from "../../components/Client/Button/BrownButton";
 import PasswordInput from "../../components/Client/PasswordInput";
 
 const ResetPassword = () => {

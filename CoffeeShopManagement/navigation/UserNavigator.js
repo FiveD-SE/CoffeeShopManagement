@@ -10,13 +10,15 @@ import UserVoucherDetailsScreen from "../screens/Client/Home/UserVoucherDetailsS
 import UserSearchScreen from "../screens/Client/Home/UserSearchScreen";
 import UserBestSellerScreen from "../screens/Client/Home/UserBestSellerScreen";
 import UserFavoriteItemScreen from "../screens/Client/Home/UserFavoriteItemScreen";
-import UserPlaceOrderScreen from "../screens/Client/UserPlaceOrderScreen";
+
+import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScreen";
 
 import EditProfile from "../screens/Client/EditProfile";
 import Other from "../screens/Client/Other";
 
 import TabBarIcon from "./components/TabBarIcon";
 import HeaderBackButton from "./components/HeaderBackButton";
+import UserCartScreen from "../screens/Client/PlaceOrder/UserCartScreen";
 import OrderHistory from "../screens/Client/OrderHistory";
 import Setting from "../screens/Client/Setting";
 import SelectAdress from "../screens/Client/SelectAddress";
@@ -88,6 +90,43 @@ const HomeStack = () => (
             }}
         />
     </Stack.Navigator>
+);
+
+const OrderStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="UserPlaceOrderScreen"
+      component={UserPlaceOrderScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="UserSearchScreen"
+      component={UserSearchScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="UserFavoriteItemScreen"
+      component={UserFavoriteItemScreen}
+      options={{
+        headerTitle: "Sản phẩm yêu thích",
+        headerLeftContainerStyle: {
+          padding: "5%",
+        },
+        headerLeft: () => <HeaderBackButton />,
+      }}
+    />
+    <Stack.Screen
+      name="UserCartScreen"
+      component={UserCartScreen}
+      options={{
+        headerTitle: "Giỏ hàng",
+        headerLeftContainerStyle: {
+          padding: "5%",
+        },
+        headerLeft: () => <HeaderBackButton />,
+      }}
+    />
+  </Stack.Navigator>
 );
 
 const OtherStack = () => (
@@ -181,33 +220,28 @@ function UserNavigator() {
                     tabBarHideOnKeyboard: true,
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
-
-                        if (route.name === "Home") {
-                            iconName = "home";
-                        } else if (route.name === "Orders") {
-                            iconName = "cart";
-                        } else if (route.name === "Coupons") {
-                            iconName = "bookmark";
-                        } else if (route.name === "Others") {
-                            iconName = "reorder-three";
-                        }
-                        return (
-                            <TabBarIcon
-                                focused={focused}
-                                name={iconName}
-                                color={color}
-                            />
-                        );
-                    },
-                })}
-            >
-                <Tab.Screen name="Home" component={HomeStack} />
-                <Tab.Screen name="Orders" component={UserPlaceOrderScreen} />
-                <Tab.Screen name="Coupons" component={UserCouponsScreen} />
-                <Tab.Screen name="Others" component={OtherStack} />
-            </Tab.Navigator>
-        </NavigationContainer>
-    );
+            if (route.name === "Home") {
+              iconName = "home";
+            } else if (route.name === "Orders") {
+              iconName = "cart";
+            } else if (route.name === "Coupons") {
+              iconName = "bookmark";
+            } else if (route.name === "Others") {
+              iconName = "reorder-three";
+            }
+            return (
+              <TabBarIcon focused={focused} name={iconName} color={color} />
+            );
+          },
+        })}
+      >
+        <Tab.Screen name="Home" component={HomeStack} />
+        <Tab.Screen name="Orders" component={OrderStack} />
+        <Tab.Screen name="Coupons" component={UserCouponsScreen} />
+        <Tab.Screen name="Others" component={OtherStack} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 }
 
 export default UserNavigator;

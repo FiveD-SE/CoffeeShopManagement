@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import BrownButton from "../../components/Client/BrownButton";
+import BrownButton from "../../components/Client/Button/BrownButton";
 
 const SUCCESS_ICON_SOURCE = require("../../assets/Success Icon.png");
 
