@@ -26,9 +26,7 @@ const Section = ({
 };
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: "5%",
-  },
+  sectionContainer: {},
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
