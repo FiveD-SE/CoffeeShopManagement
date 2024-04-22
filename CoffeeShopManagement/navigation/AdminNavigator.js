@@ -4,12 +4,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabBarIcon from "./components/TabBarIcon";
-// import AdminHomeScreen from "../screens/Admin/AdminHomeScreen";
-import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 
-const AdminHomeScreen = () => {
-    return <Text>Admin Home Screen</Text>;
-};
+import AdminHomeScreen from "../screens/Admin/AdminHomeScreen";
+import AdminNotification from "../screens/Admin/AdminNotification";
+import AdminRevenueScreen from "../screens/Admin/AdminRevenueScreen";
+
+import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
+import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
 
 const AdminSalesScreen = () => {
     return <Text>Admin Sales Screen</Text>;
@@ -27,27 +28,39 @@ const AdminBillingScreen = () => {
     return <Text>Admin Billing Screen</Text>;
 };
 
-const Home = () => {
-    return <Text>Home</Text>;
-};
-
-const EditProfile = () => {
-    return <Text>Edit Profile</Text>;
-};
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const OtherStack = () => (
     <Stack.Navigator>
         <Stack.Screen name="Other" component={AdminOtherScreen} />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="EditProfile" component={AdminEditProfile} />
     </Stack.Navigator>
 );
 
 const HomeStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen
+            name="AdminHome"
+            component={AdminHomeScreen}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name="Notification"
+            component={AdminNotification}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name="Revenue"
+            component={AdminRevenueScreen}
+            options={{
+                headerTitle: "Doanh thu",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -61,6 +74,7 @@ function AdminNavigator() {
                     tabBarStyle: styles.bottomTabBar,
                     tabBarShowLabel: true,
                     headerShown: false,
+                    tabBarHideOnKeyboard: true,
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
 
@@ -86,7 +100,7 @@ function AdminNavigator() {
                     },
                 })}
             >
-                <Tab.Screen name="Home" component={AdminHomeScreen} />
+                <Tab.Screen name="Home" component={HomeStack} />
                 <Tab.Screen name="Sales" component={AdminSalesScreen} />
                 <Tab.Screen name="Warehouse" component={AdminWarehouseScreen} />
                 <Tab.Screen name="Billing" component={AdminBillingScreen} />

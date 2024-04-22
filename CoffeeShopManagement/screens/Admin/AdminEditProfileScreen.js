@@ -12,7 +12,7 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SwitchToggle from "toggle-switch-react-native";
 
-export default function EditProfile() {
+export default function AdminEditProfile() {
     const [isToggled, setIsToggled] = useState(false);
 
     const handleToggle = () => {

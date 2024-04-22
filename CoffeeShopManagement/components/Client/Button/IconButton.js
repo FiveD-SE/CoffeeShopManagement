@@ -13,12 +13,12 @@ const IconButton = ({ iconName, onPress }) => {
 export default IconButton;
 
 const styles = StyleSheet.create({
-  iconButton: {
-    borderWidth: 1,
-    borderRadius: 30,
-    padding: "5%",
-    borderColor: "rgba(58,58,58,0.2)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+    iconButton: {
+        borderWidth: 1,
+        borderRadius: 30,
+        padding: "5%",
+        borderColor: "rgba(58,58,58,0.2)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
 });
