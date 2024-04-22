@@ -1,6 +1,6 @@
 import { StyleSheet, FlatList, View } from "react-native";
 import React from "react";
-import ProductCardVertical from "../../../components/Client/ProductCardVertical";
+import ProductCardVertical from "../../../components/Client/Card/MustTryItemCard";
 
 const UserFavoriteItemScreen = () => {
   const favoriteItemList = [

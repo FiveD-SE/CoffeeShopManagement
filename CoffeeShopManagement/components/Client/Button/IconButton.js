@@ -2,12 +2,12 @@ import { StyleSheet, Pressable } from "react-native";
 import React from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome6";
-const IconButton = ({ iconName }) => {
-    return (
-        <Pressable style={styles.iconButton}>
-            <Icon name={iconName} size={16} />
-        </Pressable>
-    );
+const IconButton = ({ iconName, onPress }) => {
+  return (
+    <Pressable style={styles.iconButton} onPress={onPress}>
+      <Icon name={iconName} size={16} />
+    </Pressable>
+  );
 };
 
 export default IconButton;
