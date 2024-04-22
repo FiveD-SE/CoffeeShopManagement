@@ -148,32 +148,38 @@ const UserHomeScreen = () => {
           <SearchBar onFocus={goToSearchScreen} />
         </View>
         <Carousel />
-        <Section title="Danh Mục Sản Phẩm">
-          <View style={styles.categoryContainer}>{renderCategoryItem()}</View>
-        </Section>
-        <Section
-          title="Sản Phẩm Bán Chạy"
-          showSubtitle={true}
-          subtitle="Xem thêm"
-          onPressSubtitle={goToBestSellerScreen}
-        >
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.itemList}
+        <View style={{ marginTop: "5%" }}>
+          <Section title="Danh Mục Sản Phẩm">
+            <View style={styles.categoryContainer}>{renderCategoryItem()}</View>
+          </Section>
+        </View>
+        <View style={{ marginTop: "5%" }}>
+          <Section
+            title="Sản Phẩm Bán Chạy"
+            showSubtitle={true}
+            subtitle="Xem thêm"
+            onPressSubtitle={goToBestSellerScreen}
           >
-            {renderBestSellerItemList()}
-          </ScrollView>
-        </Section>
-        <Section title="Đã Xem Gần Đây">
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.itemList}
-          >
-            {renderRecentlyViewedItemList()}
-          </ScrollView>
-        </Section>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.itemList}
+            >
+              {renderBestSellerItemList()}
+            </ScrollView>
+          </Section>
+        </View>
+        <View>
+          <Section title="Đã Xem Gần Đây">
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.itemList}
+            >
+              {renderRecentlyViewedItemList()}
+            </ScrollView>
+          </Section>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

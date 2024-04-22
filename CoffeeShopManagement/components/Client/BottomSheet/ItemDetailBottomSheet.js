@@ -132,14 +132,18 @@ const ItemDetailBottomSheet = ({
                 netus donec pellentesque quis.
               </Text>
             </View>
-            <Section title="Kích cỡ">
-              <View style={styles.sizeContainer}>{renderSizeItemList()}</View>
-            </Section>
-            <Section title="Tuỳ chọn khác">
-              <View style={styles.optionContainer}>
-                {renderOptionSection()}
-              </View>
-            </Section>
+            <View style={{ marginTop: "5%" }}>
+              <Section title="Kích cỡ">
+                <View style={styles.sizeContainer}>{renderSizeItemList()}</View>
+              </Section>
+            </View>
+            <View style={{ marginTop: "5%" }}>
+              <Section title="Tuỳ chọn khác">
+                <View style={styles.optionContainer}>
+                  {renderOptionSection()}
+                </View>
+              </Section>
+            </View>
             <ToppingButton />
           </View>
         </View>

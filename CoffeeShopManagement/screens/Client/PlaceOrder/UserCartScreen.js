@@ -50,11 +50,13 @@ const UserCartScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Section title="Sản phẩm đã thêm">
-          <View style={styles.cartListContainer}>
-            <FlatList data={cartList} renderItem={renderCartList} />
-          </View>
-        </Section>
+        <View style={{ marginTop: "5%" }}>
+          <Section title="Sản phẩm đã thêm">
+            <View style={styles.cartListContainer}>
+              <FlatList data={cartList} renderItem={renderCartList} />
+            </View>
+          </Section>
+        </View>
       </View>
       <View style={styles.footer}>
         <View style={styles.totalPriceContainer}>
