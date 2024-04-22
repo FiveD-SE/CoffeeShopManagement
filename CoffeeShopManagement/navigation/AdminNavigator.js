@@ -10,6 +10,7 @@ import AdminNotification from "../screens/Admin/AdminNotification";
 import AdminRevenueScreen from "../screens/Admin/AdminRevenueScreen";
 
 import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
+import AdminProfileDetailScreen from "../screens/Admin/AdminProfileDetail";
 
 const AdminSalesScreen = () => {
     return <Text>Admin Sales Screen</Text>;
@@ -27,17 +28,27 @@ const AdminBillingScreen = () => {
     return <Text>Admin Billing Screen</Text>;
 };
 
-const EditProfile = () => {
-    return <Text>Edit Profile</Text>;
-};
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const OtherStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="Other" component={AdminOtherScreen} />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen
+            name="Other"
+            component={AdminOtherScreen}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name="AdminProfileDetail"
+            component={AdminProfileDetailScreen}
+            options={{
+                headerTitle: "Thông tin cá nhân",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                // headerLeft: () => <HeaderBackButton />,
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -46,11 +57,13 @@ const HomeStack = () => (
         <Stack.Screen
             name="AdminHome"
             component={AdminHomeScreen}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
         <Stack.Screen
             name="Notification"
             component={AdminNotification}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
         <Stack.Screen
             name="Revenue"
             component={AdminRevenueScreen}
@@ -75,6 +88,7 @@ function AdminNavigator() {
                     tabBarStyle: styles.bottomTabBar,
                     tabBarShowLabel: true,
                     headerShown: false,
+                    tabBarHideOnKeyboard: true,
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
 

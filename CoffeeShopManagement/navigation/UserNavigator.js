@@ -102,7 +102,7 @@ const OtherStack = () => (
             name="Settings"
             component={Setting}
             options={{
-                headerTitle: "Cài đặt",
+                headerTitle: "Chỉnh sửa thông tin cá nhân",
                 headerLeftContainerStyle: {
                     padding: "5%",
                 },
@@ -178,6 +178,7 @@ function UserNavigator() {
                     tabBarStyle: styles.bottomTabBar,
                     tabBarShowLabel: true,
                     headerShown: false,
+                    tabBarHideOnKeyboard: true,
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
 
