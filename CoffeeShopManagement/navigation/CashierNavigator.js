@@ -94,7 +94,6 @@ const CashierNavigator = () => {
                     tabBarStyle: styles.bottomTabBar,
                     tabBarShowLabel: true,
                     headerShown: false,
-                    tabBarHideOnKeyboard: true,
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
 

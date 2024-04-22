@@ -1,13 +1,5 @@
-import {
-    View,
-    Text,
-    ScrollView,
-    StyleSheet,
-    TouchableOpacity,
-    Image,
-    Section,
-} from "react-native";
-import React from "react";
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image, Section } from 'react-native'
+import React from 'react'
 import Icon from "react-native-vector-icons/FontAwesome6";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
@@ -29,26 +21,22 @@ const AdminHomeScreen = () => {
                 <TouchableOpacity
                     onPress={() => {
                         // handle onPress
-                    }}
-                    style={styles.profile}
-                >
+                    }} style={styles.profile} >
                     <Image
                         alt="avatar"
                         source={{
                             uri: "https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-6/431624626_122123621720198208_7192741542130469154_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=5f2048&_nc_ohc=JjnI9QfaC3UAb6tpASW&_nc_ht=scontent.fsgn2-3.fna&oh=00_AfDP74--Z_uqCn8QEtONsVRUTRR2QZjaK68b9Tal5mB8Pg&oe=66229595",
-                        }}
-                        style={styles.profileAvatar}
-                    ></Image>
+                        }} style={styles.profileAvatar} >
+                    </Image>
                     <View style={styles.profileBody}>
-                        <Text style={styles.profileRole}>Admin</Text>
+                        <Text style={styles.profileRole}>
+                            Admin
+                        </Text>
                         <Text style={styles.profileName}>
                             Truong Le Vinh Phuc
                         </Text>
                     </View>
-                    <TouchableOpacity
-                        style={styles.iconContainer}
-                        onPress={goToNotificationScreen}
-                    >
+                    <TouchableOpacity style={styles.iconContainer} onPress={goToNotificationScreen}>
                         <Icon name="bell" size={20} />
                     </TouchableOpacity>
                 </TouchableOpacity>
@@ -59,53 +47,27 @@ const AdminHomeScreen = () => {
                     <TouchableOpacity
                         onPress={() => {
                             // handle onPress
-                        }}
-                        style={[
-                            styles.dataContainer,
-                            { marginLeft: "3%", marginRight: "2%" },
-                        ]}
-                    >
+                        }} style={[styles.dataContainer, { marginLeft: "3%", marginRight: "2%" }]} >
                         <View>
                             <View style={styles.dataHeader}>
-                                <Text style={styles.dataTitle}>NHÂN VIÊN</Text>
-                                <Ionicons
-                                    name="arrow-forward"
-                                    size={20}
-                                    color="#3A3A3A"
-                                />
+                                <Text style={styles.dataTitle}>
+                                    NHÂN VIÊN
+                                </Text>
+                                <Ionicons name="arrow-forward" size={20} color="#3A3A3A" />
                             </View>
 
                             <View style={[styles.data, { padding: "7%" }]}>
-                                <View
-                                    style={[
-                                        styles.iconComponentContainer,
-                                        {
-                                            alignSelf: "flex-start",
-                                            padding: "13%",
-                                            backgroundColor: "#F0F5FF",
-                                        },
-                                    ]}
-                                >
-                                    <MaterialIcons
-                                        name="work"
-                                        size={30}
-                                        color="#699BF7"
-                                    />
+                                <View style={[styles.iconComponentContainer, {
+                                    alignSelf: "flex-start",
+                                    padding: "13%",
+                                    backgroundColor: "#F0F5FF",
+                                }]}>
+                                    <MaterialIcons name="work" size={30} color="#699BF7" />
                                 </View>
-                                <Text
-                                    style={[
-                                        styles.dataNumber,
-                                        { marginTop: "5%" },
-                                    ]}
-                                >
+                                <Text style={[styles.dataNumber, { marginTop: "5%", }]}>
                                     69
                                 </Text>
-                                <Text
-                                    style={[
-                                        styles.dataName,
-                                        { marginTop: "3%" },
-                                    ]}
-                                >
+                                <Text style={[styles.dataName, { marginTop: "3%", }]}>
                                     Tổng nhân viên
                                 </Text>
                             </View>
@@ -114,53 +76,27 @@ const AdminHomeScreen = () => {
                     <TouchableOpacity
                         onPress={() => {
                             // handle onPress
-                        }}
-                        style={[
-                            styles.dataContainer,
-                            { marginLeft: "2%", marginRight: "3%" },
-                        ]}
-                    >
+                        }} style={[styles.dataContainer, { marginLeft: "2%", marginRight: "3%" }]} >
                         <View>
                             <View style={styles.dataHeader}>
-                                <Text style={styles.dataTitle}>KHÁCH HÀNG</Text>
-                                <Ionicons
-                                    name="arrow-forward"
-                                    size={20}
-                                    color="#3A3A3A"
-                                />
+                                <Text style={styles.dataTitle}>
+                                    KHÁCH HÀNG
+                                </Text>
+                                <Ionicons name="arrow-forward" size={20} color="#3A3A3A" />
                             </View>
 
                             <View style={[styles.data, { padding: "7%" }]}>
-                                <View
-                                    style={[
-                                        styles.iconComponentContainer,
-                                        {
-                                            alignSelf: "flex-start",
-                                            padding: "13%",
-                                            backgroundColor: "#EEFAF1",
-                                        },
-                                    ]}
-                                >
-                                    <Ionicons
-                                        name="people"
-                                        size={30}
-                                        color="#4ECB71"
-                                    />
+                                <View style={[styles.iconComponentContainer, {
+                                    alignSelf: "flex-start",
+                                    padding: "13%",
+                                    backgroundColor: "#EEFAF1",
+                                }]}>
+                                    <Ionicons name="people" size={30} color="#4ECB71" />
                                 </View>
-                                <Text
-                                    style={[
-                                        styles.dataNumber,
-                                        { marginTop: "5%" },
-                                    ]}
-                                >
+                                <Text style={[styles.dataNumber, { marginTop: "5%", }]}>
                                     333
                                 </Text>
-                                <Text
-                                    style={[
-                                        styles.dataName,
-                                        { marginTop: "3%" },
-                                    ]}
-                                >
+                                <Text style={[styles.dataName, { marginTop: "3%", }]}>
                                     Tổng khách hàng
                                 </Text>
                             </View>
@@ -169,93 +105,50 @@ const AdminHomeScreen = () => {
                 </View>
 
                 <TouchableOpacity
-                    onPress={goToRevenueScreen}
-                    style={[styles.dataContainer, { margin: "3%" }]}
-                >
+                    onPress={goToRevenueScreen} style={[styles.dataContainer, { margin: "3%" }]} >
                     <View style={styles.dataHeader}>
-                        <Text style={styles.dataTitle}>DOANH THU</Text>
-                        <Ionicons
-                            name="arrow-forward"
-                            size={20}
-                            color="#3A3A3A"
-                        />
+                        <Text style={styles.dataTitle}>
+                            DOANH THU
+                        </Text>
+                        <Ionicons name="arrow-forward" size={20} color="#3A3A3A" />
                     </View>
 
-                    <View
-                        style={[
-                            styles.data,
-                            {
-                                flex: 1,
-                                justifyContent: "center",
-                                alignItems: "center",
-                                padding: "3%",
-                            },
-                        ]}
-                    >
-                        <View
-                            style={[
-                                styles.iconComponentContainer,
-                                {
-                                    padding: "6%",
-                                    backgroundColor: "#FFFAE6",
-                                },
-                            ]}
-                        >
-                            <Icon
-                                name="money-bills"
-                                size={30}
-                                color="#FFC700"
-                            />
+                    <View style={[styles.data, { flex: 1, justifyContent: "center", alignItems: "center", padding: "3%" }]}>
+                        <View style={[styles.iconComponentContainer, {
+                            padding: "6%",
+                            backgroundColor: "#FFFAE6",
+                        }]}>
+                            <Icon name="money-bills" size={30} color="#FFC700" />
                         </View>
-                        <Text style={[styles.dataNumber, { marginTop: "3%" }]}>
+                        <Text style={[styles.dataNumber, { marginTop: "3%", }]}>
                             100.000.000
                         </Text>
-                        <Text style={[styles.dataName, { marginTop: "1%" }]}>
+                        <Text style={[styles.dataName, { marginTop: "1%", }]}>
                             Tổng doanh thu
                         </Text>
                     </View>
 
-                    <View
-                        style={[
-                            styles.data,
-                            {
-                                flex: 1,
-                                justifyContent: "center",
-                                alignItems: "center",
-                                padding: "3%",
-                                marginTop: "3%",
-                            },
-                        ]}
-                    >
-                        <View
-                            style={[
-                                styles.iconComponentContainer,
-                                {
-                                    padding: "6%",
-                                    backgroundColor: "#FFEACC",
-                                },
-                            ]}
-                        >
-                            <FontAwesome
-                                name="line-chart"
-                                size={30}
-                                color="#FF9800"
-                            />
+                    <View style={[styles.data, { flex: 1, justifyContent: "center", alignItems: "center", padding: "3%", marginTop: "3%" }]}>
+                        <View style={[styles.iconComponentContainer, {
+                            padding: "6%",
+                            backgroundColor: "#FFEACC",
+                        }]}>
+                            <FontAwesome name="line-chart" size={30} color="#FF9800" />
                         </View>
-                        <Text style={[styles.dataNumber, { marginTop: "3%" }]}>
+                        <Text style={[styles.dataNumber, { marginTop: "3%", }]}>
                             33.300.000
                         </Text>
-                        <Text style={[styles.dataName, { marginTop: "1%" }]}>
+                        <Text style={[styles.dataName, { marginTop: "1%", }]}>
                             Tăng trưởng
                         </Text>
                     </View>
                 </TouchableOpacity>
-            </View>
-        </ScrollView>
-    );
-};
+            </View >
+        </ScrollView >
+    )
+}
 
-export default AdminHomeScreen;
+export default AdminHomeScreen
 
 const styles = StyleSheet.create({
     container: {
@@ -265,7 +158,7 @@ const styles = StyleSheet.create({
     section: {
         marginTop: "14%",
         marginBottom: "5%",
-        marginHorizontal: "3%",
+        marginHorizontal: "3%"
     },
 
     profile: {
@@ -322,7 +215,7 @@ const styles = StyleSheet.create({
 
     peopleDataContainer: {
         flexDirection: "row",
-        flexWrap: "wrap",
+        flexWrap: "wrap"
     },
 
     dataContainer: {
@@ -335,14 +228,14 @@ const styles = StyleSheet.create({
 
     dataHeader: {
         flexDirection: "row",
-        flexWrap: "wrap",
+        flexWrap: "wrap"
     },
 
     dataTitle: {
         fontSize: 14,
         fontWeight: "500",
         color: "#3A3A3A",
-        marginRight: "auto",
+        marginRight: "auto"
     },
 
     data: {
@@ -364,4 +257,5 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         color: "#3A3A3A",
     },
-});
+
+})
