@@ -9,7 +9,6 @@ import AdminHomeScreen from "../screens/Admin/Home/AdminHomeScreen";
 import AdminNotification from "../screens/Admin/Home/AdminNotification";
 import AdminRevenueScreen from "../screens/Admin/Home/AdminRevenueScreen";
 
-import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminBillingScreen from "../screens/Admin/AdminBillingScreen";
 import DetailBillingScreen from "../screens/Admin/DetailBillingScreen";
 import AdminSalesScreen from "../screens/Admin/Sales/AdminSalesScreen";
@@ -22,20 +21,21 @@ import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
 import ProfileDetail from "../screens/Admin/AdminProfileDetailScreen";
 
+import StaffHomeScreen from "../screens/Admin/StaffHomeScreen";
+
 const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
 };
 
 
 
-};
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const BillingStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="Billing" component={AdminBillingScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="AdminBillingHome" component={AdminBillingScreen} options={{headerShown: false}}/>
         <Stack.Screen name="AdminDetailBilling" component={DetailBillingScreen} options={{headerShown: false}}/>
     </Stack.Navigator>
 )
@@ -71,6 +71,12 @@ const HomeStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
+        <Stack.Screen
+            name = "StaffHome"
+            component={StaffHomeScreen}
+            options={{
+                headerShown: false
+            }}/>
     </Stack.Navigator>
 );
 

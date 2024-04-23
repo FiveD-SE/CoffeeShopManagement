@@ -15,6 +15,10 @@ const AdminHomeScreen = () => {
         navigation.navigate("Notification");
     };
 
+    const goToStaffScreen = () => {
+        navigation.navigate("StaffHome")
+    }
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.section}>
@@ -45,9 +49,7 @@ const AdminHomeScreen = () => {
             <View style={styles.body}>
                 <View style={styles.peopleDataContainer}>
                     <TouchableOpacity
-                        onPress={() => {
-                            // handle onPress
-                        }} style={[styles.dataContainer, { marginLeft: "3%", marginRight: "2%" }]} >
+                        onPress={goToStaffScreen} style={[styles.dataContainer, { marginLeft: "3%", marginRight: "2%" }]} >
                         <View>
                             <View style={styles.dataHeader}>
                                 <Text style={styles.dataTitle}>
@@ -215,7 +217,7 @@ const styles = StyleSheet.create({
 
     peopleDataContainer: {
         flexDirection: "row",
-        flexWrap: "wrap"
+        flexWrap: "wrap",
     },
 
     dataContainer: {
