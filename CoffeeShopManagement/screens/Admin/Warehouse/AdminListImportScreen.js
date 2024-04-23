@@ -1,17 +1,10 @@
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native'
 import React from 'react'
-import { useNavigation } from "@react-navigation/native";
-
-import SearchBar from '../../../components/Client/SearchBar'
-import ColorButton from '../../../components/Admin/ColorButton'
-import ProductCardwithMinus from '../../../components/Admin/ProductCardwithMinus';
 import BranchSelectBar from '../../../components/Admin/BranchSelectBar'
-const AdminExportGoodsScreen = () => {
-  const navigation = useNavigation();
+import ColorButton from '../../../components/Admin/ColorButton'
+import ProductCardwithPrice from '../../../components/Admin/ProductCardwithPrice'
 
-  const goToListExport = () => {
-    navigation.navigate("AdminListExport");
-  };
+const AdminListImportScreen = () => {
   const productList = [
     {
       title: "Tên hàng hóa",
@@ -53,7 +46,7 @@ const AdminExportGoodsScreen = () => {
 
   const renderproductList = () => {
     return productList.map((item, index) => (
-      <ProductCardwithMinus
+      <ProductCardwithPrice
         key={index}
         title={item.title}
         unit={item.unit}
@@ -68,25 +61,20 @@ const AdminExportGoodsScreen = () => {
       <View style={styles.bar}>
         <BranchSelectBar branchName="ThanhTai1" />
       </View>
-      <Text style={styles.title}>Các mặt hàng sẵn có</Text>
-      <View style={styles.sreachBar}>
-        <SearchBar />
-      </View>
+      <Text style={styles.title}>Danh sách nhập hàng</Text>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
         {renderproductList()}
       </ScrollView>
-      <View style={styles.buttonContainer}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.importTitle}>Số mặt hàng xuất kho:</Text>
-          <Text style={styles.importNumber}>10000</Text>
-        </View>
-        <ColorButton color="#00A188" text="Xuất hàng" textColor="#ffffff" OnPress={goToListExport} />
+      <View style={styles.costContaner}>
+        <Text style={styles.costTitle}>Tổng cộng</Text>
+        <Text style={styles.cost}>118.000 VNĐ</Text>
       </View>
+      <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff"/>
     </SafeAreaView>
   )
 }
 
-export default AdminExportGoodsScreen
+export default AdminListImportScreen
 
 const styles = StyleSheet.create({
   container: {
@@ -94,40 +82,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: "3%",
     paddingTop: "3%"
   },
+  bar: {
+    flexDirection: "row",
+    marginTop: "2%",
+  },
   title: {
     color: "#3a3a3a",
     fontSize: 16,
     fontWeight: "600",
     marginTop: "3%"
   },
-  bar: {
-    flexDirection: "row",
-    marginTop: "2%",
-  },
-  sreachBar: {
-    flexDirection: "row",
-    marginTop: "3%",
-  },
   goodListContainer: {
     flex: 1,
     marginTop: "2%",
   },
-  buttonContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+  costContaner:{
+    marginVertical:"3%",
+    flexDirection:"row",
+    justifyContent:"space-between"
   },
-  importTitle: {
+  costTitle: {
     color: "#3a3a3a",
-    fontSize: 16,
-    fontWeight: "700",
-    marginRight: "2%",
+    fontSize: 18,
+    fontWeight: "600",
   },
-
-  importNumber:
-  {
-    color: "#00A188",
-    fontSize: 16,
+  cost: {
+    color: "#F61A3D",
+    fontSize: 18,
     fontWeight: "700",
   }
 })
