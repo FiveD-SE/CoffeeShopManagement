@@ -188,7 +188,7 @@ export default function AdminOtherScreen() {
                             <View style={[styles.rowWrapper, styles.rowFirst]}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("BranchManagement");
                                     }}
                                     style={styles.row}
                                 >
