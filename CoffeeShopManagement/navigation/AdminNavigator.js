@@ -19,10 +19,15 @@ import AdminExportGoodsScreen from "../screens/Admin/Warehouse/AdminExportGoodsS
 import AdminListImportScreen from "../screens/Admin/Warehouse/AdminListImportScreen";
 import AdminListExportScreen from "../screens/Admin/Warehouse/AdminListExportScreen";
 
-
 import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
 import ProfileDetail from "../screens/Admin/AdminProfileDetailScreen";
+import AdminBranchManagement from "../screens/Admin/AdminBranchManagement";
+import AdminEditBranchScreen from "../screens/Admin/AdminEditBranchScreen";
+import AdminAddBranchScreen from "../screens/Admin/AdminAddBranchScreen";
+
+import HeaderBackButton from "./components/HeaderBackButton";
+import AddBranchButton from "./components/AddBranchButton";
 
 import StaffHomeScreen from "../screens/Admin/StaffHomeScreen";
 
@@ -55,8 +60,63 @@ const OtherStack = () => (
             component={AdminOtherScreen}
             options={{ headerShown: false }}
         />
-        <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
-        <Stack.Screen name="AdminEditProfile" component={AdminEditProfile} />
+        <Stack.Screen
+            name="ProfileDetail"
+            component={ProfileDetail}
+            options={{
+                headerTitle: "Thông tin cá nhân",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminEditProfile"
+            component={AdminEditProfile}
+            options={{
+                headerTitle: "Chỉnh sửa thông tin cá nhân",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="BranchManagement"
+            component={AdminBranchManagement}
+            options={{
+                headerTitle: "Quản lý chi nhánh",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddBranchButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminBranchEditScreen"
+            component={AdminEditBranchScreen}
+            options={{
+                headerTitle: "Chỉnh sửa chi nhánh",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+
+        <Stack.Screen
+            name="AdminAddBranchScreen"
+            component={AdminAddBranchScreen}
+            options={{
+                headerTitle: "Thêm chi nhánh",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -130,7 +190,8 @@ const WarehouseStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="AdminListImport"
             component={AdminListImportScreen}
@@ -140,7 +201,8 @@ const WarehouseStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="AdminListExport"
             component={AdminListExportScreen}
@@ -150,8 +212,8 @@ const WarehouseStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
-
+            }}
+        />
     </Stack.Navigator>
 );
 
