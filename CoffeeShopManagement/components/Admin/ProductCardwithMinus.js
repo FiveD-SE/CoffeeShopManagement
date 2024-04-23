@@ -1,21 +1,21 @@
 import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import { AntDesign } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { IconButton } from 'react-native-paper';
-import AddGoodModal from './Modal/AddGoodModal';
+import ExportGoodModal from './Modal/ExportGoodModal';
 import EditGoodInfoModal from './Modal/EditGoodInfoModal';
 
-const ProductCardwithPlus = ({
+const ProductCardwithMinus = ({
     title, quantity, price, imageSource, unit, OnPress
 }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [editmodalVisible, seteditModalVisible] = useState(false);
 
-    const showAddNewModal = () => {
+    const showExportGoodModal = () => {
         setModalVisible(true);
     };
 
-    const hideAddNewModal = () => {
+    const hideExportGoodModal = () => {
         setModalVisible(false);
     };
 
@@ -55,10 +55,10 @@ const ProductCardwithPlus = ({
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity onPress={showAddNewModal}>
-                        <AntDesign name="pluscircle" size={36} color="#FFA730" />
+                    <TouchableOpacity onPress={showExportGoodModal}>
+                        <FontAwesome name="minus-circle" size={40} color="#FFA730" />
                     </TouchableOpacity>
-                    <AddGoodModal visible={modalVisible} onClose={hideAddNewModal} />
+                    <ExportGoodModal visible={modalVisible} onClose={hideExportGoodModal} />
                 </View>
             </TouchableOpacity>
             <EditGoodInfoModal visible={editmodalVisible} onClose={hideEditGoodInfoModal} />
@@ -66,7 +66,7 @@ const ProductCardwithPlus = ({
     )
 }
 
-export default ProductCardwithPlus
+export default ProductCardwithMinus
 
 const styles = StyleSheet.create({
     container: {
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         marginVertical: "1%",
         paddingVertical: "2%",
-        paddingHorizontal:"3%",
+        paddingHorizontal: "3%",
         borderRadius: 15,
         borderWidth: 1,
         borderColor: "rgba(58,58,58,0.05)",

@@ -14,6 +14,9 @@ import AdminSalesScreen from "../screens/Admin/Sales/AdminSalesScreen";
 import AdminWareHouseScreen from "../screens/Admin/Warehouse/AdminWareHouseScreen";
 import AdminImportGoodsScreen from "../screens/Admin/Warehouse/AdminImportGoodsScreen";
 import AdminExportGoodsScreen from "../screens/Admin/Warehouse/AdminExportGoodsScreen";
+import AdminListImportScreen from "../screens/Admin/Warehouse/AdminListImportScreen";
+import AdminListExportScreen from "../screens/Admin/Warehouse/AdminListExportScreen";
+
 
 import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
@@ -96,6 +99,26 @@ const WarehouseStack = () => (
             component={AdminExportGoodsScreen}
             options={{
                 headerTitle: "Xuất kho",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="AdminListImport"
+            component={AdminListImportScreen}
+            options={{
+                headerTitle: "Danh sách nhập hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="AdminListExport"
+            component={AdminListExportScreen}
+            options={{
+                headerTitle: "Danh sách xuất hàng",
                 headerLeftContainerStyle: {
                     padding: "5%",
                 },
