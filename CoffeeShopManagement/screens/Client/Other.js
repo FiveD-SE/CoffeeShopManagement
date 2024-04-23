@@ -64,7 +64,7 @@ export default function UserOtherScreen() {
                             <View style={[styles.rowWrapper, styles.rowFirst]}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        navigation.navigate("EditProfile");
+                                        navigation.navigate("ProfileDetails");
                                     }}
                                     style={styles.row}
                                 >
