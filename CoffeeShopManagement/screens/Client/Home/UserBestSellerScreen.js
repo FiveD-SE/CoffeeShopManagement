@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import BestSellerItem from "../../../components/Client/BestSellerItem";
+import BestSellerItem from "../../../components/Client/Card/BestSellerItem";
 const UserBestSellerScreen = () => {
   const bestSellerItemList = [
     {

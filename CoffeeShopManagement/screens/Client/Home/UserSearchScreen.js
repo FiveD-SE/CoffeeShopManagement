@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../../../components/Client/SearchBar";
-import ProductCardVertical from "../../../components/Client/ProductCardVertical";
+import MustTryItemCard from "../../../components/Client/Card/MustTryItemCard";
 
 const UserSearchScreen = () => {
   const navigation = useNavigation();
@@ -46,7 +46,7 @@ const UserSearchScreen = () => {
   };
 
   const renderItemList = ({ item }) => (
-    <ProductCardVertical
+    <MustTryItemCard
       title={item.title}
       price={item.price.toLocaleString("vi-VN", {
         style: "currency",

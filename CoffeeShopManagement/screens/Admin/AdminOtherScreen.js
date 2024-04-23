@@ -69,7 +69,7 @@ export default function AdminOtherScreen() {
                             >
                                 <TouchableOpacity
                                     onPress={() => {
-                                        navigation.navigate("EditProfile");
+                                        navigation.navigate("ProfileDetail");
                                     }}
                                     style={styles.row}
                                 >
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#3A3A3A",
         textTransform: "uppercase",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Bold",
     },
     sectionBody: {
         borderRadius: 12,
@@ -442,14 +442,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
         color: "#292929",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Bold",
     },
     profileHandle: {
         marginTop: 2,
         fontSize: 16,
         fontWeight: "400",
         color: "#858585",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
     },
     /** Row */
     row: {
@@ -474,7 +474,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         letterSpacing: 0.24,
         color: "#000",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
     },
     rowSpacer: {
         flexGrow: 1,
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: "600",
         color: "#dc2626",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Bold",
     },
     /** button */
     button: {
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#fff",
         textAlign: "center",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Bold",
         fontStyle: "normal",
     },
 });
