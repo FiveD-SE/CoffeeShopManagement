@@ -11,7 +11,9 @@ import AdminRevenueScreen from "../screens/Admin/Home/AdminRevenueScreen";
 
 import AdminSalesScreen from "../screens/Admin/Sales/AdminSalesScreen";
 
-import AdminWareHouseScreen from "../screens/Admin/AdminWareHouseScreen";
+import AdminWareHouseScreen from "../screens/Admin/Warehouse/AdminWareHouseScreen";
+import AdminImportGoodsScreen from "../screens/Admin/Warehouse/AdminImportGoodsScreen";
+import AdminExportGoodsScreen from "../screens/Admin/Warehouse/AdminExportGoodsScreen";
 
 import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
@@ -79,6 +81,26 @@ const WarehouseStack = () => (
             name="AdminWareHouse"
             component={AdminWareHouseScreen}
             options={{ headerShown: false }} />
+        <Stack.Screen
+            name="AdminImportGoods"
+            component={AdminImportGoodsScreen}
+            options={{
+                headerTitle: "Nhập kho",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="AdminExportGoods"
+            component={AdminExportGoodsScreen}
+            options={{
+                headerTitle: "Xuất kho",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
     </Stack.Navigator>
 );
 

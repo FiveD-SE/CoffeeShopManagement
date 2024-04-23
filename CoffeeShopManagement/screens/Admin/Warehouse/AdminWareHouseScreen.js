@@ -1,13 +1,23 @@
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
 
-import SearchBar from "../../components/Client/SearchBar";
-import ColorButton from '../../components/Admin/ColorButton';
+import SearchBar from "../../../components/Client/SearchBar";
+import ColorButton from '../../../components/Admin/ColorButton';
 import { ScrollView } from 'react-native-gesture-handler';
-import ProductCard from '../../components/Admin/ProductCard';
+import ProductCard from '../../../components/Admin/ProductCard';
 
 const AdminWareHouseScreen = () => {
+    const navigation = useNavigation();
+
+    const goToImportGoodsScreen = () => {
+        navigation.navigate("AdminImportGoods");
+    };
+
+    const goToExportGoodsScreen = () => {
+        navigation.navigate("AdminExportGoods");
+    };
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.branchSelectContainer}>
@@ -30,43 +40,43 @@ const AdminWareHouseScreen = () => {
             </View>
 
             <View style={styles.buttonContainer}>
-                <ColorButton color="#FFA730" text="Nhập kho" textColor="#ffffff" />
-                <ColorButton color="#00A188" text="Xuất kho" textColor="#ffffff" />
+                <ColorButton color="#FFA730" text="Nhập kho" textColor="#ffffff" OnPress={goToImportGoodsScreen}/>
+                <ColorButton color="#00A188" text="Xuất kho" textColor="#ffffff" OnPress={goToExportGoodsScreen}/>
             </View>
 
             <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
                 <ProductCard
-                    imageSource={require("../../assets/vietnam.png")}
+
                     title="Tên hàng hóa"
                     unit="Bịch"
                     price="100.000"
                     quantity="100" />
                 <ProductCard
-                    imageSource={require("../../assets/vietnam.png")}
+                    
                     title="Tên hàng hóa1"
                     unit="Bịch"
                     price="100.000"
                     quantity="100" />
                 <ProductCard
-                    imageSource={require("../../assets/vietnam.png")}
+
                     title="Tên hàng hóa2"
                     unit="Bịch"
                     price="100.000"
                     quantity="100" />
                 <ProductCard
-                    imageSource={require("../../assets/vietnam.png")}
+
                     title="Tên hàng hóa3"
                     unit="Bịch"
                     price="100.000"
                     quantity="100" />
                 <ProductCard
-                    imageSource={require("../../assets/vietnam.png")}
+
                     title="Tên hàng hóa4"
                     unit="Bịch"
                     price="100.000"
                     quantity="100" />
                 <ProductCard
-                    imageSource={require("../../assets/vietnam.png")}
+
                     title="Tên hàng hóa5"
                     unit="Bịch"
                     price="100.000"
@@ -81,7 +91,7 @@ export default AdminWareHouseScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: "5%",
+        paddingHorizontal: "3%",
         paddingTop: "10%"
     },
 
