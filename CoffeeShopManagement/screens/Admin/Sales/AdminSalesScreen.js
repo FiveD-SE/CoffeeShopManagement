@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
+import AddItemCard from '../../../components/Admin/AddItemCard';
 
 const AdminSalesScreen = () => {
     return (
@@ -14,6 +15,7 @@ const AdminSalesScreen = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+            <AddItemCard title="Thêm sản phẩm mới" type="item" />
             <View style={styles.sectionContainer}>
                 <View style={styles.headerContainer}>
                     <Text style={styles.title}>Danh sách voucher</Text>
@@ -23,6 +25,7 @@ const AdminSalesScreen = () => {
                     </TouchableOpacity>
                 </View>
             </View>
+            <AddItemCard title="Thêm khuyến mãi" type="voucher" />
         </ScrollView>
     )
 }
@@ -32,7 +35,7 @@ export default AdminSalesScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: "5%",
+        paddingHorizontal: "3%",
         paddingTop: "9%"
     },
     sectionContainer: {
@@ -41,7 +44,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: "2%",
         borderRadius: 10,
         borderWidth: 1,
-        borderColor:"#D8D8D8"
+        borderColor: "#D8D8D8"
     },
     headerContainer: {
         flexDirection: "row",

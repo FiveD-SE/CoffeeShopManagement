@@ -3,10 +3,10 @@ import React from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 
 const ProductCard = ({
-  title, quantity, price, imageSource, unit
+  title, quantity, price, imageSource, unit, OnPress
 }) => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={OnPress}>
       <View style={styles.imageContainer}>
         <Image style={styles.image} source={imageSource} resizeMode="center" />
       </View>
@@ -31,7 +31,7 @@ const ProductCard = ({
           </View>
         </View>
       </View>
-      <MaterialIcons name="keyboard-arrow-right" size={36} color="rgba(58,58,58,0.5)" />
+      <MaterialIcons name="keyboard-arrow-right" size={30} color="rgba(58,58,58,0.5)" />
     </TouchableOpacity>
   )
 }
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFFFFF",
-    marginVertical: "2%",
+    marginVertical: "1%",
     padding: "2%",
     borderRadius: 15,
     borderWidth: 1,
@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
   },
   main: {
     flex: 1,
-    paddingHorizontal: "3%",
+    paddingRight: "5%",
+    paddingLeft: "3%"
   },
   title: {
     width: "100%",

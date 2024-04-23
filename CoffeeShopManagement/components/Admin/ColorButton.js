@@ -5,10 +5,11 @@ const ColorButton = (
     {
         color,
         text,
-        textColor
+        textColor,
+        OnPress
     }) => {
     return (
-        <TouchableOpacity style={[styles.colorButton, { backgroundColor: color }]}>
+        <TouchableOpacity style={[styles.colorButton, { backgroundColor: color }]}  onPress={OnPress}>
             <Text style={[styles.title, { color: textColor }]}>{text}</Text>
         </TouchableOpacity>
     )
@@ -20,8 +21,8 @@ const styles = StyleSheet.create({
     colorButton: {
         borderRadius: 15,
         margin: "2%",
-        paddingVertical: "4%",
-        paddingHorizontal: "8%",
+        paddingVertical: "5%",
+        paddingHorizontal: "10%",
         justifyContent: "center",
         alignItems: "center",
     },
