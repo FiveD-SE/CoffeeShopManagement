@@ -42,7 +42,6 @@ const BillingStack = () => (
             component={DetailBillingScreen}
             options={{ headerShown: false }}
         />
-        >>>>>>> main
     </Stack.Navigator>
 );
 
