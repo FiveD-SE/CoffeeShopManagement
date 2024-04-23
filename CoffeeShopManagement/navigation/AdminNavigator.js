@@ -9,7 +9,6 @@ import AdminHomeScreen from "../screens/Admin/Home/AdminHomeScreen";
 import AdminNotification from "../screens/Admin/Home/AdminNotification";
 import AdminRevenueScreen from "../screens/Admin/Home/AdminRevenueScreen";
 
-import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminBillingScreen from "../screens/Admin/AdminBillingScreen";
 import DetailBillingScreen from "../screens/Admin/DetailBillingScreen";
 import AdminSalesScreen from "../screens/Admin/Sales/AdminSalesScreen";
@@ -22,27 +21,31 @@ import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
 import ProfileDetail from "../screens/Admin/AdminProfileDetailScreen";
 
-const UserCouponsScreen = () => {
-    return <Text>User Coupons Screen</Text>;
-};
-
-
-
-};
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const BillingStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="Billing" component={AdminBillingScreen} options={{headerShown: false}}/>
-        <Stack.Screen name="AdminDetailBilling" component={DetailBillingScreen} options={{headerShown: false}}/>
+        <Stack.Screen
+            name="Billing"
+            component={AdminBillingScreen}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name="AdminDetailBilling"
+            component={DetailBillingScreen}
+            options={{ headerShown: false }}
+        />
     </Stack.Navigator>
-)
+);
 
 const OtherStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="Other" component={AdminOtherScreen} />
+        <Stack.Screen
+            name="Other"
+            component={AdminOtherScreen}
+            options={{ headerShown: false }}
+        />
         <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
         <Stack.Screen name="AdminEditProfile" component={AdminEditProfile} />
     </Stack.Navigator>
@@ -79,7 +82,8 @@ const SalesStack = () => (
         <Stack.Screen
             name="AdminSales"
             component={AdminSalesScreen}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
     </Stack.Navigator>
 );
 
@@ -88,7 +92,8 @@ const WarehouseStack = () => (
         <Stack.Screen
             name="AdminWareHouse"
             component={AdminWareHouseScreen}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
         <Stack.Screen
             name="AdminImportGoods"
             component={AdminImportGoodsScreen}
@@ -98,7 +103,8 @@ const WarehouseStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="AdminExportGoods"
             component={AdminExportGoodsScreen}
@@ -108,7 +114,8 @@ const WarehouseStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
     </Stack.Navigator>
 );
 
