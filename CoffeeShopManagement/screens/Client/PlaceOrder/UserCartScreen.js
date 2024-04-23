@@ -1,11 +1,15 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+
 import Section from "../../../components/Client/Section";
 import CartItemCard from "../../../components/Client/Card/CartItemCard";
 
 const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
 
 const UserCartScreen = () => {
+  const navigation = useNavigation();
+
   const [cartList, setCartList] = useState([
     {
       title: "Smoothie Xoài Nhiệt Đới Granola",
@@ -47,6 +51,10 @@ const UserCartScreen = () => {
       }}
     />
   );
+
+  const handleConfirmOrdering = () => {
+    navigation.navigate("UserOrderConfirmationScreen");
+  };
   return (
     <View style={styles.container}>
       <View style={styles.main}>
@@ -68,7 +76,7 @@ const UserCartScreen = () => {
             })}
           </Text>
         </View>
-        <Pressable style={styles.orderButton}>
+        <Pressable style={styles.orderButton} onPress={handleConfirmOrdering}>
           <Text style={styles.orderButtonText}>Mua hàng</Text>
         </Pressable>
       </View>
