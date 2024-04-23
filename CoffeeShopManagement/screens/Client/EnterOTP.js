@@ -9,7 +9,7 @@ import {
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import BrownButton from "../../components/Client/BrownButton";
+import BrownButton from "../../components/Client/Button/BrownButton";
 
 const EnterOTP = ({ route }) => {
   const [otp, setOTP] = useState(["", "", "", "", "", ""]);

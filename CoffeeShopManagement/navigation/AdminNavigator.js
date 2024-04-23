@@ -5,15 +5,18 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabBarIcon from "./components/TabBarIcon";
 
-import AdminHomeScreen from "../screens/Admin/AdminHomeScreen";
-import AdminNotification from "../screens/Admin/AdminNotification";
-import AdminRevenueScreen from "../screens/Admin/AdminRevenueScreen";
+import AdminHomeScreen from "../screens/Admin/Home/AdminHomeScreen";
+import AdminNotification from "../screens/Admin/Home/AdminNotification";
+import AdminRevenueScreen from "../screens/Admin/Home/AdminRevenueScreen";
+
+import AdminSalesScreen from "../screens/Admin/Sales/AdminSalesScreen";
+
+import AdminWareHouseScreen from "../screens/Admin/Warehouse/AdminWareHouseScreen";
+import AdminImportGoodsScreen from "../screens/Admin/Warehouse/AdminImportGoodsScreen";
+import AdminExportGoodsScreen from "../screens/Admin/Warehouse/AdminExportGoodsScreen";
 
 import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
-
-const AdminSalesScreen = () => {
-    return <Text>Admin Sales Screen</Text>;
-};
+import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
 
 const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
@@ -27,17 +30,13 @@ const AdminBillingScreen = () => {
     return <Text>Admin Billing Screen</Text>;
 };
 
-const EditProfile = () => {
-    return <Text>Edit Profile</Text>;
-};
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const OtherStack = () => (
     <Stack.Navigator>
         <Stack.Screen name="Other" component={AdminOtherScreen} />
-        <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="EditProfile" component={AdminEditProfile} />
     </Stack.Navigator>
 );
 
@@ -46,11 +45,13 @@ const HomeStack = () => (
         <Stack.Screen
             name="AdminHome"
             component={AdminHomeScreen}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
         <Stack.Screen
             name="Notification"
             component={AdminNotification}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
         <Stack.Screen
             name="Revenue"
             component={AdminRevenueScreen}
@@ -65,6 +66,44 @@ const HomeStack = () => (
     </Stack.Navigator>
 );
 
+const SalesStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen
+            name="AdminSales"
+            component={AdminSalesScreen}
+            options={{ headerShown: false }} />
+    </Stack.Navigator>
+);
+
+const WarehouseStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen
+            name="AdminWareHouse"
+            component={AdminWareHouseScreen}
+            options={{ headerShown: false }} />
+        <Stack.Screen
+            name="AdminImportGoods"
+            component={AdminImportGoodsScreen}
+            options={{
+                headerTitle: "Nhập kho",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="AdminExportGoods"
+            component={AdminExportGoodsScreen}
+            options={{
+                headerTitle: "Xuất kho",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+    </Stack.Navigator>
+);
+
 function AdminNavigator() {
     return (
         <NavigationContainer>
@@ -75,6 +114,7 @@ function AdminNavigator() {
                     tabBarStyle: styles.bottomTabBar,
                     tabBarShowLabel: true,
                     headerShown: false,
+                    tabBarHideOnKeyboard: true,
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
 
@@ -101,8 +141,8 @@ function AdminNavigator() {
                 })}
             >
                 <Tab.Screen name="Home" component={HomeStack} />
-                <Tab.Screen name="Sales" component={AdminSalesScreen} />
-                <Tab.Screen name="Warehouse" component={AdminWarehouseScreen} />
+                <Tab.Screen name="Sales" component={SalesStack} />
+                <Tab.Screen name="Warehouse" component={WarehouseStack} />
                 <Tab.Screen name="Billing" component={AdminBillingScreen} />
                 <Tab.Screen name="Others" component={OtherStack} />
             </Tab.Navigator>

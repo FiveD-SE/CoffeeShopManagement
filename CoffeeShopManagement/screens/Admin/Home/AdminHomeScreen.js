@@ -105,7 +105,7 @@ const AdminHomeScreen = () => {
                 </View>
 
                 <TouchableOpacity
-                    onPress={goToRevenueScreen} style={[styles.dataContainer, { margin: "3%" }]} >
+                    onPress={goToRevenueScreen} style={[styles.dataContainer, { marginTop: "3%", marginHorizontal: "3%" }]} >
                     <View style={styles.dataHeader}>
                         <Text style={styles.dataTitle}>
                             DOANH THU
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
         padding: "5%",
         borderWidth: 1,
         borderRadius: 30,
-        borderColor: "rgba(58,58,58,0.2)",
+        borderColor: "#CCCCCC",
     },
 
     body: {
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         borderWidth: 1,
         borderRadius: 10,
-        borderColor: "rgba(58,58,58,0.2)",
+        borderColor: "#CCCCCC",
     },
 
     dataNumber: {

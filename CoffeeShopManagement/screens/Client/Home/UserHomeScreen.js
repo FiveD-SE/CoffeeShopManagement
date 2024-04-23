@@ -3,15 +3,21 @@ import { useNavigation } from "@react-navigation/native";
 
 import { View, ScrollView, SafeAreaView, StyleSheet } from "react-native";
 
-import UserHomeScreenHeader from "../../../components/Client/UserHomeScreenHeader";
+import UserHomeScreenHeader from "../../../components/Client/Header/UserHomeScreenHeader";
 import Carousel from "../../../components/Client/Carousel";
 import SearchBar from "../../../components/Client/SearchBar";
-import CategoryItem from "../../../components/Client/CategoryItem";
+import CategoryItem from "../../../components/Client/Button/CategoryItem";
+import BestSellerItem from "../../../components/Client/Card/BestSellerItem";
 import Section from "../../../components/Client/Section";
-import BestSellerItem from "../../../components/Client/BestSellerItem";
-import RecentlyViewedItem from "../../../components/Client/RecentlyViewedItem";
+import RecentlyViewedItem from "../../../components/Client/Card/RecentlyViewedItem";
 
 const USER_IMAGE_SOURCE = require("../../../assets/google.png");
+
+const COFFEE_BEANS_ICONS = require("../../../assets/coffee-beans.png");
+
+const MILK_TEA_ICONS = require("../../../assets/milktea.png");
+
+const FRUITS_ICONS = require("../../../assets/fruits.png");
 
 const UserHomeScreen = () => {
   const navigation = useNavigation();
@@ -41,17 +47,17 @@ const UserHomeScreen = () => {
   const categoriesList = [
     {
       backgroundColor: "210, 124, 44",
-      icon: require("../../../assets/coffee-beans.png"),
+      icon: COFFEE_BEANS_ICONS,
       title: "Cà phê",
     },
     {
       backgroundColor: "255, 156, 178",
-      icon: require("../../../assets/milktea.png"),
+      icon: MILK_TEA_ICONS,
       title: "Trà sữa",
     },
     {
       backgroundColor: "78, 203, 113",
-      icon: require("../../../assets/fruits.png"),
+      icon: FRUITS_ICONS,
       title: "Trà ",
     },
     { backgroundColor: "203, 203, 212", title: "Khác" },
@@ -142,32 +148,38 @@ const UserHomeScreen = () => {
           <SearchBar onFocus={goToSearchScreen} />
         </View>
         <Carousel />
-        <Section title="Danh Mục Sản Phẩm">
-          <View style={styles.categoryContainer}>{renderCategoryItem()}</View>
-        </Section>
-        <Section
-          title="Sản Phẩm Bán Chạy"
-          showSubtitle={true}
-          subtitle="Xem thêm"
-          onPressSubtitle={goToBestSellerScreen}
-        >
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.itemList}
+        <View style={{ marginTop: "5%" }}>
+          <Section title="Danh Mục Sản Phẩm">
+            <View style={styles.categoryContainer}>{renderCategoryItem()}</View>
+          </Section>
+        </View>
+        <View style={{ marginTop: "5%" }}>
+          <Section
+            title="Sản Phẩm Bán Chạy"
+            showSubtitle={true}
+            subtitle="Xem thêm"
+            onPressSubtitle={goToBestSellerScreen}
           >
-            {renderBestSellerItemList()}
-          </ScrollView>
-        </Section>
-        <Section title="Đã Xem Gần Đây">
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.itemList}
-          >
-            {renderRecentlyViewedItemList()}
-          </ScrollView>
-        </Section>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.itemList}
+            >
+              {renderBestSellerItemList()}
+            </ScrollView>
+          </Section>
+        </View>
+        <View>
+          <Section title="Đã Xem Gần Đây">
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.itemList}
+            >
+              {renderRecentlyViewedItemList()}
+            </ScrollView>
+          </Section>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
