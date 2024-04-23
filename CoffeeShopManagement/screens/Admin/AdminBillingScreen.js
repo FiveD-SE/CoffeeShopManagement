@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 const renderItem = ({item, onPress}) => (
     <TouchableOpacity 
     onPress={() => onPress(item.id)}
-    style={{padding: '5%', borderTopWidth: 1, borderColor: '#cccccc', borderBottomWidth: 1}}>
+    style={{padding: '5%', borderTopWidth: 1, borderColor: '#cccccc', borderWidth: 1, marginBottom: '5%', backgroundColor: '#fff', borderRadius: 10}}>
         <View>
             <Text style={{fontSize: 16, fontWeight: '600'}}>{item.id}</Text>
         </View>
@@ -127,6 +127,7 @@ export default function AdminBillingScreen() {
             <FlatList 
             style={styles.listOrderContainer}
             data={DATA}
+            showsVerticalScrollIndicator={false}
             renderItem={({ item }) => renderItem({ item: item, onPress: handleDetailBilling })}
             />
         </View>
@@ -183,10 +184,6 @@ styles = StyleSheet.create({
         marginEnd: '5%'
     },
     listOrderContainer: {
-        backgroundColor: '#fff',
-        borderRadius: 5,
-        borderWidth: 1,
-        borderColor: '#cccccc',
         height: '60%'
     }
 })
