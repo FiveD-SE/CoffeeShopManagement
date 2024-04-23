@@ -3,11 +3,11 @@ import React from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome6";
 const IconButton = ({ iconName, onPress }) => {
-  return (
-    <Pressable style={styles.iconButton} onPress={onPress}>
-      <Icon name={iconName} size={16} />
-    </Pressable>
-  );
+    return (
+        <Pressable style={styles.iconButton} onPress={onPress}>
+            <Icon name={iconName} size={16} />
+        </Pressable>
+    );
 };
 
 export default IconButton;

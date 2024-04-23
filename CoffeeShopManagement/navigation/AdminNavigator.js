@@ -17,6 +17,7 @@ import AdminExportGoodsScreen from "../screens/Admin/Warehouse/AdminExportGoodsS
 
 import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
+import ProfileDetail from "../screens/Admin/AdminProfileDetailScreen";
 
 const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
@@ -36,7 +37,8 @@ const Stack = createStackNavigator();
 const OtherStack = () => (
     <Stack.Navigator>
         <Stack.Screen name="Other" component={AdminOtherScreen} />
-        <Stack.Screen name="EditProfile" component={AdminEditProfile} />
+        <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
+        <Stack.Screen name="AdminEditProfile" component={AdminEditProfile} />
     </Stack.Navigator>
 );
 

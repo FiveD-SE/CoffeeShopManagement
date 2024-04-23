@@ -13,7 +13,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SwitchToggle from "toggle-switch-react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function AdminEditProfile() {
+export default function AdminProfileDetail() {
     const navigation = useNavigation();
     const [isToggled, setIsToggled] = useState(false);
 
@@ -69,7 +69,7 @@ export default function AdminEditProfile() {
                             </Text>
                             <TouchableOpacity
                                 onPress={() => {
-                                    navigation.navigate("ProfileDetail");
+                                    navigation.navigate("AdminEditProfile");
                                 }}
                             >
                                 <Text
@@ -83,7 +83,7 @@ export default function AdminEditProfile() {
                                         marginBottom: 15,
                                     }}
                                 >
-                                    Lưu
+                                    Sửa
                                 </Text>
                             </TouchableOpacity>
                         </View>
