@@ -9,6 +9,9 @@ import AdminHomeScreen from "../screens/Admin/Home/AdminHomeScreen";
 import AdminNotification from "../screens/Admin/Home/AdminNotification";
 import AdminRevenueScreen from "../screens/Admin/Home/AdminRevenueScreen";
 
+import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
+import AdminBillingScreen from "../screens/Admin/AdminBillingScreen";
+import DetailBillingScreen from "../screens/Admin/DetailBillingScreen";
 import AdminSalesScreen from "../screens/Admin/Sales/AdminSalesScreen";
 
 import AdminWareHouseScreen from "../screens/Admin/Warehouse/AdminWareHouseScreen";
@@ -23,16 +26,19 @@ const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
 };
 
-const AdminWarehouseScreen = () => {
-    return <Text>Admin Warehouse Screen</Text>;
-};
 
-const AdminBillingScreen = () => {
-    return <Text>Admin Billing Screen</Text>;
+
 };
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+
+const BillingStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen name="Billing" component={AdminBillingScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="AdminDetailBilling" component={DetailBillingScreen} options={{headerShown: false}}/>
+    </Stack.Navigator>
+)
 
 const OtherStack = () => (
     <Stack.Navigator>
@@ -144,8 +150,8 @@ function AdminNavigator() {
             >
                 <Tab.Screen name="Home" component={HomeStack} />
                 <Tab.Screen name="Sales" component={SalesStack} />
+                <Tab.Screen name="Billing" component={BillingStack} />
                 <Tab.Screen name="Warehouse" component={WarehouseStack} />
-                <Tab.Screen name="Billing" component={AdminBillingScreen} />
                 <Tab.Screen name="Others" component={OtherStack} />
             </Tab.Navigator>
         </NavigationContainer>
