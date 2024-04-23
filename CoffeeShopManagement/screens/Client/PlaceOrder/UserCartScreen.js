@@ -1,11 +1,15 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+
 import Section from "../../../components/Client/Section";
 import CartItemCard from "../../../components/Client/Card/CartItemCard";
 
 const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
 
 const UserCartScreen = () => {
+  const navigation = useNavigation();
+
   const [cartList, setCartList] = useState([
     {
       title: "Smoothie Xoài Nhiệt Đới Granola",
@@ -47,14 +51,20 @@ const UserCartScreen = () => {
       }}
     />
   );
+
+  const handleConfirmOrdering = () => {
+    navigation.navigate("UserOrderConfirmationScreen");
+  };
   return (
     <View style={styles.container}>
       <View style={styles.main}>
-        <Section title="Sản phẩm đã thêm">
-          <View style={styles.cartListContainer}>
-            <FlatList data={cartList} renderItem={renderCartList} />
-          </View>
-        </Section>
+        <View style={{ marginTop: "5%" }}>
+          <Section title="Sản phẩm đã thêm">
+            <View style={styles.cartListContainer}>
+              <FlatList data={cartList} renderItem={renderCartList} />
+            </View>
+          </Section>
+        </View>
       </View>
       <View style={styles.footer}>
         <View style={styles.totalPriceContainer}>
@@ -66,7 +76,7 @@ const UserCartScreen = () => {
             })}
           </Text>
         </View>
-        <Pressable style={styles.orderButton}>
+        <Pressable style={styles.orderButton} onPress={handleConfirmOrdering}>
           <Text style={styles.orderButtonText}>Mua hàng</Text>
         </Pressable>
       </View>

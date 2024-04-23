@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import Section from "./Section";
-import ToppingItem from "./ToppingItem";
+import ToppingItem1 from "./ToppingItem1";
 import ModalHeader from "./Header/ModalHeader";
 
 const ToppingModal = ({ visible, onClose }) => {
@@ -27,7 +27,7 @@ const ToppingModal = ({ visible, onClose }) => {
 
   const renderBubbleToppingItem = () => {
     return bubbleToppingList.map((item, index) => (
-      <ToppingItem
+      <ToppingItem1
         key={index}
         title={item.title}
         price={item.price.toLocaleString("vi-VN", {
@@ -39,7 +39,7 @@ const ToppingModal = ({ visible, onClose }) => {
   };
   const renderPuddingToppingItem = () => {
     return puddingToppingList.map((item, index) => (
-      <ToppingItem
+      <ToppingItem1
         key={index}
         title={item.title}
         price={item.price.toLocaleString("vi-VN", {

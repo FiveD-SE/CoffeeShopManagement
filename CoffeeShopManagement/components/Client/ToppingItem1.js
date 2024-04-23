@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 
 import Checkbox from "expo-checkbox";
-const ToppingItem = ({ title, price }) => {
+const ToppingItem1 = ({ title, price }) => {
   const [isChecked, setChecked] = useState(false);
   const handleRememberMe = () => {
     setChecked(!isChecked);
@@ -23,7 +23,7 @@ const ToppingItem = ({ title, price }) => {
   );
 };
 
-export default ToppingItem;
+export default ToppingItem1;
 
 const styles = StyleSheet.create({
   container: {
