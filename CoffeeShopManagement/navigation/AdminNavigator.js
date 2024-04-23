@@ -9,6 +9,8 @@ import AdminHomeScreen from "../screens/Admin/Home/AdminHomeScreen";
 import AdminNotification from "../screens/Admin/Home/AdminNotification";
 import AdminRevenueScreen from "../screens/Admin/Home/AdminRevenueScreen";
 
+import AdminBillingScreen from "../screens/Admin/AdminBillingScreen";
+import DetailBillingScreen from "../screens/Admin/DetailBillingScreen";
 import AdminSalesScreen from "../screens/Admin/Sales/AdminSalesScreen";
 
 import AdminWareHouseScreen from "../screens/Admin/Warehouse/AdminWareHouseScreen";
@@ -20,26 +22,34 @@ import AdminListExportScreen from "../screens/Admin/Warehouse/AdminListExportScr
 
 import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
+import ProfileDetail from "../screens/Admin/AdminProfileDetailScreen";
+
+
+import StaffHomeScreen from "../screens/Admin/StaffHomeScreen";
 
 const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
 };
 
-const AdminWarehouseScreen = () => {
-    return <Text>Admin Warehouse Screen</Text>;
-};
-
-const AdminBillingScreen = () => {
-    return <Text>Admin Billing Screen</Text>;
-};
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+const BillingStack = () => (
+    <Stack.Navigator>
+        <Stack.Screen name="AdminBillingHome" component={AdminBillingScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="AdminDetailBilling" component={DetailBillingScreen} options={{headerShown: false}}/>
+    </Stack.Navigator>
+);
+
 const OtherStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="Other" component={AdminOtherScreen} />
-        <Stack.Screen name="EditProfile" component={AdminEditProfile} />
+        <Stack.Screen
+            name="Other"
+            component={AdminOtherScreen}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
+        <Stack.Screen name="AdminEditProfile" component={AdminEditProfile} />
     </Stack.Navigator>
 );
 
@@ -66,6 +76,12 @@ const HomeStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
+        <Stack.Screen
+            name = "StaffHome"
+            component={StaffHomeScreen}
+            options={{
+                headerShown: false
+            }}/>
     </Stack.Navigator>
 );
 
@@ -74,7 +90,8 @@ const SalesStack = () => (
         <Stack.Screen
             name="AdminSales"
             component={AdminSalesScreen}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
     </Stack.Navigator>
 );
 
@@ -83,7 +100,8 @@ const WarehouseStack = () => (
         <Stack.Screen
             name="AdminWareHouse"
             component={AdminWareHouseScreen}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
         <Stack.Screen
             name="AdminImportGoods"
             component={AdminImportGoodsScreen}
@@ -93,7 +111,8 @@ const WarehouseStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="AdminExportGoods"
             component={AdminExportGoodsScreen}
@@ -124,6 +143,7 @@ const WarehouseStack = () => (
                 },
                 headerLeft: () => <HeaderBackButton />,
             }} />
+
     </Stack.Navigator>
 );
 
@@ -165,8 +185,8 @@ function AdminNavigator() {
             >
                 <Tab.Screen name="Home" component={HomeStack} />
                 <Tab.Screen name="Sales" component={SalesStack} />
+                <Tab.Screen name="Billing" component={BillingStack} />
                 <Tab.Screen name="Warehouse" component={WarehouseStack} />
-                <Tab.Screen name="Billing" component={AdminBillingScreen} />
                 <Tab.Screen name="Others" component={OtherStack} />
             </Tab.Navigator>
         </NavigationContainer>
