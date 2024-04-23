@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     flexDirection: "row",
     padding: "5%",
-    marginTop: "5%",
     alignItems: "center",
   },
   image: {},

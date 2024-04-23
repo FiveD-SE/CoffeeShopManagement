@@ -8,12 +8,14 @@ import {
   ScrollView,
 } from "react-native";
 import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import { useNavigation } from "@react-navigation/native";
 
 import Icon from "react-native-vector-icons/FontAwesome6";
 import Section from "../Section";
 import SizeItem from "../../../components/Client/Button/SizeItem";
 import OptionSection from "../List/OptionSection";
 import ToppingButton from "../../../components/Client/Button/ToppingButton";
+import ToppingItemList from "../List/ToppingItemList";
 
 const ItemDetailBottomSheet = ({
   product,
@@ -21,6 +23,7 @@ const ItemDetailBottomSheet = ({
   snapPoints,
   setIsOpen,
 }) => {
+  const navigation = useNavigation();
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(null);
   const optionList = [{ title: "Đường" }, { title: "Sữa" }, { title: "Đá" }];
   const sugarOptionList = ["Bình thường", "Ít đường", "Không đường"];
@@ -96,6 +99,10 @@ const ItemDetailBottomSheet = ({
     ));
   };
 
+  const goToCartScreen = () => {
+    navigation.navigate("UserCartScreen");
+  };
+
   return (
     <BottomSheetModal
       ref={bottomSheetRef}
@@ -144,7 +151,16 @@ const ItemDetailBottomSheet = ({
                 </View>
               </Section>
             </View>
-            <ToppingButton />
+            <View
+              style={{
+                marginTop: "5%",
+              }}
+            >
+              <ToppingButton />
+            </View>
+            <View>
+              <ToppingItemList />
+            </View>
           </View>
         </View>
         <View style={styles.footer}>
@@ -153,7 +169,7 @@ const ItemDetailBottomSheet = ({
             <Icon name="ellipsis-vertical" color="#FFFFFF" />
             <Text style={styles.addToCartButtonText}>59.000đ</Text>
           </Pressable>
-          <Pressable style={styles.viewCartButton}>
+          <Pressable style={styles.viewCartButton} onPress={goToCartScreen}>
             <Icon style={styles.viewCartButtonIcon} name="cart-shopping" />
           </Pressable>
         </View>
