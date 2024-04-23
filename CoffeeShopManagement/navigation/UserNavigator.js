@@ -22,10 +22,12 @@ import UserCartScreen from "../screens/Client/PlaceOrder/UserCartScreen";
 import OrderHistory from "../screens/Client/OrderHistory";
 import Setting from "../screens/Client/Setting";
 import SelectAdress from "../screens/Client/SelectAddress";
+import SelectBranch from "../screens/Client/SelectBranch";
 import FeedbackAndHelp from "../screens/Client/FeedbackAndHelp";
 import ChangePassword from "../screens/Client/ChangePassword";
 import SignInScreen from "../screens/Client/SignInScreen";
 import ProfileDetails from "../screens/Client/ProfileDetails";
+import UserOrderConfirmationScreen from "../screens/Client/PlaceOrder/UserOrderConfirmationScreen";
 
 const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
@@ -127,6 +129,39 @@ const OrderStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
+        <Stack.Screen
+            name="UserOrderConfirmationScreen"
+            component={UserOrderConfirmationScreen}
+            options={{
+                headerTitle: "Xác nhận đơn hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="SelectAddressScreen"
+            component={SelectAdress}
+            options={{
+                headerTitle: "",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="SelectBranchScreen"
+            component={SelectBranch}
+            options={{
+                headerTitle: "",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -198,18 +233,6 @@ const OtherStack = () => (
             component={SignInScreen}
             options={{
                 headerTitle: "Phản hồi và hỗ trợ",
-                headerLeftContainerStyle: {
-                    padding: "5%",
-                },
-                headerShown: false,
-                // headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="ProfileDetails"
-            component={ProfileDetails}
-            options={{
-                headerTitle: "Chi tiết tài khoản",
                 headerLeftContainerStyle: {
                     padding: "5%",
                 },

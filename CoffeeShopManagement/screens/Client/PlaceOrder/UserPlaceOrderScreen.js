@@ -27,7 +27,7 @@ const UserPlaceOrderScreen = () => {
   const [isOpen, setIsOpen] = useState(false);
   const categorySnapPoints = useMemo(() => ["30%"], []);
 
-  const itemDetailSnapPoints = useMemo(() => ["83%"], []);
+  const itemDetailSnapPoints = useMemo(() => ["85%"], []);
   const categoryBottomSheetRef = useRef(null);
   const itemDetailBottomSheetRef = useRef(null);
 
@@ -148,25 +148,29 @@ const UserPlaceOrderScreen = () => {
           <View>
             <CategoryItemList />
           </View>
-          <Section
-            title="Món Mới Phải Thử"
-            showSubtitle={true}
-            subtitle="Xem thêm"
-            onPressSubtitle={goToFavoriteItemScreen}
-          >
-            <ScrollView contentContainerStyle={styles.mustTryList}>
-              {renderMustTryList()}
-            </ScrollView>
-          </Section>
-          <Section title="Món Đã Đặt Gần Đây">
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.recentItemList}
+          <View style={{ marginTop: "5%" }}>
+            <Section
+              title="Món Mới Phải Thử"
+              showSubtitle={true}
+              subtitle="Xem thêm"
+              onPressSubtitle={goToFavoriteItemScreen}
             >
-              {renderRecentItemList()}
-            </ScrollView>
-          </Section>
+              <ScrollView contentContainerStyle={styles.mustTryList}>
+                {renderMustTryList()}
+              </ScrollView>
+            </Section>
+          </View>
+          <View style={{ marginTop: "5%" }}>
+            <Section title="Món Đã Đặt Gần Đây">
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.recentItemList}
+              >
+                {renderRecentItemList()}
+              </ScrollView>
+            </Section>
+          </View>
           <CategoryBottomSheet
             bottomSheetRef={categoryBottomSheetRef}
             snapPoints={categorySnapPoints}
