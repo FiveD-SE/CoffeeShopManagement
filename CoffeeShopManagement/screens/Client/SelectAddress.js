@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -30,30 +30,28 @@ const SelectAddress = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <View style={styles.section}>
-            <Text style={styles.sectionHeading}>Đã đặt gần đây</Text>
-            <FlatList
-            data={recentAddresses}
-            renderItem={renderRecentAddressItem}
-            keyExtractor={item => item.id}
-            />
-        </View>
+      <View style={styles.section}>
+          <Text style={styles.sectionHeading}>Đã đặt gần đây</Text>
+          <FlatList
+          data={recentAddresses}
+          renderItem={renderRecentAddressItem}
+          keyExtractor={item => item.id}
+          />
+      </View>
 
-        <View style={styles.section}>
-            <Text style={styles.sectionHeading}>Địa chỉ đã lưu</Text>
-            <FlatList
-            data={savedAddresses}
-            renderItem={renderSavedAddressItem}
-            keyExtractor={item => item.id}
-            />
-        </View>
+      <View style={styles.section}>
+          <Text style={styles.sectionHeading}>Địa chỉ đã lưu</Text>
+          <FlatList
+          data={savedAddresses}
+          renderItem={renderSavedAddressItem}
+          keyExtractor={item => item.id}
+          />
+      </View>
 
-        <TouchableOpacity style={styles.addButton}>
-            <FontAwesome5 name='plus' size={18} style={styles.icon}/>
-            <Text style={styles.addText}>Thêm địa chỉ mới</Text>
-        </TouchableOpacity>
-      </ScrollView>
+      <TouchableOpacity style={styles.addButton}>
+          <FontAwesome5 name='plus' size={18} style={styles.icon}/>
+          <Text style={styles.addText}>Thêm địa chỉ mới</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -61,10 +59,7 @@ const SelectAddress = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  scrollViewContent: {
-    paddingHorizontal: 20,
-    paddingVertical: 50,
+    paddingHorizontal: 20
   },
   section: {
     marginBottom: 20,
