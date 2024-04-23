@@ -28,7 +28,7 @@ export default function UserOtherScreen() {
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F7FA" }}>
             <View style={styles.container}>
                 <ScrollView contentContainerStyle={styles.content}>
-                    <View style={[styles.section, { paddingTop: 60 }]}>
+                    <View style={ styles.section }>
                         <View style={styles.sectionBody}>
                             <TouchableOpacity
                                 onPress={() => {
