@@ -11,7 +11,7 @@ const VoucherCard = ({ title, point, imageSource }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image style={styles.image} source={imageSource} resizeMode="center" />
+        <Image style={styles.image} source={imageSource} resizeMode="contain" />
       </View>
       <View style={styles.main}>
         <Text style={styles.title}>{title}</Text>

@@ -13,24 +13,32 @@ import UserFavoriteItemScreen from "../screens/Client/Home/UserFavoriteItemScree
 
 import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScreen";
 
-import EditProfile from "../screens/Client/EditProfile";
-import Other from "../screens/Client/Other";
+import EditProfile from "../screens/Client/Other/UserEditProfileScreen";
+import ProfileDetails from "../screens/Client/Other/UserProfileDetailScreen";
+import EditAddress from "../screens/Client/Other/UserEditAddressScreen";
+import AddNewAddress from "../screens/Client/Other/UserAddNewAddressScreen";
+import Other from "../screens/Client/Other/UserOtherScreen";
 
 import TabBarIcon from "./components/TabBarIcon";
 import HeaderBackButton from "./components/HeaderBackButton";
 import UserCartScreen from "../screens/Client/PlaceOrder/UserCartScreen";
-import OrderHistory from "../screens/Client/OrderHistory";
-import Setting from "../screens/Client/Setting";
-import SelectAdress from "../screens/Client/SelectAddress";
-import SelectBranch from "../screens/Client/SelectBranch";
-import FeedbackAndHelp from "../screens/Client/FeedbackAndHelp";
+
+import OrderHistory from "../screens/Client/Other/UserOrderHistoryScreen";
+import Setting from "../screens/Client/Other/UserSettingScreen";
+import SelectAdress from "../screens/Client/Other/UserSelectAddressScreen";
+import SelectBranch from "../screens/Client/Other/UserSelectBranchScreen";
+import FeedbackAndHelp from "../screens/Client/Other/UserFeedbackAndHelpScreen";
 import ChangePassword from "../screens/Client/ChangePassword";
 import SignInScreen from "../screens/Client/SignInScreen";
 import UserOrderConfirmationScreen from "../screens/Client/PlaceOrder/UserOrderConfirmationScreen";
 
-const UserCouponsScreen = () => {
-	return <Text>User Coupons Screen</Text>;
-};
+import Promotions from "../screens/Client/Coupons/UserCouponScreen";
+import MembershipTier from "../screens/Client/Coupons/UserMembershipTierScreen";
+import History from "../screens/Client/Coupons/UserExchangeHistoryScreen";
+import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
+import YourVoucher from "../screens/Client/Coupons/UserVoucherScreen";
+
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -171,7 +179,28 @@ const OtherStack = () => (
 			component={Other}
 			options={{ headerShown: false }}
 		/>
-		<Stack.Screen name="EditProfile" component={EditProfile} />
+		<Stack.Screen
+			name="EditProfile"
+			component={EditProfile}
+			options={{
+				headerTitle: "Hồ sơ",
+				headerLeftContainerStyle: {
+					padding: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="ProfileDetails"
+			component={ProfileDetails}
+			options={{
+				headerTitle: "Hồ sơ",
+				headerLeftContainerStyle: {
+					padding: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
 		<Stack.Screen
 			name="Settings"
 			component={Setting}
@@ -239,8 +268,98 @@ const OtherStack = () => (
 				// headerLeft: () => <HeaderBackButton />,
 			}}
 		/>
+		<Stack.Screen
+			name="EditAddress"
+			component={EditAddress}
+			options={{
+				headerTitle: "Sửa địa chỉ",
+				headerLeftContainerStyle: {
+					padding: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="AddNewAddress"
+			component={AddNewAddress}
+			options={{
+				headerTitle: "Thêm địa chỉ mới",
+				headerLeftContainerStyle: {
+					padding: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		
 	</Stack.Navigator>
 );
+
+const CouponsStack = () => (
+	<Stack.Navigator>
+		<Stack.Screen
+			name="Promotions"
+			component={Promotions}
+			options={{ headerShown: false }}
+		/>
+		<Stack.Screen
+			name="Rank"
+			component={MembershipTier}
+			options={{
+				headerTitle: "Hạng thành viên",
+				headerLeftContainerStyle: {
+					padding: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />
+			}}
+		/>
+
+		<Stack.Screen
+			name="YourVoucher"
+			component={YourVoucher}
+			options={{
+				headerTitle: "Voucher của bạn",
+				headerLeftContainerStyle: {
+					padding: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />
+			}}
+		/>
+		<Stack.Screen
+			name="History"
+			component={History}
+			options={{
+				headerTitle: "Lịch sử đổi thưởng",
+				headerLeftContainerStyle: {
+					padding: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />
+			}}
+		/>
+		<Stack.Screen
+			name="Benefit"
+			component={Benefit}
+			options={{
+				headerTitle: "Quyền lợi của bạn",
+				headerLeftContainerStyle: {
+					padding: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />
+			}}
+		/>
+		<Stack.Screen
+			name="Exchange"
+			component={UserExchangeVoucherScreen}
+			options={{
+				headerTitle: "Đổi thưởng",
+				headerLeftContainerStyle: {
+					padding: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>		
+	</Stack.Navigator>
+);
+
 
 function UserNavigator() {
 	return (
@@ -272,7 +391,7 @@ function UserNavigator() {
 			>
 				<Tab.Screen name="Home" component={HomeStack} />
 				<Tab.Screen name="Orders" component={OrderStack} />
-				<Tab.Screen name="Coupons" component={UserCouponsScreen} />
+				<Tab.Screen name="Coupons" component={CouponsStack} />
 				<Tab.Screen name="Others" component={OtherStack} />
 			</Tab.Navigator>
 		</NavigationContainer>

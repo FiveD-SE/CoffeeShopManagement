@@ -1,30 +1,60 @@
-import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity, Pressable, SafeAreaView, Image } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Pressable, SafeAreaView, Image } from 'react-native'
 import React, { useState } from 'react'
-
-const VoucherItem = ({ item }) => (
-  <Pressable style={styles.item}>
-      <Image source={item.image} style={styles.itemImage} />
-      <View style={styles.itemDetails}>
-          <Text style={styles.itemName}>{item.name}</Text>
-          <Text style={styles.itemExpiry}>Hết hạn: {item.expiryDate}</Text>
-      </View>
-  </Pressable>
-);
+import { useNavigation } from "@react-navigation/native";
+import VoucherCard from "../../../components/Client/Card/VoucherCard";
 
 export default function Promotions() {
-  const coupon = require('../../assets/coupon.png');
-  const crown = require('../../assets/crown.png');
-  const bean = require('../../assets/bean.png');
-  const gift = require('../../assets/gift.png');
-  const rights = require('../../assets/rights.png');
+  const navigation = useNavigation();
+
+  const coupon = require('../../../assets/coupon.png');
+  const crown = require('../../../assets/crown.png');
+  const bean = require('../../../assets/bean.png');
+  const gift = require('../../../assets/gift.png');
+  const rights = require('../../../assets/rights.png');
 
   const [beanTotal, setbeanTotal] = useState('0')
 
-  const vouchers = [
-    { id: 1, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Giao hàng', image: require('../../assets/voucher.jpeg') },
-    { id: 2, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-04-25', option: 'Tại chỗ', image: require('../../assets/voucher.jpeg') },
-    { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Mang đi', image: require('../../assets/voucher.jpeg') },
+  const yourVoucherItemList = [
+    { id: 1, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Giao hàng', image: require('../../../assets/voucher.jpeg') },
+    { id: 2, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-04-25', option: 'Tại chỗ', image: require('../../../assets/voucher.jpeg') },
+    { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Mang đi', image: require('../../../assets/voucher.jpeg') },
   ];
+
+  const voucherItemList = [
+    {
+      title: "Mua 1 tặng 1 + Freeship",
+      point: 300,
+      imageSource: require("../../../assets/voucher.jpeg"),
+    },
+    {
+      title: "Mua 1 tặng 1 + Freeship",
+      point: 300,
+      imageSource: require("../../../assets/voucher.jpeg"),
+    },
+    {
+      title: "Mua 1 tặng 1 + Freeship",
+      point: 300,
+      imageSource: require("../../../assets/voucher.jpeg"),
+    },
+  ];
+
+  const renderYourVoucherItemList = (item) => (
+    <Pressable style={styles.item} key={item.id}>
+        <Image source={item.image} style={styles.itemImage} />
+        <View style={styles.itemDetails}>
+          <Text style={styles.itemName}>{item.name}</Text>
+          <Text style={styles.itemExpiry}>Hết hạn: {item.expiryDate}</Text>
+        </View>
+    </Pressable>
+  );
+  
+  const renderVoucherItem = ({ item }) => (
+    <VoucherCard
+      title={item.title}
+      point={item.point}
+      imageSource={item.imageSource}
+    />
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -36,7 +66,7 @@ export default function Promotions() {
               <Text style={[styles.textColumn, { fontSize: 30, fontWeight: '700' }]}>Mới</Text>
               <Text style={[styles.textColumn, { fontSize: 15, fontWeight: '600' }]}>{beanTotal} bean</Text>
             </View>
-            <TouchableOpacity style={styles.voucher}>
+            <Pressable style={styles.voucher} onPress={() => navigation.navigate('YourVoucher')}>
               <Image style={{ height: 20, width: 20, marginRight: 6}} source={coupon} resizeMode='contain' />
               <Text style={{
                 fontFamily: 'Lato-Regular',
@@ -46,7 +76,7 @@ export default function Promotions() {
                 fontWeight: '600',
                 textAlign: 'center'
               }}>Voucher của tôi</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
 
           <Image style={styles.barcode} />
@@ -56,51 +86,53 @@ export default function Promotions() {
 
         <View style={styles.body}>
           <View style={styles.row}>
-            <TouchableOpacity style={styles.component}>
+            <Pressable style={styles.component} onPress={() => navigation.navigate('Rank')}>
               <Image style={{ height: 20, width: 20 }} source={crown} resizeMode='contain' />
               <Text style={styles.componentText}>Hạng thành viên</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.component}>
+            </Pressable>
+            <Pressable style={styles.component} onPress={() => navigation.navigate('Exchange')}>
               <Image style={{ height: 20, width: 20 }} source={gift} resizeMode='contain' />
               <Text style={styles.componentText}>Đổi Bean</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <View style={[styles.row, {marginTop: 20}]}>
-            <TouchableOpacity style={styles.component}>
+            <Pressable style={styles.component} onPress={() => navigation.navigate('History')}>
               <Image style={{ height: 20, width: 20 }} source={bean} resizeMode='contain' />
               <Text style={styles.componentText}>Lịch sử BEAN</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.component}>
+            </Pressable>
+            <Pressable style={styles.component} onPress={() => navigation.navigate('Benefit')}>
               <Image style={{ height: 20, width: 20 }} source={rights} resizeMode='contain' />
               <Text style={styles.componentText}>Quyền lợi của bạn</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 
         <View style={styles.section}>
           <View style={styles.rowLabel}>
-              <Text style={styles.rowLabelText}>Voucher của bạn</Text>
-              <TouchableOpacity style={styles.viewMore}>
-                <Text style={styles.viewMoreText}>Xem tất cả</Text>
-              </TouchableOpacity>
+            <Text style={styles.rowLabelText}>Voucher của bạn</Text>
+            <Pressable style={styles.viewMore} onPress={() => navigation.navigate('YourVoucher')}>
+              <Text style={styles.viewMoreText}>Xem tất cả</Text>
+            </Pressable>
           </View>
 
-          <FlatList
-              data={vouchers}
-              renderItem={({ item }) => <VoucherItem item={item} />}
-              keyExtractor={(item) => item.id.toString()}
-          />
+          {yourVoucherItemList.map((item) => 
+            renderYourVoucherItemList(item)
+          )}
+
         </View>
 
         <View style={styles.section}>
           <View style={styles.rowLabel}>
               <Text style={styles.rowLabelText}>Đổi voucher</Text>
-              <TouchableOpacity style={styles.viewMore}>
+              <Pressable style={styles.viewMore} onPress={() => navigation.navigate('Exchange')}>
                 <Text style={styles.viewMoreText}>Xem tất cả</Text>
-              </TouchableOpacity>
+              </Pressable>
           </View>
 
-          {/* Product component */}
+          {voucherItemList.map((item) => 
+            renderVoucherItem({ item })
+          )}
+
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -173,7 +205,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     backgroundColor: '#FFFFFF',
-    paddingVertical: 10,
+    paddingVertical: 15,
     paddingHorizontal: 20,
     gap: 10,
     borderRadius: 5
@@ -189,8 +221,8 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
    section: {
-    paddingVertical: 10,
-    paddingHorizontal: 10
+    paddingVertical: 15,
+    paddingHorizontal: 10,
   },
   rowLabel: {
     flexDirection: 'row',

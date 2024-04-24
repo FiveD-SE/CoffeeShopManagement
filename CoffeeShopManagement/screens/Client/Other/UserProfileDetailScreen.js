@@ -5,30 +5,32 @@ import {
     View,
     ScrollView,
     Text,
-    TouchableOpacity,
+    Pressable,
     Image,
-    TextInput,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SwitchToggle from "toggle-switch-react-native";
+import { useNavigation } from "@react-navigation/native";
 
-export default function EditProfile() {
+export default function ProfileDetails() {
+    const navigation = useNavigation();
+
     const [isToggled, setIsToggled] = useState(false);
 
     const handleToggle = () => {
         setIsToggled(!isToggled);
     };
 
-    const [firstName, onChangeFirstName] = React.useState("");
-    const [lastName, onChangeLastName] = React.useState("");
-    const [gender, onChangeGender] = React.useState("");
-    const [birthday, onChangeBirthday] = React.useState("");
-    const [phone, onChangePhone] = React.useState("346129897");
-    const [email, onChangeEmail] = React.useState("22521337@gm.uit.edu.vn");
-    const [day, getDay] = React.useState("01/01/2024");
+    const [firstName] = useState("Nguyễn Quốc");
+    const [lastName] = useState("Thắng");
+    const [gender] = useState("Nam");
+    const [birthday] = useState("13/03/2004");
+    const [phone] = useState("346129897");
+    const [email] = useState("22521337@gm.uit.edu.vn");
 
-    const avatar = "";
-    const flag = require("../../assets/vietnam.png");
+    const avatar = require("../../../assets/vietnam.png");
+    const flag = require("../../../assets/vietnam.png");
+
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F7FA" }}>
             <View style={styles.container}>
@@ -37,7 +39,7 @@ export default function EditProfile() {
                         style={[
                             styles.section,
                             {
-                                paddingTop: 60,
+                                paddingTop: 20,
                                 alignItems: "center",
                                 justifyContent: "center",
                                 paddingBottom: 50,
@@ -45,7 +47,7 @@ export default function EditProfile() {
                         ]}
                     >
                         <View style={styles.sectionBody}>
-                            <TouchableOpacity
+                            <Pressable
                                 onPress={() => {
                                     // handle onPress
                                 }}
@@ -53,12 +55,10 @@ export default function EditProfile() {
                             >
                                 <Image
                                     alt="avatar"
-                                    source={{
-                                        uri: avatar,
-                                    }}
+                                    source={avatar}
                                     style={styles.profileAvatar}
                                 />
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
                     </View>
 
@@ -67,7 +67,7 @@ export default function EditProfile() {
                             <Text style={styles.sectionTitle}>
                                 Thông tin chung
                             </Text>
-                            <TouchableOpacity>
+                            <Pressable onPress={() => navigation.navigate("EditProfile")}>
                                 <Text
                                     style={{
                                         color: "#006C5E",
@@ -79,33 +79,21 @@ export default function EditProfile() {
                                         marginBottom: 15,
                                     }}
                                 >
-                                    Lưu
+                                    Sửa
                                 </Text>
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
 
-                        <View style={styles.row}>
+                        <View style={styles.row_space_between}>
                             <View
                                 style={[styles.rowLabelText, { width: "48%" }]}
                             >
-                                <TextInput
-                                    style={styles.text}
-                                    onChangeText={onChangeFirstName}
-                                    value={firstName}
-                                    placeholder="Họ"
-                                    keyboardType="text"
-                                />
+                                <Text style={styles.text}>{firstName}</Text>
                             </View>
                             <View
                                 style={[styles.rowLabelText, { width: "48%" }]}
                             >
-                                <TextInput
-                                    style={styles.text}
-                                    onChangeText={onChangeLastName}
-                                    value={lastName}
-                                    placeholder="Tên"
-                                    keyboardType="text"
-                                />
+                                <Text style={styles.text}>{lastName}</Text>
                             </View>
                         </View>
                     </View>
@@ -123,20 +111,14 @@ export default function EditProfile() {
                             >
                                 <Text style={styles.text}>Giới tính</Text>
                                 <View style={styles.row_space_between}>
-                                    <TextInput
-                                        style={styles.text}
-                                        onChangeText={onChangeGender}
-                                        value={gender}
-                                        placeholder="Khác"
-                                        keyboardType="text"
-                                    />
-                                    <TouchableOpacity>
+                                    <Text style={styles.text}>{gender}</Text>
+                                    <Pressable>
                                         <FontAwesome
                                             name="angle-right"
                                             size={32}
                                             style={{ marginLeft: 15 }}
                                         />
-                                    </TouchableOpacity>
+                                    </Pressable>
                                 </View>
                             </View>
                         </View>
@@ -155,20 +137,14 @@ export default function EditProfile() {
                             >
                                 <Text style={styles.text}>Ngày sinh</Text>
                                 <View style={styles.row_space_between}>
-                                    <TextInput
-                                        style={styles.text}
-                                        onChangeText={onChangeBirthday}
-                                        value={birthday}
-                                        placeholder={day}
-                                        keyboardType="text"
-                                    />
-                                    <TouchableOpacity>
+                                    <Text style={styles.text}>{birthday}</Text>
+                                    <Pressable>
                                         <FontAwesome
                                             name="angle-right"
                                             size={32}
                                             style={{ marginLeft: 15 }}
                                         />
-                                    </TouchableOpacity>
+                                    </Pressable>
                                 </View>
                             </View>
                         </View>
@@ -190,13 +166,7 @@ export default function EditProfile() {
                                     resizeMode="contain"
                                 />
                                 <Text style={styles.text}>+84</Text>
-                                <TextInput
-                                    style={styles.text}
-                                    onChangeText={onChangePhone}
-                                    value={phone}
-                                    placeholder=""
-                                    keyboardType="text"
-                                />
+                                <Text style={styles.text}>{phone}</Text>
                             </View>
                         </View>
                     </View>
@@ -208,13 +178,7 @@ export default function EditProfile() {
                             <View
                                 style={[styles.rowLabelText, { width: "100%" }]}
                             >
-                                <TextInput
-                                    style={styles.text}
-                                    onChangeText={onChangeEmail}
-                                    value={email}
-                                    placeholder="Email"
-                                    keyboardType="text"
-                                />
+                                <Text style={styles.text}>{email}</Text>
                             </View>
                         </View>
                     </View>
@@ -257,29 +221,9 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         flexBasis: 0,
     },
-    /** Header */
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        width: "100%",
-    },
-    headerAction: {
-        width: 40,
-        height: 40,
-        alignItems: "flex-start",
-        justifyContent: "center",
-    },
-    headerTitle: {
-        fontSize: 19,
-        fontWeight: "600",
-        color: "#000",
-    },
-    /** Content */
     content: {
         paddingHorizontal: 20,
     },
-    /** Section */
     section: {
         paddingVertical: 10,
     },
@@ -288,7 +232,7 @@ const styles = StyleSheet.create({
         fontFamily: "Lato-Bold",
         fontSize: 16,
         fontStyle: "normal",
-        fontWeight: "bold", // Use 'bold' for fontWeight: 600 in React Native
+        fontWeight: "bold",
         lineHeight: 20,
         marginBottom: 15,
     },
@@ -303,7 +247,6 @@ const styles = StyleSheet.create({
         shadowRadius: 1.41,
         elevation: 2,
     },
-    /** Profile */
     profile: {
         backgroundColor: "#fff",
         borderRadius: 12,
@@ -316,28 +259,6 @@ const styles = StyleSheet.create({
         height: 150,
         borderRadius: 5,
     },
-    profileBody: {
-        marginRight: "auto",
-    },
-    profileName: {
-        fontSize: 18,
-        fontWeight: "600",
-        color: "#292929",
-        fontFamily: "Lato-Bold",
-    },
-    profileHandle: {
-        marginTop: 2,
-        fontSize: 16,
-        fontWeight: "400",
-        color: "#858585",
-        fontFamily: "Lato-Regular",
-    },
-    /** Row */
-    row: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
     rowLabelText: {
         height: 50,
         flexDirection: "row",
@@ -348,37 +269,16 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#EBEBEB",
         borderRadius: 10,
+        textAlign: 'center'
     },
     row_space_between: {
         alignItems: "center",
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    /** button */
-    button: {
-        height: 50,
-        width: "100%",
-        flexDirection: "row",
-        padding: 10,
-        backgroundColor: "#006C5E",
-        borderWidth: 1,
-        borderRadius: 10,
-    },
-
-    buttonText: {
-        width: "100%",
-        fontSize: 16,
-        fontWeight: "600",
-        color: "#fff",
-        textAlign: "center",
-        fontFamily: "Lato-Bold",
-        fontStyle: "normal",
-    },
-
     iconContainer: {
         marginRight: 10,
     },
-
     text: {
         color: "#000",
         width: "auto",

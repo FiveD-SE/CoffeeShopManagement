@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#FFF',
         paddingHorizontal: 10,
-        paddingVertical: 50,
+        paddingVertical: 10,
     },
     orderItem: {
         flexDirection: 'row',

@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, Pressable, FlatList, StyleSheet, SafeAreaView } from 'react-native';
+import { useNavigation } from "@react-navigation/native";
+
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 const SelectAddress = () => {
+  const navigation = useNavigation();
+
   const [recentAddresses, setRecentAddresses] = useState([
     { id: '1', address: "FEEL Coffee & Tee Express, 82 Đ. Vành Đai, Đông Hoà, Dĩ An, Bình Dương, Việt Nam" },
     { id: '2', address: "FEEL Coffee & Tee Express, 82 Đ. Vành Đai, Đông Hoà, Dĩ An, Bình Dương, Việt Nam" },
@@ -14,18 +18,18 @@ const SelectAddress = () => {
 ]);
 
   const renderRecentAddressItem = ({ item }) => (
-    <TouchableOpacity style={styles.addressItem}>
+    <View style={styles.addressItem}>
       <FontAwesome6 name='clock-rotate-left' size={18} style={styles.icon}/>
       <Text style={styles.addressText}>{item.address}</Text>
-    </TouchableOpacity>
+    </View>
   );
 
   const renderSavedAddressItem = ({ item }) => (
-    <TouchableOpacity style={styles.addressItem}>
+    <Pressable style={styles.addressItem} onPress={() => navigation.navigate('EditAddress')}>
       <FontAwesome5 name='map-marker-alt' size={18} style={styles.icon}/>
       <Text style={styles.addressText}>{item.address}</Text>
       <FontAwesome5 name='edit' size={18} style={styles.editIcon}/>
-    </TouchableOpacity>
+    </Pressable>
   );
 
   return (
@@ -48,10 +52,10 @@ const SelectAddress = () => {
           />
       </View>
 
-      <TouchableOpacity style={styles.addButton}>
+      <Pressable style={styles.addButton} onPress={() => navigation.navigate('AddNewAddress')}>
           <FontAwesome5 name='plus' size={18} style={styles.icon}/>
           <Text style={styles.addText}>Thêm địa chỉ mới</Text>
-      </TouchableOpacity>
+      </Pressable>
     </SafeAreaView>
   );
 };
@@ -59,7 +63,8 @@ const SelectAddress = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
+    paddingVertical: 20
   },
   section: {
     marginBottom: 20,
@@ -84,7 +89,7 @@ const styles = StyleSheet.create({
   },
   addressText: {
     flex: 1,
-    fontFamily: 'Lato',
+    fontFamily: 'Lato-Regular',
     fontSize: 16,
     color: '#9C9C9C',
   },
@@ -98,7 +103,7 @@ const styles = StyleSheet.create({
   },
   addText: {
     color: '#000000',
-    fontFamily: 'Lato',
+    fontFamily: 'Lato-Regular',
     fontSize: 18,
   },
 });
