@@ -14,10 +14,10 @@ const VoucherItem = ({ item }) => (
 
 export default function YourVoucher() {
     const vouchers = [
-        { id: 1, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Giao hàng', image: require('../../assets/voucher.jpeg') },
-        { id: 2, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-04-25', option: 'Tại chỗ', image: require('../../assets/voucher.jpeg') },
-        { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Mang đi', image: require('../../assets/voucher.jpeg') },
-        { id: 4, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-06-01', option: 'Giao hàng', image: require('../../assets/voucher.jpeg') },
+        { id: 1, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Giao hàng', image: require('../../../assets/voucher.jpeg') },
+        { id: 2, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-04-25', option: 'Tại chỗ', image: require('../../../assets/voucher.jpeg') },
+        { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Mang đi', image: require('../../../assets/voucher.jpeg') },
+        { id: 4, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-06-01', option: 'Giao hàng', image: require('../../../assets/voucher.jpeg') },
     ];
 
     const filterVouchersByOption = (option) => {

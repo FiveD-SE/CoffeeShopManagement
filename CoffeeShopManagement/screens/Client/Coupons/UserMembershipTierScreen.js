@@ -11,7 +11,7 @@ export default function MembershipTier() {
   const renderContent = () => {
     switch (selectedTier) {
       case 'Mới':
-        return <Text style={styles.contentText}>Nội dung cho thành viên mới</Text>;
+        return
       case 'Đồng':
         return <Text style={styles.contentText}>Nội dung cho thành viên đồng</Text>;
       case 'Bạc':
