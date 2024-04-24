@@ -21,7 +21,9 @@ import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
 import ProfileDetail from "../screens/Admin/AdminProfileDetailScreen";
 
-import StaffHomeScreen from "../screens/Admin/StaffHomeScreen";
+import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
+import RoleListScreen from "../screens/Admin/RoleListScreen";
+import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
 
 const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
@@ -73,7 +75,13 @@ const HomeStack = () => (
         />
         <Stack.Screen
             name = "StaffHome"
-            component={StaffHomeScreen}
+            component={ManageStaffScreen}
+            options={{
+                headerShown: false
+            }}/>
+        <Stack.Screen
+            name = "RoleList"
+            component={RoleListScreen}
             options={{
                 headerShown: false
             }}/>
