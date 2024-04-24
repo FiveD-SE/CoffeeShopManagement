@@ -7,7 +7,7 @@ app.use(express.json());
 
 mongoose
     .connect(
-        "mongodb+srv://slowey:tlvptlvp@coffeeshopmangement.tmboii0.mongodb.net/",
+        "mongodb+srv://slowey:tlvptlvp@coffeeshopmangement.tmboii0.mongodb.net/?retryWrites=true&w=majority&appName=CoffeeShopMangement",
         { useNewUrlParser: true, useUnifiedTopology: true }
     )
     .then(() => {
