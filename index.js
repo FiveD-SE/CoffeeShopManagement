@@ -1,8 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
 
 const app = express();
+
+app.use(express.json());
 
 mongoose
     .connect(
@@ -27,21 +28,18 @@ const User = mongoose.model("User", userSchema);
 app.get("/users", async (req, res) => {
     try {
         const users = await User.find();
-
         res.status(200).json(users);
     } catch (error) {
         console.error("Error getting users", error);
         res.status(500).json({ message: "Internal server error" });
     }
 });
+
 app.post("/users", async (req, res) => {
     try {
         const { username, password, role } = req.body;
-
         const user = new User({ username, password, role });
-
         await user.save();
-
         res.status(201).json({ message: "User added successfully" });
     } catch (error) {
         console.error("Error adding user", error);
@@ -49,6 +47,11 @@ app.post("/users", async (req, res) => {
     }
 });
 
-app.listen(5000, () => {
-    console.log("Server started on port 5000");
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Something broke!" });
+});
+
+app.listen(5500, () => {
+    console.log("Server started on port 5500");
 });
