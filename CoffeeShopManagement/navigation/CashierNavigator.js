@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import React, { useState, useRef } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -95,6 +95,7 @@ const CashierNavigator = () => {
                     tabBarShowLabel: true,
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
+                    tabBarLabelStyle: styles.labelStyle,
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
 
@@ -135,6 +136,8 @@ const CashierNavigator = () => {
     );
 };
 
+const isIOS = Platform.OS === "ios";
+
 const styles = StyleSheet.create({
     bottomTabBar: {
         backgroundColor: "white",
@@ -142,6 +145,12 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderOpacity: 0.5,
         height: 83,
+    },
+    labelStyle: {
+        fontSize: 12,
+        marginTop: 0,
+        fontFamily: "Lato-Bold",
+        marginBottom: isIOS ? 0 : 15,
     },
 });
 

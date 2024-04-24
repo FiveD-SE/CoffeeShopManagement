@@ -67,7 +67,11 @@ export default function ProfileDetails() {
                             <Text style={styles.sectionTitle}>
                                 Thông tin chung
                             </Text>
-                            <Pressable onPress={() => navigation.navigate("EditProfile")}>
+                            <Pressable
+                                onPress={() =>
+                                    navigation.navigate("EditProfile")
+                                }
+                            >
                                 <Text
                                     style={{
                                         color: "#006C5E",
@@ -269,7 +273,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#EBEBEB",
         borderRadius: 10,
-        textAlign: 'center'
+        textAlign: "center",
     },
     row_space_between: {
         alignItems: "center",
