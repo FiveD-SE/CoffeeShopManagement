@@ -13,7 +13,7 @@ export default function App() {
         "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
         "Lato-Light": require("./assets/fonts/Lato-Light.ttf"),
     });
-    const role = "user";
+    const role = "cashier";
 
     if (!loaded) {
         return null;
