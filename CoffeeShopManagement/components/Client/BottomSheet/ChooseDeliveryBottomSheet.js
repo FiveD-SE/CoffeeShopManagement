@@ -11,6 +11,7 @@ const ChooseDeliveryBottomSheet = ({
 	setIsOpen,
 }) => {
 	const navigation = useNavigation();
+
 	const deliveryOption = [
 		{ title: "Giao hàng tận nơi", iconName: "moped", type: "Delivery" },
 		{ title: "Tự đến lấy hàng", iconName: "handshake", type: "Pickup" },
