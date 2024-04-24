@@ -67,9 +67,11 @@ export default function EditProfile() {
                             <Text style={styles.sectionTitle}>
                                 Thông tin chung
                             </Text>
-                            <Pressable onPress={() => {
-                                        navigation.navigate("ProfileDetails");
-                                    }}>
+                            <Pressable
+                                onPress={() => {
+                                    navigation.navigate("ProfileDetails");
+                                }}
+                            >
                                 <Text
                                     style={{
                                         color: "#006C5E",
@@ -95,7 +97,7 @@ export default function EditProfile() {
                                     onChangeText={onChangeFirstName}
                                     value={firstName}
                                     placeholder="Họ"
-                                    keyboardType="text"
+                                    keyboardType="default"
                                 />
                             </View>
                             <View
@@ -106,7 +108,7 @@ export default function EditProfile() {
                                     onChangeText={onChangeLastName}
                                     value={lastName}
                                     placeholder="Tên"
-                                    keyboardType="text"
+                                    keyboardType="default"
                                 />
                             </View>
                         </View>
@@ -130,7 +132,7 @@ export default function EditProfile() {
                                         onChangeText={onChangeGender}
                                         value={gender}
                                         placeholder="Khác"
-                                        keyboardType="text"
+                                        keyboardType="default"
                                     />
                                     <Pressable>
                                         <FontAwesome
@@ -162,7 +164,7 @@ export default function EditProfile() {
                                         onChangeText={onChangeBirthday}
                                         value={birthday}
                                         placeholder={day}
-                                        keyboardType="text"
+                                        keyboardType="default"
                                     />
                                     <Pressable>
                                         <FontAwesome
@@ -197,7 +199,7 @@ export default function EditProfile() {
                                     onChangeText={onChangePhone}
                                     value={phone}
                                     placeholder=""
-                                    keyboardType="text"
+                                    keyboardType="default"
                                 />
                             </View>
                         </View>
@@ -215,7 +217,7 @@ export default function EditProfile() {
                                     onChangeText={onChangeEmail}
                                     value={email}
                                     placeholder="Email"
-                                    keyboardType="text"
+                                    keyboardType="default"
                                 />
                             </View>
                         </View>

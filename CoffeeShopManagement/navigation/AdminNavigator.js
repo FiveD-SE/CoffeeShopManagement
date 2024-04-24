@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Dimensions, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -146,15 +146,15 @@ const HomeStack = () => (
             }}
         />
         <Stack.Screen
-            name = "StaffHome"
+            name="StaffHome"
             component={ManageStaffScreen}
             options={{
-                headerShown: false
-            }}/>
+                headerShown: false,
+            }}
+        />
         <Stack.Screen
-            name = "RoleList"
+            name="RoleList"
             component={RoleListScreen}
-
             options={{
                 headerShown: false,
             }}
@@ -237,9 +237,10 @@ function AdminNavigator() {
                     tabBarShowLabel: true,
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
+                    tabBarLabelStyle: styles.labelStyle,
+
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
-
                         if (route.name === "Home") {
                             iconName = "home";
                         } else if (route.name === "Sales") {
@@ -251,7 +252,6 @@ function AdminNavigator() {
                         } else if (route.name === "Others") {
                             iconName = "reorder-three";
                         }
-
                         return (
                             <TabBarIcon
                                 focused={focused}
@@ -274,6 +274,8 @@ function AdminNavigator() {
 
 export default AdminNavigator;
 
+const isIOS = Platform.OS === "ios";
+
 const styles = StyleSheet.create({
     bottomTabBar: {
         backgroundColor: "white",
@@ -281,5 +283,11 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderOpacity: 0.5,
         height: 83,
+    },
+    labelStyle: {
+        fontSize: 12,
+        marginTop: 0,
+        fontFamily: "Lato-Bold",
+        marginBottom: isIOS ? 0 : 15,
     },
 });

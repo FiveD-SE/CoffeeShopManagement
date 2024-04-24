@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -30,7 +30,6 @@ import SelectBranch from "../screens/Client/Other/UserSelectBranchScreen";
 import FeedbackAndHelp from "../screens/Client/Other/UserFeedbackAndHelpScreen";
 import ChangePassword from "../screens/Client/ChangePassword";
 import SignInScreen from "../screens/Client/SignInScreen";
-import ProfileDetails from "../screens/Client/ProfileDetails";
 import UserOrderConfirmationScreen from "../screens/Client/PlaceOrder/UserOrderConfirmationScreen";
 
 import Promotions from "../screens/Client/Coupons/UserCouponScreen";
@@ -369,6 +368,7 @@ function UserNavigator() {
                     tabBarShowLabel: true,
                     headerShown: false,
                     tabBarHideOnKeyboard: true,
+                    tabBarLabelStyle: styles.labelStyle,
                     tabBarIcon: ({ focused, color, size }) => {
                         let iconName;
                         if (route.name === "Home") {
@@ -401,6 +401,8 @@ function UserNavigator() {
 
 export default UserNavigator;
 
+const isIOS = Platform.OS === "ios";
+
 const styles = StyleSheet.create({
     bottomTabBar: {
         backgroundColor: "white",
@@ -408,5 +410,11 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderOpacity: 0.5,
         height: 83,
+    },
+    labelStyle: {
+        fontSize: 12,
+        marginTop: 0,
+        fontFamily: "Lato-Bold",
+        marginBottom: isIOS ? 0 : 15,
     },
 });
