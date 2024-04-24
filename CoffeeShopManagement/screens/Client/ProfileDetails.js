@@ -10,8 +10,10 @@ import {
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SwitchToggle from "toggle-switch-react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ProfileDetails() {
+    const navigtion = useNavigation();
     const [isToggled, setIsToggled] = useState(false);
 
     const handleToggle = () => {
@@ -50,7 +52,11 @@ export default function ProfileDetails() {
                 <View style={styles.section}>
                     <View style={styles.row_space_between}>
                         <Text style={styles.sectionTitle}>Thông tin chung</Text>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigtion.navigate("EditProfile");
+                            }}
+                        >
                             <Text style={styles.editText}>Sửa</Text>
                         </TouchableOpacity>
                     </View>

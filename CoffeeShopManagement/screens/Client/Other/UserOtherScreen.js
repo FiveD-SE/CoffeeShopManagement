@@ -28,7 +28,7 @@ export default function UserOtherScreen() {
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F7FA" }}>
             <View style={styles.container}>
                 <ScrollView contentContainerStyle={styles.content}>
-                    <View style={ styles.section }>
+                    <View style={[styles.section, { paddingTop: 60 }]}>
                         <View style={styles.sectionBody}>
                             <TouchableOpacity
                                 onPress={() => {
@@ -406,7 +406,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#3A3A3A",
         textTransform: "uppercase",
-        fontFamily: "Lato-Regular",
+        fontFamily: "Lato-Bold",
     },
     sectionBody: {
         borderRadius: 12,
@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
         color: "#292929",
-        fontFamily: "Lato-Regular",
+        fontFamily: "Lato-Bold",
     },
     profileHandle: {
         marginTop: 2,
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: "600",
         color: "#dc2626",
-        fontFamily: "Lato-Regular",
+        fontFamily: "Lato-Bold",
     },
     /** button */
     button: {
@@ -507,7 +507,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#fff",
         textAlign: "center",
-        fontFamily: "Lato-Regular",
+        fontFamily: "Lato-Bold",
         fontStyle: "normal",
     },
 });

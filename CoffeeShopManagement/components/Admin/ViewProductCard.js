@@ -1,22 +1,10 @@
-import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
-import { MaterialIcons } from '@expo/vector-icons';
-import EditGoodInfoModal from './Modal/EditGoodInfoModal';
-const ProductCard = ({
+const ViewProductCard = ({
   title, quantity, price, imageSource, unit, OnPress
 }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const showEditGoodInfoModal = () => {
-    setModalVisible(true);
-  };
-
-  const hideEditGoodInfoModal = () => {
-    setModalVisible(false);
-  };
   return (
-    <View>
-      <TouchableOpacity style={styles.container} onPress={showEditGoodInfoModal}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={imageSource} resizeMode="center" />
         </View>
@@ -41,14 +29,11 @@ const ProductCard = ({
             </View>
           </View>
         </View>
-        <MaterialIcons name="keyboard-arrow-right" size={30} color="rgba(58,58,58,0.5)" />
-      </TouchableOpacity>
-      <EditGoodInfoModal visible={modalVisible} onClose={hideEditGoodInfoModal} />
-    </View>
+      </SafeAreaView>
   )
 }
 
-export default ProductCard
+export default ViewProductCard
 
 const styles = StyleSheet.create({
   container: {

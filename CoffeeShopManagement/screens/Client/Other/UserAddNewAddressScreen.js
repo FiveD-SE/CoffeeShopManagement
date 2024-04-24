@@ -2,14 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, TextInput } from 'react-native';
 import SwitchToggle from 'toggle-switch-react-native';
 
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-export default function EditAddress() {
+export default function AddNewAddress() {
     const [isToggled, setIsToggled] = useState(false);
     const [addressType, setAddressType] = useState(null);
 
     const handleToggle = () => {
-        console.log("Toggle button pressed");
         setIsToggled(isToggled => !isToggled);
     };
 
@@ -68,11 +65,6 @@ export default function EditAddress() {
                     <TextInput style={styles.input} placeholder="Họ và tên" />
                     <TextInput style={styles.input} placeholder="Số điện thoại" />
                 </View>
-                
-                <TouchableOpacity style={styles.deleteButton}>
-                    <FontAwesome name='trash'size={25} style={styles.icon} color='#F61A3D'/>
-                    <Text style={styles.deleteButtonText}>Xóa địa chỉ</Text>
-                </TouchableOpacity>
 
                 <TouchableOpacity style={styles.button}>
                     <Text style={styles.buttonText}>Hoàn thành</Text>
@@ -89,7 +81,7 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         paddingHorizontal: 20,
-        paddingTop: 30,
+        paddingTop: 10,
     },
     section: {
         marginBottom: 20,
@@ -145,20 +137,4 @@ const styles = StyleSheet.create({
         fontFamily: 'Lato-Bold',
         fontSize: 18,
     },
-    deleteButton: {
-        flexDirection: 'row',
-        marginTop: 15,
-        paddingVertical: 15,
-        justifyContent: 'center',
-    },
-    deleteButtonText: {
-        color: '#F61A3D',
-        fontFamily: 'Lato-Bold',
-        fontSize: 18,
-    },
-    icon: {
-        width: 25,
-        height: 25,
-        marginRight: 10,
-    }
 });

@@ -16,10 +16,18 @@ import AdminSalesScreen from "../screens/Admin/Sales/AdminSalesScreen";
 import AdminWareHouseScreen from "../screens/Admin/Warehouse/AdminWareHouseScreen";
 import AdminImportGoodsScreen from "../screens/Admin/Warehouse/AdminImportGoodsScreen";
 import AdminExportGoodsScreen from "../screens/Admin/Warehouse/AdminExportGoodsScreen";
+import AdminListImportScreen from "../screens/Admin/Warehouse/AdminListImportScreen";
+import AdminListExportScreen from "../screens/Admin/Warehouse/AdminListExportScreen";
 
 import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
 import ProfileDetail from "../screens/Admin/AdminProfileDetailScreen";
+import AdminBranchManagement from "../screens/Admin/AdminBranchManagement";
+import AdminEditBranchScreen from "../screens/Admin/AdminEditBranchScreen";
+import AdminAddBranchScreen from "../screens/Admin/AdminAddBranchScreen";
+
+import HeaderBackButton from "./components/HeaderBackButton";
+import AddBranchButton from "./components/AddBranchButton";
 
 import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
 import RoleListScreen from "../screens/Admin/RoleListScreen";
@@ -29,24 +37,88 @@ const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
 };
 
-
-
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const BillingStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="AdminBillingHome" component={AdminBillingScreen} options={{headerShown: false}}/>
-        <Stack.Screen name="AdminDetailBilling" component={DetailBillingScreen} options={{headerShown: false}}/>
+        <Stack.Screen
+            name="AdminBillingHome"
+            component={AdminBillingScreen}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name="AdminDetailBilling"
+            component={DetailBillingScreen}
+            options={{ headerShown: false }}
+        />
     </Stack.Navigator>
-)
+);
 
 const OtherStack = () => (
     <Stack.Navigator>
-        <Stack.Screen name="Other" component={AdminOtherScreen} />
-        <Stack.Screen name="ProfileDetail" component={ProfileDetail} />
-        <Stack.Screen name="AdminEditProfile" component={AdminEditProfile} />
+        <Stack.Screen
+            name="Other"
+            component={AdminOtherScreen}
+            options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name="ProfileDetail"
+            component={ProfileDetail}
+            options={{
+                headerTitle: "Thông tin cá nhân",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminEditProfile"
+            component={AdminEditProfile}
+            options={{
+                headerTitle: "Chỉnh sửa thông tin cá nhân",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="BranchManagement"
+            component={AdminBranchManagement}
+            options={{
+                headerTitle: "Quản lý chi nhánh",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddBranchButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminBranchEditScreen"
+            component={AdminEditBranchScreen}
+            options={{
+                headerTitle: "Chỉnh sửa chi nhánh",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+
+        <Stack.Screen
+            name="AdminAddBranchScreen"
+            component={AdminAddBranchScreen}
+            options={{
+                headerTitle: "Thêm chi nhánh",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -82,9 +154,11 @@ const HomeStack = () => (
         <Stack.Screen
             name = "RoleList"
             component={RoleListScreen}
+
             options={{
-                headerShown: false
-            }}/>
+                headerShown: false,
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -93,7 +167,8 @@ const SalesStack = () => (
         <Stack.Screen
             name="AdminSales"
             component={AdminSalesScreen}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
     </Stack.Navigator>
 );
 
@@ -102,7 +177,8 @@ const WarehouseStack = () => (
         <Stack.Screen
             name="AdminWareHouse"
             component={AdminWareHouseScreen}
-            options={{ headerShown: false }} />
+            options={{ headerShown: false }}
+        />
         <Stack.Screen
             name="AdminImportGoods"
             component={AdminImportGoodsScreen}
@@ -112,7 +188,8 @@ const WarehouseStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="AdminExportGoods"
             component={AdminExportGoodsScreen}
@@ -122,7 +199,30 @@ const WarehouseStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
+        <Stack.Screen
+            name="AdminListImport"
+            component={AdminListImportScreen}
+            options={{
+                headerTitle: "Danh sách nhập hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminListExport"
+            component={AdminListExportScreen}
+            options={{
+                headerTitle: "Danh sách xuất hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
     </Stack.Navigator>
 );
 

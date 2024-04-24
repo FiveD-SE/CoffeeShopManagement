@@ -1,43 +1,41 @@
-import { useStyles, createStyleSheet } from "styles";
-import { View, Text } from "react-native";
-import Icon from "assets/vectors/Icon.svg";
+import React from "react";
+import { View, Text, StyleSheet, Image } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
-export function Store(props) {
-    const { styles, theme } = useStyles(stylesheet);
-
+export default function Branch({
+    storeName,
+    branchName,
+    distance,
+    image,
+    onPress,
+}) {
     return (
-        <View style={styles.root} testID={props.testID}>
-            <View style={styles.image} testID="2349:4708"></View>
-            <View style={styles.content} testID="2349:4709">
-                <View style={styles.title} testID="2349:4710">
-                    <Text style={styles.theCoffeeHouse} testID="2349:4711">
-                        {`THE COFFEE HOUSE`}
-                    </Text>
-                    <Text style={styles.branchName} testID="2349:4712">
-                        {`HCM Đường D1`}
-                    </Text>
+        <TouchableOpacity style={styles.root} onPress={onPress}>
+            <View style={styles.image}>
+                <Image source={image} style={styles.image} />
+            </View>
+            <View style={styles.content}>
+                <View style={styles.title}>
+                    <Text style={styles.storeName}>{storeName}</Text>
+                    <Text style={styles.branchName}>{branchName}</Text>
                 </View>
-                <Text style={styles.distance} testID="2349:4713">
-                    {`Cách đây 3.3 km`}
-                </Text>
+                <Text style={styles.distance}>Cách đây {distance} km</Text>
             </View>
-            <View style={styles.button} testID="2349:4721">
-                <Icon />
-            </View>
-        </View>
+        </TouchableOpacity>
     );
 }
 
-const stylesheet = createStyleSheet((theme) => ({
+const styles = StyleSheet.create({
     root: {
         flexDirection: "row",
-        width: 330,
+        width: "100%",
         padding: 15,
         alignItems: "center",
         rowGap: 15,
         columnGap: 15,
         borderRadius: 20,
         backgroundColor: "rgba(255, 255, 255, 1)",
+        marginBottom: 10,
     },
     image: {
         width: 80,
@@ -46,10 +44,10 @@ const stylesheet = createStyleSheet((theme) => ({
         borderRadius: 5,
         backgroundColor: "rgba(203, 203, 212, 1)",
     },
-    theCoffeeHouse: {
-        color: "rgba(58, 58, 58, 0.501960813999176)",
+    storeName: {
+        color: "#9c9c9c",
         textAlign: "center",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Light",
         fontSize: 10,
         fontStyle: "normal",
         fontWeight: "700",
@@ -57,13 +55,12 @@ const stylesheet = createStyleSheet((theme) => ({
         textTransform: "uppercase",
     },
     branchName: {
-        color: "rgba(58, 58, 58, 1)",
+        color: "#3A3A3A",
         textAlign: "center",
-        fontFamily: "Lato",
-        fontSize: 14,
+        fontFamily: "Lato-Bold",
+        fontSize: 16,
         fontStyle: "normal",
         fontWeight: "600",
-        lineHeight: 12,
     },
     content: {
         flexDirection: "column",
@@ -83,7 +80,7 @@ const stylesheet = createStyleSheet((theme) => ({
     distance: {
         color: "rgba(58, 58, 58, 0.501960813999176)",
         textAlign: "center",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Regular",
         fontSize: 12,
         fontStyle: "normal",
         fontWeight: "400",
@@ -97,4 +94,4 @@ const stylesheet = createStyleSheet((theme) => ({
         alignItems: "center",
         flexShrink: 0,
     },
-}));
+});
