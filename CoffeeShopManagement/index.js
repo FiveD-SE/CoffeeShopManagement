@@ -55,6 +55,22 @@ const startServer = () => {
         }
     });
 
+    // get role by username
+    app.get("/users/:username", async (req, res) => {
+        try {
+            const { username } = req.params;
+            const user = await User.findOne({ username });
+            if (user) {
+                res.status(200).json(user.role);
+            } else {
+                res.status(404).json({ message: "User not found" });
+            }
+        } catch (error) {
+            console.error("Error getting user", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    });
+
     app.use((err, req, res, next) => {
         console.error(err.stack);
         res.status(500).json({ message: "Something broke!" });
