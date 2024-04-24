@@ -29,7 +29,9 @@ import AdminAddBranchScreen from "../screens/Admin/AdminAddBranchScreen";
 import HeaderBackButton from "./components/HeaderBackButton";
 import AddBranchButton from "./components/AddBranchButton";
 
-import StaffHomeScreen from "../screens/Admin/StaffHomeScreen";
+import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
+import RoleListScreen from "../screens/Admin/RoleListScreen";
+import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
 
 const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
@@ -144,8 +146,15 @@ const HomeStack = () => (
             }}
         />
         <Stack.Screen
-            name="StaffHome"
-            component={StaffHomeScreen}
+            name = "StaffHome"
+            component={ManageStaffScreen}
+            options={{
+                headerShown: false
+            }}/>
+        <Stack.Screen
+            name = "RoleList"
+            component={RoleListScreen}
+
             options={{
                 headerShown: false,
             }}
