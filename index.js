@@ -22,8 +22,6 @@ const userSchema = new mongoose.Schema({
     role: String,
 });
 
-// hay chua kill terminal ben kia:)))
-
 const User = mongoose.model("User", userSchema);
 
 app.get("/users", async (req, res) => {
