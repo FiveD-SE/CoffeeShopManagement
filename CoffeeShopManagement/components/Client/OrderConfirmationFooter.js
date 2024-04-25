@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Pressable } from "react-native";
 import React from "react";
 
-const OrderConfirmationFooter = () => {
+const OrderConfirmationFooter = ({ onPress }) => {
 	return (
 		<View style={styles.footer}>
 			<View style={styles.totalPriceContainer}>
@@ -13,7 +13,7 @@ const OrderConfirmationFooter = () => {
 					})}
 				</Text>
 			</View>
-			<Pressable style={styles.orderButton}>
+			<Pressable style={styles.orderButton} onPress={onPress}>
 				<Text style={styles.orderButtonText}>Đặt hàng</Text>
 			</Pressable>
 		</View>
