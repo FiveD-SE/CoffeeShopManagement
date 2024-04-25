@@ -1,7 +1,13 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 
 const NotificationCard = ({item}) => {
+
+    const [backgroundCl, setBackgroundColor] = useState('rgba(166, 166, 170, 0.1)');
+    const onPress = () => {
+        setBackgroundColor('#fff')
+    }
+
     let icon;
     let background;
     switch (item.state) {
@@ -19,7 +25,9 @@ const NotificationCard = ({item}) => {
             break;
     }
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity 
+        onPress={onPress}
+        style={{ ...styles.container, backgroundColor: backgroundCl }}>
         <View style={{width: 60, height: 60, backgroundColor: background, justifyContent: 'center', alignItems: 'center', zIndex: 10, borderRadius: 10}}>
             {icon ? (
                 <Image source={icon} style={styles.image} />
@@ -38,7 +46,6 @@ const NotificationCard = ({item}) => {
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row', 
-        backgroundColor: 'rgba(166, 166, 170, 0.1)', 
         height: 80, 
         alignItems: 'center', 
         paddingStart: 10, 
