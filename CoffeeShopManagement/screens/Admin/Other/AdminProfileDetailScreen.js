@@ -29,8 +29,8 @@ export default function AdminProfileDetail() {
     const [email, onChangeEmail] = React.useState("22521337@gm.uit.edu.vn");
     const [day, getDay] = React.useState("01/01/2024");
 
-    const avatar = "";
-    const flag = require("../../assets/vietnam.png");
+    const avatar = require("../../../assets/vietnam.png");
+    const flag = require("../../../assets/vietnam.png");
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F7FA" }}>
             <View style={styles.container}>
@@ -55,7 +55,7 @@ export default function AdminProfileDetail() {
                             >
                                 <Image
                                     alt="avatar"
-                                    source={require("../../assets/google.png")}
+                                    source={avatar}
                                     style={styles.profileAvatar}
                                 />
                             </TouchableOpacity>
