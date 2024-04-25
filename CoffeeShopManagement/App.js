@@ -16,7 +16,7 @@ export default function App() {
         "Lato-Light": require("./assets/fonts/Lato-Light.ttf"),
     });
 
-    const username = "admin";
+    const username = "user";
 
     if (!loaded) {
         return null;
@@ -29,7 +29,18 @@ export default function App() {
         });
     }, []);
 
-    return loading ? <OnBoardingScreen /> : <AppNavigator role={role} />;
+    return (
+        <NavigationContainer>
+            {loading ? (
+                <View style={styles.container}>
+                    <OnBoardingScreen />
+                </View>
+            ) : (
+                <AppNavigator role={role} />
+            )}
+            <StatusBar style="auto" />
+        </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({

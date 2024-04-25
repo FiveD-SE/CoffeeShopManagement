@@ -264,47 +264,45 @@ const WarehouseStack = () => (
 
 function AdminNavigator() {
     return (
-        <NavigationContainer>
-            <Tab.Navigator
-                screenOptions={({ route }) => ({
-                    tabBarActiveTintColor: "#006C5E",
-                    tabBarInactiveTintColor: "#CBCBD4",
-                    tabBarStyle: styles.bottomTabBar,
-                    tabBarShowLabel: true,
-                    headerShown: false,
-                    tabBarHideOnKeyboard: true,
-                    tabBarLabelStyle: styles.labelStyle,
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#006C5E",
+                tabBarInactiveTintColor: "#CBCBD4",
+                tabBarStyle: styles.bottomTabBar,
+                tabBarShowLabel: true,
+                headerShown: false,
+                tabBarHideOnKeyboard: true,
+                tabBarLabelStyle: styles.labelStyle,
 
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
-                        if (route.name === "Home") {
-                            iconName = "home";
-                        } else if (route.name === "Sales") {
-                            iconName = "cart";
-                        } else if (route.name === "Warehouse") {
-                            iconName = "cube";
-                        } else if (route.name === "Billing") {
-                            iconName = "receipt";
-                        } else if (route.name === "Others") {
-                            iconName = "reorder-three";
-                        }
-                        return (
-                            <TabBarIcon
-                                focused={focused}
-                                name={iconName}
-                                color={color}
-                            />
-                        );
-                    },
-                })}
-            >
-                <Tab.Screen name="Home" component={HomeStack} />
-                <Tab.Screen name="Sales" component={SalesStack} />
-                <Tab.Screen name="Billing" component={BillingStack} />
-                <Tab.Screen name="Warehouse" component={WarehouseStack} />
-                <Tab.Screen name="Others" component={OtherStack} />
-            </Tab.Navigator>
-        </NavigationContainer>
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+                    if (route.name === "Home") {
+                        iconName = "home";
+                    } else if (route.name === "Sales") {
+                        iconName = "cart";
+                    } else if (route.name === "Warehouse") {
+                        iconName = "cube";
+                    } else if (route.name === "Billing") {
+                        iconName = "receipt";
+                    } else if (route.name === "Others") {
+                        iconName = "reorder-three";
+                    }
+                    return (
+                        <TabBarIcon
+                            focused={focused}
+                            name={iconName}
+                            color={color}
+                        />
+                    );
+                },
+            })}
+        >
+            <Tab.Screen name="Home" component={HomeStack} />
+            <Tab.Screen name="Sales" component={SalesStack} />
+            <Tab.Screen name="Billing" component={BillingStack} />
+            <Tab.Screen name="Warehouse" component={WarehouseStack} />
+            <Tab.Screen name="Others" component={OtherStack} />
+        </Tab.Navigator>
     );
 }
 
