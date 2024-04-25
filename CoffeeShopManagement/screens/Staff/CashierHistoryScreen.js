@@ -1,6 +1,7 @@
 import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/Entypo'
+import OrderCard2 from '../../components/Staff/OrderCard2';
 
 export default function CashierHistoryScreen() {
     const [selectedButtonIndex, setSelectedButtonIndex] = useState(null);
@@ -52,14 +53,12 @@ export default function CashierHistoryScreen() {
         },
     ]
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
         <View style={styles.topApp}>
             <TextInput 
-            placeholder='Tra cứu mã đơn hàng'
-            style={styles.searchBox}/>
-        </View>
-        <View style={styles.bodyApp}>
-            <View style={{flexDirection: 'row'}}>
+                placeholder='Tra cứu mã đơn hàng'
+                style={styles.searchBox}/>
+            <View style={{flexDirection: 'row', backgroundColor: '#fff'}}>
                 {selectionButtons.map((buttonTitle, index) => (
                     <TouchableOpacity 
                         key={index}
@@ -73,60 +72,39 @@ export default function CashierHistoryScreen() {
                     </TouchableOpacity>
                 ))}
             </View>
-            <View style={{margin: 15}}>
+        </View>
+        <View>
+            <View style={{margin: '4%', height: '84%'}}>
             <FlatList
                         data = {DATA}
                         showsVerticalScrollIndicator={false}
                         renderItem={({item}) => (
-                            <TouchableOpacity style={styles.orderDetail}>
-                                <View style={{flexDirection:'column', color: '#3A3A3A'}}>
-                                    <Text style={{fontSize: 16}}>Mã đơn hàng: {item.orderId}</Text>
-                                    <Text style={{color: 'rgba(58, 58, 58, 0.50)', marginTop:5, marginBottom: 5}}>Thời gian: {item.time}</Text>
-                                    <Text>Loại đơn: {item.orderType}</Text>
-                                    <Text>Người nhận: {item.customer}</Text>
-                                    <Text>SDT Người nhận: {item.sdt}</Text>
-                                    <Text style={{marginBottom: 5}}>Trạng thái thanh toán: {item.orderState}</Text>
-                                    <Text>
-                                        <Text>Trạng thái: </Text>
-                                        <Text style={{color: '#FFA730'}}>{item.state}</Text>
-                                    </Text>
-                                </View>
-                                <View style={{justifyContent: 'center'}}>
-                                    <Icon name="chevron-small-right" size={48}/>
-                                </View>
-                            </TouchableOpacity>
+                            <OrderCard2 item={item}/>
                         )}
                         keyExtractor={item => item.orderId}/>
             </View>
         </View>
-    </SafeAreaView>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 50, 
-        backgroundColor: '#ffffff'
     },
     topApp: {
-        flex: 1,
-        marginTop: 15,
+        paddingTop: '15%',
         justifyContent: 'center',
         borderBottomWidth: 1,
-        paddingStart: 15,
-        paddingEnd: 15,
-        borderColor: 'rgba(58, 58, 58, 0.1)'
-    },
-    bodyApp: {
-        flex: 11,
-        
+        borderColor: 'rgba(58, 58, 58, 0.1)',
+        backgroundColor: '#fff'
     },
     searchBox: {
-        borderRadius: 5,
-        borderWidth: 0.1,
-        height: 40,
-        paddingStart: 15,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#CCCCCC',
+        padding: '3%',
+        margin: '5%',
     },
     selectionButton: {
         flex: 1,
@@ -134,12 +112,4 @@ const styles = StyleSheet.create({
         height: 40,
         alignItems: 'center'
     },
-    orderDetail: {
-        borderWidth: 0.5,
-        borderRadius: 20,
-        padding: 12,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 10,
-    }
 })
