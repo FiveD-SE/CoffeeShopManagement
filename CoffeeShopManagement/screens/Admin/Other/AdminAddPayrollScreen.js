@@ -1,40 +1,65 @@
-import { View, Text, StyleSheet, Pressable, Image, SafeAreaView, TextInput, ScrollView } from 'react-native'
 import React, { useState } from 'react';
-import Icon from'react-native-vector-icons/Entypo'
-import MaterialCommunityIcons from'react-native-vector-icons/MaterialCommunityIcons'
-import Ionicons from'react-native-vector-icons/Ionicons'
+import { View, Text, StyleSheet, Pressable, Image, SafeAreaView, TextInput, ScrollView } from 'react-native';
+import Icon from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectTermOptionsModal from '../../../components/Admin/Modal/SelectTermOptionsModal';
 import SelectBranchModal from '../../../components/Admin/Modal/SelectBranchModal';
+import SelectDateModal from '../../../components/Admin/Modal/SelectDateModal';
 
 export default function AdminAddPayrollScreen() {
     const [selectedTermOption, setSelectedTermOption] = useState('');
+    const [selectedDateEndOption, setSelectedDateEndOption] = useState('');
+    const [selectedDateStartOption, setSelectedDateStartOption] = useState('');
+    const [modalSelectTermOptionVisible, setModalSelectTermOptionVisible] = useState(false);
+    const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
+    const [modalSelectDateVisible, setModalSelectDateVisible] = useState(false);
+    const [selectedDateType, setSelectedDateType] = useState('start');
+
     const handleSelectTermOption = (option) => {
         setSelectedTermOption(option);
-      };
-    
-    const [modalSelectTermOptionVisible, setModalSelectTermOptionVisible] = useState(false);
+    };
+
+    const handleSelectDateEndOption = (option) => {
+        setSelectedDateEndOption(option);
+    };
+
+    const handleSelectDateStartOption = (option) => {
+        setSelectedDateStartOption(option);
+    };
+
     const showSelectTermOptionsModal = () => {
         setModalSelectTermOptionVisible(true);
     };
+
     const hideSelectTermOptionsModal = () => {
         setModalSelectTermOptionVisible(false);
     };
 
-    const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
     const showSelectBranchModal = () => {
         setModalSelectBranchVisible(true);
     };
+
     const hideSelectBranchModal = () => {
         setModalSelectBranchVisible(false);
     };
-    
+
+    const showSelectDateModal = (dateType) => { // Thêm dateType vào hàm này
+        setSelectedDateType(dateType); // Set loại ngày mà người dùng đang chọn
+        setModalSelectDateVisible(true);
+    };
+
+    const hideSelectDateModal = () => {
+        setModalSelectDateVisible(false);
+    };
+
     const staffList = [
         { image: require("../../../assets/vietnam.png"), name: 'Tên nhân viên', phonenumber: 'Số điện thoại', position: 'Chức vụ' },
         { image: require("../../../assets/vietnam.png"), name: 'Tên nhân viên', phonenumber: 'Số điện thoại', position: 'Chức vụ' }, 
         { image: require("../../../assets/vietnam.png"), name: 'Tên nhân viên', phonenumber: 'Số điện thoại', position: 'Chức vụ' },
         { image: require("../../../assets/vietnam.png"), name: 'Tên nhân viên', phonenumber: 'Số điện thoại', position: 'Chức vụ' }, 
         { image: require("../../../assets/vietnam.png"), name: 'Tên nhân viên', phonenumber: 'Số điện thoại', position: 'Chức vụ' }, 
-      ];
+    ];
 
     const renderItem = ({ item }) => (
         <View style={styles.item}>
@@ -53,82 +78,91 @@ export default function AdminAddPayrollScreen() {
             </View>
         </View>
     );
-  return (
-    <SafeAreaView style={styles.container}>
-        <ScrollView>
-            <View style={styles.section}>
-                <View style={styles.label}>
-                    <Text style={styles.labelText}>Chi nhánh</Text>
-                    <View style={styles.row}>
-                        <Text style={styles.textSecondary}>Tên các chi nhánh</Text>
-                        <Pressable style={styles.button} onPress={showSelectBranchModal}>
-                            <Icon name="chevron-small-right" size={30} color="#9C9C9C" />
-                        </Pressable>
-                    </View>
-                </View>
-            </View>
 
-            <View style={styles.section}>
-                <View style={styles.labelSecondary}>
-                    <Text style={styles.sectionText}>Thông tin bản lương</Text>
-                </View>
-                <View style={styles.label}>
-                    <Text style={styles.labelText}>Kỳ hạn trả lương</Text>
-                    <View style={styles.row}>
-                        <Text style={styles.textSecondary}>{selectedTermOption || 'Chọn kỳ hạn'}</Text>
-                        <Pressable style={styles.button} onPress={showSelectTermOptionsModal}>
-                            <Icon name="chevron-small-right" size={30} color="#9C9C9C" />
-                        </Pressable>
+    return (
+        <SafeAreaView style={styles.container}>
+            <ScrollView>
+                <View style={styles.section}>
+                    <View style={styles.label}>
+                        <Text style={styles.labelText}>Chi nhánh</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.textSecondary}>Tên các chi nhánh</Text>
+                            <Pressable style={styles.button} onPress={showSelectBranchModal}>
+                                <Icon name="chevron-small-right" size={30} color="#9C9C9C" />
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
 
-                <View style={styles.label}>
-                    <Text style={styles.labelText}>Kỳ làm việc từ</Text>
-                    <View style={styles.row}>
-                        <Text style={styles.textSecondary}>01/02/2024</Text>
-                        <Pressable style={[styles.button, {marginLeft: 10}]}>
-                            <Icon name="calendar" size={20} color="#9C9C9C" />
-                        </Pressable>
+                <View style={styles.section}>
+                    <View style={styles.labelSecondary}>
+                        <Text style={styles.sectionText}>Thông tin bản lương</Text>
+                    </View>
+                    <View style={styles.label}>
+                        <Text style={styles.labelText}>Kỳ hạn trả lương</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.textSecondary}>{selectedTermOption || 'Chọn kỳ hạn'}</Text>
+                            <Pressable style={styles.button} onPress={showSelectTermOptionsModal}>
+                                <Icon name="chevron-small-right" size={30} color="#9C9C9C" />
+                            </Pressable>
+                        </View>
+                    </View>
+
+                    <View style={styles.label}>
+                        <Text style={styles.labelText}>Kỳ làm việc từ</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.textSecondary}>{selectedDateStartOption}</Text>
+                            <Pressable style={[styles.button, {marginLeft: 10}]} onPress={() => showSelectDateModal('start')}>
+                                <Icon name="calendar" size={20} color="#9C9C9C" />
+                            </Pressable>
+                        </View>
+                    </View>
+
+                    <View style={styles.label}>
+                        <Text style={styles.labelText}>Kỳ làm việc đến</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.textSecondary}>{selectedDateEndOption}</Text>
+                            <Pressable style={[styles.button, {marginLeft: 10}]} onPress={() => showSelectDateModal('end')}>
+                                <Icon name="calendar" size={20} color="#9C9C9C" />
+                            </Pressable>
+                        </View>
                     </View>
                 </View>
 
-                <View style={styles.label}>
-                    <Text style={styles.labelText}>Kỳ làm việc đến</Text>
-                    <View style={styles.row}>
-                        <Text style={styles.textSecondary}>29/02/2024</Text>
-                        <Pressable style={[styles.button, {marginLeft: 10}]}>
-                            <Icon name="calendar" size={20} color="#9C9C9C" />
-                        </Pressable>
+                <View style={styles.section}>
+                    <View style={styles.labelSecondary}>
+                        <Text style={styles.sectionText}>Nhân viên được trả lương</Text>
+                        <View style={styles.row}>
+                            <Text style={styles.textSecondary}>Chọn tất cả</Text>
+                            <Pressable style={[styles.button, {marginLeft: 10}]}>
+                                <MaterialCommunityIcons name="checkbox-blank-outline" size={25} color="#9C9C9C" />
+                            </Pressable>
+                        </View>
+                    </View>
+                    <View style={styles.label}>
+                        <TextInput style={styles.searchText} placeholder='Tìm kiếm' />
+                        <Ionicons name='search' size={20}/>
                     </View>
                 </View>
-            </View>
 
-            <View style={styles.section}>
-                <View style={styles.labelSecondary}>
-                    <Text style={styles.sectionText}>Nhân viên được trả lương</Text>
-                    <View style={styles.row}>
-                        <Text style={styles.textSecondary}>Chọn tất cả</Text>
-                        <Pressable style={[styles.button, {marginLeft: 10}]}>
-                            <MaterialCommunityIcons name="checkbox-blank-outline" size={25} color="#9C9C9C" />
-                        </Pressable>
-                    </View>
+                <View style={styles.section}>
+                    {staffList.map((item) => 
+                        renderItem({item})
+                    )}
                 </View>
-                <View style={styles.label}>
-                    <TextInput style={styles.searchText} placeholder='Tìm kiếm' />
-                    <Ionicons name='search' size={20}/>
-                </View>
-            </View>
 
-            <View style={styles.section}>
-            {staffList.map((item) => 
-                renderItem({item})
-            )}
-            </View>
-            <SelectTermOptionsModal visible={modalSelectTermOptionVisible} onClose={hideSelectTermOptionsModal} onSelectOption={handleSelectTermOption}/>
-            <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} />
-        </ScrollView>
-    </SafeAreaView>
-  )
+                {/* Modal */}
+                <SelectTermOptionsModal visible={modalSelectTermOptionVisible} onClose={hideSelectTermOptionsModal} onSelectOption={handleSelectTermOption} />
+                <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} />
+                <SelectDateModal 
+                    visible={modalSelectDateVisible} 
+                    onClose={hideSelectDateModal} 
+                    onSelectOption={selectedDateType === 'start' ? handleSelectDateStartOption : handleSelectDateEndOption} // Chọn hàm xử lý tùy thuộc vào loại ngày
+                />
+
+            </ScrollView>
+        </SafeAreaView>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -225,7 +259,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
     },
     checkbox: {
-        ustifyContent: 'center',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     sectionText: {
