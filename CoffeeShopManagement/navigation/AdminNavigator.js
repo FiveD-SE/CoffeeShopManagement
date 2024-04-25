@@ -19,23 +19,23 @@ import AdminExportGoodsScreen from "../screens/Admin/Warehouse/AdminExportGoodsS
 import AdminListImportScreen from "../screens/Admin/Warehouse/AdminListImportScreen";
 import AdminListExportScreen from "../screens/Admin/Warehouse/AdminListExportScreen";
 
-import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
+import AdminOtherScreen from "../screens/Admin/Other/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
-import ProfileDetail from "../screens/Admin/AdminProfileDetailScreen";
+import ProfileDetail from "../screens/Admin/Other/AdminProfileDetailScreen";
 import AdminBranchManagement from "../screens/Admin/AdminBranchManagement";
 import AdminEditBranchScreen from "../screens/Admin/AdminEditBranchScreen";
 import AdminAddBranchScreen from "../screens/Admin/AdminAddBranchScreen";
+import AdminPayrollScreen from "../screens/Admin/Other/AdminPayrollScreen";
+import AdminPayrollDetailsScreen from "../screens/Admin/Other/AdminPayrollDetailsScreen";
+import AdminAddPayrollScreen from "../screens/Admin/Other/AdminAddPayrollScreen";
 
 import HeaderBackButton from "./components/HeaderBackButton";
 import AddBranchButton from "./components/AddBranchButton";
+import AddPayrollButton from "./components/AddPayrollButton";
 
 import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
 import RoleListScreen from "../screens/Admin/RoleListScreen";
 import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
-
-const UserCouponsScreen = () => {
-    return <Text>User Coupons Screen</Text>;
-};
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -113,6 +113,42 @@ const OtherStack = () => (
             component={AdminAddBranchScreen}
             options={{
                 headerTitle: "Thêm chi nhánh",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+
+        <Stack.Screen
+            name="AdminPayrollScreen"
+            component={AdminPayrollScreen}
+            options={{
+                headerTitle: "Bảng tính lương",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddPayrollButton />,
+            }}
+        />
+
+        <Stack.Screen
+            name="AdminPayrollDetailsScreen"
+            component={AdminPayrollDetailsScreen}
+            options={{
+                headerTitle: "Chi tiết bảng lương",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminAddPayrollScreen"
+            component={AdminAddPayrollScreen}
+            options={{
+                headerTitle: "Thêm bảng lương",
                 headerLeftContainerStyle: {
                     padding: "5%",
                 },
