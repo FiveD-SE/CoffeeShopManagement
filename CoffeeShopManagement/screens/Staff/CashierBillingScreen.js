@@ -17,7 +17,7 @@ export default function CashierBillingScreen() {
             customer: 'Tánh',
             sdt: '0352085655',
             orderState: 'Chưa thanh toán',
-            state: 'Chờ xác nhận'
+            state: 'Đang làm'
         },
         {
             orderId: '#12346',
@@ -35,7 +35,7 @@ export default function CashierBillingScreen() {
             customer: 'Tánh',
             sdt: '0352085655',
             orderState: 'Chưa thanh toán',
-            state: 'Chờ xác nhận'
+            state: 'Đã xong'
         },
         {
             orderId: '#12348',
@@ -44,7 +44,7 @@ export default function CashierBillingScreen() {
             customer: 'Tánh',
             sdt: '0352085655',
             orderState: 'Chưa thanh toán',
-            state: 'Chờ xác nhận'
+            state: 'Đã hoàn thành'
         },
     ]
   return (

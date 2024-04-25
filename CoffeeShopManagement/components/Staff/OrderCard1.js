@@ -3,6 +3,18 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/Entypo'
 
 const OrderCard1 = ({item, handleDetailOrder}) => {
+    const getColorForState = (state) => {
+        switch(state) {
+            case 'Đã xong':
+                return '#4ecb71';
+            case 'Chờ xác nhận':
+                return '#FFA730';
+            case 'Đang làm':
+                return '#f61a3d';
+            default:
+                return '#4ecb71'; // Màu mặc định
+        }
+    };
     
   return (
     <TouchableOpacity 
@@ -17,7 +29,7 @@ const OrderCard1 = ({item, handleDetailOrder}) => {
             <Text style={{marginBottom: '1%'}}>Trạng thái thanh toán: {item.orderState}</Text>
             <Text>
                 <Text>Trạng thái: </Text>
-                <Text style={{color: '#FFA730'}}>{item.state}</Text>
+                <Text style={{color: getColorForState(item.state), fontWeight: '600'}}>{item.state}</Text>
             </Text>
         </View>
             <View style={{justifyContent: 'center'}}>

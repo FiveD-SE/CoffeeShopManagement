@@ -70,7 +70,11 @@ const HomeStack = () => {
                 name="CashierNotification"
                 component={CashierNotification}
                 options={{
-                    headerShown: false
+                    headerTitle: "Thông báo",
+                    headerLeftContainerStyle: {
+                        padding: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
                 }}
             />
             <Stack.Screen

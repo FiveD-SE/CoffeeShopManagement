@@ -17,31 +17,40 @@ export default function CashierHome() {
     }
     const DATA = [
         {
-            orderId: "#12345",
-            time: "10:45 SA 16/03/2024",
-            orderType: "Tự đến lấy hàng",
-            customer: "Tánh",
-            sdt: "0352085655",
-            orderState: "Chưa thanh toán",
-            state: "Chờ xác nhận",
+            orderId: '#12345',
+            time: '10:45 SA 16/03/2024',
+            orderType: 'Tự đến lấy hàng',
+            customer: 'Tánh',
+            sdt: '0352085655',
+            orderState: 'Chưa thanh toán',
+            state: 'Đang làm'
         },
         {
-            orderId: "#12346",
-            time: "10:45 SA 16/03/2024",
-            orderType: "Tự đến lấy hàng",
-            customer: "Tánh",
-            sdt: "0352085655",
-            orderState: "Chưa thanh toán",
-            state: "Chờ xác nhận",
+            orderId: '#12346',
+            time: '10:45 SA 16/03/2024',
+            orderType: 'Tự đến lấy hàng',
+            customer: 'Tánh',
+            sdt: '0352085655',
+            orderState: 'Chưa thanh toán',
+            state: 'Chờ xác nhận'
         },
         {
-            orderId: "#12347",
-            time: "10:45 SA 16/03/2024",
-            orderType: "Tự đến lấy hàng",
-            customer: "Tánh",
-            sdt: "0352085655",
-            orderState: "Chưa thanh toán",
-            state: "Chờ xác nhận",
+            orderId: '#12347',
+            time: '10:45 SA 16/03/2024',
+            orderType: 'Tự đến lấy hàng',
+            customer: 'Tánh',
+            sdt: '0352085655',
+            orderState: 'Chưa thanh toán',
+            state: 'Đã xong'
+        },
+        {
+            orderId: '#12348',
+            time: '10:45 SA 16/03/2024',
+            orderType: 'Tự đến lấy hàng',
+            customer: 'Tánh',
+            sdt: '0352085655',
+            orderState: 'Chưa thanh toán',
+            state: 'Đã hoàn thành'
         },
     ];
     return (
