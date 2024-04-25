@@ -37,6 +37,7 @@ import MembershipTier from "../screens/Client/Coupons/UserMembershipTierScreen";
 import History from "../screens/Client/Coupons/UserExchangeHistoryScreen";
 import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
 import YourVoucher from "../screens/Client/Coupons/UserVoucherScreen";
+import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -149,7 +150,7 @@ const OrderStack = () => (
 			name="SelectAddressScreen"
 			component={SelectAdress}
 			options={{
-				headerTitle: "",
+				headerTitle: "Chọn địa chỉ",
 				headerLeftContainerStyle: {
 					paddingLeft: "5%",
 				},
@@ -160,7 +161,18 @@ const OrderStack = () => (
 			name="SelectBranchScreen"
 			component={SelectBranch}
 			options={{
-				headerTitle: "",
+				headerTitle: "Chọn chi nhánh",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="UserOrderInformationScreen"
+			component={UserOrderInformationScreen}
+			options={{
+				headerTitle: "Đơn hàng",
 				headerLeftContainerStyle: {
 					paddingLeft: "5%",
 				},
