@@ -53,7 +53,7 @@ export default function CashierHistoryScreen() {
         },
     ]
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
         <View style={styles.topApp}>
             <TextInput 
                 placeholder='Tra cứu mã đơn hàng'
@@ -74,7 +74,7 @@ export default function CashierHistoryScreen() {
             </View>
         </View>
         <View>
-            <View style={{margin: '4%'}}>
+            <View style={{margin: '4%', height: '84%'}}>
             <FlatList
                         data = {DATA}
                         showsVerticalScrollIndicator={false}
@@ -84,7 +84,7 @@ export default function CashierHistoryScreen() {
                         keyExtractor={item => item.orderId}/>
             </View>
         </View>
-    </SafeAreaView>
+    </View>
   )
 }
 
