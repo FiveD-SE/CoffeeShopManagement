@@ -14,54 +14,52 @@ const Stack = createNativeStackNavigator();
 
 const AuthNavigator = () => {
     return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="SignIn">
-                <Stack.Screen
-                    name="Onboarding"
-                    component={OnBoardingScreen}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="SignInScreen"
-                    component={SignInScreen}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="SignUpScreen"
-                    component={SignUpScreen}
-                    options={{ headerShown: false }}
-                />
-                <Stack.Screen
-                    name="SendOTP"
-                    component={SendOTP}
-                    options={{
-                        headerTitle: "",
-                        headerLeft: () => <HeaderBackButton />,
-                    }}
-                />
-                <Stack.Screen
-                    name="EnterOTP"
-                    component={EnterOTP}
-                    options={{
-                        headerTitle: "",
-                        headerLeft: () => <HeaderBackButton />,
-                    }}
-                />
-                <Stack.Screen
-                    name="ResetPassword"
-                    component={ResetPassword}
-                    options={{
-                        headerTitle: "",
-                        headerLeft: () => <HeaderBackButton />,
-                    }}
-                />
-                <Stack.Screen
-                    name="SuccessScreen"
-                    component={SuccessScreen}
-                    options={{ headerShown: false }}
-                />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <Stack.Navigator initialRouteName="SignIn">
+            <Stack.Screen
+                name="Onboarding"
+                component={OnBoardingScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="SignInScreen"
+                component={SignInScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="SignUpScreen"
+                component={SignUpScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="SendOTP"
+                component={SendOTP}
+                options={{
+                    headerTitle: "",
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="EnterOTP"
+                component={EnterOTP}
+                options={{
+                    headerTitle: "",
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="ResetPassword"
+                component={ResetPassword}
+                options={{
+                    headerTitle: "",
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="SuccessScreen"
+                component={SuccessScreen}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
     );
 };
 
