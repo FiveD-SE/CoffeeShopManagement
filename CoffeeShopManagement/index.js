@@ -68,21 +68,21 @@ const startServer = () => {
         }
     });
 
-    // signup
     app.post("/signup", async (req, res) => {
         try {
-            const { username, password, role } = req.body;
+            const { fullName, phoneNumber, password } = req.body;
     
-            const existingUser = await User.findOne({ username });
+            const existingUser = await User.findOne({ phoneNumber });
     
             if (existingUser) {
                 return res.status(409).json({ message: "User already exists" });
             }
     
             const newUser = new User({
-                username,
+                fullName,
+                phoneNumber,
                 password,
-                role,
+                role: "user",
             });
     
             await newUser.save();
@@ -93,7 +93,6 @@ const startServer = () => {
             res.status(500).json({ message: "Internal server error" });
         }
     });
-    
 
     app.use((err, req, res, next) => {
         console.error(err.stack);
