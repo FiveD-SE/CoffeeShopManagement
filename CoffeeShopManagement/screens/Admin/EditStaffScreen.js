@@ -2,8 +2,8 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable } from 'reac
 import React, { useState } from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Entypo'
-import SelectBranchModal from '../../components/Admin/Modal/SelectBranchModal'
-import { Button } from 'react-native-paper'
+import Icon1 from 'react-native-vector-icons/Feather'
+import DeleteStaffModal from '../../components/Admin/DeletaStaffModal'
 
 const TextBox = ({ text }) => {
     return (
@@ -25,42 +25,51 @@ const TextBox2 = ({ text, iconName, marginRate }) => {
     )
 }
 
-const ButtonBox = ({ text, placeholder, onPress }) => {
+const TextBox3 = ({ text, placeholder }) => {
     return (
-        <TouchableOpacity
-            onPress={onPress}
-            style={[styles.textBox, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
+        <View style={[styles.textBox, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={{ fontWeight: '600' }}>{text}</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ color: '#9c9c9c' }}>{placeholder}</Text>
-                <View>
-                    <Icon name='chevron-right' size={28} color={'#9c9c9c'} />
-                </View>
+            <View style={{ flexDirection: 'row' }}>
+                <TextInput
+                    placeholder={placeholder}
+                />
+                <TouchableOpacity>
+                    <Icon name='chevron-right' size={28} />
+                </TouchableOpacity>
             </View>
-        </TouchableOpacity>
+        </View>
     )
 }
 
-export default function AddStaffScreen() {
+export default function EditStaffScreen() {
+    const [modalVisible, setModalVisible] = useState(false);
 
-    const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
-    const showSelectBranchModal = () => {
-        setModalSelectBranchVisible(true);
+    const showDeleteStaffModal = () => {
+        setModalVisible(true);
     };
 
-    const hideSelectBranchModal = () => {
-        setModalSelectBranchVisible(false);
+    const hideDeleteStaffModal = () => {
+        setModalVisible(false);
     };
     return (
         <View style={styles.container}>
-            <View style={styles.imageContainer}>
-                <TouchableOpacity
-                    style={styles.imageButton}>
-                    <Image
-                        source={require('../../assets/account_image.png')}
-                        style={{ marginBottom: '3%' }} />
-                    <Text style={styles.imageText}>Thêm ảnh đại diện</Text>
-                </TouchableOpacity>
+            <View style={styles.topApp}>
+                <View style={styles.imageContainer}>
+                    <TouchableOpacity
+                        style={styles.imageButton}>
+                        <Image
+                            source={require('../../assets/account_image.png')}
+                            style={{ marginBottom: '3%' }} />
+                    </TouchableOpacity>
+                </View>
+                <View>
+                    <TouchableOpacity
+                        onPress={showDeleteStaffModal}
+                        style={styles.deleteButton}>
+                        <Icon1 name='trash' size={32} color={'#f73755'} />
+                    </TouchableOpacity>
+                    <DeleteStaffModal visible={modalVisible} onClose={hideDeleteStaffModal} />
+                </View>
             </View>
             <View style={styles.informationWrapper}>
                 <Text style={styles.topText}>Thông tin cá nhân</Text>
@@ -75,13 +84,12 @@ export default function AddStaffScreen() {
             </View>
             <View>
                 <Text style={styles.topText}>Thông tin công việc</Text>
-                <ButtonBox text={'Vai trò'} placeholder={'Tên vai trò'} />
-                <ButtonBox text={'Chi nhánh làm việc'} placeholder={'Tên chi nhánh'} onPress={showSelectBranchModal} />
-                <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} />
+                <TextBox3 text={'Vai trò'} placeholder={'Tên vai trò'} />
+                <TextBox3 text={'Chi nhánh làm việc'} placeholder={'Tên chi nhánh'} />
             </View>
             <View>
                 <Pressable style={styles.acceptButton}>
-                    <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>Xác nhận</Text>
+                    <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>Lưu</Text>
                 </Pressable>
             </View>
         </View>
@@ -91,13 +99,12 @@ export default function AddStaffScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: '5%'
+        padding: '5%',
     },
     imageContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        marginBottom: '3%'
     },
     imageButton: {
         flexWrap: 'wrap',
@@ -135,5 +142,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: '5%',
         borderRadius: 20
+    },
+    deleteButton: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        borderWidth: 1,
+        padding: '3%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderColor: '#f73755',
+        paddingVertical: '20%'
+    },
+    topApp: {
+        flexDirection: 'row',
+        marginBottom: '5%',
+        justifyContent: 'space-between'
     }
 })

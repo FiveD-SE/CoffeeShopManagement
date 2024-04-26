@@ -6,7 +6,7 @@ import {
     Image,
     TextInput,
 } from "react-native";
-import React, {useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import Icon from "react-native-vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import Icon1 from "react-native-vector-icons/Feather";
@@ -44,13 +44,13 @@ export default function ManageStaffScreen() {
         },
     ];
     const [isOpen, setIsOpen] = useState(false);
-	const chooseRoleListSnapPoints = useMemo(() => ["60%"], []);
-	const chooseRoleListBottomSheetRef = useRef(null);
+    const chooseRoleListSnapPoints = useMemo(() => ["60%"], []);
+    const chooseRoleListBottomSheetRef = useRef(null);
 
     const handleChooseRoleList = () => {
-		chooseRoleListBottomSheetRef.current?.present();
-		setIsOpen(true);
-	};
+        chooseRoleListBottomSheetRef.current?.present();
+        setIsOpen(true);
+    };
 
     const navigation = useNavigation();
     const handleback = () => {
@@ -59,6 +59,9 @@ export default function ManageStaffScreen() {
     const goToAddStaff = () => {
         navigation.navigate("AddStaff");
     };
+    const goToEditStaff = () => {
+        navigation.navigate('EditStaff')
+    }
     return (
         <BottomSheetModalProvider>
             <View style={styles.container}>
@@ -99,8 +102,8 @@ export default function ManageStaffScreen() {
                         </TouchableOpacity>
                     </View>
                     <ScrollView style={styles.listStaff}>
-                        <StaffCard DATA={DATA} />
-                        <TouchableOpacity 
+                        <StaffCard DATA={DATA} handleNavigate={goToEditStaff} />
+                        <TouchableOpacity
                             onPress={goToAddStaff}
                             style={styles.addStaffButton}>
                             <Ionicons name="add" size={24} />
@@ -111,7 +114,7 @@ export default function ManageStaffScreen() {
                                     marginStart: "3%",
                                 }}
                             >
-                            Thêm nhân viên
+                                Thêm nhân viên
                             </Text>
                         </TouchableOpacity>
                     </ScrollView>
@@ -120,7 +123,7 @@ export default function ManageStaffScreen() {
             <RoleListScreen
                 bottomSheetRef={chooseRoleListBottomSheetRef}
                 snapPoints={chooseRoleListSnapPoints}
-                setIsOpen={setIsOpen}/>
+                setIsOpen={setIsOpen} />
         </BottomSheetModalProvider>
     );
 }

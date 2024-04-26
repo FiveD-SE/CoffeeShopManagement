@@ -37,6 +37,14 @@ import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
 import RoleListScreen from "../screens/Admin/RoleListScreen";
 import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
 import AddStaffScreen from "../screens/Admin/AddStaffScreen";
+import EditStaffScreen from "../screens/Admin/EditStaffScreen";
+
+import ScheduleScreen from "../screens/Admin/ScheduleScreen";
+import AddShiftButton from "./components/AddShiftButton";
+import AddShiftScreen from "../screens/Admin/AddShiftScreen";
+import AddShiftButton2 from "./components/AddShiftButton2";
+import DetailShiftScreen from "../screens/Admin/DetailShiftScreen";
+import AddStaffButton from "./components/AddStaffButton";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -156,6 +164,74 @@ const OtherStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
+        <Stack.Screen
+            name="StaffHome"
+            component={ManageStaffScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="RoleList"
+            component={RoleListScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="AddStaff"
+            component={AddStaffScreen}
+            options={{
+                headerTitle: "Tạo mới nhân viên",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="EditStaff"
+            component={EditStaffScreen}
+            options={{
+                headerTitle: "Chỉnh sửa thông tin",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="Schedule"
+            component={ScheduleScreen}
+            options={{
+                headerTitle: "Lịch biểu",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddShiftButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AddShift"
+            component={AddShiftScreen}
+            options={{
+                headerTitle: "Thêm ca làm việc",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddShiftButton2 />,
+            }} />
+        <Stack.Screen
+            name="DetailShift"
+            component={DetailShiftScreen}
+            options={{
+                headerTitle: "Tên ca",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddStaffButton />,
+            }} />
     </Stack.Navigator>
 );
 
@@ -201,6 +277,16 @@ const HomeStack = () => (
             component={AddStaffScreen}
             options={{
                 headerTitle: "Tạo mới nhân viên",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="EditStaff"
+            component={EditStaffScreen}
+            options={{
+                headerTitle: "Chỉnh sửa thông tin",
                 headerLeftContainerStyle: {
                     padding: "5%",
                 },

@@ -2,41 +2,42 @@ import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Image } from 'r
 import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native';
+import { Calendar } from 'react-native-calendars';
 
 export default function CashierInformation() {
     const navigation = useNavigation();
-  return (
-    <View style={styles.container}>
-        <View style={styles.inforWrapper}>
-            <Icon name='account-circle' size={60} color={'#fff'}/>
-            <View style={styles.inforTextWrapper}>
-                <Text style={styles.shopNameText}>TaiCoffeeShop</Text>
-                <Text style={{color: '#fff', fontSize: 14}}>
-                    <Text>Thang Ngu Gau Gau</Text>
-                    <Text> | </Text>
-                    <Text style={{fontWeight: '600'}}>Cashier</Text>
-                </Text>
+    return (
+        <View style={styles.container}>
+            <View style={styles.inforWrapper}>
+                <Icon name='account-circle' size={60} color={'#fff'} />
+                <View style={styles.inforTextWrapper}>
+                    <Text style={styles.shopNameText}>TaiCoffeeShop</Text>
+                    <Text style={{ color: '#fff', fontSize: 14 }}>
+                        <Text>Thang Ngu Gau Gau</Text>
+                        <Text> | </Text>
+                        <Text style={{ fontWeight: '600' }}>Cashier</Text>
+                    </Text>
+                </View>
+            </View>
+            <View style={styles.bodyApp}>
+                <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: '5%' }}>Lịch làm việc</Text>
+                <View style={styles.calender}>
+                    <Calendar />
+                </View>
+                <Text style={styles.dateText}>Ngày 8/3/2024</Text>
+                <View style={styles.morningShiftWrapper}>
+                    <Text style={styles.morningShiftText}>Ca sáng: 7h-15h</Text>
+                </View>
+                <View style={styles.afternoonShiftWrapper}>
+                    <Text style={styles.afternoonShiftText}>Ca sáng: 7h-15h</Text>
+                    <Text style={{ fontSize: 14 }}>
+                        <Text style={{ textDecorationLine: 'underline' }}>Note: </Text>
+                        <Text>Đi sớm dọn quán, check vệ sinh ca trước</Text>
+                    </Text>
+                </View>
             </View>
         </View>
-        <View style={styles.bodyApp}>
-            <Text style={{fontSize: 16, fontWeight: '600', marginBottom: '5%'}}>Lịch làm việc</Text>
-            <View style={styles.calender}>
-
-            </View>
-            <Text style={styles.dateText}>Ngày 8/3/2024</Text>
-            <View style={styles.morningShiftWrapper}>
-                <Text style={styles.morningShiftText}>Ca sáng: 7h-15h</Text>
-            </View>
-            <View style={styles.afternoonShiftWrapper}>
-                <Text style={styles.afternoonShiftText}>Ca sáng: 7h-15h</Text>
-                <Text style={{fontSize: 14}}>
-                    <Text style={{textDecorationLine: 'underline'}}>Note: </Text>
-                    <Text>Đi sớm dọn quán, check vệ sinh ca trước</Text>
-                </Text>
-            </View>
-        </View>
-    </View>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
@@ -71,7 +72,8 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '50%',
         borderRadius: 10,
-        marginBottom: '5%'
+        marginBottom: '5%',
+        padding: '3%'
     },
     dateText: {
         fontSize: 16,

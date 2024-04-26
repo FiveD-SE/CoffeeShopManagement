@@ -16,11 +16,11 @@ export default function App() {
         "Lato-Light": require("./assets/fonts/Lato-Light.ttf"),
     });
 
-    const username = "user";
+    const username = "admin";
 
-    if (!loaded) {
-        return null;
-    }
+    // if (!loaded) {
+    //     return null;
+    // }
 
     useEffect(() => {
         getRoleByUsername(username).then((data) => {
