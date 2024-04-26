@@ -2,6 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 
+const { hashPassword } = require("./passwordService");
+
 app.use(express.json());
 
 require("dotenv").config();
@@ -46,9 +48,13 @@ const startServer = () => {
     app.post("/users", async (req, res) => {
         try {
             const { username, password, role } = req.body;
-            const user = new User({ username, password, role });
+            const user = new User({
+                username,
+                password: hashPassword(password),
+                role,
+            });
             await user.save();
-            res.status(201).json({ message: "User added successfully" });
+            res.status(201).json(user);
         } catch (error) {
             console.error("Error adding user", error);
             res.status(500).json({ message: "Internal server error" });
