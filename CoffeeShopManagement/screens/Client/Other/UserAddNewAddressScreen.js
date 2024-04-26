@@ -46,13 +46,13 @@ export default function AddNewAddress() {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={{ width: '100%', borderWidth: 0.5, marginBottom: 20 }} />
+                    <View style={{ width: '100%', height: 1, backgroundColor: '#3A3A3A' }} />
                     <View style={styles.row}>
                         <Text style={styles.rowText}>Đặt làm địa chỉ mặc định</Text>
                         <SwitchToggle
                             onColor="#4ECB71"
                             offColor="#CCCCCC"
-                            labelStyle={{ color: '#3A3A3A', fontFamily: 'Lato', fontSize: 16 }}
+                            labelStyle={{ color: '#3A3A3A', fontFamily: 'Lato-Regular', fontSize: 16 }}
                             size="medium"
                             value={isToggled}
                             onToggle={handleToggle}
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     rowText: {
         fontSize: 16,
         color: '#3A3A3A',
-        fontFamily: 'Lato',
+        fontFamily: 'Lato-Regular',
     },
     row: {
         flexDirection: 'row',
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     },
     kindText: {
         color: '#3A3A3A',
-        fontFamily: 'Lato',
+        fontFamily: 'Lato-Regular',
     },
     input: {
         height: 50,

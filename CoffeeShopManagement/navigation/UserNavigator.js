@@ -25,7 +25,7 @@ import UserCartScreen from "../screens/Client/PlaceOrder/UserCartScreen";
 
 import OrderHistory from "../screens/Client/Other/UserOrderHistoryScreen";
 import Setting from "../screens/Client/Other/UserSettingScreen";
-import SelectAdress from "../screens/Client/Other/UserSelectAddressScreen";
+import SelectAdress from "../screens/Client/Other/UserAddressScreen";
 import SelectBranch from "../screens/Client/Other/UserSelectBranchScreen";
 import FeedbackAndHelp from "../screens/Client/Other/UserFeedbackAndHelpScreen";
 import ChangePassword from "../screens/Client/ChangePassword";
