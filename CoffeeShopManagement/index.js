@@ -35,32 +35,6 @@ const startServer = () => {
 
     const User = mongoose.model("User", userSchema, "users");
 
-    app.get("/users", async (req, res) => {
-        try {
-            const users = await User.find();
-            res.status(200).json(users);
-        } catch (error) {
-            console.error("Error getting users", error);
-            res.status(500).json({ message: "Internal server error" });
-        }
-    });
-
-    app.post("/users", async (req, res) => {
-        try {
-            const { username, password, role } = req.body;
-            const user = new User({
-                username,
-                password: hashPassword(password),
-                role,
-            });
-            await user.save();
-            res.status(201).json(user);
-        } catch (error) {
-            console.error("Error adding user", error);
-            res.status(500).json({ message: "Internal server error" });
-        }
-    });
-
     app.get("/users/:username", async (req, res) => {
         try {
             const { username } = req.params;
@@ -74,7 +48,7 @@ const startServer = () => {
             console.error("Error getting user", error);
             res.status(500).json({ message: "Internal server error" });
         }
-    });
+    });    
     
     app.post("/login", async (req, res) => {
         try {
@@ -95,6 +69,31 @@ const startServer = () => {
     });
 
     // signup
+    app.post("/signup", async (req, res) => {
+        try {
+            const { username, password, role } = req.body;
+    
+            const existingUser = await User.findOne({ username });
+    
+            if (existingUser) {
+                return res.status(409).json({ message: "User already exists" });
+            }
+    
+            const newUser = new User({
+                username,
+                password,
+                role,
+            });
+    
+            await newUser.save();
+    
+            res.status(201).json({ message: "User created successfully" });
+        } catch (error) {
+            console.error("Error signing up", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    });
+    
 
     app.use((err, req, res, next) => {
         console.error(err.stack);
