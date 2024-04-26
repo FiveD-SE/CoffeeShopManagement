@@ -16,6 +16,7 @@ export default function App() {
         "Lato-Light": require("./assets/fonts/Lato-Light.ttf"),
     });
 
+
     const username = "admin";
 
     // if (!loaded) {

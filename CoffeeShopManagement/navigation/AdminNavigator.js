@@ -33,6 +33,8 @@ import HeaderBackButton from "./components/HeaderBackButton";
 import AddBranchButton from "./components/AddBranchButton";
 import AddPayrollButton from "./components/AddPayrollButton";
 
+import ClientHomeScreen from "../screens/Admin/Home/ClientHomeScreen";
+import ClientDetailHomeScreen from "../screens/Admin/Home/ClientDetailHomeScreen";
 import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
 import RoleListScreen from "../screens/Admin/RoleListScreen";
 import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
@@ -116,7 +118,6 @@ const OtherStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-
         <Stack.Screen
             name="AdminAddBranchScreen"
             component={AdminAddBranchScreen}
@@ -273,6 +274,18 @@ const HomeStack = () => (
             }}
         />
         <Stack.Screen
+            name="ClientHome"
+            component={ClientHomeScreen}
+            options={{
+                headerTitle: "Khách hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+<Stack.Screen
+
             name="AddStaff"
             component={AddStaffScreen}
             options={{
@@ -281,7 +294,21 @@ const HomeStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
+
+        <Stack.Screen
+            name="ClientDetailHome"
+            component={ClientDetailHomeScreen}
+            options={{
+                headerTitle: "Khách hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+     
         <Stack.Screen
             name="EditStaff"
             component={EditStaffScreen}
@@ -291,7 +318,10 @@ const HomeStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+            />
+
+
     </Stack.Navigator>
 );
 
