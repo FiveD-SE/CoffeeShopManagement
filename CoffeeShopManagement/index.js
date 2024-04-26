@@ -71,6 +71,27 @@ const startServer = () => {
         }
     });
 
+    // login
+    app.post("/login", async (req, res) => {
+        try {
+            const { username, password } = req.body;
+            const user = await User.findOne({
+                username,
+                password,
+            });
+            if (user) {
+                res.status(200).json({ role: user.role });
+            } else {
+                res.status(401).json({ message: "Unauthorized" });
+            }
+        } catch (error) {
+            console.error("Error logging in", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    });
+
+    // signup
+
     app.use((err, req, res, next) => {
         console.error(err.stack);
         res.status(500).json({ message: "Something broke!" });
