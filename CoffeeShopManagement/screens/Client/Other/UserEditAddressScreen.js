@@ -54,7 +54,7 @@ export default function EditAddress() {
                         <SwitchToggle
                             onColor="#4ECB71"
                             offColor="#CCCCCC"
-                            labelStyle={{ color: '#3A3A3A', fontFamily: 'Lato', fontSize: 16 }}
+                            labelStyle={{ color: '#3A3A3A', fontFamily: 'Lato-Regular', fontSize: 16 }}
                             size="medium"
                             value={isToggled}
                             onToggle={handleToggle}
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
     rowText: {
         fontSize: 16,
         color: '#3A3A3A',
-        fontFamily: 'Lato',
+        fontFamily: 'Lato-Regular',
     },
     row: {
         flexDirection: 'row',
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     },
     kindText: {
         color: '#3A3A3A',
-        fontFamily: 'Lato',
+        fontFamily: 'Lato-Regular',
     },
     input: {
         height: 50,
