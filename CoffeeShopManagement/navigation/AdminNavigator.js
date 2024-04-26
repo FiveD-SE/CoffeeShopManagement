@@ -36,6 +36,7 @@ import AddPayrollButton from "./components/AddPayrollButton";
 import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
 import RoleListScreen from "../screens/Admin/RoleListScreen";
 import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
+import AddStaffScreen from "../screens/Admin/AddStaffScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -195,6 +196,16 @@ const HomeStack = () => (
                 headerShown: false,
             }}
         />
+        <Stack.Screen
+            name="AddStaff"
+            component={AddStaffScreen}
+            options={{
+                headerTitle: "Tạo mới nhân viên",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
     </Stack.Navigator>
 );
 
