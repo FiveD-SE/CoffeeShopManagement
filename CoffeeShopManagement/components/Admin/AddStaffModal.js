@@ -2,8 +2,9 @@ import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity } from 'reac
 import React from 'react'
 import ModalHeader from '../Client/Header/ModalHeader'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Feather from 'react-native-vector-icons/Feather'
 
-const AddRoleModal = ({ visible, onClose }) => {
+const AddStaffModal = ({ visible, onClose }) => {
     return (
         <Modal
             animationType="fade"
@@ -12,15 +13,11 @@ const AddRoleModal = ({ visible, onClose }) => {
             onRequestClose={onClose}>
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
-                    <ModalHeader title="Ca làm việc mới" onClose={onClose} />
+                    <ModalHeader title="Thêm nhân viên vào ca" onClose={onClose} />
                     <View style={styles.bodyModal}>
+                        <Text style={styles.topText}>Thông tin ca làm việc</Text>
                         <TextInput
-                            placeholder='Tên vai trò'
-                            placeholderTextColor={'#3a3a3a'}
-                            padding={'3%'}
-                            style={styles.addSalary} />
-                        <TextInput
-                            placeholder='Mức lương mới'
+                            placeholder='Tên nhân viên'
                             placeholderTextColor={'#3a3a3a'}
                             padding={'3%'}
                             style={styles.addSalary} />
@@ -45,7 +42,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 20,
         width: "90%",
-        height: "35%",
+        height: "30%",
     },
     bodyModal: {
         padding: '5%'
@@ -76,7 +73,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: '5%'
+    },
+    topText: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: '3%'
+    },
+    addTime: {
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#cccccc',
+        borderRadius: 10,
+        marginBottom: '5%',
+        width: '45%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '3%'
     }
 })
 
-export default AddRoleModal
+export default AddStaffModal

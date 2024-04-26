@@ -2,8 +2,9 @@ import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity } from 'reac
 import React from 'react'
 import ModalHeader from '../Client/Header/ModalHeader'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Feather from 'react-native-vector-icons/Feather'
 
-const AddRoleModal = ({ visible, onClose }) => {
+const AddShiftModal = ({ visible, onClose }) => {
     return (
         <Modal
             animationType="fade"
@@ -14,16 +15,30 @@ const AddRoleModal = ({ visible, onClose }) => {
                 <View style={styles.modalContent}>
                     <ModalHeader title="Ca làm việc mới" onClose={onClose} />
                     <View style={styles.bodyModal}>
+                        <Text style={styles.topText}>Thông tin ca làm việc</Text>
                         <TextInput
-                            placeholder='Tên vai trò'
+                            placeholder='Tên ca mới'
                             placeholderTextColor={'#3a3a3a'}
                             padding={'3%'}
                             style={styles.addSalary} />
-                        <TextInput
-                            placeholder='Mức lương mới'
-                            placeholderTextColor={'#3a3a3a'}
-                            padding={'3%'}
-                            style={styles.addSalary} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <View style={[styles.addTime]} >
+                                <TextInput
+                                    placeholder='Giờ bắt đầu'
+                                    placeholderTextColor={'#3a3a3a'}
+
+                                />
+                                <Feather name='clock' size={24} />
+                            </View>
+                            <View style={styles.addTime} >
+                                <TextInput
+                                    placeholder='Giờ kết thúc'
+                                    placeholderTextColor={'#3a3a3a'}
+
+                                />
+                                <Feather name='clock' size={24} />
+                            </View>
+                        </View>
                         <TouchableOpacity style={styles.acceptButton}>
                             <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>Thêm</Text>
                         </TouchableOpacity>
@@ -45,7 +60,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         borderRadius: 20,
         width: "90%",
-        height: "35%",
+        height: "40%",
     },
     bodyModal: {
         padding: '5%'
@@ -76,7 +91,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: '5%'
+    },
+    topText: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: '3%'
+    },
+    addTime: {
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderColor: '#cccccc',
+        borderRadius: 10,
+        marginBottom: '5%',
+        width: '45%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '3%'
     }
 })
 
-export default AddRoleModal
+export default AddShiftModal
