@@ -5,7 +5,7 @@ import {
     StyleSheet,
     SafeAreaView,
     ScrollView,
-    TouchableOpacity,
+    Pressable,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
@@ -17,7 +17,7 @@ const Setting = () => {
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <View style={styles.section}>
                     <Text style={styles.primaryText}>Bảo mật</Text>
-                    <TouchableOpacity
+                    <Pressable
                         style={styles.itemContainer}
                         onPress={() => {
                             navigation.navigate("ChangePassword");
@@ -29,12 +29,12 @@ const Setting = () => {
                             style={styles.icon}
                         />
                         <Text style={styles.itemText}>Thay đổi mật khẩu</Text>
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.primaryText}>Cài đặt tài khoản</Text>
-                    <TouchableOpacity style={styles.itemContainer}>
+                    <Pressable style={styles.itemContainer}>
                         <FontAwesome
                             name="trash"
                             size={24}
@@ -43,7 +43,7 @@ const Setting = () => {
                         <Text style={[styles.itemText, { color: "#F61A3D" }]}>
                             Xóa tài khoản
                         </Text>
-                    </TouchableOpacity>
+                    </Pressable>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         backgroundColor: "#F8F7FA",
-        paddingTop: 50,
     },
     scrollViewContent: {
         paddingHorizontal: 20,
@@ -66,7 +65,7 @@ const styles = StyleSheet.create({
     },
     primaryText: {
         color: "#000",
-        fontFamily: "Lato",
+        fontFamily: "Lato-Bold",
         fontSize: 18,
         fontWeight: "600",
         marginBottom: 15,
@@ -90,7 +89,7 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 16,
         color: "#3A3A3A",
-        fontFamily: "Lato-Bold",
+        fontFamily: "Lato-Regular",
     },
 });
 

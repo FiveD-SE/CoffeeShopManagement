@@ -79,10 +79,10 @@ const styles = StyleSheet.create({
     },
     orderId: {
       color: '#000',
-      fontFamily: 'Lato',
+      fontFamily: 'Lato-Regular',
       fontSize: 16,
       fontStyle: 'normal',
-      fontWeight: '500',
+      fontWeight: '600',
     },
     orderStatus: {
       fontSize: 14,
@@ -90,10 +90,10 @@ const styles = StyleSheet.create({
     },
     orderTotal: {
       color: '#000',
-      fontFamily: 'Lato',
+      fontFamily: 'Lato-Regular',
       fontSize: 16,
       fontStyle: 'normal',
-      fontWeight: '500',
+      fontWeight: '600',
     },
     borderStatus: {
       paddingVertical: 4,
@@ -102,10 +102,10 @@ const styles = StyleSheet.create({
     },
     textStatus: {
       textAlign: 'center',
-      fontFamily: 'Lato',
+      fontFamily: 'Lato-Regular',
       fontSize: 10,
       fontStyle: 'normal',
-      fontWeight: '400',
+      fontWeight: '500',
     }
 });
 

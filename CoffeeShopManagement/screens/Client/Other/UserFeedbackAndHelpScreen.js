@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: "#F8F7FA",
-    paddingTop: 50
   },
   scrollViewContent: {
     paddingHorizontal: 20,
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
   },
   primaryText: {
     color: '#000',
-    fontFamily: 'Lato',
+    fontFamily: 'Lato-Regular',
     fontSize: 18,
     fontWeight: '600',
   },
