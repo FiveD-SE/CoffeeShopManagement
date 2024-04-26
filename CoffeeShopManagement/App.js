@@ -1,25 +1,46 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
-import { StyleSheet, Text, View } from "react-native";
-import OnBoardingScreen from "./screens/Client/OnBoardingScreen";
+import { StyleSheet, View } from "react-native";
 import AppNavigator from "./navigation/AppNavigator";
 import { useFonts } from "expo-font";
+import { getRoleByUsername } from "./api";
+import OnBoardingScreen from "./screens/Client/OnBoardingScreen";
 
 export default function App() {
+    const [role, setRoles] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [loaded] = useFonts({
         "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
         "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
         "Lato-Light": require("./assets/fonts/Lato-Light.ttf"),
     });
-    const role = "user";
+
+    const username = "user";
 
     if (!loaded) {
         return null;
     }
 
-    return <AppNavigator role={role} />;
+    useEffect(() => {
+        getRoleByUsername(username).then((data) => {
+            setRoles(data);
+            setLoading(false);
+        });
+    }, []);
+
+    return (
+        <NavigationContainer>
+            {loading ? (
+                <View style={styles.container}>
+                    <OnBoardingScreen />
+                </View>
+            ) : (
+                <AppNavigator role={role} />
+            )}
+            <StatusBar style="auto" />
+        </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -28,11 +49,5 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         alignItems: "center",
         justifyContent: "center",
-    },
-
-    text: {
-        marginTop: 250,
-        fontSize: 20,
-        color: "black",
     },
 });

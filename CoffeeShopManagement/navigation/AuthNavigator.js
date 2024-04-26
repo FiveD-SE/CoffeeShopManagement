@@ -8,6 +8,7 @@ import ResetPassword from "../screens/Client/ResetPassword";
 import SuccessScreen from "../screens/Client/SuccessScreen";
 import SignUpScreen from "../screens/Client/SignUpScreen";
 import OnBoardingScreen from "../screens/Client/OnBoardingScreen";
+import { NavigationContainer } from "@react-navigation/native";
 
 const Stack = createNativeStackNavigator();
 

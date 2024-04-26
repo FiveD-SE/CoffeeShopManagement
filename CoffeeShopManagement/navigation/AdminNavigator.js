@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, StyleSheet } from "react-native";
+import { Text, StyleSheet, Dimensions, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -33,7 +33,10 @@ import HeaderBackButton from "./components/HeaderBackButton";
 import AddBranchButton from "./components/AddBranchButton";
 import AddPayrollButton from "./components/AddPayrollButton";
 
-import StaffHomeScreen from "../screens/Admin/StaffHomeScreen";
+import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
+import RoleListScreen from "../screens/Admin/RoleListScreen";
+import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
+import AddStaffScreen from "../screens/Admin/AddStaffScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -181,11 +184,28 @@ const HomeStack = () => (
         />
         <Stack.Screen
             name="StaffHome"
-            component={StaffHomeScreen}
+            component={ManageStaffScreen}
             options={{
                 headerShown: false,
             }}
         />
+        <Stack.Screen
+            name="RoleList"
+            component={RoleListScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="AddStaff"
+            component={AddStaffScreen}
+            options={{
+                headerTitle: "Tạo mới nhân viên",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
     </Stack.Navigator>
 );
 
@@ -255,51 +275,51 @@ const WarehouseStack = () => (
 
 function AdminNavigator() {
     return (
-        <NavigationContainer>
-            <Tab.Navigator
-                screenOptions={({ route }) => ({
-                    tabBarActiveTintColor: "#006C5E",
-                    tabBarInactiveTintColor: "#CBCBD4",
-                    tabBarStyle: styles.bottomTabBar,
-                    tabBarShowLabel: true,
-                    headerShown: false,
-                    tabBarHideOnKeyboard: true,
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#006C5E",
+                tabBarInactiveTintColor: "#CBCBD4",
+                tabBarStyle: styles.bottomTabBar,
+                tabBarShowLabel: true,
+                headerShown: false,
+                tabBarHideOnKeyboard: true,
+                tabBarLabelStyle: styles.labelStyle,
 
-                        if (route.name === "Home") {
-                            iconName = "home";
-                        } else if (route.name === "Sales") {
-                            iconName = "cart";
-                        } else if (route.name === "Warehouse") {
-                            iconName = "cube";
-                        } else if (route.name === "Billing") {
-                            iconName = "receipt";
-                        } else if (route.name === "Others") {
-                            iconName = "reorder-three";
-                        }
-
-                        return (
-                            <TabBarIcon
-                                focused={focused}
-                                name={iconName}
-                                color={color}
-                            />
-                        );
-                    },
-                })}
-            >
-                <Tab.Screen name="Home" component={HomeStack} />
-                <Tab.Screen name="Sales" component={SalesStack} />
-                <Tab.Screen name="Billing" component={BillingStack} />
-                <Tab.Screen name="Warehouse" component={WarehouseStack} />
-                <Tab.Screen name="Others" component={OtherStack} />
-            </Tab.Navigator>
-        </NavigationContainer>
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+                    if (route.name === "Home") {
+                        iconName = "home";
+                    } else if (route.name === "Sales") {
+                        iconName = "cart";
+                    } else if (route.name === "Warehouse") {
+                        iconName = "cube";
+                    } else if (route.name === "Billing") {
+                        iconName = "receipt";
+                    } else if (route.name === "Others") {
+                        iconName = "reorder-three";
+                    }
+                    return (
+                        <TabBarIcon
+                            focused={focused}
+                            name={iconName}
+                            color={color}
+                        />
+                    );
+                },
+            })}
+        >
+            <Tab.Screen name="Home" component={HomeStack} />
+            <Tab.Screen name="Sales" component={SalesStack} />
+            <Tab.Screen name="Billing" component={BillingStack} />
+            <Tab.Screen name="Warehouse" component={WarehouseStack} />
+            <Tab.Screen name="Others" component={OtherStack} />
+        </Tab.Navigator>
     );
 }
 
 export default AdminNavigator;
+
+const isIOS = Platform.OS === "ios";
 
 const styles = StyleSheet.create({
     bottomTabBar: {
@@ -308,5 +328,11 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         borderOpacity: 0.5,
         height: 83,
+    },
+    labelStyle: {
+        fontSize: 12,
+        marginTop: 0,
+        fontFamily: "Lato-Bold",
+        marginBottom: isIOS ? 0 : 15,
     },
 });
