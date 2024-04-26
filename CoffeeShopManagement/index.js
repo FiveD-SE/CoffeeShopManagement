@@ -61,7 +61,6 @@ const startServer = () => {
         }
     });
 
-    // get role by username
     app.get("/users/:username", async (req, res) => {
         try {
             const { username } = req.params;
@@ -76,8 +75,7 @@ const startServer = () => {
             res.status(500).json({ message: "Internal server error" });
         }
     });
-
-    // login
+    
     app.post("/login", async (req, res) => {
         try {
             const { username, password } = req.body;
