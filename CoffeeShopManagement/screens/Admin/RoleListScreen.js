@@ -1,24 +1,12 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Button } from 'react-native'
-import React, { useCallback, useMemo, useRef } from 'react'
-import Icon from 'react-native-vector-icons/Entypo'
-import { useNavigation } from '@react-navigation/native';
-import {
-    BottomSheetModal,
-    BottomSheetView,
-    BottomSheetModalProvider,
-  } from '@gorhom/bottom-sheet';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import BottomSheet from '../../components/Client/BottomSheet/BottomSheet';
+import RoleCard from '../../components/Staff/RoleCard';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import AddRoleModal from '../../components/Admin/AddRoleModal';
+import React, { useState } from 'react';
 
-export default function RoleListScreen() {
-    // ref
-    const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-    // variables
-    const snapPoints = useMemo(() => ['25%', '50%'], []);
-
-    // callbacks
-    const handlePresentModalPress = useCallback(() => {
-        bottomSheetModalRef.current?.present();
-    }, []);
+export default function RoleListScreen({bottomSheetRef, snapPoints, setIsOpen}) {
+    
     const DATA = [
         {
             idRole: '123',
@@ -36,104 +24,79 @@ export default function RoleListScreen() {
             salary: '2.000.000',
         }
     ]
-    const navigation = useNavigation();
-    const handleback = () => {
-        navigation.goBack();
-    }
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const showAddRoleModal = () => {
+        setModalVisible(true);
+    };
+
+    const hideAddRoleModal = () => {
+        setModalVisible(false);
+    };
   return (
-    // <BottomSheetModalProvider>
-    //     <View style={styles.container}>
-    //         <View style={styles.topApp}>
-    //             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-    //                 <TouchableOpacity
-    //                     onPress={handleback}>
-    //                     <Icon name='chevron-left' size={32}/>
-    //                 </TouchableOpacity>
-    //                 <Text style={styles.topAppText}>Danh sách vai trò</Text>
-    //             </View>
-    //             <TouchableOpacity style={styles.addButton}>
-    //                 <Icon name='plus' size={32} color={'#ffa730'}/>
-    //             </TouchableOpacity>
-    //         </View>
-    //         <View style={styles.bodyApp}>
-    //             <FlatList 
-    //                 data={DATA}
-    //                 keyExtractor={item => item.idRole}
-    //                 renderItem={({item}) => (
-    //                     <TouchableOpacity style={{flexDirection: 'row', width: '100%', justifyContent: 'space-between', marginBottom: '5%', backgroundColor: '#fff', padding: '3%', borderRadius: 10, alignItems: 'center'}}>
-    //                         <View>
-    //                             <Text style={{fontSize: 16, fontWeight: '600'}}>{item.roleName}</Text>
-    //                             <Text style={{fontSize: 16, color: '#9c9c9c'}}>Lương: {item.salary} / giờ</Text>
-    //                         </View>
-    //                         <View>
-    //                             <Icon name='chevron-right' size={32}/>
-    //                         </View>
-    //                     </TouchableOpacity>
-    //                 )}/>
-    //         </View>
-    //     </View>
-    // </BottomSheetModalProvider>
-    <BottomSheetModalProvider>
+    <BottomSheet
+      bottomSheetRef={bottomSheetRef}
+      snapPoints={snapPoints}
+      setIsOpen={setIsOpen}>
       <View style={styles.container}>
-        <Button
-          onPress={handlePresentModalPress}
-          title="Present Modal"
-          color="black"
-        />
-        <BottomSheetModal
-          ref={bottomSheetModalRef}
-          index={1}
-          snapPoints={snapPoints}
-          onChange={handleSheetChanges}
-        >
-          <BottomSheetView style={styles.contentContainer}>
-            <Text>Awesome 🎉</Text>
-          </BottomSheetView>
-        </BottomSheetModal>
+        <View style={styles.topApp}>
+          <Text style={styles.topAppText}>Danh sách vai trò</Text>
+        </View>
+        <View style={styles.bodyApp}>
+          <ScrollView style={styles.listStaff}>
+            <RoleCard DATA={DATA} />
+            <>
+            <TouchableOpacity 
+            onPress={showAddRoleModal}
+              style={styles.addStaffButton}>
+              <Ionicons name="add" size={24} />
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: "600",
+                    marginStart: "3%",
+                  }}
+                >
+                  Thêm vai trò
+                </Text>
+            </TouchableOpacity>
+            <AddRoleModal visible={modalVisible} onClose={hideAddRoleModal}/>
+            </>
+          </ScrollView>
+        </View>
       </View>
-    </BottomSheetModalProvider>
+    </BottomSheet>
   )
 }
 
-//const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//     },
-//     topApp: {
-//         paddingTop: '10%',
-//         backgroundColor: '#fff',
-//         padding: '3%',
-//         borderBottomWidth: 1,
-//         borderColor: '#cbcbd4',
-//         flexDirection: 'row',
-//         alignItems: 'center',
-//         justifyContent: 'space-between'
-//     },
-//     topAppText: {
-//         fontSize: 16, 
-//         fontWeight: '600',
-//         paddingStart: '4%'
-//     },
-//     addButton: {
-//         borderColor: '#ebebeb',
-//         borderWidth: 1,
-//         borderRadius: 20,
-//         padding: "1%"
-//     },
-//     bodyApp: {
-//         padding: '5%'
-//     }
-// })
-
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      padding: 24,
+        flex: 1,
+        backgroundColor: '#f2f2f2'
+    },
+    topApp: {
       justifyContent: 'center',
-      backgroundColor: 'grey',
-    },
-    contentContainer: {
-      flex: 1,
       alignItems: 'center',
+      borderBottomWidth: 1,
+      padding: '3%',
+      backgroundColor: '#fff'
     },
-  });
+    topAppText: {
+      fontSize: 16,
+      fontWeight: '600'
+    },
+    bodyApp: {
+      padding: '5%'
+    },
+    addButton: {
+      backgroundColor: '#fff',
+    },
+    addStaffButton: {
+      backgroundColor: "#fff",
+      padding: "3%",
+      borderRadius: 10,
+      alignItems: "center",
+      flexDirection: "row",
+  },
+})
+

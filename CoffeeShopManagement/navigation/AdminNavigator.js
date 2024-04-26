@@ -32,6 +32,7 @@ import AddBranchButton from "./components/AddBranchButton";
 import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
 import RoleListScreen from "../screens/Admin/RoleListScreen";
 import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
+import AddStaffScreen from "../screens/Admin/AddStaffScreen";
 
 const UserCouponsScreen = () => {
     return <Text>User Coupons Screen</Text>;
@@ -159,6 +160,16 @@ const HomeStack = () => (
                 headerShown: false,
             }}
         />
+        <Stack.Screen
+            name="AddStaff"
+            component={AddStaffScreen}
+            options={{
+                headerTitle: "Tạo mới nhân viên",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
     </Stack.Navigator>
 );
 
