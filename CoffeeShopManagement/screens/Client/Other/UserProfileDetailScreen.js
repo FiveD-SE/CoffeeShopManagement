@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
         borderColor: "#EBEBEB",
         borderRadius: 10,
         marginBottom: 10,
+
     },
     row_space_between: {
         flexDirection: "row",

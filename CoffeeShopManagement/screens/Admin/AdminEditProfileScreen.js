@@ -97,7 +97,7 @@ export default function AdminEditProfile() {
                                     onChangeText={onChangeFirstName}
                                     value={firstName}
                                     placeholder="Họ"
-                                    keyboardType="text"
+                                    keyboardType="default"
                                 />
                             </View>
                             <View
@@ -108,7 +108,7 @@ export default function AdminEditProfile() {
                                     onChangeText={onChangeLastName}
                                     value={lastName}
                                     placeholder="Tên"
-                                    keyboardType="text"
+                                    keyboardType="default"
                                 />
                             </View>
                         </View>
@@ -132,7 +132,7 @@ export default function AdminEditProfile() {
                                         onChangeText={onChangeGender}
                                         value={gender}
                                         placeholder="Khác"
-                                        keyboardType="text"
+                                        keyboardType="default"
                                     />
                                     <TouchableOpacity>
                                         <FontAwesome
@@ -164,7 +164,7 @@ export default function AdminEditProfile() {
                                         onChangeText={onChangeBirthday}
                                         value={birthday}
                                         placeholder={day}
-                                        keyboardType="text"
+                                        keyboardType="default"
                                     />
                                     <TouchableOpacity>
                                         <FontAwesome
@@ -199,7 +199,7 @@ export default function AdminEditProfile() {
                                     onChangeText={onChangePhone}
                                     value={phone}
                                     placeholder=""
-                                    keyboardType="text"
+                                    keyboardType="default"
                                 />
                             </View>
                         </View>
@@ -217,7 +217,7 @@ export default function AdminEditProfile() {
                                     onChangeText={onChangeEmail}
                                     value={email}
                                     placeholder="Email"
-                                    keyboardType="text"
+                                    keyboardType="default"
                                 />
                             </View>
                         </View>
