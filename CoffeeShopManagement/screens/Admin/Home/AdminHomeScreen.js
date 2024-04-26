@@ -18,6 +18,9 @@ const AdminHomeScreen = () => {
     const goToStaffScreen = () => {
         navigation.navigate("StaffHome")
     }
+    const goToClientScreen = () => {
+        navigation.navigate("ClientHome")
+    }
 
     return (
         <ScrollView style={styles.container}>
@@ -76,9 +79,7 @@ const AdminHomeScreen = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => {
-                            // handle onPress
-                        }} style={[styles.dataContainer, { marginLeft: "2%", marginRight: "3%" }]} >
+                        onPress={goToClientScreen} style={[styles.dataContainer, { marginLeft: "2%", marginRight: "3%" }]} >
                         <View>
                             <View style={styles.dataHeader}>
                                 <Text style={styles.dataTitle}>

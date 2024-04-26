@@ -34,6 +34,8 @@ import AddBranchButton from "./components/AddBranchButton";
 import AddPayrollButton from "./components/AddPayrollButton";
 
 import StaffHomeScreen from "../screens/Admin/StaffHomeScreen";
+import ClientHomeScreen from "../screens/Admin/Home/ClientHomeScreen";
+import ClientDetailHomeScreen from "../screens/Admin/Home/ClientDetailHomeScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -105,7 +107,6 @@ const OtherStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-
         <Stack.Screen
             name="AdminAddBranchScreen"
             component={AdminAddBranchScreen}
@@ -184,6 +185,29 @@ const HomeStack = () => (
             component={StaffHomeScreen}
             options={{
                 headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="ClientHome"
+            component={ClientHomeScreen}
+            options={{
+                headerTitle: "Khách hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+
+        <Stack.Screen
+            name="ClientDetailHome"
+            component={ClientDetailHomeScreen}
+            options={{
+                headerTitle: "Khách hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
     </Stack.Navigator>
