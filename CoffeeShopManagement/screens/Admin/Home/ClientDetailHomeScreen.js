@@ -1,31 +1,28 @@
 import React, { useState } from "react";
 import { StyleSheet, View, ScrollView, Text, Pressable, Image } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
 
 const ClientDetailHomeScreen = () => {
     const DATA = [
         {
-            id: '123456',
+            id: '#123456',
             state: 'Hoàn thành',
             date: '01/01/2024',
             price: '236.000'
         },
         {
-            id: '123457',
+            id: '#123457',
             state: 'Hoàn thành',
             date: '01/01/2024',
             price: '236.000'
         },
         {
-            id: '123458',
+            id: '#123458',
             state: 'Hoàn thành',
             date: '01/01/2024',
             price: '236.000'
         },
     ]
-
-    const [isToggled, setIsToggled] = useState(false);
 
     const [firstName] = useState("Nguyễn Quốc");
     const [lastName] = useState("Thắng");
@@ -38,23 +35,24 @@ const ClientDetailHomeScreen = () => {
     const flag = require("../../../assets/vietnam.png");
 
     const renderItem = ({item}) => (
-      <View 
-        style={{padding: '5%', borderTopWidth: 1, borderColor: '#cccccc', borderWidth: 1, marginBottom: '5%', backgroundColor: '#fff', borderRadius: 10}}>
-          <View>
-              <Text style={{fontSize: 16, fontWeight: '600'}}>{item.id}</Text>
-          </View>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '5%'}}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <View style={{backgroundColor: '#e3ffea', alignItems: 'center', justifyContent: 'center', padding: '3%', borderRadius: 15, marginEnd: '5%', paddingStart: '5%', paddingEnd: '5%'}}>
-                      <Text style={{color: '#4ecb71'}}>{item.state}</Text>
-                  </View>
-                  <Text style={{color: '#808080'}}>{item.date}</Text>
-              </View>
-              <Text>
-                  <Text>{item.price}</Text>
-                  <Text>VND</Text>
-              </Text>
-          </View>
+      <View style={styles.labelItem}>
+        <Text style={styles.itemId}>{item.id}</Text>
+        <View style={styles.row}>
+            <View style={styles.labelStatus}>
+                <Text style={styles.itemStatus}>{item.state}</Text>
+            </View>
+            <Text style={styles.itemDate}>{item.date}</Text>
+            <View style={{ flexDirection: 'row' }}>
+                <Text style={styles.itemPrice}>{item.price}</Text>
+                <Text style={{
+                    color: "#CBCBD4",
+                    fontFamily: "Lato-Bold",
+                    fontSize: 16,
+                    fontWeight: "bold",
+                    lineHeight: 20,
+                }}> VNĐ</Text>
+            </View>
+        </View>
       </View>
     )
     
@@ -198,6 +196,65 @@ const styles = StyleSheet.create({
     label: {
         color: "black",
         fontWeight: "900",
+    },
+    labelItem: {
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        backgroundColor: "#fff",
+        borderWidth: 1,
+        borderColor: "#EBEBEB",
+        borderRadius: 10,
+        marginBottom: 10,
+        gap: 20,
+    },
+    itemTitle: {
+        color: "#000",
+        fontFamily: "Lato-Bold",
+        fontSize: 16,
+        fontWeight: "bold",
+        marginBottom: 15,
+    },
+    row: {
+        flexDirection: "row",
+        width: '100%',
+        alignItems: "center",
+        justifyContent: "space-between"
+    },
+    itemStatus: {
+        color: "#4ECB71",
+        fontFamily: "Lato-Bold",
+        fontSize: 16,
+        lineHeight: 20,
+    },
+    labelStatus: {
+        paddingHorizontal: 10,
+        paddingVertical: 2,
+        justifyContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        borderRadius: 10,
+        backgroundColor: "#E3FFEA",
+    },
+    itemId: {
+        color: "#000000",
+        fontFamily: "Lato-Bold",
+        fontSize: 25,
+        lineHeight: 27,
+    },
+    itemDate: {
+        color: "#CBCBD4",
+        fontFamily: "Lato-Regular",
+        fontSize: 16,
+        lineHeight: 20,
+    },
+    itemPrice: {
+        color: "#000000",
+        fontFamily: "Lato-Bold",
+        fontSize: 25,
+        lineHeight: 27,
     },
 });
 
