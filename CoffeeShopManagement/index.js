@@ -56,7 +56,7 @@ const startServer = () => {
       if (user) {
         const validPassword = await bcrypt.compare(password, user.password);
         if (validPassword) {
-          res.status(200).json({ role: user.role });
+          res.status(200).json({ user });
         } else {
           res.status(401).json({ message: "Unauthorized" });
         }
