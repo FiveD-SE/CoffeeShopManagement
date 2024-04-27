@@ -83,6 +83,7 @@ const ProfileDetails = () => {
                             <Image style={{ height: 32, width: 32, marginRight: 10 }} source={flag} resizeMode="contain" />
                             <Text style={styles.text}>+84 </Text>
                             <TextInput style={styles.text}>{phone}</TextInput>
+
                         </View>
                     </View>
                 </View>
@@ -93,6 +94,7 @@ const ProfileDetails = () => {
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <TextInput style={styles.text}>{email}</TextInput>
+
                         </View>
                     </View>
                 </View>

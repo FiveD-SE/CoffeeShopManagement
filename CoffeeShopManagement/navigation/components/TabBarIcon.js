@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Animated } from "react-native";
+import { Animated, Dimensions } from "react-native";
 import { useState, useRef } from "react";
 
 function TabBarIcon({ focused, name, color }) {
@@ -31,6 +31,7 @@ function TabBarIcon({ focused, name, color }) {
         }),
     };
 
+    const deviceHeight = Dimensions.get("window").height;
     return (
         <Animated.View style={iconStyle}>
             <Ionicons
@@ -39,6 +40,9 @@ function TabBarIcon({ focused, name, color }) {
                 color={color}
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
+                style={{
+                    marginTop: deviceHeight * 0.01,
+                }}
             />
         </Animated.View>
     );
