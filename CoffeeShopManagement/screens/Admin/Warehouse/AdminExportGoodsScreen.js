@@ -3,8 +3,8 @@ import React from 'react'
 import { useNavigation } from "@react-navigation/native";
 
 import SearchBar from '../../../components/Client/SearchBar'
-import ColorButton from '../../../components/Admin/ColorButton'
-import ProductCardwithMinus from '../../../components/Admin/ProductCardwithMinus';
+import ColorButton from '../../../components/Admin/Button/ColorButton'
+import ProductCardwithMinus from '../../../components/Admin/Card/ProductCardwithMinus';
 import BranchSelectBar from '../../../components/Admin/BranchSelectBar'
 const AdminExportGoodsScreen = () => {
   const navigation = useNavigation();

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
-import EditGoodInfoModal from './Modal/EditGoodInfoModal';
+import EditGoodInfoModal from '../Modal/EditGoodInfoModal';
 const ProductCard = ({
   title, quantity, price, imageSource, unit, OnPress
 }) => {

@@ -2,7 +2,7 @@ import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput } from 'reac
 import React from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import SquareWithBorder from '../SquarewithBorder'
-import ColorButton from '../ColorButton'
+import ColorButton from '../Button/ColorButton'
 
 const AddNewGoodModal = ({ visible, onClose }) => {
 
@@ -41,7 +41,7 @@ const AddNewGoodModal = ({ visible, onClose }) => {
 								/>
 							</View>
 						</View>
-						<ColorButton color="#00A188"  text="Thêm mới" textColor="#ffffff"/>
+						<ColorButton color="#00A188" text="Thêm mới" textColor="#ffffff" />
 					</View>
 				</View>
 			</View>
@@ -66,13 +66,13 @@ const styles = StyleSheet.create({
 	},
 	imageContainer: {
 		marginTop: "5%",
-		flexDirection:"row",
+		flexDirection: "row",
 		justifyContent: "center"
 	},
 	main: {
 		paddingHorizontal: "5%",
 		marginBottom: "10%",
-		backgroundColor:"#F8F7FA",
+		backgroundColor: "#F8F7FA",
 	},
 	header: {
 		color: "#3a3a3a",
@@ -81,19 +81,19 @@ const styles = StyleSheet.create({
 		marginVertical: "4%"
 	},
 	inputContainer: {
-		flexDirection:"column",
-		marginBottom:"5%",
-		
+		flexDirection: "column",
+		marginBottom: "5%",
+
 	},
 	inputBox: {
-		marginVertical:"2%",
+		marginVertical: "2%",
 		flexDirection: "row",
 		alignItems: "center",
 		borderWidth: 1,
 		borderRadius: 10,
 		borderColor: "#ECECEC",
-		paddingHorizontal:"5%",
-		paddingVertical:"2%",
+		paddingHorizontal: "5%",
+		paddingVertical: "2%",
 		backgroundColor: "#ffffff"
 	},
 	input: {

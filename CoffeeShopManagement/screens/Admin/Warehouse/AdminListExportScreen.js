@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native'
 import React from 'react'
-import ColorButton from '../../../components/Admin/ColorButton'
-import ViewProductCard from '../../../components/Admin/ViewProductCard'
+import ColorButton from '../../../components/Admin/Button/ColorButton'
+import ViewProductCard from '../../../components/Admin/Card/ViewProductCard'
 
 const AdminListExportScreen = () => {
   const productList = [
@@ -61,7 +61,7 @@ const AdminListExportScreen = () => {
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
         {renderproductList()}
       </ScrollView>
-      <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff"/>
+      <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" />
     </SafeAreaView>
   )
 }
