@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignInScreen from "../screens/Client/SignInScreen";
 import SendOTP from "../screens/Client/SendOTP";
@@ -10,35 +9,20 @@ import SuccessScreen from "../screens/Client/SuccessScreen";
 import SignUpScreen from "../screens/Client/SignUpScreen";
 import OnBoardingScreen from "../screens/Client/OnBoardingScreen";
 import { NavigationContainer } from "@react-navigation/native";
-import UserHomeScreen from "../screens/Client/Home/UserHomeScreen";
-import AdminHomeScreen from "../screens/Admin/Home/AdminHomeScreen";
-import CashierHome from "../screens/Staff/CashierHome";
 import UserNavigator from "./UserNavigator";
 import CashierNavigator from "./CashierNavigator";
 import AdminNavigator from "./AdminNavigator";
 
 const Stack = createNativeStackNavigator();
 
-const OnboardingNavigator = () => {
+const AuthNavigator = () => {
     return (
-        <Stack.Navigator initialRouteName="Onboarding">
+        <Stack.Navigator initialRouteName="SignIn">
             <Stack.Screen
                 name="Onboarding"
                 component={OnBoardingScreen}
                 options={{ headerShown: false }}
             />
-            <Stack.Screen
-                name="SignInScreen"
-                component={SignInScreen}
-                options={{ headerShown: false }}
-            />
-        </Stack.Navigator>
-    );
-};
-
-const AuthNavigator = () => {
-    return (
-        <Stack.Navigator initialRouteName="SignIn">
             <Stack.Screen
                 name="SignInScreen"
                 component={SignInScreen}
@@ -79,13 +63,8 @@ const AuthNavigator = () => {
                 options={{ headerShown: false }}
             />
             <Stack.Screen
-                name="UserHome"
-                component={UserHomeScreen}
-                options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name="AdminNavigator"
-                component={AdminNavigator}
+                name="UserNavigator"
+                component={UserNavigator}
                 options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -94,34 +73,12 @@ const AuthNavigator = () => {
                 options={{ headerShown: false }}
             />
             <Stack.Screen
-                name="UserNavigator"
-                component={UserNavigator}
+                name="AdminNavigator"
+                component={AdminNavigator}
                 options={{ headerShown: false }}
             />
         </Stack.Navigator>
     );
 };
 
-const MainNavigator = () => {
-    const [completedOnboarding, setCompletedOnboarding] = useState(false);
-
-    useEffect(() => {
-        const checkOnboardingStatus = async () => {
-            try {
-                // Kiểm tra trạng thái hoàn thành của OnBoarding từ lưu trữ local (ví dụ: AsyncStorage)
-                const onboardingStatus = await AsyncStorage.getItem("onboardingStatus");
-                if (onboardingStatus === "completed") {
-                    setCompletedOnboarding(true);
-                }
-            } catch (error) {
-                console.error("Error retrieving onboarding status:", error);
-            }
-        };
-
-        checkOnboardingStatus();
-    }, []);
-
-    return completedOnboarding ? <AuthNavigator /> : <OnboardingNavigator />;
-};
-
-export default MainNavigator;
+export default AuthNavigator;
