@@ -2,12 +2,10 @@ import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } fr
 import React, { useState } from 'react'
 import { useNavigation } from "@react-navigation/native";
 
-import AddGoodButton from '../../../components/Admin/AddGoodButton'
-import AddItemCard from '../../../components/Admin/AddItemCard'
+import AddGoodButton from '../../../components/Admin/Button/AddGoodButton'
 import SearchBar from '../../../components/Client/SearchBar'
-import ColorButton from '../../../components/Admin/ColorButton'
-import ProductCardwithPlus from '../../../components/Admin/ProductCardwithPlus'
-import AddNewGoodModal from '../../../components/Admin/Modal/AddNewGoodModal'
+import ColorButton from '../../../components/Admin/Button/ColorButton'
+import ProductCardwithPlus from '../../../components/Admin/Card/ProductCardwithPlus'
 
 const AdminImportGoodsScreen = () => {
   const navigation = useNavigation();

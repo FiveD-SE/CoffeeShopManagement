@@ -2,7 +2,7 @@ import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput } from 'reac
 import React from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import SquareWithBorder from '../SquarewithBorder'
-import ColorButton from '../ColorButton'
+import ColorButton from '../Button/ColorButton'
 
 const ExportGoodModal = ({ visible, onClose }) => {
 
@@ -17,7 +17,7 @@ const ExportGoodModal = ({ visible, onClose }) => {
 				<View style={styles.modalContent}>
 					<ModalHeader title="Xuất hàng" onClose={onClose} />
 					<View style={styles.main}>
-						<View style={{flexDirection:"column", alignItems:"center"}}>
+						<View style={{ flexDirection: "column", alignItems: "center" }}>
 							<View style={styles.imageContainer}>
 								<SquareWithBorder text="Ảnh mặt hàng" />
 							</View>
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
 		fontWeight: "400",
 	},
 	title: {
-		marginTop:"2%",
+		marginTop: "2%",
 		color: "#3a3a3a",
 		fontSize: 15,
 		fontWeight: "500",

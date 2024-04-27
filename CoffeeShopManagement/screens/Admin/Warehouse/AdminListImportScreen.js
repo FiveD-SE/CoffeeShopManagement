@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native'
 import React from 'react'
 import BranchSelectBar from '../../../components/Admin/BranchSelectBar'
-import ColorButton from '../../../components/Admin/ColorButton'
-import ProductCardwithPrice from '../../../components/Admin/ProductCardwithPrice'
+import ColorButton from '../../../components/Admin/Button/ColorButton'
+import ProductCardwithPrice from '../../../components/Admin/Card/ProductCardwithPrice'
 
 const AdminListImportScreen = () => {
   const productList = [
@@ -69,7 +69,7 @@ const AdminListImportScreen = () => {
         <Text style={styles.costTitle}>Tổng cộng</Text>
         <Text style={styles.cost}>118.000 VNĐ</Text>
       </View>
-      <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff"/>
+      <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" />
     </SafeAreaView>
   )
 }
@@ -96,10 +96,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: "2%",
   },
-  costContaner:{
-    marginVertical:"3%",
-    flexDirection:"row",
-    justifyContent:"space-between"
+  costContaner: {
+    marginVertical: "3%",
+    flexDirection: "row",
+    justifyContent: "space-between"
   },
   costTitle: {
     color: "#3a3a3a",
