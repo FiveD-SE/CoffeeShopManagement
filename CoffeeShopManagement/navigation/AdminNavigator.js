@@ -11,7 +11,14 @@ import AdminRevenueScreen from "../screens/Admin/Home/AdminRevenueScreen";
 
 import AdminBillingScreen from "../screens/Admin/AdminBillingScreen";
 import DetailBillingScreen from "../screens/Admin/DetailBillingScreen";
+
 import AdminSalesScreen from "../screens/Admin/Sales/AdminSalesScreen";
+import AdminItemListScreen from "../screens/Admin/Sales/AdminItemListScreen";
+import AdminVoucherListScreen from "../screens/Admin/Sales/AdminVoucherListScreen";
+import AdminAddItemScreen from "../screens/Admin/Sales/AdminAddItemScreen";
+import AdminAddVoucherScreen from "../screens/Admin/Sales/AdminAddVoucherScreen";
+import AdminEditItemScreen from "../screens/Admin/Sales/AdminEditItemScreen";
+import AdminEditVoucherScreen from "../screens/Admin/Sales/AdminEditVoucherScreen";
 
 import AdminWareHouseScreen from "../screens/Admin/Warehouse/AdminWareHouseScreen";
 import AdminImportGoodsScreen from "../screens/Admin/Warehouse/AdminImportGoodsScreen";
@@ -31,12 +38,25 @@ import AdminAddPayrollScreen from "../screens/Admin/Other/AdminAddPayrollScreen"
 
 import HeaderBackButton from "./components/HeaderBackButton";
 import AddBranchButton from "./components/AddBranchButton";
+import AddItemButton from "../components/Admin/Button/AddItemButton";
+import AddVoucherButton from "../components/Admin/Button/AddVoucherButton";
+
 import AddPayrollButton from "./components/AddPayrollButton";
 
+import ClientHomeScreen from "../screens/Admin/Home/ClientHomeScreen";
+import ClientDetailHomeScreen from "../screens/Admin/Home/ClientDetailHomeScreen";
 import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
 import RoleListScreen from "../screens/Admin/RoleListScreen";
 import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
 import AddStaffScreen from "../screens/Admin/AddStaffScreen";
+import EditStaffScreen from "../screens/Admin/EditStaffScreen";
+
+import ScheduleScreen from "../screens/Admin/ScheduleScreen";
+import AddShiftButton from "./components/AddShiftButton";
+import AddShiftScreen from "../screens/Admin/AddShiftScreen";
+import AddShiftButton2 from "./components/AddShiftButton2";
+import DetailShiftScreen from "../screens/Admin/DetailShiftScreen";
+import AddStaffButton from "./components/AddStaffButton";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -108,7 +128,6 @@ const OtherStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-
         <Stack.Screen
             name="AdminAddBranchScreen"
             component={AdminAddBranchScreen}
@@ -156,6 +175,74 @@ const OtherStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
+        <Stack.Screen
+            name="StaffHome"
+            component={ManageStaffScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="RoleList"
+            component={RoleListScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="AddStaff"
+            component={AddStaffScreen}
+            options={{
+                headerTitle: "Tạo mới nhân viên",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="EditStaff"
+            component={EditStaffScreen}
+            options={{
+                headerTitle: "Chỉnh sửa thông tin",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="Schedule"
+            component={ScheduleScreen}
+            options={{
+                headerTitle: "Lịch biểu",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddShiftButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AddShift"
+            component={AddShiftScreen}
+            options={{
+                headerTitle: "Thêm ca làm việc",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddShiftButton2 />,
+            }} />
+        <Stack.Screen
+            name="DetailShift"
+            component={DetailShiftScreen}
+            options={{
+                headerTitle: "Tên ca",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddStaffButton />,
+            }} />
     </Stack.Navigator>
 );
 
@@ -197,6 +284,18 @@ const HomeStack = () => (
             }}
         />
         <Stack.Screen
+            name="ClientHome"
+            component={ClientHomeScreen}
+            options={{
+                headerTitle: "Khách hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+<Stack.Screen
+
             name="AddStaff"
             component={AddStaffScreen}
             options={{
@@ -205,7 +304,34 @@ const HomeStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
+
+        <Stack.Screen
+            name="ClientDetailHome"
+            component={ClientDetailHomeScreen}
+            options={{
+                headerTitle: "Khách hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+     
+        <Stack.Screen
+            name="EditStaff"
+            component={EditStaffScreen}
+            options={{
+                headerTitle: "Chỉnh sửa thông tin",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+            />
+
+
     </Stack.Navigator>
 );
 
@@ -215,6 +341,75 @@ const SalesStack = () => (
             name="AdminSales"
             component={AdminSalesScreen}
             options={{ headerShown: false }}
+        />
+        <Stack.Screen
+            name="AdminItemList"
+            component={AdminItemListScreen}
+            options={{
+                headerTitle: "Danh sách sản phẩm",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddItemButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminVoucherList"
+            component={AdminVoucherListScreen}
+            options={({ route }) => ({
+                headerTitle: "Danh sách khuyến mãi",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddVoucherButton/>
+            })}
+
+        />
+        <Stack.Screen
+            name="AdminAddItem"
+            component={AdminAddItemScreen}
+            options={{
+                headerTitle: "Thêm sản phẩm",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminAddVoucher"
+            component={AdminAddVoucherScreen}
+            options={{
+                headerTitle: "Thêm khuyến mãi",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminEditItem"
+            component={AdminEditItemScreen}
+            options={{
+                headerTitle: "Chỉnh sửa sản phẩm",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminEditVoucher"
+            component={AdminEditVoucherScreen}
+            options={{
+                headerTitle: "Chỉnh sửa khuyến mãi",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
         />
     </Stack.Navigator>
 );

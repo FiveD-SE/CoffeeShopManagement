@@ -1,9 +1,12 @@
+
 import React, { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { NavigationContainer } from "@react-navigation/native";
 import { StyleSheet, View } from "react-native";
 import AppNavigator from "./navigation/AppNavigator";
 import { useFonts } from "expo-font";
+import AuthNavigator from "./navigation/AuthNavigator"
+
 import { getRoleByUsername } from "./api";
 import OnBoardingScreen from "./screens/Client/OnBoardingScreen";
 import AuthNavigator from "./navigation/AuthNavigator";
@@ -21,6 +24,7 @@ export default function App() {
     });
 
     const isLogin = store.getState().userData?.role;
+
     return (
         <Provider store={store}>
             <NavigationContainer>

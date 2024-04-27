@@ -17,6 +17,14 @@ import { useNavigation } from "@react-navigation/native";
 export default function AdminOtherScreen() {
     const navigation = useNavigation();
 
+    const goToStaff = () => {
+        navigation.navigate('StaffHome')
+    }
+
+    const goToSchedule = () => {
+        navigation.navigate('Schedule')
+    }
+
     const [form, setForm] = useState({
         emailNotifications: true,
         pushNotifications: false,
@@ -105,9 +113,7 @@ export default function AdminOtherScreen() {
                                 ]}
                             >
                                 <TouchableOpacity
-                                    onPress={() => {
-                                        // handle onPress
-                                    }}
+                                    onPress={goToStaff}
                                     style={styles.row}
                                 >
                                     <FontAwesome6
@@ -129,9 +135,7 @@ export default function AdminOtherScreen() {
                                     />
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    onPress={() => {
-                                        // handle onPress
-                                    }}
+                                    onPress={goToSchedule}
                                     style={styles.row}
                                 >
                                     <Ionicons

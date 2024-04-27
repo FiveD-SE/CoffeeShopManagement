@@ -2,8 +2,8 @@ import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'reac
 import React, { useState } from 'react'
 import { FontAwesome } from '@expo/vector-icons';
 import { IconButton } from 'react-native-paper';
-import ExportGoodModal from './Modal/ExportGoodModal';
-import EditGoodInfoModal from './Modal/EditGoodInfoModal';
+import ExportGoodModal from '../Modal/ExportGoodModal';
+import EditGoodInfoModal from '../Modal/EditGoodInfoModal';
 
 const ProductCardwithMinus = ({
     title, quantity, price, imageSource, unit, OnPress
@@ -84,7 +84,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "rgba(58,58,58,0.05)",
         borderRadius: 10,
-        overflow: "hidden",
     },
     image: {
         width: "100%",
@@ -109,7 +108,4 @@ const styles = StyleSheet.create({
         fontSize: 13,
         fontWeight: "500",
     },
-    IconButton: {
-
-    }
 });

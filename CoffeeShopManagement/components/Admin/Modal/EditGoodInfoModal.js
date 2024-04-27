@@ -2,8 +2,8 @@ import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput } from 'reac
 import React from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import SquareWithBorder from '../SquarewithBorder'
-import ColorButton from '../ColorButton'
-import DeleteButton from '../DeleteButton'
+import ColorButton from '../Button/ColorButton'
+import DeleteButton from '../Button/DeleteButton'
 
 const EditGoodInfoModal = ({ visible, onClose }) => {
 
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     main: {
         paddingHorizontal: "5%",
         marginBottom: "10%",
-        backgroundColor:"#F8F7FA",
+        backgroundColor: "#F8F7FA",
     },
     header: {
         color: "#3a3a3a",

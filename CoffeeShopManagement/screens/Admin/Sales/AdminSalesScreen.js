@@ -1,32 +1,107 @@
-import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native'
+import React, { useRef, useState, useEffect, useMemo } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
-import AddItemCard from '../../../components/Admin/AddItemCard';
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import AddNewItemButton from '../../../components/Admin/Button/AddNewItemButton';
+import AddNewVoucherButton from '../../../components/Admin/Button/AddNewVoucherButton';
+import Section from '../../../components/Client/Section';
+import ItemCard from '../../../components/Admin/Card/ItemCard';
+import VoucherCard from '../../../components/Admin/Card/VoucherCard';
+import { useNavigation } from '@react-navigation/native';
+
+const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
 
 const AdminSalesScreen = () => {
+    const navigation = useNavigation();
+
+    const goToItemListScreen = () => {
+        navigation.navigate("AdminItemList");
+    };
+
+    const goToVoucherListScreen = () => {
+        navigation.navigate("AdminVoucherList");
+    };
+
+    const ItemCardList = [
+        {
+            title: "Smoothie Xoài Nhiệt Đới Granola",
+            price: 65000,
+            imageSource: PRODUCT_IMAGE_SOURCE,
+        },
+        {
+            title: "Smoothie Phúc Bồn Tử Granola",
+            price: 65000,
+            imageSource: PRODUCT_IMAGE_SOURCE,
+        },
+        {
+            title: "Oolong Tứ Quý Vải",
+            price: 65000,
+            imageSource: PRODUCT_IMAGE_SOURCE,
+        },
+    ];
+
+    const VoucherList = [
+        { id: 1, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Mã giảm giá', status: true, image: require('../../../assets/voucher.jpeg') },
+        { id: 2, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-04-25', option: 'Ưu đãi vận chuyển', ststatusate: true, image: require('../../../assets/voucher.jpeg') },
+        { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Ưu đãi vận chuyển', status: false, image: require('../../../assets/voucher.jpeg') },
+    ];
+
+    const renderItemList = () => {
+        return ItemCardList.map((item, index) => (
+            <ItemCard
+                key={index}
+                title={item.title}
+                price={item.price.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                })}
+                imageSource={item.imageSource}
+            />
+        ));
+    };
+
+    const renderVoucherList = () => {
+        return VoucherList.map((item, index) => (
+            <VoucherCard
+                key={index}
+                itemName={item.name}
+                imageSource={item.image}
+                expiryDate={item.expiryDate}
+                status={item.status}
+            />
+        ));
+    };
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.sectionContainer}>
-                <View style={styles.headerContainer}>
-                    <Text style={styles.title}>Danh sách sản phẩm</Text>
-                    <TouchableOpacity style={styles.subtitleContainer}>
-                        <Text style={styles.subtitle}>Xem thêm</Text>
-                        <MaterialIcons name="keyboard-arrow-right" size={12} color="#00A188" />
-                    </TouchableOpacity>
+        <BottomSheetModalProvider>
+            <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+                <View style={styles.sectionContainer}>
+                    <Section
+                        title="Danh sách sản phẩm"
+                        showSubtitle={true}
+                        subtitle="Xem tất cả"
+                        onPressSubtitle={goToItemListScreen}
+                    >
+                        <View style={{ marginTop: "3%" }}>
+                            {renderItemList()}
+                        </View>
+                    </Section>
                 </View>
-            </View>
-            <AddItemCard title="Thêm sản phẩm mới" type="item" />
-            <View style={styles.sectionContainer}>
-                <View style={styles.headerContainer}>
-                    <Text style={styles.title}>Danh sách voucher</Text>
-                    <TouchableOpacity style={styles.subtitleContainer}>
-                        <Text style={styles.subtitle}>Xem thêm</Text>
-                        <MaterialIcons name="keyboard-arrow-right" size={12} color="#00A188" />
-                    </TouchableOpacity>
+                <AddNewItemButton />
+                <View style={styles.sectionContainer}>
+                    <Section
+                        title="Danh sách khuyến mãi"
+                        showSubtitle={true}
+                        subtitle="Xem tất cả"
+                        onPressSubtitle={goToVoucherListScreen}
+                    >
+                        <View style={{ marginTop: "3%" }}>
+                            {renderVoucherList()}
+                        </View>
+                    </Section>
                 </View>
-            </View>
-            <AddItemCard title="Thêm khuyến mãi" type="voucher" />
-        </ScrollView>
+                <AddNewVoucherButton />
+            </ScrollView>
+        </BottomSheetModalProvider>
     )
 }
 
@@ -35,34 +110,17 @@ export default AdminSalesScreen
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: "3%",
-        paddingTop: "9%"
+        marginHorizontal: "3%",
+        marginTop: "7%",
+        marginBottom: "3%"
     },
     sectionContainer: {
-        marginTop: "5%",
+        marginVertical: "4%",
         backgroundColor: "#ffffff",
-        paddingHorizontal: "2%",
-        borderRadius: 10,
+        padding: "3%",
+        borderRadius: 15,
         borderWidth: 1,
         borderColor: "#D8D8D8"
     },
-    headerContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    title: {
-        color: "#3a3a3a",
-        fontSize: 18,
-        fontWeight: "600",
-    },
-    subtitleContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    subtitle: {
-        color: "#00A188",
-        fontSize: 14,
-        fontWeight: "700",
-    },
+
 })

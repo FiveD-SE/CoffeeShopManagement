@@ -2,8 +2,8 @@ import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'reac
 import React, { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { IconButton } from 'react-native-paper';
-import AddGoodModal from './Modal/AddGoodModal';
-import EditGoodInfoModal from './Modal/EditGoodInfoModal';
+import AddGoodModal from '../Modal/AddGoodModal';
+import EditGoodInfoModal from '../Modal/EditGoodInfoModal';
 
 const ProductCardwithPlus = ({
     title, quantity, price, imageSource, unit, OnPress
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
         marginVertical: "1%",
         paddingVertical: "2%",
-        paddingHorizontal:"3%",
+        paddingHorizontal: "3%",
         borderRadius: 15,
         borderWidth: 1,
         borderColor: "rgba(58,58,58,0.05)",

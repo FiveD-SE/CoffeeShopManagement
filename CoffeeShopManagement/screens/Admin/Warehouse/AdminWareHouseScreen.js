@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity,Modal } from 'react-native'
-import React, {useState} from 'react'
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Modal } from 'react-native'
+import React, { useState } from 'react'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../../../components/Client/SearchBar";
-import ColorButton from '../../../components/Admin/ColorButton';
+import ColorButton from '../../../components/Admin/Button/ColorButton';
 import { ScrollView } from 'react-native-gesture-handler';
-import ProductCard from '../../../components/Admin/ProductCard';
+import ProductCard from '../../../components/Admin/Card/ProductCard';
 
 
 const AdminWareHouseScreen = () => {

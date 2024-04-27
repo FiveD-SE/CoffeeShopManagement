@@ -1,34 +1,28 @@
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { Entypo, MaterialIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
-import AddNewGoodModal from './Modal/AddNewGoodModal';
+const AddNewVoucherButton = () => {
+    const navigation = useNavigation();
 
-const AddGoodButton = ({ title}) => {
-    const [modalVisible, setModalVisible] = useState(false);
-
-    const showAddNewGoodModal = () => {
-        setModalVisible(true);
-    };
-
-    const hideAddNewGoodModal = () => {
-        setModalVisible(false);
+    const goToAddVoucherScreen = () => {
+        navigation.navigate("AdminAddVoucher");
     };
     return (
         <View>
-            <TouchableOpacity style={styles.container} onPress={showAddNewGoodModal}>
+            <TouchableOpacity style={styles.container} onPress={goToAddVoucherScreen}>
                 <View style={styles.titleContainer}>
-                    <MaterialIcons name="add-box" size={30} color="#FFA730" />
-                    <Text style={styles.title}>{title}</Text>
+                    <Entypo name="ticket" size={30} color="#F61A3D" />
+                    <Text style={styles.title}>Thêm khuyến mãi mới</Text>
                 </View>
                 <MaterialIcons name="keyboard-arrow-right" size={36} color="#3a3a3a" />
             </TouchableOpacity>
-            <AddNewGoodModal visible={modalVisible} onClose={hideAddNewGoodModal} />
         </View>
     )
 }
 
-export default AddGoodButton
+export default AddNewVoucherButton
 
 const styles = StyleSheet.create({
     container: {
@@ -41,6 +35,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 17,
+        color: "#3a3a3a",
         fontWeight: "600",
         marginLeft: "10%"
     },
