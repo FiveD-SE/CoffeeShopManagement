@@ -105,6 +105,7 @@ const UserOrderInformationScreen = () => {
 				<Pressable
 					style={[styles.button, currentPage < 3 && styles.disabledButton]}
 					onPress={handleReceiveOrder}
+					disabled={currentPage < 3}
 				>
 					<Text style={styles.buttonText}>Đã nhận hàng</Text>
 				</Pressable>
@@ -161,12 +162,12 @@ const styles = StyleSheet.create({
 		backgroundColor: "#00A188",
 		paddingVertical: "4%",
 		borderRadius: 20,
-		elevation: 1,
+		elevation: 2,
 	},
 	buttonText: {
 		color: "#FFFFFF",
 		fontSize: 16,
-		fontWeight: "600",
+		fontWeight: "700",
 	},
 	disabledButton: {
 		backgroundColor: "#CBCBD4",

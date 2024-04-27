@@ -1,7 +1,22 @@
-import { Modal, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+	Modal,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+	TextInput,
+} from "react-native";
+import React, { useState } from "react";
 import ModalHeader from "../../../components/Client/Header/ModalHeader";
+
+import StarRating from "../../../components/Client/StarRating";
 const RatingModal = ({ visible, onClose }) => {
+	const [rating, setRating] = useState(0);
+
+	const handleRating = (newRating) => {
+		setRating(newRating);
+	};
+
 	return (
 		<Modal
 			animationType="fade"
@@ -11,7 +26,46 @@ const RatingModal = ({ visible, onClose }) => {
 		>
 			<View style={styles.modalContainer}>
 				<View style={styles.modalContent}>
-					<ModalHeader title="Chọn topping" onClose={onClose} />
+					<ModalHeader title="Đánh giá" onClose={onClose} />
+					<View
+						style={{
+							justifyContent: "center",
+							alignItems: "center",
+							padding: "5%",
+						}}
+					>
+						<Text
+							style={{
+								color: "#3a3a3a",
+								fontSize: 24,
+								fontWeight: "600",
+							}}
+						>
+							Giao hàng thành công
+						</Text>
+						<Text
+							style={{
+								color: "#3a3a3a",
+								fontSize: 14,
+								fontWeight: "400",
+								marginTop: "5%",
+							}}
+						>
+							Vui lòng đánh giá để chúng tôi cải thiện dịch vụ
+						</Text>
+						<View style={{ marginTop: "5%" }}>
+							<StarRating rating={rating} onRate={handleRating} />
+						</View>
+						<View style={styles.inputContainer}>
+							<TextInput
+								style={styles.input}
+								placeholder="Chúng tôi cần làm gì?"
+								multiline={true}
+								numberOfLines={4}
+								textAlignVertical="top"
+							/>
+						</View>
+					</View>
 				</View>
 			</View>
 		</Modal>
@@ -31,7 +85,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		borderRadius: 20,
 		width: "90%",
-		height: "70%",
+		height: "80%",
 	},
 	header: {
 		flexDirection: "row",
@@ -53,11 +107,25 @@ const styles = StyleSheet.create({
 		paddingHorizontal: "5%",
 		marginBottom: "10%",
 	},
-	itemListContainer: {
-		marginTop: "5%",
-		borderColor: "rgba(58, 58, 58, 0.10)",
-		borderRadius: 10,
-		paddingHorizontal: "5%",
+	inputContainer: {
+		width: "100%",
+		height: "50%",
+		flexDirection: "row",
+		alignItems: "center",
 		borderWidth: 1,
+		borderRadius: 15,
+		borderColor: "#CCCCCC",
+		padding: "5%",
+		backgroundColor: "#ffffff",
+
+		marginTop: "5%",
+	},
+	input: {
+		flex: 1,
+		maxHeight: 200,
+		color: "rgba(58,58,58, 1)",
+		fontSize: 16,
+		fontWeight: "400",
+		alignSelf: "flex-start",
 	},
 });
