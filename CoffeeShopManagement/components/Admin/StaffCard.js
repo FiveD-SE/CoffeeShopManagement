@@ -2,11 +2,13 @@ import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"; // Import các thành phần cần thiết từ react-native
 import Icon from "react-native-vector-icons/Entypo";
 
-const StaffCard = ({ DATA }) => {
+const StaffCard = ({ DATA, handleNavigate }) => {
     return (
         <View>
             {DATA.map((item, index) => (
-                <TouchableOpacity key={item.id} style={styles.staffItem}>
+                <TouchableOpacity
+                    onPress={handleNavigate}
+                    key={item.id} style={styles.staffItem}>
                     <View style={{ flexDirection: "row" }}>
                         <View
                             style={{

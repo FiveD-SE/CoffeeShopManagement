@@ -12,12 +12,14 @@ import ChooseDeliveryBottomSheet from "../../../components/Client/BottomSheet/Ch
 import DeliveryInformationButton from "../../../components/Client/Button/DeliveryInformationButton";
 import ChooseCouponBottomSheet from "../../../components/Client/BottomSheet/ChooseCouponBottomSheet";
 import OrderConfirmationFooter from "../../../components/Client/OrderConfirmationFooter";
+import { useNavigation } from "@react-navigation/native";
 
 const CASH_ICON = require("../../../assets/cash.png");
 const CREDIT_CARD_ICON = require("../../../assets/credit-card.png");
 const MOMO_ICON = require("../../../assets/momo.png");
 
 const UserOrderConfirmationScreen = () => {
+	const navigation = useNavigation();
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 	const [deliveryOption, setDeliveryOption] = useState("takeaway");
 
@@ -77,6 +79,10 @@ const UserOrderConfirmationScreen = () => {
 	const handleChooseCoupon = () => {
 		chooseCouponBottomSheetRef.current?.present();
 		setIsOpen(true);
+	};
+
+	const handleOrderSuccess = () => {
+		navigation.navigate("UserOrderInformationScreen");
 	};
 
 	const renderPaymentMethods = () => {
@@ -173,7 +179,7 @@ const UserOrderConfirmationScreen = () => {
 					</View>
 				</View>
 			</ScrollView>
-			<OrderConfirmationFooter />
+			<OrderConfirmationFooter onPress={handleOrderSuccess} />
 			<ChooseDeliveryBottomSheet
 				bottomSheetRef={chooseDeliveryBottomSheetRef}
 				snapPoints={chooseDeliverySnapPoints}

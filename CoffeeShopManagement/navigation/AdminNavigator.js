@@ -26,25 +26,37 @@ import AdminExportGoodsScreen from "../screens/Admin/Warehouse/AdminExportGoodsS
 import AdminListImportScreen from "../screens/Admin/Warehouse/AdminListImportScreen";
 import AdminListExportScreen from "../screens/Admin/Warehouse/AdminListExportScreen";
 
-import AdminOtherScreen from "../screens/Admin/AdminOtherScreen";
+import AdminOtherScreen from "../screens/Admin/Other/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
-import ProfileDetail from "../screens/Admin/AdminProfileDetailScreen";
+import ProfileDetail from "../screens/Admin/Other/AdminProfileDetailScreen";
 import AdminBranchManagement from "../screens/Admin/AdminBranchManagement";
 import AdminEditBranchScreen from "../screens/Admin/AdminEditBranchScreen";
 import AdminAddBranchScreen from "../screens/Admin/AdminAddBranchScreen";
+import AdminPayrollScreen from "../screens/Admin/Other/AdminPayrollScreen";
+import AdminPayrollDetailsScreen from "../screens/Admin/Other/AdminPayrollDetailsScreen";
+import AdminAddPayrollScreen from "../screens/Admin/Other/AdminAddPayrollScreen";
 
 import HeaderBackButton from "./components/HeaderBackButton";
 import AddBranchButton from "./components/AddBranchButton";
 import AddItemButton from "../components/Admin/Button/AddItemButton";
 import AddVoucherButton from "../components/Admin/Button/AddVoucherButton";
 
+import AddPayrollButton from "./components/AddPayrollButton";
+
+import ClientHomeScreen from "../screens/Admin/Home/ClientHomeScreen";
+import ClientDetailHomeScreen from "../screens/Admin/Home/ClientDetailHomeScreen";
 import StaffHomeScreen from "../screens/Admin/ManageStaffScreen";
 import RoleListScreen from "../screens/Admin/RoleListScreen";
 import ManageStaffScreen from "../screens/Admin/ManageStaffScreen";
+import AddStaffScreen from "../screens/Admin/AddStaffScreen";
+import EditStaffScreen from "../screens/Admin/EditStaffScreen";
 
-const UserCouponsScreen = () => {
-    return <Text>User Coupons Screen</Text>;
-};
+import ScheduleScreen from "../screens/Admin/ScheduleScreen";
+import AddShiftButton from "./components/AddShiftButton";
+import AddShiftScreen from "../screens/Admin/AddShiftScreen";
+import AddShiftButton2 from "./components/AddShiftButton2";
+import DetailShiftScreen from "../screens/Admin/DetailShiftScreen";
+import AddStaffButton from "./components/AddStaffButton";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -116,7 +128,6 @@ const OtherStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-
         <Stack.Screen
             name="AdminAddBranchScreen"
             component={AdminAddBranchScreen}
@@ -128,6 +139,110 @@ const OtherStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
+
+        <Stack.Screen
+            name="AdminPayrollScreen"
+            component={AdminPayrollScreen}
+            options={{
+                headerTitle: "Bảng tính lương",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddPayrollButton />,
+            }}
+        />
+
+        <Stack.Screen
+            name="AdminPayrollDetailsScreen"
+            component={AdminPayrollDetailsScreen}
+            options={{
+                headerTitle: "Chi tiết bảng lương",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AdminAddPayrollScreen"
+            component={AdminAddPayrollScreen}
+            options={{
+                headerTitle: "Thêm bảng lương",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="StaffHome"
+            component={ManageStaffScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="RoleList"
+            component={RoleListScreen}
+            options={{
+                headerShown: false,
+            }}
+        />
+        <Stack.Screen
+            name="AddStaff"
+            component={AddStaffScreen}
+            options={{
+                headerTitle: "Tạo mới nhân viên",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="EditStaff"
+            component={EditStaffScreen}
+            options={{
+                headerTitle: "Chỉnh sửa thông tin",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }} />
+        <Stack.Screen
+            name="Schedule"
+            component={ScheduleScreen}
+            options={{
+                headerTitle: "Lịch biểu",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddShiftButton />,
+            }}
+        />
+        <Stack.Screen
+            name="AddShift"
+            component={AddShiftScreen}
+            options={{
+                headerTitle: "Thêm ca làm việc",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddShiftButton2 />,
+            }} />
+        <Stack.Screen
+            name="DetailShift"
+            component={DetailShiftScreen}
+            options={{
+                headerTitle: "Tên ca",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <AddStaffButton />,
+            }} />
     </Stack.Navigator>
 );
 
@@ -168,6 +283,55 @@ const HomeStack = () => (
                 headerShown: false,
             }}
         />
+        <Stack.Screen
+            name="ClientHome"
+            component={ClientHomeScreen}
+            options={{
+                headerTitle: "Khách hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+<Stack.Screen
+
+            name="AddStaff"
+            component={AddStaffScreen}
+            options={{
+                headerTitle: "Tạo mới nhân viên",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+
+        <Stack.Screen
+            name="ClientDetailHome"
+            component={ClientDetailHomeScreen}
+            options={{
+                headerTitle: "Khách hàng",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+     
+        <Stack.Screen
+            name="EditStaff"
+            component={EditStaffScreen}
+            options={{
+                headerTitle: "Chỉnh sửa thông tin",
+                headerLeftContainerStyle: {
+                    padding: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+            />
+
+
     </Stack.Navigator>
 );
 
@@ -306,47 +470,45 @@ const WarehouseStack = () => (
 
 function AdminNavigator() {
     return (
-        <NavigationContainer>
-            <Tab.Navigator
-                screenOptions={({ route }) => ({
-                    tabBarActiveTintColor: "#006C5E",
-                    tabBarInactiveTintColor: "#CBCBD4",
-                    tabBarStyle: styles.bottomTabBar,
-                    tabBarShowLabel: true,
-                    headerShown: false,
-                    tabBarHideOnKeyboard: true,
-                    tabBarLabelStyle: styles.labelStyle,
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#006C5E",
+                tabBarInactiveTintColor: "#CBCBD4",
+                tabBarStyle: styles.bottomTabBar,
+                tabBarShowLabel: true,
+                headerShown: false,
+                tabBarHideOnKeyboard: true,
+                tabBarLabelStyle: styles.labelStyle,
 
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
-                        if (route.name === "Home") {
-                            iconName = "home";
-                        } else if (route.name === "Sales") {
-                            iconName = "cart";
-                        } else if (route.name === "Warehouse") {
-                            iconName = "cube";
-                        } else if (route.name === "Billing") {
-                            iconName = "receipt";
-                        } else if (route.name === "Others") {
-                            iconName = "reorder-three";
-                        }
-                        return (
-                            <TabBarIcon
-                                focused={focused}
-                                name={iconName}
-                                color={color}
-                            />
-                        );
-                    },
-                })}
-            >
-                <Tab.Screen name="Home" component={HomeStack} />
-                <Tab.Screen name="Sales" component={SalesStack} />
-                <Tab.Screen name="Billing" component={BillingStack} />
-                <Tab.Screen name="Warehouse" component={WarehouseStack} />
-                <Tab.Screen name="Others" component={OtherStack} />
-            </Tab.Navigator>
-        </NavigationContainer>
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+                    if (route.name === "Home") {
+                        iconName = "home";
+                    } else if (route.name === "Sales") {
+                        iconName = "cart";
+                    } else if (route.name === "Warehouse") {
+                        iconName = "cube";
+                    } else if (route.name === "Billing") {
+                        iconName = "receipt";
+                    } else if (route.name === "Others") {
+                        iconName = "reorder-three";
+                    }
+                    return (
+                        <TabBarIcon
+                            focused={focused}
+                            name={iconName}
+                            color={color}
+                        />
+                    );
+                },
+            })}
+        >
+            <Tab.Screen name="Home" component={HomeStack} />
+            <Tab.Screen name="Sales" component={SalesStack} />
+            <Tab.Screen name="Billing" component={BillingStack} />
+            <Tab.Screen name="Warehouse" component={WarehouseStack} />
+            <Tab.Screen name="Others" component={OtherStack} />
+        </Tab.Navigator>
     );
 }
 

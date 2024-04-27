@@ -11,12 +11,19 @@ import {
 import FeatherIcon from "react-native-vector-icons/Feather";
 import FontAwesome6 from "react-native-vector-icons/FontAwesome6";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 
 export default function AdminOtherScreen() {
     const navigation = useNavigation();
+
+    const goToStaff = () => {
+        navigation.navigate('StaffHome')
+    }
+
+    const goToSchedule = () => {
+        navigation.navigate('Schedule')
+    }
 
     const [form, setForm] = useState({
         emailNotifications: true,
@@ -106,9 +113,7 @@ export default function AdminOtherScreen() {
                                 ]}
                             >
                                 <TouchableOpacity
-                                    onPress={() => {
-                                        // handle onPress
-                                    }}
+                                    onPress={goToStaff}
                                     style={styles.row}
                                 >
                                     <FontAwesome6
@@ -130,9 +135,7 @@ export default function AdminOtherScreen() {
                                     />
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    onPress={() => {
-                                        // handle onPress
-                                    }}
+                                    onPress={goToSchedule}
                                     style={styles.row}
                                 >
                                     <Ionicons
@@ -155,7 +158,7 @@ export default function AdminOtherScreen() {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("AdminPayrollScreen");
                                     }}
                                     style={styles.row}
                                 >

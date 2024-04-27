@@ -25,7 +25,7 @@ import UserCartScreen from "../screens/Client/PlaceOrder/UserCartScreen";
 
 import OrderHistory from "../screens/Client/Other/UserOrderHistoryScreen";
 import Setting from "../screens/Client/Other/UserSettingScreen";
-import SelectAdress from "../screens/Client/Other/UserSelectAddressScreen";
+import SelectAdress from "../screens/Client/Other/UserAddressScreen";
 import SelectBranch from "../screens/Client/Other/UserSelectBranchScreen";
 import FeedbackAndHelp from "../screens/Client/Other/UserFeedbackAndHelpScreen";
 import ChangePassword from "../screens/Client/ChangePassword";
@@ -37,6 +37,7 @@ import MembershipTier from "../screens/Client/Coupons/UserMembershipTierScreen";
 import History from "../screens/Client/Coupons/UserExchangeHistoryScreen";
 import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
 import YourVoucher from "../screens/Client/Coupons/UserVoucherScreen";
+import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -54,7 +55,7 @@ const HomeStack = () => (
             options={{
                 headerTitle: "Đổi thưởng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -65,7 +66,7 @@ const HomeStack = () => (
             options={{
                 headerTitle: "Chi tiết quy đổi",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -76,7 +77,7 @@ const HomeStack = () => (
             options={{
                 headerTitle: "Sản phẩm yêu thích",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -92,7 +93,7 @@ const HomeStack = () => (
             options={{
                 headerTitle: "Sản phẩm bán chạy",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -118,7 +119,7 @@ const OrderStack = () => (
             options={{
                 headerTitle: "Sản phẩm yêu thích",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -129,7 +130,7 @@ const OrderStack = () => (
             options={{
                 headerTitle: "Giỏ hàng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -140,7 +141,7 @@ const OrderStack = () => (
             options={{
                 headerTitle: "Xác nhận đơn hàng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -149,9 +150,9 @@ const OrderStack = () => (
             name="SelectAddressScreen"
             component={SelectAdress}
             options={{
-                headerTitle: "",
+                headerTitle: "Chọn địa chỉ",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -160,9 +161,20 @@ const OrderStack = () => (
             name="SelectBranchScreen"
             component={SelectBranch}
             options={{
-                headerTitle: "",
+                headerTitle: "Chọn chi nhánh",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="UserOrderInformationScreen"
+            component={UserOrderInformationScreen}
+            options={{
+                headerTitle: "Đơn hàng",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -183,7 +195,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Hồ sơ",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -194,7 +206,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Hồ sơ",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -205,7 +217,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Cài đặt",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 // headerLeft: () => <HeaderBackButton />,
             }}
@@ -216,7 +228,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Lịch sử đơn hàng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 // headerLeft: () => <HeaderBackButton />,
             }}
@@ -227,7 +239,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Địa chỉ",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -238,7 +250,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Phản hồi và hỗ trợ",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 // headerLeft: () => <HeaderBackButton />,
             }}
@@ -249,7 +261,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Thay đổi mật khẩu",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 // headerLeft: () => <HeaderBackButton />,
             }}
@@ -260,7 +272,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Phản hồi và hỗ trợ",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerShown: false,
                 // headerLeft: () => <HeaderBackButton />,
@@ -272,7 +284,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Sửa địa chỉ",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -283,7 +295,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Thêm địa chỉ mới",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -304,7 +316,7 @@ const CouponsStack = () => (
             options={{
                 headerTitle: "Hạng thành viên",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -316,7 +328,7 @@ const CouponsStack = () => (
             options={{
                 headerTitle: "Voucher của bạn",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -327,7 +339,7 @@ const CouponsStack = () => (
             options={{
                 headerTitle: "Lịch sử đổi thưởng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -338,7 +350,7 @@ const CouponsStack = () => (
             options={{
                 headerTitle: "Quyền lợi của bạn",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -349,7 +361,7 @@ const CouponsStack = () => (
             options={{
                 headerTitle: "Đổi thưởng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -359,43 +371,41 @@ const CouponsStack = () => (
 
 function UserNavigator() {
     return (
-        <NavigationContainer>
-            <Tab.Navigator
-                screenOptions={({ route }) => ({
-                    tabBarActiveTintColor: "#006C5E",
-                    tabBarInactiveTintColor: "#CBCBD4",
-                    tabBarStyle: styles.bottomTabBar,
-                    tabBarShowLabel: true,
-                    headerShown: false,
-                    tabBarHideOnKeyboard: true,
-                    tabBarLabelStyle: styles.labelStyle,
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
-                        if (route.name === "Home") {
-                            iconName = "home";
-                        } else if (route.name === "Orders") {
-                            iconName = "cart";
-                        } else if (route.name === "Coupons") {
-                            iconName = "bookmark";
-                        } else if (route.name === "Others") {
-                            iconName = "reorder-three";
-                        }
-                        return (
-                            <TabBarIcon
-                                focused={focused}
-                                name={iconName}
-                                color={color}
-                            />
-                        );
-                    },
-                })}
-            >
-                <Tab.Screen name="Home" component={HomeStack} />
-                <Tab.Screen name="Orders" component={OrderStack} />
-                <Tab.Screen name="Coupons" component={CouponsStack} />
-                <Tab.Screen name="Others" component={OtherStack} />
-            </Tab.Navigator>
-        </NavigationContainer>
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#006C5E",
+                tabBarInactiveTintColor: "#CBCBD4",
+                tabBarStyle: styles.bottomTabBar,
+                tabBarShowLabel: true,
+                headerShown: false,
+                tabBarHideOnKeyboard: true,
+                tabBarLabelStyle: styles.labelStyle,
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+                    if (route.name === "Home") {
+                        iconName = "home";
+                    } else if (route.name === "Orders") {
+                        iconName = "cart";
+                    } else if (route.name === "Coupons") {
+                        iconName = "bookmark";
+                    } else if (route.name === "Others") {
+                        iconName = "reorder-three";
+                    }
+                    return (
+                        <TabBarIcon
+                            focused={focused}
+                            name={iconName}
+                            color={color}
+                        />
+                    );
+                },
+            })}
+        >
+            <Tab.Screen name="Home" component={HomeStack} />
+            <Tab.Screen name="Orders" component={OrderStack} />
+            <Tab.Screen name="Coupons" component={CouponsStack} />
+            <Tab.Screen name="Others" component={OtherStack} />
+        </Tab.Navigator>
     );
 }
 

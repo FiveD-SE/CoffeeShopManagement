@@ -6,13 +6,15 @@ import {
     Image,
     TextInput,
 } from "react-native";
-import React from "react";
+import React, { useRef, useState, useMemo } from "react";
 import Icon from "react-native-vector-icons/Entypo";
 import { useNavigation } from "@react-navigation/native";
 import Icon1 from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
 import StaffCard from "../../components/Admin/StaffCard";
+import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import RoleListScreen from "./RoleListScreen";
 
 export default function ManageStaffScreen() {
     const DATA = [
@@ -41,68 +43,88 @@ export default function ManageStaffScreen() {
             role: "Nhân viên",
         },
     ];
+    const [isOpen, setIsOpen] = useState(false);
+    const chooseRoleListSnapPoints = useMemo(() => ["60%"], []);
+    const chooseRoleListBottomSheetRef = useRef(null);
+
+    const handleChooseRoleList = () => {
+        chooseRoleListBottomSheetRef.current?.present();
+        setIsOpen(true);
+    };
+
     const navigation = useNavigation();
     const handleback = () => {
         navigation.goBack();
     };
-    const goToRoleList = () => {
-        navigation.navigate("RoleList");
+    const goToAddStaff = () => {
+        navigation.navigate("AddStaff");
     };
+    const goToEditStaff = () => {
+        navigation.navigate('EditStaff')
+    }
     return (
-        <View style={styles.container}>
-            <View style={styles.topApp}>
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <TouchableOpacity onPress={handleback}>
-                        <Icon name="chevron-left" size={32} />
-                    </TouchableOpacity>
-                    <Text style={styles.topAppText}>Nhân viên</Text>
-                </View>
-                <TouchableOpacity
-                    onPress={goToRoleList}
-                    style={styles.roleButton}
-                >
-                    <Image source={require("../../assets/gg_list.png")} />
-                    <Text style={{ paddingStart: "2%", color: "#fff" }}>
-                        Danh sách vai trò
-                    </Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.content}>
-                <Text
-                    style={{
-                        fontWeight: "600",
-                        fontSize: 16,
-                        marginBottom: "3%",
-                    }}
-                >
-                    Danh sách nhân viên
-                </Text>
-                <View style={styles.searchBox}>
-                    <TextInput
-                        placeholder="Tìm kiếm theo tên nhân viên, số điện thoại"
-                        placeholderTextColor={"#9c9c9c"}
-                    />
-                    <TouchableOpacity>
-                        <Icon1 name="search" size={24} />
-                    </TouchableOpacity>
-                </View>
-                <ScrollView style={styles.listStaff}>
-                    <StaffCard DATA={DATA} />
-                    <TouchableOpacity style={styles.addStaffButton}>
-                        <Ionicons name="add" size={24} />
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontWeight: "600",
-                                marginStart: "3%",
-                            }}
-                        >
-                            Thêm nhân viên
+        <BottomSheetModalProvider>
+            <View style={styles.container}>
+                <View style={styles.topApp}>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <TouchableOpacity onPress={handleback}>
+                            <Icon name="chevron-left" size={32} />
+                        </TouchableOpacity>
+                        <Text style={styles.topAppText}>Nhân viên</Text>
+                    </View>
+                    <TouchableOpacity
+                        onPress={handleChooseRoleList}
+                        style={styles.roleButton}
+                    >
+                        <Image source={require("../../assets/gg_list.png")} />
+                        <Text style={{ paddingStart: "2%", color: "#fff" }}>
+                            Danh sách vai trò
                         </Text>
                     </TouchableOpacity>
-                </ScrollView>
+                </View>
+                <View style={styles.content}>
+                    <Text
+                        style={{
+                            fontWeight: "600",
+                            fontSize: 16,
+                            marginBottom: "3%",
+                        }}
+                    >
+                        Danh sách nhân viên
+                    </Text>
+                    <View style={styles.searchBox}>
+                        <TextInput
+                            placeholder="Tìm kiếm theo tên nhân viên, số điện thoại"
+                            placeholderTextColor={"#9c9c9c"}
+                        />
+                        <TouchableOpacity>
+                            <Icon1 name="search" size={24} />
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView style={styles.listStaff}>
+                        <StaffCard DATA={DATA} handleNavigate={goToEditStaff} />
+                        <TouchableOpacity
+                            onPress={goToAddStaff}
+                            style={styles.addStaffButton}>
+                            <Ionicons name="add" size={24} />
+                            <Text
+                                style={{
+                                    fontSize: 14,
+                                    fontWeight: "600",
+                                    marginStart: "3%",
+                                }}
+                            >
+                                Thêm nhân viên
+                            </Text>
+                        </TouchableOpacity>
+                    </ScrollView>
+                </View>
             </View>
-        </View>
+            <RoleListScreen
+                bottomSheetRef={chooseRoleListBottomSheetRef}
+                snapPoints={chooseRoleListSnapPoints}
+                setIsOpen={setIsOpen} />
+        </BottomSheetModalProvider>
     );
 }
 

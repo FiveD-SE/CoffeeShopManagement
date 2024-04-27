@@ -12,6 +12,7 @@ import CashierInformation from "../screens/Staff/CashierInformation";
 import CashierHistoryScreen from "../screens/Staff/CashierHistoryScreen";
 import OrderScreen from "../screens/Staff/OrderScreen";
 import CashierNotification from "../screens/Staff/CashierNotification";
+import HeaderBackButton from "./components/HeaderBackButton";
 
 const Stack = createNativeStackNavigator();
 
@@ -68,17 +69,35 @@ const HomeStack = () => {
             <Stack.Screen
                 name="CashierNotification"
                 component={CashierNotification}
-                options={{ headerShown: false }}
+                options={{
+                    headerTitle: "Thông báo",
+                    headerLeftContainerStyle: {
+                        padding: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
             />
             <Stack.Screen
                 name="CashierInformation"
                 component={CashierInformation}
-                options={{ headerShown: false }}
+                options={{
+                    headerTitle: "Thông tin",
+                    headerLeftContainerStyle: {
+                        padding: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
             />
             <Stack.Screen
                 name="OrderScreen"
                 component={OrderScreen}
-                options={{ headerShown: false }}
+                options={{
+                    headerTitle: "Chi tiết đơn hàng",
+                    headerLeftContainerStyle: {
+                        padding: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
             />
         </Stack.Navigator>
     );
@@ -86,53 +105,51 @@ const HomeStack = () => {
 
 const CashierNavigator = () => {
     return (
-        <NavigationContainer>
-            <Tab.Navigator
-                screenOptions={({ route }) => ({
-                    tabBarActiveTintColor: "#006C5E",
-                    tabBarInactiveTintColor: "#CBCBD4",
-                    tabBarStyle: styles.bottomTabBar,
-                    tabBarShowLabel: true,
-                    headerShown: false,
-                    tabBarHideOnKeyboard: true,
-                    tabBarLabelStyle: styles.labelStyle,
-                    tabBarIcon: ({ focused, color, size }) => {
-                        let iconName;
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#006C5E",
+                tabBarInactiveTintColor: "#CBCBD4",
+                tabBarStyle: styles.bottomTabBar,
+                tabBarShowLabel: true,
+                headerShown: false,
+                tabBarHideOnKeyboard: true,
+                tabBarLabelStyle: styles.labelStyle,
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
 
-                        if (route.name === "Home") {
-                            iconName = "home";
-                        } else if (route.name === "Bill") {
-                            iconName = "bars";
-                        } else if (route.name === "History") {
-                            iconName = "history";
-                        }
-                        return (
-                            <TabBarIcon
-                                focused={focused}
-                                name={iconName}
-                                color={color}
-                            />
-                        );
-                    },
-                })}
-            >
-                <Tab.Screen
-                    options={{ headerShown: false }}
-                    name="Home"
-                    component={HomeStack}
-                />
-                <Tab.Screen
-                    options={{ headerShown: false }}
-                    name="Bill"
-                    component={CashierBillingScreen}
-                />
-                <Tab.Screen
-                    options={{ headerShown: false }}
-                    name="History"
-                    component={CashierHistoryScreen}
-                />
-            </Tab.Navigator>
-        </NavigationContainer>
+                    if (route.name === "Home") {
+                        iconName = "home";
+                    } else if (route.name === "Bill") {
+                        iconName = "bars";
+                    } else if (route.name === "History") {
+                        iconName = "history";
+                    }
+                    return (
+                        <TabBarIcon
+                            focused={focused}
+                            name={iconName}
+                            color={color}
+                        />
+                    );
+                },
+            })}
+        >
+            <Tab.Screen
+                options={{ headerShown: false }}
+                name="Home"
+                component={HomeStack}
+            />
+            <Tab.Screen
+                options={{ headerShown: false }}
+                name="Bill"
+                component={CashierBillingScreen}
+            />
+            <Tab.Screen
+                options={{ headerShown: false }}
+                name="History"
+                component={CashierHistoryScreen}
+            />
+        </Tab.Navigator>
     );
 };
 
