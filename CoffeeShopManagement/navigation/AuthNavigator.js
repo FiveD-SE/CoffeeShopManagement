@@ -9,6 +9,12 @@ import SuccessScreen from "../screens/Client/SuccessScreen";
 import SignUpScreen from "../screens/Client/SignUpScreen";
 import OnBoardingScreen from "../screens/Client/OnBoardingScreen";
 import { NavigationContainer } from "@react-navigation/native";
+import UserHomeScreen from "../screens/Client/Home/UserHomeScreen";
+import AdminHomeScreen from "../screens/Admin/Home/AdminHomeScreen";
+import CashierHome from "../screens/Staff/CashierHome";
+import UserNavigator from "./UserNavigator";
+import CashierNavigator from "./CashierNavigator";
+import AdminNavigator from "./AdminNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -57,6 +63,26 @@ const AuthNavigator = () => {
             <Stack.Screen
                 name="SuccessScreen"
                 component={SuccessScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="UserHome"
+                component={UserHomeScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="AdminNavigator"
+                component={AdminNavigator}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="CashierNavigator"
+                component={CashierNavigator}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="UserNavigator"
+                component={UserNavigator}
                 options={{ headerShown: false }}
             />
         </Stack.Navigator>
