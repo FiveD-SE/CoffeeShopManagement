@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, StyleSheet, Pressable, FlatList } from 'react-native';
 
 const OrderHistory = ({ navigation }) => {
     const orderHistory = [
@@ -33,7 +33,7 @@ const OrderHistory = ({ navigation }) => {
   };
 
     const renderItem = ({ item }) => (
-        <TouchableOpacity
+        <Pressable
             style={styles.orderItem}
             onPress={() => navigation.navigate('OrderDetail', { orderId: item.orderId })}
         >
@@ -42,7 +42,7 @@ const OrderHistory = ({ navigation }) => {
                 <Text style={styles.orderStatus}>Trạng thái: {getStatusView(item.status)}</Text>
                 <Text style={styles.orderTotal}>Tổng tiền: {item.total}đ</Text>
             </View>
-        </TouchableOpacity>
+        </Pressable>
     );
 
     return (
@@ -59,7 +59,6 @@ const OrderHistory = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFF',
         paddingHorizontal: 10,
         paddingVertical: 10,
     },

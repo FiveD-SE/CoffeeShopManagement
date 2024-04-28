@@ -15,8 +15,8 @@ const SelectAddress = () => {
     { id: '4', address: "FEEL Coffee & Tee Express, 82 Đ. Vành Đai, Đông Hoà, Dĩ An, Bình Dương, Việt Nam" },
   ]);
   const [savedAddresses, setSavedAddresses] = useState([
-    { id: '3', address: "FEEL Coffee & Tee Express, 82 Đ. Vành Đai, Đông Hoà, Dĩ An, Bình Dương, Việt Nam" },
-    { id: '4', address: "FEEL Coffee & Tee Express, 82 Đ. Vành Đai, Đông Hoà, Dĩ An, Bình Dương, Việt Nam" },
+    { id: '1', address: "FEEL Coffee & Tee Express, 82 Đ. Vành Đai, Đông Hoà, Dĩ An, Bình Dương, Việt Nam" },
+    { id: '2', address: "FEEL Coffee & Tee Express, 82 Đ. Vành Đai, Đông Hoà, Dĩ An, Bình Dương, Việt Nam" },
     { id: '3', address: "FEEL Coffee & Tee Express, 82 Đ. Vành Đai, Đông Hoà, Dĩ An, Bình Dương, Việt Nam" },
     { id: '4', address: "FEEL Coffee & Tee Express, 82 Đ. Vành Đai, Đông Hoà, Dĩ An, Bình Dương, Việt Nam" },
   ]);
@@ -38,9 +38,9 @@ const SelectAddress = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollview}>
+      <ScrollView>
         <View style={styles.section}>
-          <Text style={styles.sectionHeading}>Đã đặt gần đây</Text>
+          <Text style={[styles.sectionHeading, { marginTop: 10 }]}>Đã đặt gần đây</Text>
           {recentAddresses.map(item => renderRecentAddressItem(item))}
         </View>
 
@@ -49,10 +49,12 @@ const SelectAddress = () => {
           {savedAddresses.map(item => renderSavedAddressItem(item))}
         </View>
 
-        <Pressable style={styles.addressItem} onPress={() => navigation.navigate('AddNewAddress')}>
-          <FontAwesome5 name='plus' size={18} style={styles.icon}/>
-          <Text style={styles.addText}>Thêm địa chỉ mới</Text>
-        </Pressable>
+        <View style={styles.section}>
+          <Pressable style={styles.addressItem} onPress={() => navigation.navigate('AddNewAddress')}>
+            <FontAwesome5 name='plus' size={18} style={styles.icon}/>
+            <Text style={styles.addText}>Thêm địa chỉ mới</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -62,12 +64,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollview: {
-    paddingHorizontal: 20,
-    paddingVertical: 20
-  },
   section: {
-    marginBottom: 20,
+    paddingVertical: 5,
+    paddingHorizontal: 20,
   },
   sectionHeading: {
     fontSize: 18,

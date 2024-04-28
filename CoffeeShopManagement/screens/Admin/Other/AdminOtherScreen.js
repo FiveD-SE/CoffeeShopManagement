@@ -76,7 +76,7 @@ export default function AdminOtherScreen() {
                             >
                                 <TouchableOpacity
                                     onPress={() => {
-                                        navigation.navigate("ProfileDetail");
+                                        navigation.navigate("AdminProfileDetail");
                                     }}
                                     style={styles.row}
                                 >
