@@ -64,7 +64,7 @@ const AdminExportGoodsScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.bar}>
         <BranchSelectBar branchName="ThanhTai1" />
       </View>
@@ -82,7 +82,7 @@ const AdminExportGoodsScreen = () => {
         </View>
         <ColorButton color="#00A188" text="Xuất hàng" textColor="#ffffff" OnPress={goToListExport} />
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 

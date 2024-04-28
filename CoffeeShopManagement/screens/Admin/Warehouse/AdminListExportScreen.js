@@ -56,13 +56,13 @@ const AdminListExportScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Danh sách xuất hàng hàng</Text>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
         {renderproductList()}
       </ScrollView>
       <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" />
-    </SafeAreaView>
+    </View>
   )
 }
 
