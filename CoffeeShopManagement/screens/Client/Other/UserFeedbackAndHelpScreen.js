@@ -33,7 +33,7 @@ const FeedbackAndHelp = () => {
               onChangeText={setStore}
               value={store}
               placeholder="Địa chỉ"
-              keyboardType="text"
+              keyboardType="default"
             />
             <TouchableOpacity>
               <FontAwesome name='angle-right' size={32} style={styles.angleIcon} />
@@ -51,7 +51,7 @@ const FeedbackAndHelp = () => {
               onChangeText={setReport}
               value={report}
               placeholder='Cảm nhận của bạn.'
-              keyboardType="text"
+              keyboardType="default"
               multiline={true}
             />
           </View>
@@ -69,11 +69,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor: "#F8F7FA",
   },
   scrollViewContent: {
     paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingVertical: 20,
   },
   section: {
     marginBottom: 20,
@@ -108,6 +107,7 @@ const styles = StyleSheet.create({
   },
   angleIcon: {
     marginLeft: 15,
+    color: '#9C9C9C'
   },
   submitButton: {
     backgroundColor: '#3A3A3A',

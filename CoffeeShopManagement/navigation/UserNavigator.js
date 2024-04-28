@@ -22,6 +22,8 @@ import Other from "../screens/Client/Other/UserOtherScreen";
 import TabBarIcon from "./components/TabBarIcon";
 import HeaderBackButton from "./components/HeaderBackButton";
 import UserCartScreen from "../screens/Client/PlaceOrder/UserCartScreen";
+import SelectPositionButton from "./components/SelectPositionButton";
+import SearchBar from "./components/SearchBar";
 
 import OrderHistory from "../screens/Client/Other/UserOrderHistoryScreen";
 import Setting from "../screens/Client/Other/UserSettingScreen";
@@ -158,7 +160,7 @@ const OrderStack = () => (
             }}
         />
         <Stack.Screen
-            name="SelectBranchScreen"
+            name="SelectBranch"
             component={SelectBranch}
             options={{
                 headerTitle: "Chọn chi nhánh",
@@ -219,7 +221,7 @@ const OtherStack = () => (
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
-                // headerLeft: () => <HeaderBackButton />,
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
@@ -230,18 +232,19 @@ const OtherStack = () => (
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
-                // headerLeft: () => <HeaderBackButton />,
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
             name="SelectAddress"
             component={SelectAdress}
             options={{
-                headerTitle: "Địa chỉ",
+                headerTitle: () => <SearchBar />,
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <SelectPositionButton />
             }}
         />
         <Stack.Screen
@@ -252,7 +255,7 @@ const OtherStack = () => (
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
-                // headerLeft: () => <HeaderBackButton />,
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
@@ -263,19 +266,17 @@ const OtherStack = () => (
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
-                // headerLeft: () => <HeaderBackButton />,
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
             name="Logout"
             component={SignInScreen}
             options={{
-                headerTitle: "Phản hồi và hỗ trợ",
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
                 headerShown: false,
-                // headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
@@ -298,6 +299,18 @@ const OtherStack = () => (
                     paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="SelectBranch"
+            component={SelectBranch}
+            options={{
+                headerTitle: () => <SearchBar />,
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <SelectPositionButton />
             }}
         />
     </Stack.Navigator>

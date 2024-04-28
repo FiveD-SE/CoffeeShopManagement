@@ -28,7 +28,7 @@ import AdminListExportScreen from "../screens/Admin/Warehouse/AdminListExportScr
 
 import AdminOtherScreen from "../screens/Admin/Other/AdminOtherScreen";
 import AdminEditProfile from "../screens/Admin/AdminEditProfileScreen";
-import ProfileDetail from "../screens/Admin/Other/AdminProfileDetailScreen";
+import AdminProfileDetail from "../screens/Admin/Other/AdminProfileDetailScreen";
 import AdminBranchManagement from "../screens/Admin/AdminBranchManagement";
 import AdminEditBranchScreen from "../screens/Admin/AdminEditBranchScreen";
 import AdminAddBranchScreen from "../screens/Admin/AdminAddBranchScreen";
@@ -84,8 +84,8 @@ const OtherStack = () => (
             options={{ headerShown: false }}
         />
         <Stack.Screen
-            name="ProfileDetail"
-            component={ProfileDetail}
+            name="AdminProfileDetail"
+            component={AdminProfileDetail}
             options={{
                 headerTitle: "Thông tin cá nhân",
                 headerLeftContainerStyle: {
