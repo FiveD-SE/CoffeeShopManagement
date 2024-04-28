@@ -16,7 +16,7 @@ const ProductCardwithPrice = ({
                     </View>
                     <View style={{ flexDirection: "row" }}>
                         <Text style={styles.label}>{quantity}</Text>
-                        <Text style={styles.label}>/{unit}</Text>
+                        <Text style={styles.label}> {unit}</Text>
                     </View>
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -61,8 +61,7 @@ const styles = StyleSheet.create({
     },
     main: {
         flex: 1,
-        paddingRight: "2%",
-        paddingLeft: "3%",
+        paddingHorizontal:"2%",
         borderRightWidth: 1,
         borderColor: "rgba(58,58,58,0.5)"
     },

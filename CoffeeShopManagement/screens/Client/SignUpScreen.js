@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView, Image } from "react-native";
+import { StyleSheet, Text, View, SafeAreaView, Image,ScrollView } from "react-native";
 import Checkbox from "expo-checkbox";
 import InputField from "../../components/Client/InputField";
 import PasswordInput from "../../components/Client/PasswordInput";
@@ -39,7 +39,7 @@ const SignUpScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.container}>
             <Image style={styles.header} source={BACKGROUND_SOURCE} />
             <View style={styles.content}>
                 <Text style={styles.title}>Đăng ký</Text>
@@ -86,7 +86,7 @@ const SignUpScreen = () => {
                     />
                 </View>
             </View>
-        </SafeAreaView>
+        </ScrollView>
     );
 };
 
