@@ -1,7 +1,7 @@
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
-const RecentItemCard = ({ title, price, imageSource }) => {
+const RecentItemCard = ({ title, price, imageSource, onPress }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.imageContainer}>
@@ -13,7 +13,7 @@ const RecentItemCard = ({ title, price, imageSource }) => {
 				</Text>
 				<Text style={styles.price}>{price}</Text>
 			</View>
-			<Pressable style={styles.addButton}>
+			<Pressable style={styles.addButton} onPress={onPress}>
 				<Text style={styles.textAddButton}>Chọn</Text>
 			</Pressable>
 		</View>
