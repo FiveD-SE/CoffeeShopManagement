@@ -119,7 +119,7 @@ const ItemDetailBottomSheet = ({
 				<View style={styles.container}>
 					<Image
 						style={styles.image}
-						source={selectedItem ? selectedItem.imageSource : ""}
+						source={require("../../../assets/vietnam.png")}
 					/>
 					<View style={styles.main}>
 						<View style={styles.header}>
