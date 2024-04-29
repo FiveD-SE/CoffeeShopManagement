@@ -13,7 +13,7 @@ import DeliveryInformationButton from "../../../components/Client/Button/Deliver
 import ChooseCouponBottomSheet from "../../../components/Client/BottomSheet/ChooseCouponBottomSheet";
 import OrderConfirmationFooter from "../../../components/Client/OrderConfirmationFooter";
 import { useNavigation } from "@react-navigation/native";
-
+import { IsOpenProvider } from "../../../utils/IsOpenContext";
 const CASH_ICON = require("../../../assets/cash.png");
 const CREDIT_CARD_ICON = require("../../../assets/credit-card.png");
 const MOMO_ICON = require("../../../assets/momo.png");
@@ -144,7 +144,7 @@ const UserOrderConfirmationScreen = () => {
 	};
 
 	return (
-		<BottomSheetModalProvider>
+		<IsOpenProvider>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={styles.container} showsVerticalScrollIndicator={false}>
 					<ChooseDeliveryButton
@@ -183,14 +183,12 @@ const UserOrderConfirmationScreen = () => {
 			<ChooseDeliveryBottomSheet
 				bottomSheetRef={chooseDeliveryBottomSheetRef}
 				snapPoints={chooseDeliverySnapPoints}
-				setIsOpen={setIsOpen}
 			/>
 			<ChooseCouponBottomSheet
 				bottomSheetRef={chooseCouponBottomSheetRef}
 				snapPoints={chooseCouponSnapPoints}
-				setIsOpen={setIsOpen}
 			/>
-		</BottomSheetModalProvider>
+		</IsOpenProvider>
 	);
 };
 
