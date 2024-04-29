@@ -9,15 +9,15 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Section from "../Section";
+import Section from "../../../components/Client/Section";
 import SizeItem from "../../../components/Client/Button/SizeItem";
-import OptionSection from "../List/OptionSection";
+import OptionSection from "../../../components/Client/List/OptionSection";
 import ToppingButton from "../../../components/Client/Button/ToppingButton";
-import ToppingItemList from "../List/ToppingItemList";
-import BottomSheet from "./BottomSheet";
+import ToppingItemList from "../../../components/Client/List/ToppingItemList";
+import BottomSheet from "../../../components/Client/BottomSheet/BottomSheet";
 import { useIsOpen } from "../../../utils/IsOpenContext";
+
 const ItemDetailBottomSheet = ({
 	bottomSheetRef,
 	snapPoints,
@@ -27,7 +27,10 @@ const ItemDetailBottomSheet = ({
 	const navigation = useNavigation();
 	const [selectedSizeIndex, setSelectedSizeIndex] = useState(null);
 	const [isFavorite, setIsFavorite] = useState(false);
+	const [selectedToppings, setSelectedToppings] = useState([]);
+
 	const optionList = [{ title: "Đường" }, { title: "Sữa" }, { title: "Đá" }];
+
 	const sugarOptionList = ["Bình thường", "Ít đường", "Không đường"];
 	const milkOptionList = ["Bình thường", "Ít sữa", "Không sữa"];
 	const iceOptionList = ["Bình thường", "Ít đá", "Không đá"];
@@ -76,8 +79,36 @@ const ItemDetailBottomSheet = ({
 			/>
 		));
 
+	const handleToppingsSelected = (toppings) => {
+		setSelectedToppings(toppings);
+	};
+
 	const goToCartScreen = () => navigation.navigate("UserCartScreen");
+
 	const toggleFavorite = () => setIsFavorite(!isFavorite);
+
+	const renderToppingButton = () => {
+		if (selectedItem && selectedItem.type !== "COFFEE") {
+			return (
+				<View style={{ marginTop: "5%" }}>
+					<ToppingButton onToppingsSelected={handleToppingsSelected} />
+				</View>
+			);
+		}
+		return null;
+	};
+
+	const renderToppingItemList = () => {
+		if (selectedToppings.length > 0) {
+			return (
+				<View style={{ marginTop: "5%" }}>
+					<ToppingItemList toppings={selectedToppings} />
+				</View>
+			);
+		}
+		return null;
+	};
+
 	return (
 		<BottomSheet
 			bottomSheetRef={bottomSheetRef}
@@ -88,7 +119,7 @@ const ItemDetailBottomSheet = ({
 				<View style={styles.container}>
 					<Image
 						style={styles.image}
-						source={require("../../../assets/starbucks.jpeg")}
+						source={selectedItem ? selectedItem.imageSource : ""}
 					/>
 					<View style={styles.main}>
 						<View style={styles.header}>
@@ -128,12 +159,8 @@ const ItemDetailBottomSheet = ({
 								</View>
 							</Section>
 						</View>
-						<View style={{ marginTop: "5%" }}>
-							<ToppingButton />
-						</View>
-						<View style={{ marginTop: "5%" }}>
-							<ToppingItemList />
-						</View>
+						{renderToppingButton()}
+						{renderToppingItemList()}
 					</View>
 				</View>
 				<View style={styles.footer}>
@@ -163,7 +190,8 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: "100%",
-		height: 300,
+		maxHeight: 250,
+		resizeMode: "cover",
 	},
 	main: {
 		flex: 0.5,

@@ -4,7 +4,7 @@ import React from "react";
 import Section from "../Section";
 import ToppingItem2 from "../ToppingItem2";
 
-const ToppingItemList = () => {
+const ToppingItemList = ({ toppings }) => {
 	const toppingItemList = [
 		{
 			title: "Trân châu đen",
@@ -14,7 +14,7 @@ const ToppingItemList = () => {
 		{ title: "Pudding trứng", price: 15000 },
 	];
 	const renderToppingItemList = () => {
-		return toppingItemList.map((item, index) => (
+		return toppings.map((item, index) => (
 			<ToppingItem2
 				key={index}
 				title={item.title}

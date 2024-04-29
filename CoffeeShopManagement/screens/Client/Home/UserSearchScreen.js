@@ -4,52 +4,15 @@ import { useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../../../components/Client/SearchBar";
 import ProductCardHorizontal from "../../../components/Client/Card/ProductCardHorizontal";
-import ItemDetailBottomSheet from "../../../components/Client/BottomSheet/ItemDetailBottomSheet";
+import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
+import { PRODUCT_ITEM_LIST } from "./UserHomeScreen";
 const UserSearchScreen = () => {
 	const navigation = useNavigation();
 
 	const [selectedItem, setSelectedItem] = useState(null);
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 	const itemDetailBottomSheetRef = useRef(null);
-	const productItemList = [
-		{
-			title: "Phở Gà Việt Nam",
-			price: 45000,
-			description: "Phở gà thơm nồng",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Bún Chả Hà Nội",
-			price: 55000,
-			description: "Bún chả thơm ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Gỏi Cuốn Sài Gòn",
-			price: 25000,
-			description: "Gỏi cuốn tươi ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Cà Phê Sữa Đá",
-			price: 30000,
-			description: "Cà phê sữa đá thơm ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Bánh Mì Bì Hà Nội",
-			price: 40000,
-			description: "Bánh mì bì thơm ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Bánh Mì Trứng",
-			price: 20000,
-			description: "Bánh mì trứng thơm ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-	];
 
 	const handleGoBack = () => {
 		navigation.goBack();
@@ -85,7 +48,7 @@ const UserSearchScreen = () => {
 				</View>
 				<View style={styles.main}>
 					<FlatList
-						data={productItemList}
+						data={PRODUCT_ITEM_LIST}
 						renderItem={renderItemList}
 						showsVerticalScrollIndicator={false}
 					/>

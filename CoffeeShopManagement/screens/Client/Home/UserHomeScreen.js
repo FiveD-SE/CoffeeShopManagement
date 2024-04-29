@@ -10,7 +10,7 @@ import CategoryItem from "../../../components/Client/Button/CategoryItem";
 import BestSellerItem from "../../../components/Client/Card/BestSellerItem";
 import Section from "../../../components/Client/Section";
 import RecentlyViewedItem from "../../../components/Client/Card/RecentlyViewedItem";
-import ItemDetailBottomSheet from "../../../components/Client/BottomSheet/ItemDetailBottomSheet";
+import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 
 const USER_IMAGE_SOURCE = require("../../../assets/google.png");
 
@@ -19,7 +19,50 @@ const COFFEE_BEANS_ICONS = require("../../../assets/coffee-beans.png");
 const MILK_TEA_ICONS = require("../../../assets/milktea.png");
 
 const FRUITS_ICONS = require("../../../assets/fruits.png");
-
+export const PRODUCT_ITEM_LIST = [
+	{
+		title: "Cà Phê Sữa Đá",
+		price: 30000,
+		description: "Cà phê sữa đá thơm ngon",
+		imageSource: require("../../../assets/vietnam.png"),
+		type: "COFFEE",
+	},
+	{
+		title: "Trà Đào",
+		price: 35000,
+		description: "Trà đào thơm ngon",
+		imageSource: require("../../../assets/vietnam.png"),
+		type: "TEA",
+	},
+	{
+		title: "Trà Sữa Trân Châu",
+		price: 40000,
+		description: "Trà sữa trân châu thơm ngon",
+		imageSource: require("../../../assets/vietnam.png"),
+		type: "MILKTEA",
+	},
+	{
+		title: "Cà Phê Đen",
+		price: 25000,
+		description: "Cà phê đen thơm ngon",
+		imageSource: require("../../../assets/vietnam.png"),
+		type: "COFFEE",
+	},
+	{
+		title: "Trà Lúa Mạch",
+		price: 30000,
+		description: "Trà lúa mạch thơm ngon",
+		imageSource: require("../../../assets/vietnam.png"),
+		type: "TEA",
+	},
+	{
+		title: "Trà Sữa Matcha",
+		price: 45000,
+		description: "Trà sữa matcha thơm ngon",
+		imageSource: require("../../../assets/vietnam.png"),
+		type: "MILKTEA",
+	},
+];
 const UserHomeScreen = () => {
 	const navigation = useNavigation();
 
@@ -77,45 +120,6 @@ const UserHomeScreen = () => {
 		{ backgroundColor: "203, 203, 212", title: "Khác" },
 	];
 
-	const productItemList = [
-		{
-			title: "Phở Gà Việt Nam",
-			price: 45000,
-			description: "Phở gà thơm nồng",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Bún Chả Hà Nội",
-			price: 55000,
-			description: "Bún chả thơm ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Gỏi Cuốn Sài Gòn",
-			price: 25000,
-			description: "Gỏi cuốn tươi ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Cà Phê Sữa Đá",
-			price: 30000,
-			description: "Cà phê sữa đá thơm ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Bánh Mì Bì Hà Nội",
-			price: 40000,
-			description: "Bánh mì bì thơm ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-		{
-			title: "Bánh Mì Trứng",
-			price: 20000,
-			description: "Bánh mì trứng thơm ngon",
-			imageSource: require("../../../assets/vietnam.png"),
-		},
-	];
-
 	const renderCategoryItem = () => {
 		return categoriesList.map((category, index) => (
 			<CategoryItem
@@ -131,7 +135,7 @@ const UserHomeScreen = () => {
 	};
 
 	const renderBestSellerItemList = () => {
-		return productItemList.map((item, index) => (
+		return PRODUCT_ITEM_LIST.map((item, index) => (
 			<BestSellerItem
 				key={index}
 				title={item.title}
@@ -147,7 +151,7 @@ const UserHomeScreen = () => {
 	};
 
 	const renderRecentlyViewedItemList = () => {
-		return productItemList.map((item, index) => (
+		return PRODUCT_ITEM_LIST.map((item, index) => (
 			<RecentlyViewedItem
 				key={index}
 				title={item.title}

@@ -8,7 +8,6 @@ import {
 	SafeAreaView,
 	Platform,
 } from "react-native";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome6";
 
@@ -18,57 +17,18 @@ import ProductCardHorizontal from "../../../components/Client/Card/ProductCardHo
 import RecentItemCard from "../../../components/Client/Card/RecentItemCard";
 import CategoryItemList from "../../../components/Client/List/CategoryItemList";
 import CategoryBottomSheet from "../../../components/Client/BottomSheet/CategoryBottomSheet";
-import ItemDetailBottomSheet from "../../../components/Client/BottomSheet/ItemDetailBottomSheet";
+import ItemDetailBottomSheet from "./ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
-const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
-
+import { PRODUCT_ITEM_LIST } from "../Home/UserHomeScreen";
 const UserPlaceOrderScreen = () => {
 	const navigation = useNavigation();
-	const [isOpen, setIsOpen] = useState(false);
 	const categorySnapPoints = useMemo(() => ["40%"], []);
-
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 	const itemDetailBottomSheetRef = useRef(null);
 	const categoryBottomSheetRef = useRef(null);
 
-	const mustTryList = [
-		{
-			title: "Smoothie Xoài Nhiệt Đới Granola",
-			price: 65000,
-			imageSource: PRODUCT_IMAGE_SOURCE,
-		},
-		{
-			title: "Smoothie Phúc Bồn Tử Granola",
-			price: 65000,
-			imageSource: PRODUCT_IMAGE_SOURCE,
-		},
-		{
-			title: "Oolong Tứ Quý Vải",
-			price: 65000,
-			imageSource: PRODUCT_IMAGE_SOURCE,
-		},
-	];
-
-	const recentItemList = [
-		{
-			title: "Smoothie Xoài Nhiệt Đới Granola",
-			price: 65000,
-			imageSource: PRODUCT_IMAGE_SOURCE,
-		},
-		{
-			title: "Smoothie Phúc Bồn Tử Granola",
-			price: 65000,
-			imageSource: PRODUCT_IMAGE_SOURCE,
-		},
-		{
-			title: "Oolong Tứ Quý Vải",
-			price: 45000,
-			imageSource: PRODUCT_IMAGE_SOURCE,
-		},
-	];
-
 	const renderMustTryList = () => {
-		return mustTryList.map((item, index) => (
+		return PRODUCT_ITEM_LIST.map((item, index) => (
 			<ProductCardHorizontal
 				key={index}
 				title={item.title}
@@ -83,7 +43,7 @@ const UserPlaceOrderScreen = () => {
 	};
 
 	const renderRecentItemList = () => {
-		return recentItemList.map((item, index) => (
+		return PRODUCT_ITEM_LIST.map((item, index) => (
 			<RecentItemCard
 				key={index}
 				title={item.title}
@@ -99,12 +59,10 @@ const UserPlaceOrderScreen = () => {
 
 	const handleOpenCategoryItemList = () => {
 		categoryBottomSheetRef.current?.present();
-		setIsOpen(true);
 	};
 
 	const handleOpenItemDetail = () => {
 		itemDetailBottomSheetRef.current?.present();
-		setIsOpen(true);
 	};
 
 	const goToSearchScreen = () => {
@@ -182,12 +140,10 @@ const UserPlaceOrderScreen = () => {
 					<CategoryBottomSheet
 						bottomSheetRef={categoryBottomSheetRef}
 						snapPoints={categorySnapPoints}
-						setIsOpen={setIsOpen}
 					/>
 					<ItemDetailBottomSheet
 						bottomSheetRef={itemDetailBottomSheetRef}
 						snapPoints={itemDetailSnapPoints}
-						setIsOpen={setIsOpen}
 					/>
 				</ScrollView>
 			</SafeAreaView>
