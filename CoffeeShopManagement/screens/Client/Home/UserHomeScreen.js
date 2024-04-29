@@ -1,8 +1,6 @@
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { View, ScrollView, SafeAreaView, StyleSheet } from "react-native";
-import React, { useState, useMemo, useRef } from "react";
-import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { useNavigation } from "@react-navigation/native";
-
 import UserHomeScreenHeader from "../../../components/Client/Header/UserHomeScreenHeader";
 import Carousel from "../../../components/Client/Carousel";
 import SearchBar from "../../../components/Client/SearchBar";
@@ -11,95 +9,35 @@ import BestSellerItem from "../../../components/Client/Card/BestSellerItem";
 import Section from "../../../components/Client/Section";
 import RecentlyViewedItem from "../../../components/Client/Card/RecentlyViewedItem";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
+import { IsOpenProvider } from "../../../utils/IsOpenContext";
+import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
 
 const USER_IMAGE_SOURCE = require("../../../assets/google.png");
 
 const COFFEE_BEANS_ICONS = require("../../../assets/coffee-beans.png");
-
 const MILK_TEA_ICONS = require("../../../assets/milktea.png");
-
 const FRUITS_ICONS = require("../../../assets/fruits.png");
-export const PRODUCT_ITEM_LIST = [
-	{
-		title: "Cà Phê Sữa Đá",
-		price: 30000,
-		description: "Cà phê sữa đá thơm ngon",
-		imageSource: require("../../../assets/vietnam.png"),
-		type: "COFFEE",
-	},
-	{
-		title: "Trà Đào",
-		price: 35000,
-		description: "Trà đào thơm ngon",
-		imageSource: require("../../../assets/vietnam.png"),
-		type: "TEA",
-	},
-	{
-		title: "Trà Sữa Trân Châu",
-		price: 40000,
-		description: "Trà sữa trân châu thơm ngon",
-		imageSource: require("../../../assets/vietnam.png"),
-		type: "MILKTEA",
-	},
-	{
-		title: "Cà Phê Đen",
-		price: 25000,
-		description: "Cà phê đen thơm ngon",
-		imageSource: require("../../../assets/vietnam.png"),
-		type: "COFFEE",
-	},
-	{
-		title: "Trà Lúa Mạch",
-		price: 30000,
-		description: "Trà lúa mạch thơm ngon",
-		imageSource: require("../../../assets/vietnam.png"),
-		type: "TEA",
-	},
-	{
-		title: "Trà Sữa Matcha",
-		price: 45000,
-		description: "Trà sữa matcha thơm ngon",
-		imageSource: require("../../../assets/vietnam.png"),
-		type: "MILKTEA",
-	},
-];
+
 const UserHomeScreen = () => {
 	const navigation = useNavigation();
-
-	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 	const itemDetailBottomSheetRef = useRef(null);
-
 	const [selectedIndex, setSelectedIndex] = useState(null);
 	const [selectedItem, setSelectedItem] = useState(null);
+	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 
-	const handleCategoryPress = (index) => {
-		setSelectedIndex(index);
-	};
-
-	const goToExchangeVoucher = () => {
-		navigation.navigate("ExchangeVoucher");
-	};
-
-	const goToSearchScreen = () => {
-		navigation.navigate("SearchScreen");
-	};
-
-	const goToBestSellerScreen = () => {
-		navigation.navigate("BestSeller");
-	};
-
-	const goToFavoriteItemScreen = () => {
-		navigation.navigate("FavoriteItem");
-	};
-
-	const goToNotificationScreen = () => {
-		navigation.navigate("CashierNotification");
-	};
-
+	const handleCategoryPress = (index) => setSelectedIndex(index);
 	const handleOpenItemDetail = (item) => {
 		setSelectedItem(item);
-		itemDetailBottomSheetRef.current?.present();
+		setIsItemDetailVisible(true);
 	};
+	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+
+	const goToExchangeVoucher = () => navigation.navigate("ExchangeVoucher");
+	const goToSearchScreen = () => navigation.navigate("SearchScreen");
+	const goToBestSellerScreen = () => navigation.navigate("BestSeller");
+	const goToFavoriteItemScreen = () => navigation.navigate("FavoriteItem");
+	const goToNotificationScreen = () =>
+		navigation.navigate("CashierNotification");
 
 	const categoriesList = [
 		{
@@ -112,16 +50,12 @@ const UserHomeScreen = () => {
 			icon: MILK_TEA_ICONS,
 			title: "Trà sữa",
 		},
-		{
-			backgroundColor: "78, 203, 113",
-			icon: FRUITS_ICONS,
-			title: "Trà ",
-		},
+		{ backgroundColor: "78, 203, 113", icon: FRUITS_ICONS, title: "Trà" },
 		{ backgroundColor: "203, 203, 212", title: "Khác" },
 	];
 
-	const renderCategoryItem = () => {
-		return categoriesList.map((category, index) => (
+	const renderCategoryItem = () =>
+		categoriesList.map((category, index) => (
 			<CategoryItem
 				key={index}
 				index={index}
@@ -132,10 +66,9 @@ const UserHomeScreen = () => {
 				onPress={handleCategoryPress}
 			/>
 		));
-	};
 
-	const renderBestSellerItemList = () => {
-		return PRODUCT_ITEM_LIST.map((item, index) => (
+	const renderBestSellerItemList = () =>
+		PRODUCT_ITEM_LIST.map((item, index) => (
 			<BestSellerItem
 				key={index}
 				title={item.title}
@@ -148,10 +81,9 @@ const UserHomeScreen = () => {
 				horizontal={true}
 			/>
 		));
-	};
 
-	const renderRecentlyViewedItemList = () => {
-		return PRODUCT_ITEM_LIST.map((item, index) => (
+	const renderRecentlyViewedItemList = () =>
+		PRODUCT_ITEM_LIST.map((item, index) => (
 			<RecentlyViewedItem
 				key={index}
 				title={item.title}
@@ -163,7 +95,12 @@ const UserHomeScreen = () => {
 				onPress={() => handleOpenItemDetail(item)}
 			/>
 		));
-	};
+
+	useEffect(() => {
+		if (isItemDetailVisible) {
+			itemDetailBottomSheetRef.current?.present();
+		}
+	}, [isItemDetailVisible]);
 
 	return (
 		<IsOpenProvider>
@@ -212,36 +149,26 @@ const UserHomeScreen = () => {
 						</Section>
 					</View>
 				</ScrollView>
-				<ItemDetailBottomSheet
-					bottomSheetRef={itemDetailBottomSheetRef}
-					snapPoints={itemDetailSnapPoints}
-					selectedItem={selectedItem}
-				/>
+				{isItemDetailVisible && (
+					<ItemDetailBottomSheet
+						bottomSheetRef={itemDetailBottomSheetRef}
+						snapPoints={["85%"]}
+						selectedItem={selectedItem}
+						isVisible={isItemDetailVisible}
+						onClose={handleCloseItemDetail}
+					/>
+				)}
 			</SafeAreaView>
 		</IsOpenProvider>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#ffffff",
-	},
-	contentContainer: {
-		padding: "5%",
-	},
-	searchBarContainer: {
-		marginTop: "5%",
-	},
-	categoryContainer: {
-		flexDirection: "row",
-		marginTop: "5%",
-	},
-	itemList: {
-		width: "500%",
-		flexDirection: "row",
-		marginTop: "5%",
-	},
+	container: { flex: 1, backgroundColor: "#ffffff" },
+	contentContainer: { padding: "5%" },
+	searchBarContainer: { marginTop: "5%" },
+	categoryContainer: { flexDirection: "row", marginTop: "5%" },
+	itemList: { width: "500%", flexDirection: "row", marginTop: "5%" },
 });
 
 export default UserHomeScreen;
