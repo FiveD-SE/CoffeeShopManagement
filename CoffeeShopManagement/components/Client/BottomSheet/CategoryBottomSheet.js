@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 import CategoryIcon from "../Button/CategoryIcon";
 import BottomSheet from "./BottomSheet";
@@ -17,13 +17,7 @@ const CategoryBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 		{ type: "Category 2", iconSource: FRUITS_ICON },
 		{ type: "Category 2", iconSource: FRUITS_ICON },
 		{ type: "Category 2", iconSource: FRUITS_ICON },
-		{ type: "Category 2", iconSource: MILKTEA_ICON },
-		{ type: "Category 2", iconSource: MILKTEA_ICON },
 	];
-
-	const renderCategoryItemList = ({ item }) => (
-		<CategoryIcon iconSource={item.iconSource} />
-	);
 
 	return (
 		<BottomSheet
@@ -31,16 +25,11 @@ const CategoryBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 			snapPoints={snapPoints}
 			setIsOpen={setIsOpen}
 		>
-			<View style={styles.container}>
-				<FlatList
-					data={categoriesData}
-					renderItem={renderCategoryItemList}
-					numColumns={4}
-					keyExtractor={(item, index) => index.toString()}
-					contentContainerStyle={styles.listContent}
-					columnWrapperStyle={styles.columnWrapper}
-				/>
-			</View>
+			<ScrollView contentContainerStyle={styles.container}>
+				{categoriesData.map((item, index) => (
+					<CategoryIcon key={index} iconSource={item.iconSource} size={56} />
+				))}
+			</ScrollView>
 		</BottomSheet>
 	);
 };
@@ -49,14 +38,12 @@ export default CategoryBottomSheet;
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
+		flexGrow: 1,
 		backgroundColor: "transparent",
-	},
-	listContent: {
-		paddingHorizontal: "5%",
+		paddingLeft: "10%",
 		paddingTop: "5%",
-	},
-	columnWrapper: {
-		justifyContent: "space-between",
+		flexDirection: "row",
+		flexWrap: "wrap",
+		gap: 40,
 	},
 });

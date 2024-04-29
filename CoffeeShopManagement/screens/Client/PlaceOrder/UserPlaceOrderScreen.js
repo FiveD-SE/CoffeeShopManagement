@@ -25,7 +25,7 @@ const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
 const UserPlaceOrderScreen = () => {
 	const navigation = useNavigation();
 	const [isOpen, setIsOpen] = useState(false);
-	const categorySnapPoints = useMemo(() => ["30%"], []);
+	const categorySnapPoints = useMemo(() => ["40%"], []);
 
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 	const itemDetailBottomSheetRef = useRef(null);
@@ -119,6 +119,10 @@ const UserPlaceOrderScreen = () => {
 		navigation.navigate("UserCartScreen");
 	};
 
+	const goToDeliverdOrderScreen = () => {
+		navigation.navigate("UserOrderScreen");
+	};
+
 	return (
 		<IsOpenProvider>
 			<SafeAreaView style={styles.container}>
@@ -137,7 +141,10 @@ const UserPlaceOrderScreen = () => {
 							</Pressable>
 						</View>
 						<View style={styles.headerRight}>
-							<IconButton iconName="rectangle-list" />
+							<IconButton
+								iconName="rectangle-list"
+								onPress={goToDeliverdOrderScreen}
+							/>
 							<IconButton iconName="cart-shopping" onPress={goToCartScreen} />
 							<IconButton iconName="heart" onPress={goToFavoriteItemScreen} />
 							<IconButton

@@ -41,6 +41,7 @@ import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
 import YourVoucher from "../screens/Client/Coupons/UserVoucherScreen";
 import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
 import CashierNotification from "../screens/Staff/CashierNotification";
+import UserOrderScreen from "../screens/Client/PlaceOrder/UserOrderScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -116,84 +117,96 @@ const HomeStack = () => (
 );
 
 const OrderStack = () => (
-    <Stack.Navigator>
-        <Stack.Screen
-            name="UserPlaceOrderScreen"
-            component={UserPlaceOrderScreen}
-            options={{ headerShown: false }}
-        />
-        <Stack.Screen
-            name="UserSearchScreen"
-            component={UserSearchScreen}
-            options={{ headerShown: false }}
-        />
-        <Stack.Screen
-            name="UserFavoriteItemScreen"
-            component={UserFavoriteItemScreen}
-            options={{
-                headerTitle: "Sản phẩm yêu thích",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="UserCartScreen"
-            component={UserCartScreen}
-            options={{
-                headerTitle: "Giỏ hàng",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="UserOrderConfirmationScreen"
-            component={UserOrderConfirmationScreen}
-            options={{
-                headerTitle: "Xác nhận đơn hàng",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="SelectAddressScreen"
-            component={SelectAdress}
-            options={{
-                headerTitle: "Chọn địa chỉ",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="SelectBranch"
-            component={SelectBranch}
-            options={{
-                headerTitle: "Chọn chi nhánh",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="UserOrderInformationScreen"
-            component={UserOrderInformationScreen}
-            options={{
-                headerTitle: "Đơn hàng",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-    </Stack.Navigator>
+	<Stack.Navigator>
+		<Stack.Screen
+			name="UserPlaceOrderScreen"
+			component={UserPlaceOrderScreen}
+			options={{ headerShown: false }}
+		/>
+		<Stack.Screen
+			name="UserSearchScreen"
+			component={UserSearchScreen}
+			options={{ headerShown: false }}
+		/>
+		<Stack.Screen
+			name="UserFavoriteItemScreen"
+			component={UserFavoriteItemScreen}
+			options={{
+				headerTitle: "Sản phẩm yêu thích",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="UserCartScreen"
+			component={UserCartScreen}
+			options={{
+				headerTitle: "Giỏ hàng",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="UserOrderScreen"
+			component={UserOrderScreen}
+			options={{
+				headerTitle: "Đơn hàng",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+
+		<Stack.Screen
+			name="UserOrderConfirmationScreen"
+			component={UserOrderConfirmationScreen}
+			options={{
+				headerTitle: "Xác nhận đơn hàng",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="SelectAddressScreen"
+			component={SelectAdress}
+			options={{
+				headerTitle: "Chọn địa chỉ",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="SelectBranchScreen"
+			component={SelectBranch}
+			options={{
+				headerTitle: "Chọn chi nhánh",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="UserOrderInformationScreen"
+			component={UserOrderInformationScreen}
+			options={{
+				headerTitle: "Thông tin đơn hàng",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+	</Stack.Navigator>
 );
 
 const OtherStack = () => (
