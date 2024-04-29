@@ -17,110 +17,116 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeStack = () => {
-	return (
-		<Stack.Navigator initialRouteName="CashierHome">
-			<Stack.Screen
-				name="CashierHome"
-				component={CashierHome}
-				options={{ headerShown: false }}
-			/>
-			<Stack.Screen
-				name="CashierNotification"
-				component={CashierNotification}
-				options={{
-					headerTitle: "Thông báo",
-					headerLeftContainerStyle: {
-						paddingLeft: "5%",
-					},
-					headerLeft: () => <HeaderBackButton />,
-				}}
-			/>
-			<Stack.Screen
-				name="CashierInformation"
-				component={CashierInformation}
-				options={{
-					headerTitle: "Thông tin",
-					headerLeftContainerStyle: {
-						paddingLeft: "5%",
-					},
-					headerLeft: () => <HeaderBackButton />,
-				}}
-			/>
-			<Stack.Screen
-				name="OrderScreen"
-				component={OrderScreen}
-				options={{
-					headerTitle: "Chi tiết đơn hàng",
-					headerLeftContainerStyle: {
-						paddingLeft: "5%",
-					},
-					headerLeft: () => <HeaderBackButton />,
-				}}
-			/>
-		</Stack.Navigator>
-	);
+    return (
+        <Stack.Navigator initialRouteName="CashierHome">
+            <Stack.Screen
+                name="CashierHome"
+                component={CashierHome}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="CashierNotification"
+                component={CashierNotification}
+                options={{
+                    headerTitle: "Thông báo",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="CashierInformation"
+                component={CashierInformation}
+                options={{
+                    headerTitle: "Thông tin",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="OrderScreen"
+                component={OrderScreen}
+                options={{
+                    headerTitle: "Chi tiết đơn hàng",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+        </Stack.Navigator>
+    );
 };
 
 const CashierNavigator = () => {
-	return (
-		<Tab.Navigator
-			screenOptions={({ route }) => ({
-				tabBarActiveTintColor: "#006C5E",
-				tabBarInactiveTintColor: "#CBCBD4",
-				tabBarStyle: styles.bottomTabBar,
-				tabBarShowLabel: true,
-				headerShown: false,
-				tabBarHideOnKeyboard: true,
-				tabBarLabelStyle: styles.labelStyle,
-				tabBarIcon: ({ focused, color, size }) => {
-					let iconName;
+    return (
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarActiveTintColor: "#006C5E",
+                tabBarInactiveTintColor: "#CBCBD4",
+                tabBarStyle: styles.bottomTabBar,
+                tabBarShowLabel: true,
+                headerShown: false,
+                tabBarHideOnKeyboard: true,
+                tabBarLabelStyle: styles.labelStyle,
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
 
-					if (route.name === "Home") {
-						iconName = "home";
-					} else if (route.name === "Bill") {
-						iconName = "reorder-four";
-					} else if (route.name === "History") {
-						iconName = "timer";
-					}
-					return <TabBarIcon focused={focused} name={iconName} color={color} />;
-				},
-			})}
-		>
-			<Tab.Screen
-				options={{ headerShown: false }}
-				name="Home"
-				component={HomeStack}
-			/>
-			<Tab.Screen
-				options={{ headerShown: false }}
-				name="Bill"
-				component={CashierBillingScreen}
-			/>
-			<Tab.Screen
-				options={{ headerShown: false }}
-				name="History"
-				component={CashierHistoryScreen}
-			/>
-		</Tab.Navigator>
-	);
+                    if (route.name === "Trang chủ") {
+                        iconName = "home";
+                    } else if (route.name === "Đơn hàng") {
+                        iconName = "reorder-four";
+                    } else if (route.name === "Lịch sử") {
+                        iconName = "timer";
+                    }
+                    return (
+                        <TabBarIcon
+                            focused={focused}
+                            name={iconName}
+                            color={color}
+                        />
+                    );
+                },
+            })}
+        >
+            <Tab.Screen
+                options={{ headerShown: false }}
+                name="Trang chủ"
+                component={HomeStack}
+            />
+            <Tab.Screen
+                options={{ headerShown: false }}
+                name="Đơn hàng"
+                component={CashierBillingScreen}
+            />
+            <Tab.Screen
+                options={{ headerShown: false }}
+                name="Lịch sử"
+                component={CashierHistoryScreen}
+            />
+        </Tab.Navigator>
+    );
 };
 
 const isIOS = Platform.OS === "ios";
 
 const styles = StyleSheet.create({
-	bottomTabBar: {
-		backgroundColor: "white",
-		borderTopColor: "#CBCBD4",
-		borderTopWidth: 1,
-		borderOpacity: 0.5,
-		height: 83,
-	},
-	labelStyle: {
-		fontSize: 12,
-		marginTop: 0,
-		fontFamily: "Lato-Bold",
-		marginBottom: isIOS ? 0 : 15,
-	},
+    bottomTabBar: {
+        backgroundColor: "white",
+        borderTopColor: "#CBCBD4",
+        borderTopWidth: 1,
+        borderOpacity: 0.5,
+        height: 83,
+    },
+    labelStyle: {
+        fontSize: 12,
+        marginTop: 0,
+        fontFamily: "Lato-Bold",
+        marginBottom: isIOS ? 0 : 15,
+    },
 });
 
 export default CashierNavigator;
