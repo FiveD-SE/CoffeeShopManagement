@@ -1,15 +1,15 @@
+import React, { useState } from "react";
 import {
 	Modal,
-	Pressable,
 	StyleSheet,
 	Text,
 	View,
 	TextInput,
+	KeyboardAvoidingView,
 } from "react-native";
-import React, { useState } from "react";
 import ModalHeader from "../../../components/Client/Header/ModalHeader";
-
 import StarRating from "../../../components/Client/StarRating";
+
 const RatingModal = ({ visible, onClose }) => {
 	const [rating, setRating] = useState(0);
 
@@ -25,35 +25,14 @@ const RatingModal = ({ visible, onClose }) => {
 			onRequestClose={onClose}
 		>
 			<View style={styles.modalContainer}>
-				<View style={styles.modalContent}>
+				<KeyboardAvoidingView style={styles.modalContent}>
 					<ModalHeader title="Đánh giá" onClose={onClose} />
-					<View
-						style={{
-							justifyContent: "center",
-							alignItems: "center",
-							padding: "5%",
-						}}
-					>
-						<Text
-							style={{
-								color: "#3a3a3a",
-								fontSize: 24,
-								fontWeight: "600",
-							}}
-						>
-							Giao hàng thành công
-						</Text>
-						<Text
-							style={{
-								color: "#3a3a3a",
-								fontSize: 14,
-								fontWeight: "400",
-								marginTop: "5%",
-							}}
-						>
+					<View style={styles.content}>
+						<Text style={styles.title}>Giao hàng thành công</Text>
+						<Text style={styles.subtitle}>
 							Vui lòng đánh giá để chúng tôi cải thiện dịch vụ
 						</Text>
-						<View style={{ marginTop: "5%" }}>
+						<View style={styles.ratingContainer}>
 							<StarRating rating={rating} onRate={handleRating} />
 						</View>
 						<View style={styles.inputContainer}>
@@ -66,7 +45,7 @@ const RatingModal = ({ visible, onClose }) => {
 							/>
 						</View>
 					</View>
-				</View>
+				</KeyboardAvoidingView>
 			</View>
 		</Modal>
 	);
@@ -87,25 +66,26 @@ const styles = StyleSheet.create({
 		width: "90%",
 		height: "80%",
 	},
-	header: {
-		flexDirection: "row",
+	content: {
+		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
 		padding: "5%",
-		backgroundColor: "#FFFFFF",
-		borderTopLeftRadius: 20,
-		borderTopRightRadius: 20,
-		borderBottomWidth: 1,
-		borderColor: "#CBCBD4",
 	},
-	headerTitle: {
+	title: {
 		color: "#3a3a3a",
-		fontSize: 16,
-		fontWeight: "500",
+		fontSize: 24,
+		fontWeight: "600",
+		marginBottom: 10,
 	},
-	main: {
-		paddingHorizontal: "5%",
-		marginBottom: "10%",
+	subtitle: {
+		color: "#3a3a3a",
+		fontSize: 14,
+		fontWeight: "400",
+		marginBottom: 20,
+	},
+	ratingContainer: {
+		marginTop: 10,
 	},
 	inputContainer: {
 		width: "100%",
@@ -117,8 +97,7 @@ const styles = StyleSheet.create({
 		borderColor: "#CCCCCC",
 		padding: "5%",
 		backgroundColor: "#ffffff",
-
-		marginTop: "5%",
+		marginTop: 20,
 	},
 	input: {
 		flex: 1,

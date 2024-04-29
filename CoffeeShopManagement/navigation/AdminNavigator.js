@@ -89,7 +89,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Thông tin cá nhân",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -100,7 +100,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Chỉnh sửa thông tin cá nhân",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -111,7 +111,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Quản lý chi nhánh",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <AddBranchButton />,
@@ -123,7 +123,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Chỉnh sửa chi nhánh",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -134,7 +134,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Thêm chi nhánh",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -146,7 +146,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Bảng tính lương",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <AddPayrollButton />,
@@ -159,7 +159,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Chi tiết bảng lương",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -170,7 +170,7 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Thêm bảng lương",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -195,27 +195,29 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Tạo mới nhân viên",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="EditStaff"
             component={EditStaffScreen}
             options={{
                 headerTitle: "Chỉnh sửa thông tin",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="Schedule"
             component={ScheduleScreen}
             options={{
                 headerTitle: "Lịch biểu",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <AddShiftButton />,
@@ -227,22 +229,24 @@ const OtherStack = () => (
             options={{
                 headerTitle: "Thêm ca làm việc",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <AddShiftButton2 />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="DetailShift"
             component={DetailShiftScreen}
             options={{
                 headerTitle: "Tên ca",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <AddStaffButton />,
-            }} />
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -264,7 +268,7 @@ const HomeStack = () => (
             options={{
                 headerTitle: "Doanh thu",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -289,19 +293,18 @@ const HomeStack = () => (
             options={{
                 headerTitle: "Khách hàng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-<Stack.Screen
-
+        <Stack.Screen
             name="AddStaff"
             component={AddStaffScreen}
             options={{
                 headerTitle: "Tạo mới nhân viên",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -313,25 +316,23 @@ const HomeStack = () => (
             options={{
                 headerTitle: "Khách hàng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-     
+
         <Stack.Screen
             name="EditStaff"
             component={EditStaffScreen}
             options={{
                 headerTitle: "Chỉnh sửa thông tin",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
-            />
-
-
+        />
     </Stack.Navigator>
 );
 
@@ -348,7 +349,7 @@ const SalesStack = () => (
             options={{
                 headerTitle: "Danh sách sản phẩm",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <AddItemButton />,
@@ -360,12 +361,11 @@ const SalesStack = () => (
             options={({ route }) => ({
                 headerTitle: "Danh sách khuyến mãi",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddVoucherButton/>
+                headerRight: () => <AddVoucherButton />,
             })}
-
         />
         <Stack.Screen
             name="AdminAddItem"
@@ -373,7 +373,7 @@ const SalesStack = () => (
             options={{
                 headerTitle: "Thêm sản phẩm",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -384,7 +384,7 @@ const SalesStack = () => (
             options={{
                 headerTitle: "Thêm khuyến mãi",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -395,7 +395,7 @@ const SalesStack = () => (
             options={{
                 headerTitle: "Chỉnh sửa sản phẩm",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -406,7 +406,7 @@ const SalesStack = () => (
             options={{
                 headerTitle: "Chỉnh sửa khuyến mãi",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -427,7 +427,7 @@ const WarehouseStack = () => (
             options={{
                 headerTitle: "Nhập kho",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -438,7 +438,7 @@ const WarehouseStack = () => (
             options={{
                 headerTitle: "Xuất kho",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -449,7 +449,7 @@ const WarehouseStack = () => (
             options={{
                 headerTitle: "Danh sách nhập hàng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -460,7 +460,7 @@ const WarehouseStack = () => (
             options={{
                 headerTitle: "Danh sách xuất hàng",
                 headerLeftContainerStyle: {
-                    padding: "5%",
+                    paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
@@ -482,15 +482,15 @@ function AdminNavigator() {
 
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-                    if (route.name === "Home") {
+                    if (route.name === "Trang chủ") {
                         iconName = "home";
-                    } else if (route.name === "Sales") {
+                    } else if (route.name === "Bán hàng") {
                         iconName = "cart";
-                    } else if (route.name === "Warehouse") {
+                    } else if (route.name === "Kho hàng") {
                         iconName = "cube";
-                    } else if (route.name === "Billing") {
+                    } else if (route.name === "Hoá đơn") {
                         iconName = "receipt";
-                    } else if (route.name === "Others") {
+                    } else if (route.name === "Khác") {
                         iconName = "reorder-three";
                     }
                     return (
@@ -503,11 +503,11 @@ function AdminNavigator() {
                 },
             })}
         >
-            <Tab.Screen name="Home" component={HomeStack} />
-            <Tab.Screen name="Sales" component={SalesStack} />
-            <Tab.Screen name="Billing" component={BillingStack} />
-            <Tab.Screen name="Warehouse" component={WarehouseStack} />
-            <Tab.Screen name="Others" component={OtherStack} />
+            <Tab.Screen name="Trang chủ" component={HomeStack} />
+            <Tab.Screen name="Bán hàng" component={SalesStack} />
+            <Tab.Screen name="Hoá đơn" component={BillingStack} />
+            <Tab.Screen name="Kho hàng" component={WarehouseStack} />
+            <Tab.Screen name="Khác" component={OtherStack} />
         </Tab.Navigator>
     );
 }
