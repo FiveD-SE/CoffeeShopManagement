@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const app = express();
+const jwt = require("jsonwebtoken");
 
 app.use(express.json());
 require("dotenv").config();
@@ -30,7 +31,6 @@ const startServer = () => {
     password: { type: String, required: true },
     role: { type: String, default: "user" },
   });
-  
 
   const User = mongoose.model("User", userSchema);
 
@@ -48,7 +48,7 @@ const startServer = () => {
       res.status(500).json({ message: "Internal server error" });
     }
   });
-  
+
   app.post("/login", async (req, res) => {
     try {
       const { phoneNumber, password } = req.body;
@@ -56,7 +56,13 @@ const startServer = () => {
       if (user) {
         const validPassword = await bcrypt.compare(password, user.password);
         if (validPassword) {
-          res.status(200).json({ user });
+          // Generate token
+          const token = jwt.sign(
+            { phoneNumber: user.phoneNumber, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+          );
+          res.status(200).json({ token });
         } else {
           res.status(401).json({ message: "Unauthorized" });
         }
@@ -68,7 +74,7 @@ const startServer = () => {
       res.status(500).json({ message: "Internal server error" });
     }
   });
-  
+
   app.post("/signup", async (req, res) => {
     try {
       const { fullName, phoneNumber, password, role } = req.body;
@@ -90,7 +96,18 @@ const startServer = () => {
       res.status(500).json({ message: "Internal server error" });
     }
   });
-  
+
+  app.get("/role", (req, res) => {
+    const token = req.headers.authorization.split(" ")[1];
+    try {
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+      const { role } = decodedToken;
+      res.status(200).json({ role });
+    } catch (error) {
+      console.error("Error verifying token:", error);
+      res.status(401).json({ message: "Unauthorized" });
+    }
+  });
 
   app.use((err, req, res, next) => {
     console.error(err.stack);
