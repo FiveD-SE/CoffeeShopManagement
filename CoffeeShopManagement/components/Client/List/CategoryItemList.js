@@ -63,7 +63,11 @@ const CategoryItemList = () => {
 					pagingEnabled
 				>
 					{getCurrentPageCategories().map((category, index) => (
-						<CategoryIcon key={index} iconSource={category.iconSource} />
+						<CategoryIcon
+							key={index}
+							iconSource={category.iconSource}
+							size={48}
+						/>
 					))}
 				</ScrollView>
 			</View>
