@@ -313,6 +313,7 @@ const OtherStack = () => (
                 headerRight: () => <SelectPositionButton />
             }}
         />
+
     </Stack.Navigator>
 );
 

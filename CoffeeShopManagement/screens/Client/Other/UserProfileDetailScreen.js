@@ -53,10 +53,7 @@ const ProfileDetails = () => {
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <Text style={styles.label}>Giới tính</Text>
                             <View style={styles.row_space_between}>
-                                <Text style={styles.text}>{gender}</Text>
-                                <Pressable>
-                                    <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
-                                </Pressable>
+                                <Text style={[styles.text, { marginRight: 15 }]}>{gender}</Text>
                             </View>
                         </View>
                     </View>
@@ -64,10 +61,9 @@ const ProfileDetails = () => {
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <Text style={styles.label}>Ngày sinh</Text>
                             <View style={styles.row_space_between}>
-                                <Text style={styles.text}>{birthday}</Text>
-                                <Pressable>
-                                    <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
-                                </Pressable>
+                            <View style={styles.row_space_between}>
+                                <Text style={[styles.text, { marginRight: 15 }]}>{birthday}</Text>
+                            </View>
                             </View>
                         </View>
                     </View>
