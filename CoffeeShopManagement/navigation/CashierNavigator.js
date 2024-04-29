@@ -117,11 +117,11 @@ const CashierNavigator = () => {
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
-                    if (route.name === "Home") {
+                    if (route.name === "Trang chủ") {
                         iconName = "home";
-                    } else if (route.name === "Bill") {
+                    } else if (route.name === "Hoá đơn") {
                         iconName = "bars";
-                    } else if (route.name === "History") {
+                    } else if (route.name === "Lịch sử") {
                         iconName = "history";
                     }
                     return (
@@ -136,17 +136,17 @@ const CashierNavigator = () => {
         >
             <Tab.Screen
                 options={{ headerShown: false }}
-                name="Home"
+                name="Trang chủ"
                 component={HomeStack}
             />
             <Tab.Screen
                 options={{ headerShown: false }}
-                name="Bill"
+                name="Hoá đơn"
                 component={CashierBillingScreen}
             />
             <Tab.Screen
                 options={{ headerShown: false }}
-                name="History"
+                name="Lịch sử"
                 component={CashierHistoryScreen}
             />
         </Tab.Navigator>

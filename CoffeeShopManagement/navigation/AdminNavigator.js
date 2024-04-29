@@ -198,7 +198,8 @@ const OtherStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="EditStaff"
             component={EditStaffScreen}
@@ -208,7 +209,8 @@ const OtherStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="Schedule"
             component={ScheduleScreen}
@@ -231,7 +233,8 @@ const OtherStack = () => (
                 },
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <AddShiftButton2 />,
-            }} />
+            }}
+        />
         <Stack.Screen
             name="DetailShift"
             component={DetailShiftScreen}
@@ -242,7 +245,8 @@ const OtherStack = () => (
                 },
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <AddStaffButton />,
-            }} />
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -294,8 +298,7 @@ const HomeStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-<Stack.Screen
-
+        <Stack.Screen
             name="AddStaff"
             component={AddStaffScreen}
             options={{
@@ -318,7 +321,7 @@ const HomeStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-     
+
         <Stack.Screen
             name="EditStaff"
             component={EditStaffScreen}
@@ -329,9 +332,7 @@ const HomeStack = () => (
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
-            />
-
-
+        />
     </Stack.Navigator>
 );
 
@@ -363,9 +364,8 @@ const SalesStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddVoucherButton/>
+                headerRight: () => <AddVoucherButton />,
             })}
-
         />
         <Stack.Screen
             name="AdminAddItem"
@@ -482,15 +482,15 @@ function AdminNavigator() {
 
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-                    if (route.name === "Home") {
+                    if (route.name === "Trang chủ") {
                         iconName = "home";
-                    } else if (route.name === "Sales") {
+                    } else if (route.name === "Bán hàng") {
                         iconName = "cart";
-                    } else if (route.name === "Warehouse") {
+                    } else if (route.name === "Kho hàng") {
                         iconName = "cube";
-                    } else if (route.name === "Billing") {
+                    } else if (route.name === "Hoá đơn") {
                         iconName = "receipt";
-                    } else if (route.name === "Others") {
+                    } else if (route.name === "Khác") {
                         iconName = "reorder-three";
                     }
                     return (
@@ -503,11 +503,11 @@ function AdminNavigator() {
                 },
             })}
         >
-            <Tab.Screen name="Home" component={HomeStack} />
-            <Tab.Screen name="Sales" component={SalesStack} />
-            <Tab.Screen name="Billing" component={BillingStack} />
-            <Tab.Screen name="Warehouse" component={WarehouseStack} />
-            <Tab.Screen name="Others" component={OtherStack} />
+            <Tab.Screen name="Trang chủ" component={HomeStack} />
+            <Tab.Screen name="Bán hàng" component={SalesStack} />
+            <Tab.Screen name="Hoá đơn" component={BillingStack} />
+            <Tab.Screen name="Kho hàng" component={WarehouseStack} />
+            <Tab.Screen name="Khác" component={OtherStack} />
         </Tab.Navigator>
     );
 }

@@ -382,13 +382,13 @@ function UserNavigator() {
                 tabBarLabelStyle: styles.labelStyle,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-                    if (route.name === "Home") {
+                    if (route.name === "Trang chủ") {
                         iconName = "home";
-                    } else if (route.name === "Orders") {
+                    } else if (route.name === "Đặt hàng") {
                         iconName = "cart";
-                    } else if (route.name === "Coupons") {
+                    } else if (route.name === "Ưu đãi") {
                         iconName = "bookmark";
-                    } else if (route.name === "Others") {
+                    } else if (route.name === "Khác") {
                         iconName = "reorder-three";
                     }
                     return (
@@ -401,10 +401,10 @@ function UserNavigator() {
                 },
             })}
         >
-            <Tab.Screen name="Home" component={HomeStack} />
-            <Tab.Screen name="Orders" component={OrderStack} />
-            <Tab.Screen name="Coupons" component={CouponsStack} />
-            <Tab.Screen name="Others" component={OtherStack} />
+            <Tab.Screen name="Trang chủ" component={HomeStack} />
+            <Tab.Screen name="Đặt hàng" component={OrderStack} />
+            <Tab.Screen name="Ưu đãi" component={CouponsStack} />
+            <Tab.Screen name="Khác" component={OtherStack} />
         </Tab.Navigator>
     );
 }
