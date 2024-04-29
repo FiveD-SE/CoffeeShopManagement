@@ -58,19 +58,20 @@ const AdminAddItemScreen = () => {
         <Text style={styles.header}>Thông tin sản phẩm</Text>
         <View style={styles.inputBox}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { flex: 1 }]}
             placeholder="Tên sản phẩm"
           />
         </View>
         <View style={styles.inputBox}>
           <TextInput
-            style={styles.input}
+            keyboardType="phone-pad"
+            style={[styles.input, { flex: 1 }]}
             placeholder="Giá tiền sản phẩm"
           />
         </View>
         <View style={styles.inputBox}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { flex: 1, textAlignVertical: "top" }]}
             placeholder="Mô tả sản phẩm"
             multiline={true}
             numberOfLines={4}
@@ -120,8 +121,8 @@ const AdminAddItemScreen = () => {
 
         <Text style={styles.header}>Tùy chọn</Text>
         <View style={styles.toggleContainer}>
-          <View style={[styles.inputBox, { flex: 1, marginRight: "1%" }]}>
-            <Text style={styles.input}>Đường</Text>
+          <View style={[styles.inputBox, { flex: 1, marginRight: "1%", opacity: sugarEnable ? 1 : 0.5 }]}>
+            <Text style={[styles.input, { fontWeight: sugarEnable ? "500" : "400" }]}>Đường</Text>
           </View>
           <Switch
             value={sugarEnable}
@@ -131,8 +132,8 @@ const AdminAddItemScreen = () => {
         </View>
 
         <View style={styles.toggleContainer}>
-          <View style={[styles.inputBox, { flex: 1, marginRight: "1%" }]}>
-            <Text style={styles.input}>Đá</Text>
+          <View style={[styles.inputBox, { flex: 1, marginRight: "1%", opacity: iceEnable ? 1 : 0.5 }]}>
+            <Text style={[styles.input, { fontWeight: iceEnable ? "500" : "400" }]}>Đá</Text>
           </View>
           <Switch
             value={iceEnable}
@@ -142,8 +143,8 @@ const AdminAddItemScreen = () => {
         </View>
 
         <View style={styles.toggleContainer}>
-          <View style={[styles.inputBox, { flex: 1, marginRight: "1%" }]}>
-            <Text style={styles.input}>Sữa</Text>
+          <View style={[styles.inputBox, { flex: 1, marginRight: "1%", opacity: milkEnable ? 1 : 0.5 }]}>
+            <Text style={[styles.input, { fontWeight: milkEnable ? "500" : "400" }]}>Sữa</Text>
           </View>
           <Switch
             value={milkEnable}
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
   input: {
     color: "#3a3a3a",
     fontSize: 16,
-    fontWeight: "400",
+    fontWeight: "500",
   },
   header: {
     color: "#3a3a3a",

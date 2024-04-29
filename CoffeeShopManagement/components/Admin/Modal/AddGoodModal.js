@@ -28,6 +28,7 @@ const AddGoodModal = ({ visible, onClose }) => {
 						<View style={styles.inputContainer}>
 							<View style={styles.inputBox}>
 								<TextInput
+									keyboardType="phone-pad"
 									style={styles.input}
 									placeholder="Số lượng"
 								/>
@@ -35,6 +36,7 @@ const AddGoodModal = ({ visible, onClose }) => {
 							<View style={styles.inputBox}>
 								<TextInput
 									style={styles.input}
+									keyboardType="phone-pad"
 									placeholder="Giá nhập mới (bỏ trống để giữ giá cũ)"
 								/>
 							</View>

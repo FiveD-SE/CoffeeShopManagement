@@ -27,6 +27,7 @@ const ExportGoodModal = ({ visible, onClose }) => {
 						<View style={styles.inputContainer}>
 							<View style={styles.inputBox}>
 								<TextInput
+									keyboardType="phone-pad"
 									style={styles.input}
 									placeholder="Số lượng"
 								/>

@@ -18,7 +18,7 @@ const ItemTypeModal = ({ visible, onClose }) => {
     ];
 
     const renderCategoryItemList = ({ item }) => (
-        <CategoryIcon iconSource={item.iconSource} />
+        <CategoryIcon iconSource={item.iconSource} size={56} />
     );
 
     return (
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F8F7FA",
         borderRadius: 20,
         width: "90%",
-        height: "28%",
+        height: "30%",
     },
     imageContainer: {
         marginTop: "5%",
@@ -97,9 +97,10 @@ const styles = StyleSheet.create({
     },
     listContent: {
         paddingHorizontal: "5%",
-        paddingVertical:"2%"
-      },
-      columnWrapper: {
+        paddingVertical: "1%"
+    },
+    columnWrapper: {
         justifyContent: "space-between",
-      },
+        paddingVertical: "2%"
+    },
 });

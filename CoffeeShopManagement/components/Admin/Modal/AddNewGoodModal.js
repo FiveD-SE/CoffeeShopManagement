@@ -36,6 +36,7 @@ const AddNewGoodModal = ({ visible, onClose }) => {
 							</View>
 							<View style={styles.inputBox}>
 								<TextInput
+									keyboardType="phone-pad"
 									style={styles.input}
 									placeholder="Giá nhập ban đầu"
 								/>

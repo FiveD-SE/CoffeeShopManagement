@@ -73,7 +73,7 @@ const AdminItemListScreen = () => {
   ];
 
   const renderCategoryItemList = ({ item }) => (
-    <CategoryIcon iconSource={item.iconSource} />
+    <CategoryIcon iconSource={item.iconSource} size={56} />
   );
 
   return (
@@ -132,5 +132,6 @@ const styles = StyleSheet.create({
   },
   columnWrapper: {
     justifyContent: "space-between",
+    paddingVertical: "2%"
   },
 })
