@@ -113,6 +113,17 @@ const HomeStack = () => (
 				headerLeft: () => <HeaderBackButton />,
 			}}
 		/>
+		<Stack.Screen
+			name="UserCartScreen"
+			component={UserCartScreen}
+			options={{
+				headerTitle: "Giỏ hàng",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
 	</Stack.Navigator>
 );
 
@@ -210,135 +221,135 @@ const OrderStack = () => (
 );
 
 const OtherStack = () => (
-    <Stack.Navigator>
-        <Stack.Screen
-            name="Other"
-            component={Other}
-            options={{ headerShown: false }}
-        />
-        <Stack.Screen
-            name="EditProfile"
-            component={EditProfile}
-            options={{
-                headerTitle: "Hồ sơ",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="ProfileDetails"
-            component={ProfileDetails}
-            options={{
-                headerTitle: "Hồ sơ",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="Settings"
-            component={Setting}
-            options={{
-                headerTitle: "Cài đặt",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="OrderHistory"
-            component={OrderHistory}
-            options={{
-                headerTitle: "Lịch sử đơn hàng",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="SelectAddress"
-            component={SelectAdress}
-            options={{
-                headerTitle: () => <SearchBar />,
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <SelectPositionButton />
-            }}
-        />
-        <Stack.Screen
-            name="FeedbackAndHelp"
-            component={FeedbackAndHelp}
-            options={{
-                headerTitle: "Phản hồi và hỗ trợ",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="ChangePassword"
-            component={ChangePassword}
-            options={{
-                headerTitle: "Thay đổi mật khẩu",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="Logout"
-            component={SignInScreen}
-            options={{
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerShown: false,
-            }}
-        />
-        <Stack.Screen
-            name="EditAddress"
-            component={EditAddress}
-            options={{
-                headerTitle: "Sửa địa chỉ",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="AddNewAddress"
-            component={AddNewAddress}
-            options={{
-                headerTitle: "Thêm địa chỉ mới",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="SelectBranch"
-            component={SelectBranch}
-            options={{
-                headerTitle: () => <SearchBar />,
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <SelectPositionButton />
-            }}
-        />
-    </Stack.Navigator>
+	<Stack.Navigator>
+		<Stack.Screen
+			name="Other"
+			component={Other}
+			options={{ headerShown: false }}
+		/>
+		<Stack.Screen
+			name="EditProfile"
+			component={EditProfile}
+			options={{
+				headerTitle: "Hồ sơ",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="ProfileDetails"
+			component={ProfileDetails}
+			options={{
+				headerTitle: "Hồ sơ",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="Settings"
+			component={Setting}
+			options={{
+				headerTitle: "Cài đặt",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="OrderHistory"
+			component={OrderHistory}
+			options={{
+				headerTitle: "Lịch sử đơn hàng",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="SelectAddress"
+			component={SelectAdress}
+			options={{
+				headerTitle: () => <SearchBar />,
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+				headerRight: () => <SelectPositionButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="FeedbackAndHelp"
+			component={FeedbackAndHelp}
+			options={{
+				headerTitle: "Phản hồi và hỗ trợ",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="ChangePassword"
+			component={ChangePassword}
+			options={{
+				headerTitle: "Thay đổi mật khẩu",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="Logout"
+			component={SignInScreen}
+			options={{
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerShown: false,
+			}}
+		/>
+		<Stack.Screen
+			name="EditAddress"
+			component={EditAddress}
+			options={{
+				headerTitle: "Sửa địa chỉ",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="AddNewAddress"
+			component={AddNewAddress}
+			options={{
+				headerTitle: "Thêm địa chỉ mới",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
+			name="SelectBranch"
+			component={SelectBranch}
+			options={{
+				headerTitle: () => <SearchBar />,
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+				headerRight: () => <SelectPositionButton />,
+			}}
+		/>
+	</Stack.Navigator>
 );
 
 const CouponsStack = () => (

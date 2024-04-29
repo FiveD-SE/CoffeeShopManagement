@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "column",
 		padding: "5%",
+		justifyContent: "space-between",
 	},
 	title: {
 		width: "100%",
@@ -55,7 +56,6 @@ const styles = StyleSheet.create({
 		lineHeight: 20,
 	},
 	priceContainer: {
-		flex: 1,
 		backgroundColor: "rgba(255, 232, 210, 0.5)",
 		justifyContent: "center",
 		alignItems: "center",
