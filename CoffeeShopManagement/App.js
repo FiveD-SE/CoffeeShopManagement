@@ -5,35 +5,36 @@ import { StyleSheet, View } from "react-native";
 import AppNavigator from "./navigation/AppNavigator";
 import { useFonts } from "expo-font";
 
-import { getRoleByUsername } from "./api";
-import OnBoardingScreen from "./screens/Client/OnBoardingScreen";
 import AuthNavigator from "./navigation/AuthNavigator";
 import SignInScreen from "./screens/Client/SignInScreen";
 import { Provider, useSelector } from "react-redux";
 import store from "./redux/store/store";
+import { saveToken, getToken, removeToken } from "./services/authServices";
 
 export default function App() {
-    const [loading, setLoading] = useState(true);
+    const [role, setRole] = useState("");
 
     const [loaded] = useFonts({
         "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
         "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
         "Lato-Light": require("./assets/fonts/Lato-Light.ttf"),
     });
-
-    const isLogin = store.getState().userData?.role;
-
-    return (
-        <Provider store={store}>
-            <NavigationContainer>
-                {!isLogin ? <AuthNavigator /> : <AppNavigator role={isLogin} />}
-            </NavigationContainer>
-        </Provider>
-    );
+    useEffect(() => {
+        const getRole = async () => {
+            const token = await getToken();
+            if (token) {
+                setRole(token);
+            }
+        };
+        getRole();
+    }, []);
+    if (loaded) {
+        return (
+            <Provider store={store}>
+                <NavigationContainer>
+                    {role ? <AppNavigator role={role} /> : <AuthNavigator />}
+                </NavigationContainer>
+            </Provider>
+        );
+    }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-});

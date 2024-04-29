@@ -13,17 +13,18 @@ import FontAwesome6 from "react-native-vector-icons/FontAwesome6";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
+import { removeToken } from "../../../services/authServices";
 
 export default function AdminOtherScreen() {
     const navigation = useNavigation();
 
     const goToStaff = () => {
-        navigation.navigate('StaffHome')
-    }
+        navigation.navigate("StaffHome");
+    };
 
     const goToSchedule = () => {
-        navigation.navigate('Schedule')
-    }
+        navigation.navigate("Schedule");
+    };
 
     const [form, setForm] = useState({
         emailNotifications: true,
@@ -76,7 +77,9 @@ export default function AdminOtherScreen() {
                             >
                                 <TouchableOpacity
                                     onPress={() => {
-                                        navigation.navigate("AdminProfileDetail");
+                                        navigation.navigate(
+                                            "AdminProfileDetail"
+                                        );
                                     }}
                                     style={styles.row}
                                 >
@@ -158,7 +161,9 @@ export default function AdminOtherScreen() {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        navigation.navigate("AdminPayrollScreen");
+                                        navigation.navigate(
+                                            "AdminPayrollScreen"
+                                        );
                                     }}
                                     style={styles.row}
                                 >
@@ -341,7 +346,8 @@ export default function AdminOtherScreen() {
                             >
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        removeToken();
+                                        navigation.navigate("SignInScreen");
                                     }}
                                     style={styles.row}
                                 >

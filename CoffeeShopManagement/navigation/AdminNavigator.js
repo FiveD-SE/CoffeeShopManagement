@@ -58,6 +58,8 @@ import AddShiftButton2 from "./components/AddShiftButton2";
 import DetailShiftScreen from "../screens/Admin/DetailShiftScreen";
 import AddStaffButton from "./components/AddStaffButton";
 
+import SignInScreen from "../screens/Client/SignInScreen";
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -246,6 +248,11 @@ const OtherStack = () => (
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <AddStaffButton />,
             }}
+        />
+        <Stack.Screen
+            name="SignInScreen"
+            component={SignInScreen}
+            options={{ headerShown: false }}
         />
     </Stack.Navigator>
 );
