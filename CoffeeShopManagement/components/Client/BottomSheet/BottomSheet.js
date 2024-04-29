@@ -6,7 +6,13 @@ import {
 	BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
 import { useIsOpen } from "../../../utils/IsOpenContext";
-const BottomSheet = ({ bottomSheetRef, snapPoints, children }) => {
+const BottomSheet = ({
+	bottomSheetRef,
+	snapPoints,
+	isVisible,
+	onClose,
+	children,
+}) => {
 	const { isOpen, setIsOpen } = useIsOpen();
 
 	const renderBackdrop = useCallback(
@@ -29,7 +35,9 @@ const BottomSheet = ({ bottomSheetRef, snapPoints, children }) => {
 				snapPoints={snapPoints}
 				backgroundStyle={styles.bottomSheet}
 				onChange={() => setIsOpen(true)}
-				onDismiss={() => setIsOpen(false)}
+				onDismiss={onClose}
+				dismissOnPanDown={true}
+				dismissOnTouchOutside={true}
 				backdropComponent={renderBackdrop}
 				enableContentPanningGesture={false}
 			>

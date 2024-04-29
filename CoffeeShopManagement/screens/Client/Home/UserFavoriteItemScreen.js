@@ -3,7 +3,7 @@ import React, { useState, useMemo, useRef } from "react";
 import ProductCardVertical from "../../../components/Client/Card/ProductCardHorizontal";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
-import { PRODUCT_ITEM_LIST } from "./UserHomeScreen";
+import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
 const UserFavoriteItemScreen = () => {
 	const [selectedItem, setSelectedItem] = useState(null);
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);

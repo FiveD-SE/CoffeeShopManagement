@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	StyleSheet,
 	View,
@@ -22,13 +22,14 @@ const ItemDetailBottomSheet = ({
 	bottomSheetRef,
 	snapPoints,
 	selectedItem,
+	isVisible,
+	onClose,
 }) => {
 	const { setIsOpen } = useIsOpen();
 	const navigation = useNavigation();
 	const [selectedSizeIndex, setSelectedSizeIndex] = useState(null);
 	const [isFavorite, setIsFavorite] = useState(false);
 	const [selectedToppings, setSelectedToppings] = useState([]);
-
 	const optionList = [{ title: "Đường" }, { title: "Sữa" }, { title: "Đá" }];
 
 	const sugarOptionList = ["Bình thường", "Ít đường", "Không đường"];
@@ -61,10 +62,17 @@ const ItemDetailBottomSheet = ({
 				key={index}
 				index={index}
 				size={size}
-				price={price.toLocaleString("vi-VN", {
-					style: "currency",
-					currency: "VND",
-				})}
+				price={
+					index === 0
+						? selectedItem?.price.toLocaleString("vi-VN", {
+								style: "currency",
+								currency: "VND",
+						  })
+						: price.toLocaleString("vi-VN", {
+								style: "currency",
+								currency: "VND",
+						  })
+				}
 				isSelected={selectedSizeIndex === index}
 				onPress={handleSizePress}
 			/>
@@ -108,12 +116,39 @@ const ItemDetailBottomSheet = ({
 		}
 		return null;
 	};
+	const calculateTotalPrice = () => {
+		let totalPrice = selectedItem ? selectedItem.price : 0;
+		if (selectedSizeIndex !== null) {
+			totalPrice += sizeItemList[selectedSizeIndex].price;
+		}
+		totalPrice += selectedToppings.reduce((accumulator, currentTopping) => {
+			return accumulator + currentTopping.price;
+		}, 0);
+		return totalPrice;
+	};
+	const handleClose = () => {
+		onClose();
+	};
+
+	useEffect(() => {
+		const cleanup = () => {
+			setSelectedSizeIndex(null);
+			setIsFavorite(false);
+		};
+		return () => {
+			cleanup();
+			setSelectedToppings([]);
+			console.log("ItemDetailBottomSheet unmounted");
+		};
+	}, []);
 
 	return (
 		<BottomSheet
 			bottomSheetRef={bottomSheetRef}
 			snapPoints={snapPoints}
 			setIsOpen={setIsOpen}
+			isVisible={isVisible}
+			onClose={handleClose}
 		>
 			<ScrollView contentContainerStyle={styles.scrollViewContent}>
 				<View style={styles.container}>
@@ -167,7 +202,12 @@ const ItemDetailBottomSheet = ({
 					<Pressable style={styles.addToCartButton}>
 						<Text style={styles.addToCartButtonText}>Thêm vào giỏ</Text>
 						<Icon name="ellipsis-vertical" color="#FFFFFF" />
-						<Text style={styles.addToCartButtonText}>59.000đ</Text>
+						<Text style={styles.addToCartButtonText}>
+							{calculateTotalPrice().toLocaleString("vi-VN", {
+								style: "currency",
+								currency: "VND",
+							})}
+						</Text>
 					</Pressable>
 					<Pressable style={styles.viewCartButton} onPress={goToCartScreen}>
 						<Icon style={styles.viewCartButtonIcon} name="cart-shopping" />

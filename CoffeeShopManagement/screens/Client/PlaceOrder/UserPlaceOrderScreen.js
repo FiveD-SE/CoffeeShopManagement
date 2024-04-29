@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import {
 	Pressable,
 	StyleSheet,
@@ -19,9 +19,12 @@ import CategoryItemList from "../../../components/Client/List/CategoryItemList";
 import CategoryBottomSheet from "../../../components/Client/BottomSheet/CategoryBottomSheet";
 import ItemDetailBottomSheet from "./ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
-import { PRODUCT_ITEM_LIST } from "../Home/UserHomeScreen";
+import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
+
 const UserPlaceOrderScreen = () => {
 	const navigation = useNavigation();
+	const [selectedItem, setSelectedItem] = useState(null);
+	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 	const categorySnapPoints = useMemo(() => ["40%"], []);
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 	const itemDetailBottomSheetRef = useRef(null);
@@ -36,8 +39,8 @@ const UserPlaceOrderScreen = () => {
 					style: "currency",
 					currency: "VND",
 				})}
-				imageSource={item.imageSource}
-				onPress={handleOpenItemDetail}
+				imageSource={item?.imageSource}
+				onPress={() => handleOpenItemDetail(item)}
 			/>
 		));
 	};
@@ -52,7 +55,7 @@ const UserPlaceOrderScreen = () => {
 					currency: "VND",
 				})}
 				imageSource={item.imageSource}
-				onPress={handleOpenItemDetail}
+				onPress={() => handleOpenItemDetail(item)}
 			/>
 		));
 	};
@@ -61,9 +64,12 @@ const UserPlaceOrderScreen = () => {
 		categoryBottomSheetRef.current?.present();
 	};
 
-	const handleOpenItemDetail = () => {
-		itemDetailBottomSheetRef.current?.present();
+	const handleOpenItemDetail = (item) => {
+		setSelectedItem(item);
+		setIsItemDetailVisible(true);
 	};
+
+	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
 
 	const goToSearchScreen = () => {
 		navigation.navigate("UserSearchScreen");
@@ -80,7 +86,11 @@ const UserPlaceOrderScreen = () => {
 	const goToDeliverdOrderScreen = () => {
 		navigation.navigate("UserOrderScreen");
 	};
-
+	useEffect(() => {
+		if (isItemDetailVisible) {
+			itemDetailBottomSheetRef.current?.present();
+		}
+	}, [isItemDetailVisible]);
 	return (
 		<IsOpenProvider>
 			<SafeAreaView style={styles.container}>
@@ -137,15 +147,20 @@ const UserPlaceOrderScreen = () => {
 							</ScrollView>
 						</Section>
 					</View>
-					<CategoryBottomSheet
-						bottomSheetRef={categoryBottomSheetRef}
-						snapPoints={categorySnapPoints}
-					/>
+				</ScrollView>
+				<CategoryBottomSheet
+					bottomSheetRef={categoryBottomSheetRef}
+					snapPoints={categorySnapPoints}
+				/>
+				{isItemDetailVisible && (
 					<ItemDetailBottomSheet
 						bottomSheetRef={itemDetailBottomSheetRef}
 						snapPoints={itemDetailSnapPoints}
+						selectedItem={selectedItem}
+						isVisible={isItemDetailVisible}
+						onClose={handleCloseItemDetail}
 					/>
-				</ScrollView>
+				)}
 			</SafeAreaView>
 		</IsOpenProvider>
 	);

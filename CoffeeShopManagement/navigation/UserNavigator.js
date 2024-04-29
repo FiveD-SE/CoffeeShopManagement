@@ -102,7 +102,7 @@ const HomeStack = () => (
 			name="CashierNotification"
 			component={CashierNotification}
 			options={{
-				headerTitle: "Sản phẩm bán chạy",
+				headerTitle: "Thông báo",
 				headerLeftContainerStyle: {
 					paddingLeft: "5%",
 				},

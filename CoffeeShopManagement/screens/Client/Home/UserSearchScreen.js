@@ -6,7 +6,7 @@ import SearchBar from "../../../components/Client/SearchBar";
 import ProductCardHorizontal from "../../../components/Client/Card/ProductCardHorizontal";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
-import { PRODUCT_ITEM_LIST } from "./UserHomeScreen";
+import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
 const UserSearchScreen = () => {
 	const navigation = useNavigation();
 
