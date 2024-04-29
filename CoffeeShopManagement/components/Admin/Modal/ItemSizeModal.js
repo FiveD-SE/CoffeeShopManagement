@@ -8,6 +8,12 @@ const ItemSizeModal = ({ visible, onClose }) => {
         medium: false,
         large: false,
     });
+    const handleSelectType = (type) => {
+        setSelectedTypes(prevState => ({
+            ...prevState,
+            [type]: !prevState[type]
+        }));
+    };
     return (
         <Modal
             animationType="fade"
@@ -18,24 +24,31 @@ const ItemSizeModal = ({ visible, onClose }) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <ModalHeader title="Chọn kích cỡ" onClose={onClose} />
-                    <ScrollView style={styles.main}>
+                    <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
                         <View style={{ flexDirection: "row" }}>
-                            <TouchableOpacity style={styles.buttonContainer}>
+                            <TouchableOpacity
+                                onPress={() => handleSelectType("small")}
+                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.small ? "#D3D3D3" : "#ffffff" }]}>
                                 <Image
                                     source={require("../../../assets/coffee-cup.png")} />
                                 <Text style={styles.title}>Nhỏ</Text>
+                                <Text style={styles.title}>+0đ</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.buttonContainer}>
+                            <TouchableOpacity onPress={() => handleSelectType("medium")}
+                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.medium ? "#D3D3D3" : "#ffffff" }]}>
                                 <Image
                                     source={require("../../../assets/coffee-cup.png")} />
                                 <Text style={styles.title}>Trung bình</Text>
+                                <Text style={styles.title}>+5.000đ</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={styles.buttonContainer}>
+                            <TouchableOpacity onPress={() => handleSelectType("large")}
+                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.large ? "#D3D3D3" : "#ffffff" }]}>
                                 <Image
                                     source={require("../../../assets/coffee-cup.png")} />
                                 <Text style={styles.title}>Lớn</Text>
+                                <Text style={styles.title}>+10.000đ</Text>
                             </TouchableOpacity>
                         </View>
                     </ScrollView>
