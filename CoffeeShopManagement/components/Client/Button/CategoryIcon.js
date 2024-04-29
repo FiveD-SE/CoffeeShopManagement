@@ -13,8 +13,6 @@ export default CategoryIcon;
 
 const styles = StyleSheet.create({
 	iconButton: {
-		width: 48,
-		height: 48,
 		padding: "3%",
 		borderRadius: 30,
 		borderWidth: 1,
