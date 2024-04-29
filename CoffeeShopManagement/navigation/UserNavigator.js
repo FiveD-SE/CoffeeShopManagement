@@ -39,6 +39,7 @@ import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
 import YourVoucher from "../screens/Client/Coupons/UserVoucherScreen";
 import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
 import CashierNotification from "../screens/Staff/CashierNotification";
+import UserOrderScreen from "../screens/Client/PlaceOrder/UserOrderScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -148,6 +149,18 @@ const OrderStack = () => (
 			}}
 		/>
 		<Stack.Screen
+			name="UserOrderScreen"
+			component={UserOrderScreen}
+			options={{
+				headerTitle: "Đơn hàng",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+
+		<Stack.Screen
 			name="UserOrderConfirmationScreen"
 			component={UserOrderConfirmationScreen}
 			options={{
@@ -184,7 +197,7 @@ const OrderStack = () => (
 			name="UserOrderInformationScreen"
 			component={UserOrderInformationScreen}
 			options={{
-				headerTitle: "Đơn hàng",
+				headerTitle: "Thông tin đơn hàng",
 				headerLeftContainerStyle: {
 					paddingLeft: "5%",
 				},
