@@ -1,22 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Pressable, SafeAreaView, Image, ScrollView } from 'react-native';
-
-const VoucherItem = ({ item }) => (
-    <Pressable style={styles.item}>
-        <Image source={item.image} style={styles.itemImage} />
-        <View style={styles.itemDetails}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemExpiry}>Hết hạn: {item.expiryDate}</Text>
-        </View>
-    </Pressable>
-);
+import { View, Text, StyleSheet, Pressable, SafeAreaView, ScrollView } from 'react-native';
+import UserVoucherCard from '../../../components/Client/Card/UserVoucherCard';
 
 export default function YourVoucher() {
     const vouchers = [
-        { id: 1, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Giao hàng', image: require('../../../assets/voucher.jpeg') },
-        { id: 2, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-04-25', option: 'Tại chỗ', image: require('../../../assets/voucher.jpeg') },
-        { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Mang đi', image: require('../../../assets/voucher.jpeg') },
-        { id: 4, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-06-01', option: 'Giao hàng', image: require('../../../assets/voucher.jpeg') },
+        { title: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Giao hàng', image: require('../../../assets/voucher.jpeg') },
+        { title: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-04-25', option: 'Tại chỗ', image: require('../../../assets/voucher.jpeg') },
+        { title: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Mang đi', image: require('../../../assets/voucher.jpeg') },
+        { title: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-06-01', option: 'Giao hàng', image: require('../../../assets/voucher.jpeg') },
     ];
 
     const [selectedTab, setSelectedTab] = useState('Giao hàng');
@@ -65,15 +56,15 @@ export default function YourVoucher() {
                         const expiryDate = new Date(voucher.expiryDate);
                         const differenceInDays = Math.ceil((expiryDate - new Date()) / (1000 * 60 * 60 * 24));
                         return differenceInDays <= 5;
-                    }).map(item => (
-                        <VoucherItem key={item.id} item={item} />
+                    }).map((item, index) => (
+                        <UserVoucherCard key={index} title={item.title} expiryDate={item.expiryDate} imageSource={item.image} />
                     ))}
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.sectionText}>Sẵn sàng sử dụng</Text>
-                    {filteredVouchers.map(item => (
-                        <VoucherItem key={item.id} item={item} />
+                    {filteredVouchers.map((item, index) => (
+                        <UserVoucherCard key={index} title={item.title} expiryDate={item.expiryDate} imageSource={item.image} />
                     ))}
                 </View>
             </ScrollView>
@@ -102,13 +93,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         lineHeight: 22,
     },
-    selectedItem: {
-        borderBottomWidth: 2,
-        borderBottomColor: '#006C5E',
-    },
-    selectedText: {
-        color: '#006C5E',
-    },
     section: {
         paddingHorizontal: 20,
         marginBottom: 10
@@ -122,32 +106,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         marginBottom: 20,
     },
-    item: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 15,
-        backgroundColor: '#FFFFFF',
-        padding: 10,
-        borderRadius: 10,
-    },
-    itemImage: {
-        width: 70,
-        height: 70,
-        marginRight: 20,
-    },
-    itemDetails: {
-        flexDirection: 'column',
-    },
-    itemName: {
-        fontFamily: 'Lato-Regular',
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 25,
-    },
-    itemExpiry: {
-        fontFamily: 'Lato-Regular',
-        fontSize: 14,
-    },
     headingLabel: {
         flex: 1,
         alignItems: 'center',
@@ -156,8 +114,5 @@ const styles = StyleSheet.create({
     selectedLabel: {
         borderBottomWidth: 2,
         borderBottomColor: '#006C5E'
-    },
-    labelWrapper: {
-        paddingBottom: 12
     },
 });
