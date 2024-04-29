@@ -300,6 +300,19 @@ const OtherStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
+        <Stack.Screen
+            name="SelectBranch"
+            component={SelectBranch}
+            options={{
+                headerTitle: () => <SearchBar />,
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+                headerRight: () => <SelectPositionButton />
+            }}
+        />
+
     </Stack.Navigator>
 );
 
@@ -360,6 +373,17 @@ const CouponsStack = () => (
             component={UserExchangeVoucherScreen}
             options={{
                 headerTitle: "Đổi thưởng",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="VoucherDetails"
+            component={UserVoucherDetailsScreen}
+            options={{
+                headerTitle: "Chi tiết quy đổi",
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },

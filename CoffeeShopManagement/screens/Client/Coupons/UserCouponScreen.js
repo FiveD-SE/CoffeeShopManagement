@@ -10,6 +10,7 @@ import {
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import VoucherCard from "../../../components/Client/Card/VoucherCard";
+import UserVoucherCard from "../../../components/Client/Card/UserVoucherCard";
 
 export default function Promotions() {
 	const navigation = useNavigation();
@@ -24,25 +25,22 @@ export default function Promotions() {
 
 	const yourVoucherItemList = [
 		{
-			id: 1,
-			name: "Combo Cơm Nhà 89K + Freeship",
+			title: "Combo Cơm Nhà 89K + Freeship",
 			expiryDate: "2024-05-01",
 			option: "Giao hàng",
-			image: require("../../../assets/voucher.jpeg"),
+			imageSource: require("../../../assets/voucher.jpeg"),
 		},
 		{
-			id: 2,
-			name: "Combo Cơm Nhà 89K + Freeship",
+			title: "Combo Cơm Nhà 89K + Freeship",
 			expiryDate: "2024-04-25",
 			option: "Tại chỗ",
-			image: require("../../../assets/voucher.jpeg"),
+			imageSource: require("../../../assets/voucher.jpeg"),
 		},
 		{
-			id: 3,
-			name: "Combo Cơm Nhà 89K + Freeship",
+			title: "Combo Cơm Nhà 89K + Freeship",
 			expiryDate: "2024-05-04",
 			option: "Mang đi",
-			image: require("../../../assets/voucher.jpeg"),
+			imageSource: require("../../../assets/voucher.jpeg"),
 		},
 	];
 
@@ -66,13 +64,13 @@ export default function Promotions() {
 
 	const renderYourVoucherItemList = () => {
 		return yourVoucherItemList.map((item, index) => (
-			<Pressable style={styles.item} key={index}>
-				<Image source={item.image} style={styles.itemImage} />
-				<View style={styles.itemDetails}>
-					<Text style={styles.itemName}>{item.name}</Text>
-					<Text style={styles.itemExpiry}>Hết hạn: {item.expiryDate}</Text>
-				</View>
-			</Pressable>
+			<UserVoucherCard
+				key={index}
+				title={item.title}
+				expiryDate={item.expiryDate}
+				option={item.option}
+				imageSource={item.imageSource}
+			/>
 		));
 	};
 
@@ -341,31 +339,5 @@ const styles = StyleSheet.create({
 		fontStyle: "normal",
 		fontWeight: "700",
 		color: "#FFA730",
-	},
-	item: {
-		flexDirection: "row",
-		alignItems: "center",
-		marginBottom: 15,
-		backgroundColor: "#FFFFFF",
-		padding: 10,
-		borderRadius: 10,
-	},
-	itemImage: {
-		width: 70,
-		height: 70,
-		marginRight: 20,
-	},
-	itemDetails: {
-		flexDirection: "column",
-	},
-	itemName: {
-		fontFamily: "Lato-Regular",
-		fontSize: 16,
-		fontWeight: "bold",
-		marginBottom: 25,
-	},
-	itemExpiry: {
-		fontFamily: "Lato-Regular",
-		fontSize: 14,
 	},
 });
