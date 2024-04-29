@@ -13,6 +13,7 @@ import FontAwesome6 from "react-native-vector-icons/FontAwesome6";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { removeToken } from "../../../services/authServices";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -32,7 +33,7 @@ export default function UserOtherScreen() {
                         <View style={styles.sectionBody}>
                             <Pressable
                                 onPress={() => {
-                                    // handle onPress
+                                    navigation.navigate("ProfileDetails");
                                 }}
                                 style={styles.profile}
                             >
@@ -337,7 +338,8 @@ export default function UserOtherScreen() {
                             >
                                 <Pressable
                                     onPress={() => {
-                                        navigation.navigate("Logout");
+                                        removeToken();
+                                        navigation.navigate("SignIn");
                                     }}
                                     style={styles.row}
                                 >

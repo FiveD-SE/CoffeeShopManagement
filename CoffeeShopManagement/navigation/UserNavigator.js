@@ -230,7 +230,7 @@ const OtherStack = () => (
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
-                // headerLeft: () => <HeaderBackButton />,
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
@@ -252,7 +252,7 @@ const OtherStack = () => (
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
-                // headerLeft: () => <HeaderBackButton />,
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
@@ -263,7 +263,7 @@ const OtherStack = () => (
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
-                // headerLeft: () => <HeaderBackButton />,
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
@@ -275,7 +275,7 @@ const OtherStack = () => (
                     paddingLeft: "5%",
                 },
                 headerShown: false,
-                // headerLeft: () => <HeaderBackButton />,
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
@@ -309,10 +309,21 @@ const OtherStack = () => (
                     paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <SelectPositionButton />
+                headerRight: () => <SelectPositionButton />,
             }}
         />
-
+        <Stack.Screen
+            name="SignIn"
+            component={SignInScreen}
+            options={{
+                headerTitle: "Đăng nhập",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerShown: false,
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
     </Stack.Navigator>
 );
 

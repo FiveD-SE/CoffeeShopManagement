@@ -3,21 +3,7 @@ import axios from "axios";
 const api = axios.create({
     baseURL: "https://cfbe.up.railway.app",
 });
-/*
-app.get("/users/:phoneNumber", async (req, res) => {
-    try {
-      const { phoneNumber } = req.params;
-      const user = await User.findOne({ phoneNumber });
-      if (user) {
-        res.status(200).json(user.role);
-      } else {
-        res.status(404).json({ message: "User not found" });
-      }
-    } catch (error) {
-      console.error("Error getting user", error);
-      res.status(500).json({ message: "Internal server error" });
-    }
-  }); */
+
 export const getRoleByPhoneNumber = async (phoneNumber) => {
     try {
         const response = await api.get(`/users/${phoneNumber}`);
@@ -37,13 +23,11 @@ export const getRoleByPhoneNumber = async (phoneNumber) => {
         if (error.response && error.response.data) {
             console.error("Lỗi khi lấy role:", error.response.data.message);
         } else {
-            // If the error doesn't have a response, log the full error
             console.error("Lỗi khi lấy role:", error);
         }
         throw new Error("Lỗi khi lấy role từ API");
     }
 };
-// sign in
 
 export const signIn = async (phoneNumber, password) => {
     try {
@@ -100,7 +84,6 @@ export const signUp = async (fullName, phoneNumber, password) => {
         if (error.response && error.response.data) {
             console.error("Lỗi khi đăng ký:", error.response.data.message);
         } else {
-            // If the error doesn't have a response, log the full error
             console.error("Lỗi khi đăng ký:", error);
         }
         throw new Error("Lỗi khi đăng ký từ API");
