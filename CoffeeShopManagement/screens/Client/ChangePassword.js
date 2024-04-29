@@ -6,7 +6,7 @@ import {
   SafeAreaView, 
   ScrollView, 
   TextInput, 
-  TouchableOpacity 
+  Pressable 
 } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -43,13 +43,13 @@ const ChangePassword = () => {
               placeholder="Mật khẩu cũ"
               secureTextEntry={!showOldPassword}
             />
-            <TouchableOpacity onPress={toggleOldPasswordVisibility}>
+            <Pressable onPress={toggleOldPasswordVisibility}>
               <Feather 
                 name={showOldPassword ? 'eye' : 'eye-off'} 
                 size={25} 
                 style={styles.icon} 
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 
@@ -62,13 +62,13 @@ const ChangePassword = () => {
               placeholder="Mật khẩu mới"
               secureTextEntry={!showNewPassword}
             />
-            <TouchableOpacity onPress={toggleNewPasswordVisibility}>
+            <Pressable onPress={toggleNewPasswordVisibility}>
               <Feather 
                 name={showNewPassword ? 'eye' : 'eye-off'} 
                 size={25} 
                 style={styles.icon} 
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 
@@ -83,19 +83,19 @@ const ChangePassword = () => {
               placeholder="Nhập lại mật khẩu mới"
               secureTextEntry={!showConfirmPassword}
             />
-            <TouchableOpacity onPress={toggleConfirmPasswordVisibility}>
+            <Pressable onPress={toggleConfirmPasswordVisibility}>
               <Feather 
                 name={showConfirmPassword ? 'eye' : 'eye-off'} 
                 size={25} 
                 style={styles.icon} 
               />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 
-        <TouchableOpacity style={styles.button}>
+        <Pressable style={styles.button}>
           <Text style={styles.buttonText}>Xác nhận</Text>
-        </TouchableOpacity>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -105,7 +105,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor: "#F8F7FA",
   },
   scrollViewContent: {
     paddingHorizontal: 20,
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 50,
+    height: 40,
     paddingHorizontal: 10,
     fontSize: 16,
   },

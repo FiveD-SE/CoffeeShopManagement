@@ -53,10 +53,7 @@ const ProfileDetails = () => {
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <Text style={styles.label}>Giới tính</Text>
                             <View style={styles.row_space_between}>
-                                <Text style={styles.text}>{gender}</Text>
-                                <Pressable>
-                                    <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
-                                </Pressable>
+                                <Text style={[styles.text, { marginRight: 15 }]}>{gender}</Text>
                             </View>
                         </View>
                     </View>
@@ -64,10 +61,9 @@ const ProfileDetails = () => {
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <Text style={styles.label}>Ngày sinh</Text>
                             <View style={styles.row_space_between}>
-                                <Text style={styles.text}>{birthday}</Text>
-                                <Pressable>
-                                    <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
-                                </Pressable>
+                            <View style={styles.row_space_between}>
+                                <Text style={[styles.text, { marginRight: 15 }]}>{birthday}</Text>
+                            </View>
                             </View>
                         </View>
                     </View>
@@ -97,7 +93,16 @@ const ProfileDetails = () => {
                 <View style={styles.section}>
                     <View style={styles.row_space_between}>
                         <Text style={styles.sectionTitle}>Tài khoản liên kết</Text>
-                        <SwitchToggle
+                    </View>
+                    <View style={styles.row_space_between}>
+                    <View style={[styles.rowLabelText, { width: "100%", justifyContent: "space-between" }]}>
+                            <View style={styles.row_space_between}>
+                                <View style={styles.iconContainer}>
+                                    <FontAwesome name="google" size={32} />
+                                </View>
+                                <Text style={styles.text}>Google</Text>
+                            </View>
+                            <SwitchToggle
                             onColor="#4ECB71"
                             offColor="gray"
                             labelStyle={styles.label}
@@ -105,13 +110,6 @@ const ProfileDetails = () => {
                             value={isToggled}
                             onToggle={handleToggle}
                         />
-                    </View>
-                    <View style={styles.row_space_between}>
-                        <View style={styles.row_space_between}>
-                            <View style={styles.iconContainer}>
-                                <FontAwesome name="google" size={32} />
-                            </View>
-                            <Text style={styles.text}>Google</Text>
                         </View>
                     </View>
                 </View>
@@ -123,7 +121,6 @@ const ProfileDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F8F7FA",
     },
     content: {
         paddingHorizontal: 20,

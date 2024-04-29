@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native'
+import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 
@@ -42,7 +42,7 @@ const RankUserModal = ({ visible, onClose }) => {
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <ModalHeader title="Chọn đối tượng" onClose={onClose} />
-          <View style={styles.main}>
+          <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
             <View style={{ flexDirection: "row", marginTop: "5%" }}>
               <TouchableOpacity style={[
                 styles.buttonContainer,
@@ -107,7 +107,7 @@ const RankUserModal = ({ visible, onClose }) => {
               </TouchableOpacity>
 
             </View>
-          </View>
+          </ScrollView>
         </View>
       </View>
     </Modal >
@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   main: {
     paddingHorizontal: "5%",
-    marginBottom: "10%",
+    marginBottom: "5%",
   },
   header: {
     color: "#3a3a3a",

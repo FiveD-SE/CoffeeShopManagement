@@ -44,8 +44,8 @@ export default function AdminAddPayrollScreen() {
         setModalSelectBranchVisible(false);
     };
 
-    const showSelectDateModal = (dateType) => { // Thêm dateType vào hàm này
-        setSelectedDateType(dateType); // Set loại ngày mà người dùng đang chọn
+    const showSelectDateModal = (dateType) => {
+        setSelectedDateType(dateType);
         setModalSelectDateVisible(true);
     };
 

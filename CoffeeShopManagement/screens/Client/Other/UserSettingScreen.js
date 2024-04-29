@@ -78,9 +78,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         paddingVertical: 15,
         paddingHorizontal: 20,
+        borderWidth: 1,
+        borderColor: "#D8D8D8",
         borderRadius: 10,
         marginBottom: 20,
-        elevation: 3,
     },
     icon: {
         marginRight: 15,

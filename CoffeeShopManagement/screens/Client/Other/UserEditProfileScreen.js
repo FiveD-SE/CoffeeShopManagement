@@ -3,11 +3,15 @@ import { StyleSheet, View, ScrollView, Text, Pressable, Image, TextInput } from 
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SwitchToggle from "toggle-switch-react-native";
 import { useNavigation } from "@react-navigation/native";
+import SelectGenderModal from '../../../components/Admin/Modal/SelectGenderModal';
+import SelectDateModal from '../../../components/Admin/Modal/SelectDateModal';
 
 const ProfileDetails = () => {
     const navigation = useNavigation();
 
     const [isToggled, setIsToggled] = useState(false);
+    const [selectedGender, setSelectedGender] = useState('');
+    const [selectedDateOption, setSelectedDateOption] = useState('');
 
     const handleToggle = () => {
         setIsToggled(!isToggled);
@@ -27,11 +31,39 @@ const ProfileDetails = () => {
         navigation.navigate("ProfileDetails");
     };
 
+    const showSelectGenderModal = () => {
+        setModalGenderVisible(true);
+    };
+
+    const hideSelectGenderModal = () => {
+        setModalGenderVisible(false);
+    };
+
+    const handleSelectGender = (option) => {
+        setSelectedGender(option);
+        hideSelectGenderModal();
+    };
+
+    const showSelectDateModal = () => {
+        setModalSelectDateVisible(true);
+    };
+
+    const hideSelectDateModal = () => {
+        setModalSelectDateVisible(false);
+    };
+
+    const handleSelectDateOption = (option) => {
+        setSelectedDateOption(option);
+    };
+    
+    const [modalGenderVisible, setModalGenderVisible] = useState(false);
+    const [modalSelectDateVisible, setModalSelectDateVisible] = useState(false);
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
                 <View style={{ paddingVertical: 10, alignItems: 'center' }}>
-                    <Pressable onPress={{}}>
+                    <Pressable onPress={navigateToProfileDetails}>
                         <Image alt="avatar" source={avatar} style={styles.profileAvatar} />
                     </Pressable>
                 </View>
@@ -55,8 +87,8 @@ const ProfileDetails = () => {
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <Text style={styles.label}>Giới tính</Text>
                             <View style={styles.row_space_between}>
-                                <TextInput style={styles.text}>{gender}</TextInput>
-                                <Pressable>
+                                <Text style={styles.text}>{selectedGender || gender}</Text>
+                                <Pressable onPress={showSelectGenderModal}>
                                     <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
                                 </Pressable>
                             </View>
@@ -66,8 +98,8 @@ const ProfileDetails = () => {
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <Text style={styles.label}>Ngày sinh</Text>
                             <View style={styles.row_space_between}>
-                                <TextInput style={styles.text}>{birthday}</TextInput>
-                                <Pressable>
+                                <Text style={styles.text}>{selectedDateOption || birthday}</Text>
+                                <Pressable onPress={showSelectDateModal}>
                                     <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
                                 </Pressable>
                             </View>
@@ -83,7 +115,6 @@ const ProfileDetails = () => {
                             <Image style={{ height: 32, width: 32, marginRight: 10 }} source={flag} resizeMode="contain" />
                             <Text style={styles.text}>+84 </Text>
                             <TextInput style={styles.text}>{phone}</TextInput>
-
                         </View>
                     </View>
                 </View>
@@ -94,7 +125,6 @@ const ProfileDetails = () => {
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <TextInput style={styles.text}>{email}</TextInput>
-
                         </View>
                     </View>
                 </View>
@@ -102,24 +132,34 @@ const ProfileDetails = () => {
                 <View style={styles.section}>
                     <View style={styles.row_space_between}>
                         <Text style={styles.sectionTitle}>Tài khoản liên kết</Text>
-                        <SwitchToggle
-                            onColor="#4ECB71"
-                            offColor="gray"
-                            labelStyle={styles.label}
-                            size="medium"
-                            value={isToggled}
-                            onToggle={handleToggle}
-                        />
                     </View>
                     <View style={styles.row_space_between}>
-                        <View style={styles.row_space_between}>
-                            <View style={styles.iconContainer}>
-                                <FontAwesome name="google" size={32} />
+                        <View style={[styles.rowLabelText, { width: "100%", justifyContent: "space-between" }]}>
+                            <View style={styles.row_space_between}>
+                                <View style={styles.iconContainer}>
+                                    <FontAwesome name="google" size={32} />
+                                </View>
+                                <Text style={styles.text}>Google</Text>
                             </View>
-                            <Text style={styles.text}>Google</Text>
+                            <SwitchToggle
+                                onColor="#4ECB71"
+                                offColor="gray"
+                                labelStyle={styles.label}
+                                size="medium"
+                                value={isToggled}
+                                onToggle={handleToggle}
+                            />
                         </View>
                     </View>
                 </View>
+
+                {/* Modal */}
+                <SelectGenderModal visible={modalGenderVisible} onClose={hideSelectGenderModal} onSelectGender={handleSelectGender} />
+                <SelectDateModal 
+                    visible={modalSelectDateVisible} 
+                    onClose={hideSelectDateModal} 
+                    onSelectOption={handleSelectDateOption}
+                />
             </ScrollView>
         </View>
     );
@@ -128,7 +168,6 @@ const ProfileDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F8F7FA",
     },
     content: {
         paddingHorizontal: 20,
@@ -150,13 +189,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         lineHeight: 20,
         marginBottom: 15,
-    },
-    profile: {
-        backgroundColor: "#fff",
-        borderRadius: 12,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
     },
     profileAvatar: {
         width: 150,

@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native'
+import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 
@@ -8,9 +8,6 @@ const ItemSizeModal = ({ visible, onClose }) => {
         medium: false,
         large: false,
     });
-
-
-
     return (
         <Modal
             animationType="fade"
@@ -21,25 +18,27 @@ const ItemSizeModal = ({ visible, onClose }) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <ModalHeader title="Chọn kích cỡ" onClose={onClose} />
-                    <View style={styles.main}>
-                        <TouchableOpacity style={styles.buttonContainer}>
-                            <Image
-                                source={require("../../../assets/coffee-cup.png")} />
-                            <Text style={styles.title}>Nhỏ</Text>
-                        </TouchableOpacity>
+                    <ScrollView style={styles.main}>
+                        <View style={{ flexDirection: "row" }}>
+                            <TouchableOpacity style={styles.buttonContainer}>
+                                <Image
+                                    source={require("../../../assets/coffee-cup.png")} />
+                                <Text style={styles.title}>Nhỏ</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.buttonContainer}>
-                            <Image
-                                source={require("../../../assets/coffee-cup.png")} />
-                            <Text style={styles.title}>Trung bình</Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttonContainer}>
+                                <Image
+                                    source={require("../../../assets/coffee-cup.png")} />
+                                <Text style={styles.title}>Trung bình</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.buttonContainer}>
-                            <Image
-                                source={require("../../../assets/coffee-cup.png")} />
-                            <Text style={styles.title}>Lớn</Text>
-                        </TouchableOpacity>
-                    </View>
+                            <TouchableOpacity style={styles.buttonContainer}>
+                                <Image
+                                    source={require("../../../assets/coffee-cup.png")} />
+                                <Text style={styles.title}>Lớn</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </ScrollView>
                 </View>
             </View>
         </Modal >
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F8F7FA",
         borderRadius: 20,
         width: "90%",
-        height: "22%",
+        height: "24%",
     },
     imageContainer: {
         marginTop: "5%",
@@ -68,8 +67,7 @@ const styles = StyleSheet.create({
     },
     main: {
         paddingHorizontal: "3%",
-        marginVertical: "3%",
-        flexDirection: "row"
+        marginTop: "3%",
     },
     header: {
         color: "#3a3a3a",

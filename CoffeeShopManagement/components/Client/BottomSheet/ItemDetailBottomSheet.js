@@ -9,17 +9,24 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome6";
+
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Section from "../Section";
 import SizeItem from "../../../components/Client/Button/SizeItem";
 import OptionSection from "../List/OptionSection";
 import ToppingButton from "../../../components/Client/Button/ToppingButton";
 import ToppingItemList from "../List/ToppingItemList";
 import BottomSheet from "./BottomSheet";
-
-const ItemDetailBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
+import { useIsOpen } from "../../../utils/IsOpenContext";
+const ItemDetailBottomSheet = ({
+	bottomSheetRef,
+	snapPoints,
+	selectedItem,
+}) => {
+	const { setIsOpen } = useIsOpen();
 	const navigation = useNavigation();
 	const [selectedSizeIndex, setSelectedSizeIndex] = useState(null);
-
+	const [isFavorite, setIsFavorite] = useState(false);
 	const optionList = [{ title: "Đường" }, { title: "Sữa" }, { title: "Đá" }];
 	const sugarOptionList = ["Bình thường", "Ít đường", "Không đường"];
 	const milkOptionList = ["Bình thường", "Ít sữa", "Không sữa"];
@@ -70,7 +77,7 @@ const ItemDetailBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 		));
 
 	const goToCartScreen = () => navigation.navigate("UserCartScreen");
-
+	const toggleFavorite = () => setIsFavorite(!isFavorite);
 	return (
 		<BottomSheet
 			bottomSheetRef={bottomSheetRef}
@@ -87,18 +94,27 @@ const ItemDetailBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 						<View style={styles.header}>
 							<View style={styles.contentContainer}>
 								<Text style={styles.title}>
-									Smoothie Xoài Nhiệt Đới Granola
+									{selectedItem ? selectedItem.title : ""}
 								</Text>
-								<Text style={styles.price}>Price</Text>
+								<Text style={styles.price}>
+									{selectedItem
+										? selectedItem.price.toLocaleString("vi-VN", {
+												style: "currency",
+												currency: "VND",
+										  })
+										: ""}
+								</Text>
 							</View>
-							<Pressable style={styles.favoriteButton}>
-								<Icon name="heart" size={24} />
+							<Pressable style={styles.favoriteButton} onPress={toggleFavorite}>
+								{isFavorite ? (
+									<FontAwesome name="heart" size={24} color={"#F61A3D"} />
+								) : (
+									<Icon name="heart" size={24} />
+								)}
 							</Pressable>
 						</View>
 						<Text style={styles.description}>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam,
-							vivamus duis laoreet amet. Aliquet elementum ultrices molestie
-							netus donec pellentesque quis.
+							{selectedItem ? selectedItem.description : ""}
 						</Text>
 						<View style={{ marginTop: "5%" }}>
 							<Section title="Kích cỡ">
