@@ -53,7 +53,7 @@ const startServer = () => {
         }
     });
 
-    app.put("/users/:phoneNumber", async (req, res) => {
+    app.patch("/users/:phoneNumber", async (req, res) => {
         try {
             const { phoneNumber } = req.params;
             const { firstName, lastName, gender, dateOfBirth, email, password } = req.body;
@@ -91,7 +91,7 @@ const startServer = () => {
             console.error("Error updating user", error);
             res.status(500).json({ message: "Internal server error" });
         }
-    });
+    });    
     
 
     app.post("/login", async (req, res) => {
@@ -121,8 +121,9 @@ const startServer = () => {
         try {
             const { fullName, phoneNumber, password, role } = req.body;
     
-            const [firstName, ...lastNameArray] = fullName.split(" ");
-            const lastName = lastNameArray.join(" ");
+            const fullNameArray = fullName.split(" ");
+            const firstName = fullNameArray[fullNameArray.length - 1];
+            const lastName = fullNameArray.slice(0, -1).join(" ");
     
             const existingUser = await User.findOne({ phoneNumber });
             if (existingUser) {
@@ -143,7 +144,7 @@ const startServer = () => {
             res.status(500).json({ message: "Internal server error" });
         }
     });
-
+    
 
     
 
