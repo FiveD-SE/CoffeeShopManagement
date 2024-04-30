@@ -294,7 +294,7 @@ const HomeStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-<Stack.Screen
+        <Stack.Screen
 
             name="AddStaff"
             component={AddStaffScreen}
@@ -318,7 +318,7 @@ const HomeStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
-     
+
         <Stack.Screen
             name="EditStaff"
             component={EditStaffScreen}
@@ -329,7 +329,7 @@ const HomeStack = () => (
                 },
                 headerLeft: () => <HeaderBackButton />,
             }}
-            />
+        />
 
 
     </Stack.Navigator>
@@ -363,7 +363,7 @@ const SalesStack = () => (
                     padding: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddVoucherButton/>
+                headerRight: () => <AddVoucherButton />
             })}
 
         />

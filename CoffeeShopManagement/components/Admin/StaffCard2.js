@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"; // Import các thành phần cần thiết từ react-native
-import Icon from "react-native-vector-icons/Entypo";
+import Checkbox from "expo-checkbox";
 
-const StaffCard = ({ item, onPress }) => {
+const StaffCard2 = ({ item, onPress }) => {
+    const [toggleCheckBox, setToggleCheckBox] = useState(true)
     return (
         <TouchableOpacity
             onPress={onPress}
@@ -45,7 +46,10 @@ const StaffCard = ({ item, onPress }) => {
                     </View>
                 </View>
             </View>
-            <Icon name="chevron-right" size={32} />
+            <Checkbox
+                disabled={false}
+                value={toggleCheckBox}
+                onValueChange={(newValue) => setToggleCheckBox(newValue)} />
         </TouchableOpacity>
     );
 };
@@ -62,4 +66,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default StaffCard;
+export default StaffCard2;

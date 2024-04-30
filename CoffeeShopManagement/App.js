@@ -26,7 +26,7 @@ export default function App() {
     return (
         <Provider store={store}>
             <NavigationContainer>
-                {!isLogin ? <AuthNavigator /> : <AppNavigator role={isLogin} />}
+                <AuthNavigator />
             </NavigationContainer>
         </Provider>
     );
