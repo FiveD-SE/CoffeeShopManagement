@@ -39,7 +39,7 @@ const startServer = () => {
             const { phoneNumber } = req.params;
             const user = await User.findOne({ phoneNumber });
             if (user) {
-                res.status(200).json(user.role);
+                res.status(200).json(user);
             } else {
                 res.status(404).json({ message: "User not found" });
             }
