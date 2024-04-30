@@ -12,7 +12,7 @@ import UserBestSellerScreen from "../screens/Client/Home/UserBestSellerScreen";
 import UserFavoriteItemScreen from "../screens/Client/Home/UserFavoriteItemScreen";
 
 import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScreen";
-
+import UserOrderScreen from "../screens/Client/PlaceOrder/UserOrderScreen";
 import EditProfile from "../screens/Client/Other/UserEditProfileScreen";
 import ProfileDetails from "../screens/Client/Other/UserProfileDetailScreen";
 import EditAddress from "../screens/Client/Other/UserEditAddressScreen";
@@ -131,6 +131,17 @@ const OrderStack = () => (
 			options={{ headerShown: false }}
 		/>
 		<Stack.Screen
+			name="UserOrderScreen"
+			component={UserOrderScreen}
+			options={{
+				headerTitle: "Đơn hàng",
+				headerLeftContainerStyle: {
+					paddingLeft: "5%",
+				},
+				headerLeft: () => <HeaderBackButton />,
+			}}
+		/>
+		<Stack.Screen
 			name="UserSearchScreen"
 			component={UserSearchScreen}
 			options={{ headerShown: false }}
@@ -194,7 +205,7 @@ const OrderStack = () => (
 			name="UserOrderInformationScreen"
 			component={UserOrderInformationScreen}
 			options={{
-				headerTitle: "Đơn hàng",
+				headerTitle: "Chi tiết đơn hàng",
 				headerLeftContainerStyle: {
 					paddingLeft: "5%",
 				},
