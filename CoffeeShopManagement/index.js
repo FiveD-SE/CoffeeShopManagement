@@ -30,7 +30,11 @@ const startServer = () => {
         phoneNumber: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         role: { type: String, default: "user" },
+        gender: { type: String }, 
+        dateOfBirth: { type: Date }, 
+        email: { type: String } 
     });
+    
     
     const User = mongoose.model("User", userSchema);
 
@@ -54,15 +58,12 @@ const startServer = () => {
             const { phoneNumber } = req.params;
             const { firstName, lastName, gender, dateOfBirth, email, password } = req.body;
             
-            // Tìm người dùng dựa trên số điện thoại
             const user = await User.findOne({ phoneNumber });
     
-            // Kiểm tra xem người dùng có tồn tại hay không
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
     
-            // Cập nhật thông tin nếu được cung cấp
             if (firstName) {
                 user.firstName = firstName;
             }
@@ -79,15 +80,12 @@ const startServer = () => {
                 user.email = email;
             }
             if (password) {
-                // Mã hóa mật khẩu mới nếu có
                 const hashedPassword = await bcrypt.hash(password, 10);
                 user.password = hashedPassword;
             }
     
-            // Lưu thông tin người dùng đã cập nhật vào cơ sở dữ liệu
             await user.save();
     
-            // Trả về thông tin người dùng sau khi đã cập nhật
             res.status(200).json({ message: "User updated successfully", user });
         } catch (error) {
             console.error("Error updating user", error);
