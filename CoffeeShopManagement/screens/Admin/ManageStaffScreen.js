@@ -1,10 +1,10 @@
 import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    Image,
-    TextInput,
+	View,
+	Text,
+	StyleSheet,
+	TouchableOpacity,
+	Image,
+	TextInput,
 } from "react-native";
 import React, { useRef, useState, useMemo, useEffect } from "react";
 import Icon from "react-native-vector-icons/Entypo";
@@ -13,8 +13,12 @@ import Icon1 from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native-gesture-handler";
 import StaffCard from "../../components/Admin/StaffCard";
-import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import {
+	BottomSheetModal,
+	BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
 import RoleListScreen from "./RoleListScreen";
+
 
 export default function ManageStaffScreen({ route }) {
     // console.log(route.params.updatedData);
@@ -64,10 +68,11 @@ export default function ManageStaffScreen({ route }) {
     const chooseRoleListSnapPoints = useMemo(() => ["60%"], []);
     const chooseRoleListBottomSheetRef = useRef(null);
 
-    const handleChooseRoleList = () => {
-        chooseRoleListBottomSheetRef.current?.present();
-        setIsOpen(true);
-    };
+
+	const handleChooseRoleList = () => {
+		chooseRoleListBottomSheetRef.current?.present();
+		setIsOpen(true);
+	};
 
     const navigation = useNavigation();
 
@@ -234,4 +239,5 @@ const styles = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
     },
+
 });

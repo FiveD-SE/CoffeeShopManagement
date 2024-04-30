@@ -1,9 +1,16 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-import BottomSheet from '../../components/Client/BottomSheet/BottomSheet';
-import RoleCard from '../../components/Staff/RoleCard';
+import {
+	View,
+	Text,
+	StyleSheet,
+	TouchableOpacity,
+	ScrollView,
+} from "react-native";
+import BottomSheet from "../../components/Client/BottomSheet/BottomSheet";
+import RoleCard from "../../components/Staff/RoleCard";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AddRoleModal from '../../components/Admin/AddRoleModal';
-import React, { useState } from 'react';
+import AddRoleModal from "../../components/Admin/AddRoleModal";
+import React, { useState } from "react";
+
 
 export default function RoleListScreen({ bottomSheetRef, snapPoints, setIsOpen }) {
 
@@ -105,4 +112,5 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 })
+
 

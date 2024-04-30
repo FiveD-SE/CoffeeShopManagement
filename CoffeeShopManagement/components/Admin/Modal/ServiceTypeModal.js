@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import { FontAwesome5, Entypo  } from '@expo/vector-icons';
@@ -17,7 +17,7 @@ const ServiceTypeModal = ({ visible, onClose }) => {
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <ModalHeader title="Chọn loại hình phục vụ" onClose={onClose} />
-          <View style={styles.main}>
+          <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
             <View style={styles.checkBoxContainer}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <FontAwesome5 name="shipping-fast" size={28} color="#3a3a3a" />
@@ -42,7 +42,7 @@ const ServiceTypeModal = ({ visible, onClose }) => {
                 color={isChecked ? '#00A188' : undefined}
               />
             </View>
-          </View>
+          </ScrollView>
         </View>
       </View>
     </Modal>

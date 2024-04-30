@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    Pressable,
+    ScrollView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
@@ -10,6 +17,7 @@ import { signIn } from "../../api";
 import UserNavigator from "../../navigation/UserNavigator";
 import { signInSuccess } from "../../redux/actions/userActions";
 import { connect } from "react-redux";
+import { saveToken } from "../../services/authServices";
 
 const GOOGLE_ICON_SOURCE = require("../../assets/google.png");
 const BACKGROUND_SOURCE = require("../../assets/background.png");
@@ -34,19 +42,14 @@ const SignInScreen = () => {
     };
 
     useEffect(() => {
-        if (isChecked) {
-            console.log("Remember me");
-        } else {
-            console.log("Don't remember me");
-        }
-    });
-
-    useEffect(() => {
         if (role === "user") {
+            console.log("Role is user");
             navigation.navigate("UserNavigator");
         } else if (role === "cashier") {
+            console.log("Role is cashier");
             navigation.navigate("CashierNavigator");
         } else if (role === "admin") {
+            console.log("Role is admin");
             navigation.navigate("AdminNavigator");
         } else {
             console.log("Role is not defined");
@@ -55,8 +58,14 @@ const SignInScreen = () => {
 
     const handleSignIn = () => {
         signIn(phoneNumber, password).then((data) => {
-            setRole(data.user.role);
-            signInSuccess(data.user);
+            if (isChecked) {
+                saveToken(data.user.role);
+                setRole(data.user.role);
+                signInSuccess(data.user);
+            } else {
+                setRole(data.user.role);
+                signInSuccess(data.user);
+            }
         });
     };
 

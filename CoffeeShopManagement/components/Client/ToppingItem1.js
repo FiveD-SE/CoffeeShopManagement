@@ -2,11 +2,11 @@ import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
 
 import Checkbox from "expo-checkbox";
-const ToppingItem1 = ({ title, price }) => {
-	const [isChecked, setChecked] = useState(false);
-	const handleRememberMe = () => {
-		setChecked(!isChecked);
+const ToppingItem1 = ({ title, price, isChecked, onToggle }) => {
+	const handleChecked = () => {
+		onToggle();
 	};
+
 	return (
 		<View style={styles.container}>
 			<View>
@@ -17,7 +17,7 @@ const ToppingItem1 = ({ title, price }) => {
 				style={styles.checkbox}
 				value={isChecked}
 				color={isChecked ? "#00A188" : undefined}
-				onValueChange={handleRememberMe}
+				onValueChange={handleChecked}
 			/>
 		</View>
 	);

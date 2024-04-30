@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	StyleSheet,
 	View,
@@ -9,18 +9,29 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import Section from "../Section";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Section from "../../../components/Client/Section";
 import SizeItem from "../../../components/Client/Button/SizeItem";
-import OptionSection from "../List/OptionSection";
+import OptionSection from "../../../components/Client/List/OptionSection";
 import ToppingButton from "../../../components/Client/Button/ToppingButton";
-import ToppingItemList from "../List/ToppingItemList";
-import BottomSheet from "./BottomSheet";
+import ToppingItemList from "../../../components/Client/List/ToppingItemList";
+import BottomSheet from "../../../components/Client/BottomSheet/BottomSheet";
+import { useIsOpen } from "../../../utils/IsOpenContext";
 
-const ItemDetailBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
+const ItemDetailBottomSheet = ({
+	bottomSheetRef,
+	snapPoints,
+	selectedItem,
+	isVisible,
+	onClose,
+}) => {
+	const { setIsOpen } = useIsOpen();
 	const navigation = useNavigation();
 	const [selectedSizeIndex, setSelectedSizeIndex] = useState(null);
-
+	const [isFavorite, setIsFavorite] = useState(false);
+	const [selectedToppings, setSelectedToppings] = useState([]);
 	const optionList = [{ title: "Đường" }, { title: "Sữa" }, { title: "Đá" }];
+
 	const sugarOptionList = ["Bình thường", "Ít đường", "Không đường"];
 	const milkOptionList = ["Bình thường", "Ít sữa", "Không sữa"];
 	const iceOptionList = ["Bình thường", "Ít đá", "Không đá"];
@@ -51,10 +62,17 @@ const ItemDetailBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 				key={index}
 				index={index}
 				size={size}
-				price={price.toLocaleString("vi-VN", {
-					style: "currency",
-					currency: "VND",
-				})}
+				price={
+					index === 0
+						? selectedItem?.price.toLocaleString("vi-VN", {
+								style: "currency",
+								currency: "VND",
+						  })
+						: price.toLocaleString("vi-VN", {
+								style: "currency",
+								currency: "VND",
+						  })
+				}
 				isSelected={selectedSizeIndex === index}
 				onPress={handleSizePress}
 			/>
@@ -69,36 +87,100 @@ const ItemDetailBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 			/>
 		));
 
+	const handleToppingsSelected = (toppings) => {
+		setSelectedToppings(toppings);
+	};
+
 	const goToCartScreen = () => navigation.navigate("UserCartScreen");
+
+	const toggleFavorite = () => setIsFavorite(!isFavorite);
+
+	const renderToppingButton = () => {
+		if (selectedItem && selectedItem.type !== "COFFEE") {
+			return (
+				<View style={{ marginTop: "5%" }}>
+					<ToppingButton onToppingsSelected={handleToppingsSelected} />
+				</View>
+			);
+		}
+		return null;
+	};
+
+	const renderToppingItemList = () => {
+		if (selectedToppings.length > 0) {
+			return (
+				<View style={{ marginTop: "5%" }}>
+					<ToppingItemList toppings={selectedToppings} />
+				</View>
+			);
+		}
+		return null;
+	};
+	const calculateTotalPrice = () => {
+		let totalPrice = selectedItem ? selectedItem.price : 0;
+		if (selectedSizeIndex !== null) {
+			totalPrice += sizeItemList[selectedSizeIndex].price;
+		}
+		totalPrice += selectedToppings.reduce((accumulator, currentTopping) => {
+			return accumulator + currentTopping.price;
+		}, 0);
+		return totalPrice;
+	};
+	const handleClose = () => {
+		onClose();
+	};
+
+	useEffect(() => {
+		const cleanup = () => {
+			setSelectedSizeIndex(null);
+			setIsFavorite(false);
+		};
+		return () => {
+			cleanup();
+			setSelectedToppings([]);
+			console.log("ItemDetailBottomSheet unmounted");
+		};
+	}, []);
 
 	return (
 		<BottomSheet
 			bottomSheetRef={bottomSheetRef}
 			snapPoints={snapPoints}
 			setIsOpen={setIsOpen}
+			isVisible={isVisible}
+			onClose={handleClose}
 		>
 			<ScrollView contentContainerStyle={styles.scrollViewContent}>
 				<View style={styles.container}>
 					<Image
 						style={styles.image}
-						source={require("../../../assets/starbucks.jpeg")}
+						source={require("../../../assets/vietnam.png")}
 					/>
 					<View style={styles.main}>
 						<View style={styles.header}>
 							<View style={styles.contentContainer}>
 								<Text style={styles.title}>
-									Smoothie Xoài Nhiệt Đới Granola
+									{selectedItem ? selectedItem.title : ""}
 								</Text>
-								<Text style={styles.price}>Price</Text>
+								<Text style={styles.price}>
+									{selectedItem
+										? selectedItem.price.toLocaleString("vi-VN", {
+												style: "currency",
+												currency: "VND",
+										  })
+										: ""}
+								</Text>
 							</View>
-							<Pressable style={styles.favoriteButton}>
-								<Icon name="heart" size={24} />
+							<Pressable style={styles.favoriteButton} onPress={toggleFavorite}>
+								{isFavorite ? (
+									<FontAwesome name="heart" size={24} color={"#F61A3D"} />
+								) : (
+									<Icon name="heart" size={24} />
+								)}
 							</Pressable>
 						</View>
 						<Text style={styles.description}>
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam,
-							vivamus duis laoreet amet. Aliquet elementum ultrices molestie
-							netus donec pellentesque quis.
+							{selectedItem ? selectedItem.description : ""}
 						</Text>
 						<View style={{ marginTop: "5%" }}>
 							<Section title="Kích cỡ">
@@ -112,19 +194,20 @@ const ItemDetailBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 								</View>
 							</Section>
 						</View>
-						<View style={{ marginTop: "5%" }}>
-							<ToppingButton />
-						</View>
-						<View style={{ marginTop: "5%" }}>
-							<ToppingItemList />
-						</View>
+						{renderToppingButton()}
+						{renderToppingItemList()}
 					</View>
 				</View>
 				<View style={styles.footer}>
 					<Pressable style={styles.addToCartButton}>
 						<Text style={styles.addToCartButtonText}>Thêm vào giỏ</Text>
 						<Icon name="ellipsis-vertical" color="#FFFFFF" />
-						<Text style={styles.addToCartButtonText}>59.000đ</Text>
+						<Text style={styles.addToCartButtonText}>
+							{calculateTotalPrice().toLocaleString("vi-VN", {
+								style: "currency",
+								currency: "VND",
+							})}
+						</Text>
 					</Pressable>
 					<Pressable style={styles.viewCartButton} onPress={goToCartScreen}>
 						<Icon style={styles.viewCartButtonIcon} name="cart-shopping" />
@@ -147,7 +230,8 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: "100%",
-		height: 300,
+		maxHeight: 250,
+		resizeMode: "cover",
 	},
 	main: {
 		flex: 0.5,

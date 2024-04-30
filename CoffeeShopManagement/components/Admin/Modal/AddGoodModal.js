@@ -3,6 +3,7 @@ import React from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import SquareWithBorder from '../SquarewithBorder'
 import ColorButton from '../Button/ColorButton'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const AddGoodModal = ({ visible, onClose }) => {
 
@@ -16,7 +17,7 @@ const AddGoodModal = ({ visible, onClose }) => {
 			<View style={styles.modalContainer}>
 				<View style={styles.modalContent}>
 					<ModalHeader title="Nhập hàng" onClose={onClose} />
-					<View style={styles.main}>
+					<ScrollView style={styles.main}>
 						<View style={{ flexDirection: "column", alignItems: "center" }}>
 							<View style={styles.imageContainer}>
 								<SquareWithBorder text="Ảnh mặt hàng" />
@@ -27,6 +28,7 @@ const AddGoodModal = ({ visible, onClose }) => {
 						<View style={styles.inputContainer}>
 							<View style={styles.inputBox}>
 								<TextInput
+									keyboardType="phone-pad"
 									style={styles.input}
 									placeholder="Số lượng"
 								/>
@@ -34,12 +36,13 @@ const AddGoodModal = ({ visible, onClose }) => {
 							<View style={styles.inputBox}>
 								<TextInput
 									style={styles.input}
+									keyboardType="phone-pad"
 									placeholder="Giá nhập mới (bỏ trống để giữ giá cũ)"
 								/>
 							</View>
 						</View>
 						<ColorButton color="#00A188" text="Thêm mới" textColor="#ffffff" />
-					</View>
+					</ScrollView>
 				</View>
 			</View>
 		</Modal>
@@ -56,7 +59,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "rgba(0, 0, 0, 0.5)",
 	},
 	modalContent: {
-		backgroundColor: "white",
+		backgroundColor: "#F8F7FA",
 		borderRadius: 20,
 		width: "90%",
 		height: "57%",
@@ -69,7 +72,7 @@ const styles = StyleSheet.create({
 	main: {
 		paddingHorizontal: "5%",
 		marginBottom: "10%",
-		backgroundColor: "#F8F7FA",
+		borderRadius: 20,
 	},
 	header: {
 		color: "#3a3a3a",

@@ -5,7 +5,7 @@ import {
     View,
     ScrollView,
     Text,
-    TouchableOpacity,
+    Pressable,
     Image,
 } from "react-native";
 import FeatherIcon from "react-native-vector-icons/Feather";
@@ -13,6 +13,7 @@ import FontAwesome6 from "react-native-vector-icons/FontAwesome6";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { removeToken } from "../../../services/authServices";
 
 import { useNavigation } from "@react-navigation/native";
 
@@ -30,9 +31,9 @@ export default function UserOtherScreen() {
                 <ScrollView contentContainerStyle={styles.content}>
                     <View style={[styles.section, { paddingTop: 60 }]}>
                         <View style={styles.sectionBody}>
-                            <TouchableOpacity
+                            <Pressable
                                 onPress={() => {
-                                    // handle onPress
+                                    navigation.navigate("ProfileDetails");
                                 }}
                                 style={styles.profile}
                             >
@@ -53,7 +54,7 @@ export default function UserOtherScreen() {
                                         truonglevinhphuc2006@gmail.com
                                     </Text>
                                 </View>
-                            </TouchableOpacity>
+                            </Pressable>
                         </View>
                     </View>
 
@@ -62,7 +63,7 @@ export default function UserOtherScreen() {
 
                         <View style={styles.sectionBody}>
                             <View style={[styles.rowWrapper, styles.rowFirst]}>
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
                                         navigation.navigate("ProfileDetails");
                                     }}
@@ -84,11 +85,11 @@ export default function UserOtherScreen() {
                                         name="chevron-right"
                                         size={19}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
 
                             <View style={styles.rowWrapper}>
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
                                         navigation.navigate("SelectAddress");
                                     }}
@@ -109,11 +110,11 @@ export default function UserOtherScreen() {
                                         name="chevron-right"
                                         size={19}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
 
                             <View style={[styles.rowWrapper, styles.rowLast]}>
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
                                         navigation.navigate("Settings");
                                     }}
@@ -134,7 +135,7 @@ export default function UserOtherScreen() {
                                         name="chevron-right"
                                         size={19}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
                         </View>
                     </View>
@@ -150,7 +151,7 @@ export default function UserOtherScreen() {
                                     styles.rowLast,
                                 ]}
                             >
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
                                         navigation.navigate("OrderHistory");
                                     }}
@@ -173,7 +174,7 @@ export default function UserOtherScreen() {
                                         name="chevron-right"
                                         size={19}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
                         </View>
                     </View>
@@ -185,7 +186,7 @@ export default function UserOtherScreen() {
 
                         <View style={styles.sectionBody}>
                             <View style={[styles.rowWrapper, styles.rowFirst]}>
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
                                         // handle onPress
                                     }}
@@ -208,11 +209,11 @@ export default function UserOtherScreen() {
                                         name="chevron-right"
                                         size={19}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
 
                             <View style={[styles.rowWrapper, styles.rowLast]}>
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
                                         navigation.navigate("FeedbackAndHelp");
                                     }}
@@ -235,7 +236,7 @@ export default function UserOtherScreen() {
                                         name="chevron-right"
                                         size={19}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
                         </View>
                     </View>
@@ -245,7 +246,7 @@ export default function UserOtherScreen() {
 
                         <View style={styles.sectionBody}>
                             <View style={[styles.rowWrapper, styles.rowFirst]}>
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
                                         // handle onPress
                                     }}
@@ -268,11 +269,11 @@ export default function UserOtherScreen() {
                                         name="chevron-right"
                                         size={19}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
 
                             <View style={styles.rowWrapper}>
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
                                         // handle onPress
                                     }}
@@ -295,11 +296,11 @@ export default function UserOtherScreen() {
                                         name="chevron-right"
                                         size={19}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
 
                             <View style={[styles.rowWrapper, styles.rowLast]}>
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
                                         // handle onPress
                                     }}
@@ -322,7 +323,7 @@ export default function UserOtherScreen() {
                                         name="chevron-right"
                                         size={19}
                                     />
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
                         </View>
                     </View>
@@ -335,16 +336,17 @@ export default function UserOtherScreen() {
                                     { alignItems: "center" },
                                 ]}
                             >
-                                <TouchableOpacity
+                                <Pressable
                                     onPress={() => {
-                                        navigation.navigate("Logout");
+                                        removeToken();
+                                        navigation.navigate("SignIn");
                                     }}
                                     style={styles.row}
                                 >
                                     <Text style={styles.buttonText}>
                                         Đăng xuất
                                     </Text>
-                                </TouchableOpacity>
+                                </Pressable>
                             </View>
                         </View>
                     </View>

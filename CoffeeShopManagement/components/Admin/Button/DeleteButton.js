@@ -8,8 +8,8 @@ const DeleteButton = (
     }) => {
     return (
         <TouchableOpacity style={[styles.buttonContainer]} onPress={OnPress}>
-             <MaterialIcons name="delete-forever" size={24} color="#F61A3D" />
-            <Text style={[styles.title]}>Xóa</Text>      
+            <MaterialIcons name="delete-forever" size={24} color="#F61A3D" />
+            <Text style={[styles.title]}>Xóa</Text>
         </TouchableOpacity>
     )
 }
@@ -28,11 +28,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 15,
         borderColor: "#CCCCCC",
-        flexDirection:"row"
+        flexDirection: "row"
     },
     title: {
-        marginLeft:"2%",
-        fontSize: 14,
+        marginLeft: "2%",
+        fontSize: 16,
         fontWeight: "700",
         color: "#F61A3D"
     }

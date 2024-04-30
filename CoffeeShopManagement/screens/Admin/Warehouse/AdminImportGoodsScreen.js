@@ -65,7 +65,7 @@ const AdminImportGoodsScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <AddGoodButton title="Thêm mặt hàng mới" />
       <Text style={styles.title}>Các mặt hàng sẵn có</Text>
       <View style={styles.sreachBar}>
@@ -81,7 +81,7 @@ const AdminImportGoodsScreen = () => {
         </View>
         <ColorButton color="#00A188" text="Nhập hàng" textColor="#ffffff" OnPress={goToListImport} />
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 

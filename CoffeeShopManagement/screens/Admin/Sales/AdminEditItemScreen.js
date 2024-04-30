@@ -3,41 +3,52 @@ import React, { useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import SquareWithBorder from '../../../components/Admin/SquarewithBorder'
 import ColorButton from '../../../components/Admin/Button/ColorButton'
+import DeleteButton from '../../../components/Admin/Button/DeleteButton';
 import ServiceTypeModal from '../../../components/Admin/Modal/ServiceTypeModal';
-import VoucherTypeModal from '../../../components/Admin/Modal/VoucherTypeModal';
-
+import ItemTypeModal from '../../../components/Admin/Modal/ItemTypeModal';
+import BranchSelectModal from '../../../components/Admin/Modal/BranchSelectModal';
+import ItemSizeModal from '../../../components/Admin/Modal/ItemSizeModal';
 const AdminAddItemScreen = () => {
   const [sugarEnable, setSugarEnable] = useState(false)
   const [iceEnable, setIceEnable] = useState(false)
   const [milkEnable, setMilkEnable] = useState(false)
-  const [voucherType, setVoucherType] = useState(null);
-  const [rankUserModalVisible, setRankUserModalVisible] = useState(false);
-  const [voucherTypeModalVisible, setVoucherTypeModalVisible] = useState(false);
-  const [daySelectModalVisible, setDaySelectModalVisible] = useState(false);
+  const [serviceTypeVisible, setServiceTypeVisible] = useState(null);
+  const [branchSelectModalVisible, setBranchSelectModalVisible] = useState(null);
+  const [itemTypeModalVisible, setItemTypeModalVisible] = useState(false);
+  const [itemSizeModalVisible, setItemSizeModalVisible] = useState(false);
 
-  const showRankUserModal = () => {
-    setRankUserModalVisible(true);
+  const showServiceTypeModal = () => {
+    setServiceTypeVisible(true);
   };
 
-  const hideRankUserModal = () => {
-    setRankUserModalVisible(false);
+  const hideServiceTypeModal = () => {
+    setServiceTypeVisible(false);
   };
 
-  const showVoucherTypeModal = () => {
-    setVoucherTypeModalVisible(true);
+  const showBranchSelectModal = () => {
+    setBranchSelectModalVisible(true);
   };
 
-  const hideVoucherTypeModal = () => {
-    setVoucherTypeModalVisible(false);
+  const hideBranchSelectModal = () => {
+    setBranchSelectModalVisible(false);
   };
 
-  const showDaySelectModal = () => {
-    setDaySelectModalVisible(true);
+  const showItemSizeModal = () => {
+    setItemSizeModalVisible(true);
   };
 
-  const hideDaySelectModal = () => {
-    setDaySelectModalVisible(false);
+  const hideItemSizeModal = () => {
+    setItemSizeModalVisible(false);
   };
+
+  const showItemTypeModal = () => {
+    setItemTypeModalVisible(true);
+  };
+
+  const hideItemTypeModal = () => {
+    setItemTypeModalVisible(false);
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.imageContainer}>
@@ -47,19 +58,20 @@ const AdminAddItemScreen = () => {
         <Text style={styles.header}>Thông tin sản phẩm</Text>
         <View style={styles.inputBox}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { flex: 1 }]}
             placeholder="Tên sản phẩm"
           />
         </View>
         <View style={styles.inputBox}>
           <TextInput
-            style={styles.input}
+            keyboardType="phone-pad"
+            style={[styles.input, { flex: 1 }]}
             placeholder="Giá tiền sản phẩm"
           />
         </View>
         <View style={styles.inputBox}>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { flex: 1, textAlignVertical: "top" }]}
             placeholder="Mô tả sản phẩm"
             multiline={true}
             numberOfLines={4}
@@ -67,50 +79,50 @@ const AdminAddItemScreen = () => {
         </View>
 
         <View>
-          <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showVoucherTypeModal}>
+          <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showItemTypeModal}>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.input}>Loại sản phẩm</Text>
             </View>
             <MaterialIcons name="keyboard-arrow-right" size={30} color="#CCCCCC" />
+            <ItemTypeModal visible={itemTypeModalVisible} onClose={hideItemTypeModal} />
           </TouchableOpacity>
-          <VoucherTypeModal visible={voucherTypeModalVisible} onClose={hideVoucherTypeModal} />
         </View>
 
         <View>
-          <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showVoucherTypeModal}>
+          <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showItemSizeModal}>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.input}>Kích cỡ</Text>
             </View>
             <MaterialIcons name="keyboard-arrow-right" size={30} color="#CCCCCC" />
           </TouchableOpacity>
-          <VoucherTypeModal visible={voucherTypeModalVisible} onClose={hideVoucherTypeModal} />
+          <ItemSizeModal visible={itemSizeModalVisible} onClose={hideItemSizeModal} />
         </View>
 
         <Text style={styles.header}>Phục vụ</Text>
         <View>
-          <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showVoucherTypeModal}>
+          <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showServiceTypeModal}>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.input}>Loại hình phục vụ </Text>
+              <Text style={styles.input}>Loại hình phục vụ</Text>
             </View>
             <MaterialIcons name="keyboard-arrow-right" size={30} color="#CCCCCC" />
           </TouchableOpacity>
-          <VoucherTypeModal visible={voucherTypeModalVisible} onClose={hideVoucherTypeModal} />
+          <ServiceTypeModal visible={serviceTypeVisible} onClose={hideServiceTypeModal} />
         </View>
 
         <View>
-          <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showVoucherTypeModal}>
+          <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showBranchSelectModal}>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.input}>Chi nhánh </Text>
+              <Text style={styles.input}>Chi nhánh</Text>
             </View>
             <MaterialIcons name="keyboard-arrow-right" size={30} color="#CCCCCC" />
           </TouchableOpacity>
-          <VoucherTypeModal visible={voucherTypeModalVisible} onClose={hideVoucherTypeModal} />
+          <BranchSelectModal visible={branchSelectModalVisible} onClose={hideBranchSelectModal} />
         </View>
 
         <Text style={styles.header}>Tùy chọn</Text>
         <View style={styles.toggleContainer}>
-          <View style={[styles.inputBox, { flex: 1, marginRight: "1%" }]}>
-            <Text style={styles.input}>Đường</Text>
+          <View style={[styles.inputBox, { flex: 1, marginRight: "1%", opacity: sugarEnable ? 1 : 0.5 }]}>
+            <Text style={[styles.input, { fontWeight: sugarEnable ? "500" : "400" }]}>Đường</Text>
           </View>
           <Switch
             value={sugarEnable}
@@ -120,8 +132,8 @@ const AdminAddItemScreen = () => {
         </View>
 
         <View style={styles.toggleContainer}>
-          <View style={[styles.inputBox, { flex: 1, marginRight: "1%" }]}>
-            <Text style={styles.input}>Đá</Text>
+          <View style={[styles.inputBox, { flex: 1, marginRight: "1%", opacity: iceEnable ? 1 : 0.5 }]}>
+            <Text style={[styles.input, { fontWeight: iceEnable ? "500" : "400" }]}>Đá</Text>
           </View>
           <Switch
             value={iceEnable}
@@ -131,8 +143,8 @@ const AdminAddItemScreen = () => {
         </View>
 
         <View style={styles.toggleContainer}>
-          <View style={[styles.inputBox, { flex: 1, marginRight: "1%" }]}>
-            <Text style={styles.input}>Sữa</Text>
+          <View style={[styles.inputBox, { flex: 1, marginRight: "1%", opacity: milkEnable ? 1 : 0.5 }]}>
+            <Text style={[styles.input, { fontWeight: milkEnable ? "500" : "400" }]}>Sữa</Text>
           </View>
           <Switch
             value={milkEnable}
@@ -141,7 +153,8 @@ const AdminAddItemScreen = () => {
           />
         </View>
       </View>
-      <ColorButton color="#00A188" text="Thêm mới" textColor="#ffffff" />
+      <DeleteButton />
+      <ColorButton color="#00A188" text="Hoàn thành" textColor="#ffffff" />
     </ScrollView >
   )
 }
@@ -177,7 +190,7 @@ const styles = StyleSheet.create({
   input: {
     color: "#3a3a3a",
     fontSize: 16,
-    fontWeight: "400",
+    fontWeight: "500",
   },
   header: {
     color: "#3a3a3a",
