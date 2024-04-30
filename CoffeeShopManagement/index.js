@@ -25,12 +25,13 @@ const startServer = () => {
     });
 
     const userSchema = new mongoose.Schema({
-        fullName: { type: String, required: true },
+        firstName: { type: String, required: true },
+        lastName: { type: String, required: true },
         phoneNumber: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         role: { type: String, default: "user" },
     });
-
+    
     const User = mongoose.model("User", userSchema);
 
     app.get("/users/:phoneNumber", async (req, res) => {
@@ -74,13 +75,18 @@ const startServer = () => {
     app.post("/signup", async (req, res) => {
         try {
             const { fullName, phoneNumber, password, role } = req.body;
+    
+            const [firstName, ...lastNameArray] = fullName.split(" ");
+            const lastName = lastNameArray.join(" ");
+    
             const existingUser = await User.findOne({ phoneNumber });
             if (existingUser) {
                 return res.status(409).json({ message: "User already exists" });
             }
             const hashedPassword = await bcrypt.hash(password, 10);
             const newUser = new User({
-                fullName,
+                firstName,
+                lastName,
                 phoneNumber,
                 password: hashedPassword,
                 role: role || "user",
@@ -92,6 +98,7 @@ const startServer = () => {
             res.status(500).json({ message: "Internal server error" });
         }
     });
+    
 
     app.use((err, req, res, next) => {
         console.error(err.stack);
