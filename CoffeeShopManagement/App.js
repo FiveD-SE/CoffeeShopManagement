@@ -19,6 +19,7 @@ export default function App() {
         "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
         "Lato-Light": require("./assets/fonts/Lato-Light.ttf"),
     });
+
     useEffect(() => {
         const getRole = async () => {
             const token = await getToken();
@@ -37,4 +38,5 @@ export default function App() {
             </Provider>
         );
     }
+
 }

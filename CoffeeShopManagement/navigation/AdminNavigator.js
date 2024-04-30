@@ -371,7 +371,8 @@ const SalesStack = () => (
                     paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddVoucherButton />,
+                headerRight: () => <AddVoucherButton />
+
             })}
         />
         <Stack.Screen

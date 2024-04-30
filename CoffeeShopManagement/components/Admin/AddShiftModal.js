@@ -1,10 +1,28 @@
-import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
-import React from 'react'
+import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity, Keyboard } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import ModalHeader from '../Client/Header/ModalHeader'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 
 const AddShiftModal = ({ visible, onClose }) => {
+    const [modalHeight, setModalHeight] = useState('40%'); // Kích thước mặc định của modal
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            // Khi bàn phím xuất hiện, giảm kích thước của modal
+            setModalHeight('65%');
+        });
+
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            // Khi bàn phím ẩn đi, khôi phục kích thước mặc định của modal
+            setModalHeight('40%');
+        });
+
+        return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+        };
+    }, []);
     return (
         <Modal
             animationType="fade"
@@ -12,7 +30,7 @@ const AddShiftModal = ({ visible, onClose }) => {
             visible={visible}
             onRequestClose={onClose}>
             <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
+                <View style={[styles.modalContent, { height: modalHeight }]}>
                     <ModalHeader title="Ca làm việc mới" onClose={onClose} />
                     <View style={styles.bodyModal}>
                         <Text style={styles.topText}>Thông tin ca làm việc</Text>
