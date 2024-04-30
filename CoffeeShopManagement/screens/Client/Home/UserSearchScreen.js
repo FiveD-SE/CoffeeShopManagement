@@ -1,5 +1,5 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../../../components/Client/SearchBar";
@@ -11,8 +11,12 @@ const UserSearchScreen = () => {
 	const navigation = useNavigation();
 
 	const [selectedItem, setSelectedItem] = useState(null);
+
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
+
 	const itemDetailBottomSheetRef = useRef(null);
+
+	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 
 	const handleGoBack = () => {
 		navigation.goBack();
@@ -31,8 +35,17 @@ const UserSearchScreen = () => {
 	);
 	const handleOpenItemDetail = (item) => {
 		setSelectedItem(item);
-		itemDetailBottomSheetRef.current?.present();
+		setIsItemDetailVisible(true);
 	};
+
+	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+
+	useEffect(() => {
+		if (isItemDetailVisible) {
+			itemDetailBottomSheetRef.current?.present();
+		}
+	}, [isItemDetailVisible]);
+
 	return (
 		<IsOpenProvider>
 			<View style={styles.container}>
@@ -53,11 +66,15 @@ const UserSearchScreen = () => {
 						showsVerticalScrollIndicator={false}
 					/>
 				</View>
-				<ItemDetailBottomSheet
-					bottomSheetRef={itemDetailBottomSheetRef}
-					snapPoints={itemDetailSnapPoints}
-					selectedItem={selectedItem}
-				/>
+				{isItemDetailVisible && (
+					<ItemDetailBottomSheet
+						bottomSheetRef={itemDetailBottomSheetRef}
+						snapPoints={itemDetailSnapPoints}
+						selectedItem={selectedItem}
+						isVisible={isItemDetailVisible}
+						onClose={handleCloseItemDetail}
+					/>
+				)}
 			</View>
 		</IsOpenProvider>
 	);

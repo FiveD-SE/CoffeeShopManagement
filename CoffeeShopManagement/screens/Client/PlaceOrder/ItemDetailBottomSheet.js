@@ -17,44 +17,59 @@ import ToppingButton from "../../../components/Client/Button/ToppingButton";
 import ToppingItemList from "../../../components/Client/List/ToppingItemList";
 import BottomSheet from "../../../components/Client/BottomSheet/BottomSheet";
 import { useIsOpen } from "../../../utils/IsOpenContext";
-
+import { connect } from "react-redux";
+import {
+	addToFavorites,
+	removeFromFavorites,
+} from "../../../redux/actions/userActions";
 const ItemDetailBottomSheet = ({
 	bottomSheetRef,
 	snapPoints,
 	selectedItem,
 	isVisible,
 	onClose,
+	isFavorite,
+	addToFavorites,
+	removeFromFavorites,
 }) => {
 	const { setIsOpen } = useIsOpen();
-	const navigation = useNavigation();
-	const [selectedSizeIndex, setSelectedSizeIndex] = useState(null);
-	const [isFavorite, setIsFavorite] = useState(false);
-	const [selectedToppings, setSelectedToppings] = useState([]);
-	const optionList = [{ title: "Đường" }, { title: "Sữa" }, { title: "Đá" }];
 
-	const sugarOptionList = ["Bình thường", "Ít đường", "Không đường"];
-	const milkOptionList = ["Bình thường", "Ít sữa", "Không sữa"];
-	const iceOptionList = ["Bình thường", "Ít đá", "Không đá"];
+	const navigation = useNavigation();
+
+	const [selectedSizeIndex, setSelectedSizeIndex] = useState(null);
+
+	const [selectedToppings, setSelectedToppings] = useState([]);
+
+	const [localIsFavorite, setLocalIsFavorite] = useState(isFavorite);
+
 	const sizeItemList = [
 		{ size: "S", price: 59000 },
 		{ size: "M", price: 79000 },
 		{ size: "L", price: 99000 },
 	];
 
-	const handleSizePress = (index) => setSelectedSizeIndex(index);
+	const optionList = [{ title: "Đường" }, { title: "Sữa" }, { title: "Đá" }];
 
-	const chooseOptionList = (title) => {
-		switch (title) {
-			case "Đường":
-				return sugarOptionList;
-			case "Sữa":
-				return milkOptionList;
-			case "Đá":
-				return iceOptionList;
-			default:
-				return [];
-		}
+	const sugarOptionList = ["Bình thường", "Ít đường", "Không đường"];
+
+	const milkOptionList = ["Bình thường", "Ít sữa", "Không sữa"];
+
+	const iceOptionList = ["Bình thường", "Ít đá", "Không đá"];
+
+	const handleClose = () => {
+		onClose();
 	};
+
+	const toggleFavorite = () => {
+		if (!localIsFavorite) {
+			addToFavorites(selectedItem);
+		} else {
+			removeFromFavorites(selectedItem.id);
+		}
+		setLocalIsFavorite(!localIsFavorite);
+	};
+
+	const handleSizePress = (index) => setSelectedSizeIndex(index);
 
 	const renderSizeItemList = () =>
 		sizeItemList.map(({ size, price }, index) => (
@@ -78,6 +93,19 @@ const ItemDetailBottomSheet = ({
 			/>
 		));
 
+	const chooseOptionList = (title) => {
+		switch (title) {
+			case "Đường":
+				return sugarOptionList;
+			case "Sữa":
+				return milkOptionList;
+			case "Đá":
+				return iceOptionList;
+			default:
+				return [];
+		}
+	};
+
 	const renderOptionSection = () =>
 		optionList.map((item, index) => (
 			<OptionSection
@@ -90,10 +118,6 @@ const ItemDetailBottomSheet = ({
 	const handleToppingsSelected = (toppings) => {
 		setSelectedToppings(toppings);
 	};
-
-	const goToCartScreen = () => navigation.navigate("UserCartScreen");
-
-	const toggleFavorite = () => setIsFavorite(!isFavorite);
 
 	const renderToppingButton = () => {
 		if (selectedItem && selectedItem.type !== "COFFEE") {
@@ -116,6 +140,7 @@ const ItemDetailBottomSheet = ({
 		}
 		return null;
 	};
+
 	const calculateTotalPrice = () => {
 		let totalPrice = selectedItem ? selectedItem.price : 0;
 		if (selectedSizeIndex !== null) {
@@ -126,21 +151,19 @@ const ItemDetailBottomSheet = ({
 		}, 0);
 		return totalPrice;
 	};
-	const handleClose = () => {
-		onClose();
-	};
+
+	const goToCartScreen = () => navigation.navigate("UserCartScreen");
 
 	useEffect(() => {
-		const cleanup = () => {
-			setSelectedSizeIndex(null);
-			setIsFavorite(false);
-		};
 		return () => {
-			cleanup();
+			setSelectedSizeIndex(null);
 			setSelectedToppings([]);
-			console.log("ItemDetailBottomSheet unmounted");
 		};
 	}, []);
+
+	useEffect(() => {
+		setLocalIsFavorite(isFavorite);
+	}, [isFavorite]);
 
 	return (
 		<BottomSheet
@@ -172,7 +195,7 @@ const ItemDetailBottomSheet = ({
 								</Text>
 							</View>
 							<Pressable style={styles.favoriteButton} onPress={toggleFavorite}>
-								{isFavorite ? (
+								{localIsFavorite ? (
 									<FontAwesome name="heart" size={24} color={"#F61A3D"} />
 								) : (
 									<Icon name="heart" size={24} />
@@ -217,8 +240,6 @@ const ItemDetailBottomSheet = ({
 		</BottomSheet>
 	);
 };
-
-export default ItemDetailBottomSheet;
 
 const styles = StyleSheet.create({
 	container: {
@@ -320,3 +341,21 @@ const styles = StyleSheet.create({
 		fontWeight: "600",
 	},
 });
+
+const mapStateToProps = (state, { selectedItem }) => {
+	return {
+		isFavorite: state.user.favoriteList.some(
+			(item) => item.id === selectedItem?.id
+		),
+	};
+};
+
+const mapDispatchToProps = {
+	addToFavorites,
+	removeFromFavorites,
+};
+
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(ItemDetailBottomSheet);

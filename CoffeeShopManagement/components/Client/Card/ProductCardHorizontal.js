@@ -1,7 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome6";
-const ProductCardHorizontal = ({ title, price, imageSource, onPress }) => {
+const ProductCardHorizontal = ({ id, title, price, imageSource, onPress }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.imageContainer}>
