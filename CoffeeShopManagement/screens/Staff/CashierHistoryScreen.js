@@ -4,16 +4,10 @@ import Icon from 'react-native-vector-icons/Entypo'
 import OrderCard2 from '../../components/Staff/OrderCard2';
 
 export default function CashierHistoryScreen() {
-    const [selectedButtonIndex, setSelectedButtonIndex] = useState(null);
+    const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
 
-    useEffect(() => {
-        // Chọn ngẫu nhiên một TouchableOpacity làm màu cam ban đầu
-        const randomIndex = Math.floor(Math.random() * 3);
-        setSelectedButtonIndex(randomIndex);
-    }, []);
+    const [filteredData, setFilteredData] = useState([]);
 
-    const selectionButtons = ['Tất cả', 'Giao hàng tận nơi', 'Tự đến lấy hàng'];
-    
     const DATA = [
         {
             orderId: '#12345',
@@ -36,7 +30,7 @@ export default function CashierHistoryScreen() {
         {
             orderId: '#12347',
             time: '10:45 SA 16/03/2024',
-            orderType: 'Tự đến lấy hàng',
+            orderType: 'Giao hàng tận nơi',
             customer: 'Tánh',
             sdt: '0352085655',
             orderState: 'Chưa thanh toán',
@@ -45,47 +39,63 @@ export default function CashierHistoryScreen() {
         {
             orderId: '#12348',
             time: '10:45 SA 16/03/2024',
-            orderType: 'Tự đến lấy hàng',
+            orderType: 'Giao hàng tận nơi',
             customer: 'Tánh',
             sdt: '0352085655',
             orderState: 'Chưa thanh toán',
             state: 'Chờ xác nhận'
         },
     ]
-  return (
-    <View style={styles.container}>
-        <View style={styles.topApp}>
-            <TextInput 
-                placeholder='Tra cứu mã đơn hàng'
-                style={styles.searchBox}/>
-            <View style={{flexDirection: 'row', backgroundColor: '#fff'}}>
-                {selectionButtons.map((buttonTitle, index) => (
-                    <TouchableOpacity 
-                        key={index}
-                        style={[
-                            styles.selectionButton,
-                            selectedButtonIndex === index && { borderBottomWidth: 1, borderColor: '#ffc069' }
-                        ]}
-                        onPress={() => setSelectedButtonIndex(index)}
-                    >
-                        <Text style={[{fontSize: 14}, selectedButtonIndex === index && {color: '#ffc069'}]}>{buttonTitle}</Text>
-                    </TouchableOpacity>
-                ))}
+    const handleFilter = (index) => {
+        console.log(index);
+        console.log(selectionButtons[index]);
+        setSelectedButtonIndex(index);
+
+        if (index === 0) {
+            // Hiển thị tất cả đơn hàng
+            setFilteredData(DATA);
+        } else {
+            // Lọc đơn hàng theo loại đơn hàng
+            const filtered = DATA.filter(item => item.orderType === selectionButtons[index]);
+            setFilteredData(filtered);
+        }
+    };
+    const selectionButtons = ['Tất cả', 'Giao hàng tận nơi', 'Tự đến lấy hàng'];
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.topApp}>
+                <TextInput
+                    placeholder='Tra cứu mã đơn hàng'
+                    style={styles.searchBox} />
+                <View style={{ flexDirection: 'row', backgroundColor: '#fff' }}>
+                    {selectionButtons.map((buttonTitle, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            style={[
+                                styles.selectionButton,
+                                selectedButtonIndex === index && { borderBottomWidth: 1, borderColor: '#ffc069' }
+                            ]}
+                            onPress={() => handleFilter(index)}
+                        >
+                            <Text style={[{ fontSize: 14 }, selectedButtonIndex === index && { color: '#ffc069' }]}>{buttonTitle}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
-        </View>
-        <View>
-            <View style={{margin: '4%', height: '84%'}}>
-            <FlatList
-                        data = {DATA}
+            <View>
+                <View style={{ margin: '4%', height: '84%' }}>
+                    <FlatList
+                        data={filteredData}
                         showsVerticalScrollIndicator={false}
-                        renderItem={({item}) => (
-                            <OrderCard2 item={item}/>
+                        renderItem={({ item }) => (
+                            <OrderCard2 item={item} />
                         )}
-                        keyExtractor={item => item.orderId}/>
+                        keyExtractor={item => item.orderId} />
+                </View>
             </View>
         </View>
-    </View>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
@@ -108,7 +118,7 @@ const styles = StyleSheet.create({
     },
     selectionButton: {
         flex: 1,
-        justifyContent: 'center', 
+        justifyContent: 'center',
         height: 40,
         alignItems: 'center'
     },
