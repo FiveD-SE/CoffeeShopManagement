@@ -49,6 +49,53 @@ const startServer = () => {
         }
     });
 
+    app.put("/users/:phoneNumber", async (req, res) => {
+        try {
+            const { phoneNumber } = req.params;
+            const { firstName, lastName, gender, dateOfBirth, email, password } = req.body;
+            
+            // Tìm người dùng dựa trên số điện thoại
+            const user = await User.findOne({ phoneNumber });
+    
+            // Kiểm tra xem người dùng có tồn tại hay không
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+    
+            // Cập nhật thông tin nếu được cung cấp
+            if (firstName) {
+                user.firstName = firstName;
+            }
+            if (lastName) {
+                user.lastName = lastName;
+            }
+            if (gender) {
+                user.gender = gender;
+            }
+            if (dateOfBirth) {
+                user.dateOfBirth = dateOfBirth;
+            }
+            if (email) {
+                user.email = email;
+            }
+            if (password) {
+                // Mã hóa mật khẩu mới nếu có
+                const hashedPassword = await bcrypt.hash(password, 10);
+                user.password = hashedPassword;
+            }
+    
+            // Lưu thông tin người dùng đã cập nhật vào cơ sở dữ liệu
+            await user.save();
+    
+            // Trả về thông tin người dùng sau khi đã cập nhật
+            res.status(200).json({ message: "User updated successfully", user });
+        } catch (error) {
+            console.error("Error updating user", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    });
+    
+
     app.post("/login", async (req, res) => {
         try {
             const { phoneNumber, password } = req.body;
@@ -98,6 +145,8 @@ const startServer = () => {
             res.status(500).json({ message: "Internal server error" });
         }
     });
+
+
     
 
     app.use((err, req, res, next) => {
