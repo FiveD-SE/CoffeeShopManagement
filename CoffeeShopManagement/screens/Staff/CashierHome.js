@@ -9,66 +9,100 @@ export default function CashierHome() {
     const handleNotification = () => {
         navigation.navigate('CashierNotification')
     }
-    const handleDetailOrder = () => {
-        navigation.navigate('OrderScreen')
+    const handleDetailOrder = (orderId) => {
+
+        console.log(orderId);
+        const selectedProduct = DATA[0].product.filter(product => product.orderId === orderId);
+
+        navigation.navigate('OrderScreen', { selectedProduct: selectedProduct })
     }
     const handleCashierInfor = () => {
         navigation.navigate('CashierInformation')
     }
     const DATA = [
         {
-            orderId: '#12345',
-            time: '10:45 SA 16/03/2024',
-            orderType: 'Tự đến lấy hàng',
-            customer: 'Tánh',
-            sdt: '0352085655',
-            orderState: 'Chưa thanh toán',
-            state: 'Đang làm'
-        },
-        {
-            orderId: '#12346',
-            time: '10:45 SA 16/03/2024',
-            orderType: 'Tự đến lấy hàng',
-            customer: 'Tánh',
-            sdt: '0352085655',
-            orderState: 'Chưa thanh toán',
-            state: 'Chờ xác nhận'
-        },
-        {
-            orderId: '#12347',
-            time: '10:45 SA 16/03/2024',
-            orderType: 'Tự đến lấy hàng',
-            customer: 'Tánh',
-            sdt: '0352085655',
-            orderState: 'Chưa thanh toán',
-            state: 'Đã xong'
-        },
-        {
-            orderId: '#12348',
-            time: '10:45 SA 16/03/2024',
-            orderType: 'Tự đến lấy hàng',
-            customer: 'Tánh',
-            sdt: '0352085655',
-            orderState: 'Chưa thanh toán',
-            state: 'Đã hoàn thành'
-        },
+            order: [
+                {
+                    orderId: '#12345',
+                    time: '10:45 SA 16/03/2024',
+                    orderType: 'Tự đến lấy hàng',
+                    customer: 'Tánh',
+                    sdt: '0352085655',
+                    orderState: 'Chưa thanh toán',
+                    state: 'Đang làm'
+                },
+                {
+                    orderId: '#12346',
+                    time: '10:45 SA 16/03/2024',
+                    orderType: 'Tự đến lấy hàng',
+                    customer: 'Tánh',
+                    sdt: '0352085655',
+                    orderState: 'Chưa thanh toán',
+                    state: 'Chờ xác nhận'
+                },
+                {
+                    orderId: '#12347',
+                    time: '10:45 SA 16/03/2024',
+                    orderType: 'Tự đến lấy hàng',
+                    customer: 'Tánh',
+                    sdt: '0352085655',
+                    orderState: 'Chưa thanh toán',
+                    state: 'Đã xong'
+                },
+                {
+                    orderId: '#12348',
+                    time: '10:45 SA 16/03/2024',
+                    orderType: 'Tự đến lấy hàng',
+                    customer: 'Tánh',
+                    sdt: '0352085655',
+                    orderState: 'Chưa thanh toán',
+                    state: 'Đã hoàn thành'
+                },
+            ],
+            product: [
+                {
+                    orderId: '#12348',
+                    id: '1234',
+                    name: 'Oolong Tứ Quý Kim Quất Trân Châu',
+                    price: '59.000',
+                    topping: 'Size S, Ít đường, Trân châu trắng',
+                    amount: '1'
+                },
+                {
+                    orderId: '#12345',
+                    id: '1235',
+                    name: 'Oolong Tứ Quý Kim Quất Trân Châu',
+                    price: '59.000',
+                    topping: 'Size S, Ít đường, Trân châu trắng',
+                    amount: '1'
+                },
+                {
+                    orderId: '#12345',
+                    id: '1236',
+                    name: 'Oolong Tứ Quý Kim Quất Trân Châu',
+                    price: '59.000',
+                    topping: 'Size S, Ít đường, Trân châu trắng',
+                    amount: '1'
+                },
+            ]
+        }
     ];
     return (
         <View style={styles.container}>
             <View style={styles.cashierInforWrapper}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                     <TouchableOpacity
                         onPress={handleCashierInfor}>
-                        <Image 
+                        <Image
                             source={require('../../assets/account_icon.png')}
-                            style={{height: 60, width: 60}} />
+                            style={{ height: 60, width: 60 }} />
                     </TouchableOpacity>
                     <View style={styles.inforTextWrapper}>
                         <Text style={styles.nameText}>TRẦN TUỆ TÁNH</Text>
                         <Text style={styles.roleText}>Cashier</Text>
                     </View>
                 </View>
-                <TouchableOpacity 
+                <TouchableOpacity
                     onPress={handleNotification}
                     style={styles.notiButton}>
                     <Icon name="bell" size={20} />
@@ -76,12 +110,12 @@ export default function CashierHome() {
             </View>
             <Text style={styles.listOrderText}>Chờ xác nhận</Text>
             <FlatList
-                data={DATA}
+                data={DATA[0].order}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={item => item.orderId}
-                renderItem={({item}) => (
-                    <OrderCard1 item={item} handleDetailOrder={handleDetailOrder}/>
-                )}/>
+                renderItem={({ item }) => (
+                    <OrderCard1 item={item} handleDetailOrder={() => handleDetailOrder(item.orderId)} />
+                )} />
         </View>
     );
 }

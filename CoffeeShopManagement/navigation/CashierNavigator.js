@@ -11,6 +11,7 @@ import CashierHistoryScreen from "../screens/Staff/CashierHistoryScreen";
 import OrderScreen from "../screens/Staff/OrderScreen";
 import CashierNotification from "../screens/Staff/CashierNotification";
 import HeaderBackButton from "./components/HeaderBackButton";
+import SignInScreen from "../screens/Client/SignInScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -56,6 +57,11 @@ const HomeStack = () => {
                     },
                     headerLeft: () => <HeaderBackButton />,
                 }}
+            />
+            <Stack.Screen
+                name="SignInScreen"
+                component={SignInScreen}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     );
