@@ -1,12 +1,16 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import React, { useState, useRef, useMemo } from "react";
+import { FlatList, StyleSheet, View } from "react-native";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import BestSellerItem from "../../../components/Client/Card/BestSellerItem";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
 const UserBestSellerScreen = () => {
 	const [selectedItem, setSelectedItem] = useState(null);
-	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
+
+	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+
+	const itemDetailSnapPoints = useMemo(() => ["85%"]);
+
 	const itemDetailBottomSheetRef = useRef(null);
 
 	const renderBestSellerItemList = ({ item }) => (
@@ -24,8 +28,17 @@ const UserBestSellerScreen = () => {
 
 	const handleOpenItemDetail = (item) => {
 		setSelectedItem(item);
-		itemDetailBottomSheetRef.current?.present();
+		setIsItemDetailVisible(true);
 	};
+
+	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+
+	useEffect(() => {
+		if (isItemDetailVisible) {
+			itemDetailBottomSheetRef.current?.present();
+		}
+	}, [isItemDetailVisible]);
+
 	return (
 		<IsOpenProvider>
 			<View style={styles.container}>
@@ -38,11 +51,15 @@ const UserBestSellerScreen = () => {
 						contentContainerStyle={styles.bestSellerItemListContainer}
 					/>
 				</View>
-				<ItemDetailBottomSheet
-					bottomSheetRef={itemDetailBottomSheetRef}
-					snapPoints={itemDetailSnapPoints}
-					selectedItem={selectedItem}
-				/>
+				{isItemDetailVisible && (
+					<ItemDetailBottomSheet
+						bottomSheetRef={itemDetailBottomSheetRef}
+						snapPoints={itemDetailSnapPoints}
+						selectedItem={selectedItem}
+						isVisible={isItemDetailVisible}
+						onClose={handleCloseItemDetail}
+					/>
+				)}
 			</View>
 		</IsOpenProvider>
 	);

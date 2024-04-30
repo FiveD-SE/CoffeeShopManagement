@@ -1,18 +1,23 @@
 import { StyleSheet, FlatList, View } from "react-native";
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import ProductCardVertical from "../../../components/Client/Card/ProductCardHorizontal";
-import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
-import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
-const UserFavoriteItemScreen = () => {
+import { IsOpenProvider } from "../../../utils/IsOpenContext";
+import { connect } from "react-redux";
+const UserFavoriteItemScreen = ({ favoriteList }) => {
 	const [selectedItem, setSelectedItem] = useState(null);
-	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
+
+	const itemDetailSnapPoints = useMemo(() => ["85%"]);
+
 	const itemDetailBottomSheetRef = useRef(null);
+
+	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 
 	const renderFavoriteItemList = ({ item }) => (
 		<ProductCardVertical
+			id={item.id}
 			title={item.title}
-			price={item.price.toLocaleString("vi-VN", {
+			price={item.price?.toLocaleString("vi-VN", {
 				style: "currency",
 				currency: "VND",
 			})}
@@ -20,31 +25,43 @@ const UserFavoriteItemScreen = () => {
 			onPress={() => handleOpenItemDetail(item)}
 		/>
 	);
+
 	const handleOpenItemDetail = (item) => {
 		setSelectedItem(item);
-		itemDetailBottomSheetRef.current?.present();
+		setIsItemDetailVisible(true);
 	};
+
+	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+
+	useEffect(() => {
+		if (isItemDetailVisible) {
+			itemDetailBottomSheetRef.current?.present();
+		}
+	}, [isItemDetailVisible]);
+
 	return (
 		<IsOpenProvider>
 			<View style={styles.container}>
 				<View style={styles.favoriteItemListContainer}>
 					<FlatList
-						data={PRODUCT_ITEM_LIST}
+						data={favoriteList}
 						renderItem={renderFavoriteItemList}
 						showsVerticalScrollIndicator={false}
 					/>
 				</View>
-				<ItemDetailBottomSheet
-					bottomSheetRef={itemDetailBottomSheetRef}
-					snapPoints={itemDetailSnapPoints}
-					selectedItem={selectedItem}
-				/>
+				{isItemDetailVisible && (
+					<ItemDetailBottomSheet
+						bottomSheetRef={itemDetailBottomSheetRef}
+						snapPoints={itemDetailSnapPoints}
+						selectedItem={selectedItem}
+						isVisible={isItemDetailVisible}
+						onClose={handleCloseItemDetail}
+					/>
+				)}
 			</View>
 		</IsOpenProvider>
 	);
 };
-
-export default UserFavoriteItemScreen;
 
 const styles = StyleSheet.create({
 	container: {
@@ -57,3 +74,9 @@ const styles = StyleSheet.create({
 		paddingHorizontal: "5%",
 	},
 });
+
+const mapStateToProps = (state) => ({
+	favoriteList: state.user.favoriteList,
+});
+
+export default connect(mapStateToProps)(UserFavoriteItemScreen);
