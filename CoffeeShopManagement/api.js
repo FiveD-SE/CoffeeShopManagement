@@ -4,7 +4,7 @@ const api = axios.create({
     baseURL: "https://cfbe.up.railway.app",
 });
 
-export const getRoleByPhoneNumber = async (phoneNumber) => {
+export const getUserData = async (phoneNumber) => {
     try {
         const response = await api.get(`/users/${phoneNumber}`);
 
@@ -21,11 +21,34 @@ export const getRoleByPhoneNumber = async (phoneNumber) => {
         }
     } catch (error) {
         if (error.response && error.response.data) {
-            console.error("Lỗi khi lấy role:", error.response.data.message);
+            console.error(
+                "Lỗi khi lấy thông tin người dùng:",
+                error.response.data.message
+            );
         } else {
-            console.error("Lỗi khi lấy role:", error);
+            console.error("Lỗi khi lấy thông tin người dùng:", error);
         }
-        throw new Error("Lỗi khi lấy role từ API");
+        throw new Error("Lỗi khi lấy thông tin người dùng từ API");
+    }
+};
+
+export const updateUserData = async (phoneNumber, updatedData) => {
+    try {
+        const response = await api.patch(`/users/${phoneNumber}`, updatedData);
+        if (response.status === 200) {
+            return response.data;
+        } else if (response.status === 404) {
+            console.log("Người dùng không tồn tại");
+            return null;
+        } else if (response.status === 500) {
+            console.error("Lỗi API:", response.data);
+            throw new Error("Đã xảy ra lỗi server khi gửi yêu cầu đến API");
+        } else {
+            throw new Error("Đã xảy ra lỗi khi gửi yêu cầu đến API");
+        }
+    } catch (error) {
+        console.error("Lỗi khi cập nhật thông tin người dùng:", error.message);
+        throw new Error("Lỗi khi cập nhật thông tin người dùng từ API");
     }
 };
 

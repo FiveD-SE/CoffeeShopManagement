@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     StyleSheet,
     SafeAreaView,
@@ -14,16 +14,53 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { removeToken } from "../../../services/authServices";
+import * as Updates from "expo-updates";
+import { getUserData } from "../../../api";
+import store from "../../../redux/store/store";
 
 import { useNavigation } from "@react-navigation/native";
 
 export default function UserOtherScreen() {
     const navigation = useNavigation();
+    const [userData, setUserData] = useState(null);
+    const [phoneNumber, setPhoneNumber] = useState("");
 
     const [form, setForm] = useState({
         emailNotifications: true,
         pushNotifications: false,
     });
+
+    useEffect(() => {
+        const fetchPhoneNumber = async () => {
+            try {
+                setPhoneNumber(store.getState().auth.phoneNumber);
+                console.log("Phone number:", phoneNumber);
+            } catch (error) {
+                console.error("Error fetching phone number:", error);
+            }
+        };
+
+        fetchPhoneNumber();
+    }, []);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userData = await getUserData(phoneNumber);
+                console.log("User data:", userData);
+                if (userData) {
+                    setUserData(userData);
+                } else {
+                    console.log("User not found");
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+        if (phoneNumber) {
+            fetchUserData();
+        }
+    }, [phoneNumber]);
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F7FA" }}>
@@ -39,19 +76,18 @@ export default function UserOtherScreen() {
                             >
                                 <Image
                                     alt="avatar"
-                                    source={{
-                                        uri: "https://scontent.fsgn2-3.fna.fbcdn.net/v/t39.30808-6/431624626_122123621720198208_7192741542130469154_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=5f2048&_nc_ohc=JjnI9QfaC3UAb6tpASW&_nc_ht=scontent.fsgn2-3.fna&oh=00_AfDP74--Z_uqCn8QEtONsVRUTRR2QZjaK68b9Tal5mB8Pg&oe=66229595",
-                                    }}
+                                    source={{ uri: userData?.avatar }}
                                     style={styles.profileAvatar}
                                 />
 
                                 <View style={styles.profileBody}>
                                     <Text style={styles.profileName}>
-                                        Truong Le Vinh Phuc
+                                        {userData?.lastName}{" "}
+                                        {userData?.firstName}
                                     </Text>
 
                                     <Text style={styles.profileHandle}>
-                                        truonglevinhphuc2006@gmail.com
+                                        {userData?.email}
                                     </Text>
                                 </View>
                             </Pressable>
@@ -339,6 +375,7 @@ export default function UserOtherScreen() {
                                 <Pressable
                                     onPress={() => {
                                         removeToken();
+                                        Updates.reloadAsync();
                                         navigation.navigate("SignIn");
                                     }}
                                     style={styles.row}

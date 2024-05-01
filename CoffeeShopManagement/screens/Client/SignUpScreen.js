@@ -1,21 +1,31 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, SafeAreaView, Image,ScrollView } from "react-native";
+import {
+    StyleSheet,
+    Text,
+    View,
+    SafeAreaView,
+    Image,
+    ScrollView,
+    Alert,
+} from "react-native";
 import Checkbox from "expo-checkbox";
 import InputField from "../../components/Client/InputField";
 import PasswordInput from "../../components/Client/PasswordInput";
 import BrownButton from "../../components/Client/Button/BrownButton";
 import BrownTextButton from "../../components/Client/Button/BrownTextButton";
 import { useNavigation } from "@react-navigation/native";
-import { connect } from "react-redux";
-import { signUpRequest } from "../../redux/actions/userActions";
+// import { connect } from "react-redux"; // Commented out
+// import { signUpRequest } from "../../redux/actions/userActions"; // Commented out
+import { signUp } from "../../api";
 
 const BACKGROUND_SOURCE = require("../../assets/background.png");
 
-const SignUpScreen = () => {
+export default function SignUpScreen() {
     const [fullName, setFullName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [isChecked, setChecked] = useState(false);
 
     const navigation = useNavigation();
 
@@ -28,14 +38,21 @@ const SignUpScreen = () => {
             return;
         }
 
-        const userData = {
-            fullName,
-            phoneNumber,
-            password,
-        };
-        signUpRequest(userData);
-        console.log(userData);
-        navigation.navigate("EnterOTP", { isSignUp: true, userData });
+        if (isChecked && fullName && phoneNumber && password) {
+            const signUpSuccess = signUp(fullName, phoneNumber, password);
+            if (signUpSuccess) {
+                Alert.alert("Đăng ký thành công", "Vui lòng đăng nhập");
+                navigation.navigate("SignInScreen");
+            } else {
+                Alert.alert("Đăng ký thất bại", "Người dùng đã tồn tại");
+            }
+        } else {
+            Alert.alert("Đăng ký thất bại", "Vui lòng điền đầy đủ thông tin");
+        }
+    };
+
+    const handleCheckBox = () => {
+        setChecked(!isChecked);
     };
 
     return (
@@ -65,7 +82,12 @@ const SignUpScreen = () => {
                     onChangeText={setConfirmPassword}
                 />
                 <View style={styles.helperContainer}>
-                    <Checkbox style={styles.checkbox} />
+                    <Checkbox
+                        style={styles.checkbox}
+                        value={isChecked}
+                        color={isChecked ? "#a8a19b" : undefined}
+                        onValueChange={handleCheckBox}
+                    />
                     <Text style={{ flex: 1 }}>
                         <Text style={styles.helperText}>
                             Tôi đồng ý với tất cả
@@ -88,7 +110,7 @@ const SignUpScreen = () => {
             </View>
         </ScrollView>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -136,14 +158,14 @@ const styles = StyleSheet.create({
     },
 });
 
-const mapStateToProps = (state) => {
-    return {
-        user: state.user,
-    };
-};
+// const mapStateToProps = (state) => {
+//     return {
+//         user: state.user,
+//     };
+// };
 
-const mapDispatchToProps = {
-    signUpRequest,
-};
+// const mapDispatchToProps = {
+//     signUpRequest,
+// };
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignUpScreen);
+// export default connect(mapStateToProps, mapDispatchToProps)(SignUpScreen);

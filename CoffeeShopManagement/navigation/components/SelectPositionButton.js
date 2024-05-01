@@ -5,10 +5,7 @@ import { FontAwesome } from "@expo/vector-icons";
 
 export default function SelectPositionButton() {
     return (
-        <TouchableOpacity
-            style={styles.addButton}
-            onPress={{}}
-        >
+        <TouchableOpacity style={styles.addButton} onPress={{}}>
             <FontAwesome name="map-marker" size={24} color="#D22F27" />
         </TouchableOpacity>
     );
