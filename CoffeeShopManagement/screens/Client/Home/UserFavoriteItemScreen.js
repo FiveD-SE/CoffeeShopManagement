@@ -1,74 +1,82 @@
 import { StyleSheet, FlatList, View } from "react-native";
-import React from "react";
-import ProductCardVertical from "../../../components/Client/Card/MustTryItemCard";
+import React, { useState, useMemo, useRef, useEffect } from "react";
+import ProductCardVertical from "../../../components/Client/Card/ProductCardHorizontal";
+import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
+import { IsOpenProvider } from "../../../utils/IsOpenContext";
+import { connect } from "react-redux";
+const UserFavoriteItemScreen = ({ favoriteList }) => {
+	const [selectedItem, setSelectedItem] = useState(null);
 
-const UserFavoriteItemScreen = () => {
-  const favoriteItemList = [
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-  ];
-  const renderFavoriteItemList = ({ item }) => (
-    <ProductCardVertical
-      title={item.title}
-      price={item.price.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      })}
-      imageSource={item.imageSource}
-    />
-  );
+	const itemDetailSnapPoints = useMemo(() => ["85%"]);
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.favoriteItemListContainer}>
-        <FlatList
-          data={favoriteItemList}
-          renderItem={renderFavoriteItemList}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    </View>
-  );
+	const itemDetailBottomSheetRef = useRef(null);
+
+	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+
+	const renderFavoriteItemList = ({ item }) => (
+		<ProductCardVertical
+			id={item.id}
+			title={item.title}
+			price={item.price?.toLocaleString("vi-VN", {
+				style: "currency",
+				currency: "VND",
+			})}
+			imageSource={item.imageSource}
+			onPress={() => handleOpenItemDetail(item)}
+		/>
+	);
+
+	const handleOpenItemDetail = (item) => {
+		setSelectedItem(item);
+		setIsItemDetailVisible(true);
+	};
+
+	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+
+	useEffect(() => {
+		if (isItemDetailVisible) {
+			itemDetailBottomSheetRef.current?.present();
+		}
+	}, [isItemDetailVisible]);
+
+	return (
+		<IsOpenProvider>
+			<View style={styles.container}>
+				<View style={styles.favoriteItemListContainer}>
+					<FlatList
+						data={favoriteList}
+						renderItem={renderFavoriteItemList}
+						showsVerticalScrollIndicator={false}
+					/>
+				</View>
+				{isItemDetailVisible && (
+					<ItemDetailBottomSheet
+						bottomSheetRef={itemDetailBottomSheetRef}
+						snapPoints={itemDetailSnapPoints}
+						selectedItem={selectedItem}
+						isVisible={isItemDetailVisible}
+						onClose={handleCloseItemDetail}
+					/>
+				)}
+			</View>
+		</IsOpenProvider>
+	);
 };
 
-export default UserFavoriteItemScreen;
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F8F7FA",
-  },
-  favoriteItemListContainer: {
-    flex: 1,
-    marginTop: "5%",
-    paddingHorizontal: "5%",
-  },
+	container: {
+		flex: 1,
+		backgroundColor: "#F8F7FA",
+	},
+	favoriteItemListContainer: {
+		flex: 1,
+		marginTop: "5%",
+		paddingHorizontal: "5%",
+	},
 });
+
+const mapStateToProps = (state) => ({
+	favoriteList: state.user.favoriteList,
+});
+
+export default connect(mapStateToProps)(UserFavoriteItemScreen);

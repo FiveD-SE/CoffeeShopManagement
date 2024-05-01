@@ -33,6 +33,12 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 userData: action.payload,
             };
+        case types.SAVE_PHONE_NUMBER:
+            return {
+                ...state,
+                phoneNumber: action.payload,
+            };
+
         default:
             return state;
     }

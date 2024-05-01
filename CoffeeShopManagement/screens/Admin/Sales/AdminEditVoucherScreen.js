@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import SquareWithBorder from '../../../components/Admin/SquarewithBorder'
 import CustomChooseButton from '../../../components/Admin/Button/CustomChooseButton'
 import ColorButton from '../../../components/Admin/Button/ColorButton'
+import DeleteButton from '../../../components/Admin/Button/DeleteButton';
 import VoucherTypeModal from '../../../components/Admin/Modal/VoucherTypeModal';
 import ServiceTypeModal from '../../../components/Admin/Modal/ServiceTypeModal';
 import RankUserModal from '../../../components/Admin/Modal/RankUserModal';
@@ -95,6 +96,7 @@ const AdminEditVoucherScreen = () => {
           <DaySelectModal visible={daySelectModalVisible} onClose={hideDaySelectModal} />
         </View>
       </View>
+      <DeleteButton/>
       <ColorButton color="#00A188" text="Hoàn thành" textColor="#ffffff" />
     </ScrollView >
   )

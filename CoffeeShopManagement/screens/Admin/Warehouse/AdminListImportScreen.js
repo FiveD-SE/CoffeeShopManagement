@@ -57,7 +57,7 @@ const AdminListImportScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.bar}>
         <BranchSelectBar branchName="ThanhTai1" />
       </View>
@@ -70,7 +70,7 @@ const AdminListImportScreen = () => {
         <Text style={styles.cost}>118.000 VNĐ</Text>
       </View>
       <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" />
-    </SafeAreaView>
+    </View>
   )
 }
 

@@ -1,13 +1,14 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
+import { removeToken } from '../../services/authServices';
 
 export default function CashierInformation() {
     const navigation = useNavigation();
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.inforWrapper}>
                 <Icon name='account-circle' size={60} color={'#fff'} />
                 <View style={styles.inforTextWrapper}>
@@ -35,15 +36,25 @@ export default function CashierInformation() {
                         <Text>Đi sớm dọn quán, check vệ sinh ca trước</Text>
                     </Text>
                 </View>
+                <View style={styles.buttonWrapper}>
+                    <TouchableOpacity
+                        onPress={() => {
+                            removeToken();
+                            navigation.navigate("SignInScreen");
+                        }}
+                        style={styles.button}>
+                        <Text style={styles.buttonText}>Đăng xuất</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#006c5e'
+        backgroundColor: '#006c5e',
     },
     inforWrapper: {
         padding: '3%',
@@ -65,7 +76,8 @@ const styles = StyleSheet.create({
         padding: '4%',
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
-        height: '100%'
+        height: '100%',
+        paddingBottom: '10%'
     },
     calender: {
         backgroundColor: '#fff',
@@ -104,5 +116,19 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         marginBottom: '2%'
+    },
+    buttonWrapper: {
+        backgroundColor: '#006d5d',
+        borderRadius: 10
+    },
+    button: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '3%'
+    },
+    buttonText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#fff'
     }
 })

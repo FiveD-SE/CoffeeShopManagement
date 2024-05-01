@@ -12,7 +12,6 @@ import { signUp } from "../../api";
 import BrownButton from "../../components/Client/Button/BrownButton";
 const EnterOTP = ({ route }) => {
     const { isSignUp, userData } = route.params;
-    // console.log(route);
     const [otp, setOTP] = useState(["", "", "", "", "", ""]);
 
     const navigation = useNavigation();
@@ -20,7 +19,6 @@ const EnterOTP = ({ route }) => {
     const handleEnterOTP = async () => {
         if (isSignUp) {
             const { fullName, phoneNumber, password } = userData;
-            // console.log(userData);
             const signUpSuccess = await signUp(fullName, phoneNumber, password);
 
             if (signUpSuccess) {
@@ -32,13 +30,20 @@ const EnterOTP = ({ route }) => {
             navigation.navigate("ResetPassword");
         }
     };
+    const handleInputChange = (index, value) => {
+        const newOTP = [...otp];
+        newOTP[index] = value;
+        console.log(otp);
+        setOTP(newOTP);
+    };
 
     return (
         <View style={styles.container}>
             <Text style={styles.titleText}>Nhập mã xác thực</Text>
             <View style={styles.helperContainer}>
                 <Text style={styles.helperText}>
-                    Mã xác thực đã được gửi đến số điện thoại *******455
+                    Mã xác thực đã được gửi đến số điện thoại{" "}
+                    {userData.phoneNumber}
                 </Text>
             </View>
             <View style={styles.main}>

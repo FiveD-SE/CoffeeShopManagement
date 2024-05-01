@@ -13,7 +13,7 @@ import UserFavoriteItemScreen from "../screens/Client/Home/UserFavoriteItemScree
 
 import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScreen";
 
-import EditProfile from "../screens/Client/Other/UserEditProfileScreen";
+import EditProfileDetail from "../screens/Client/Other/UserEditProfileScreen";
 import ProfileDetails from "../screens/Client/Other/UserProfileDetailScreen";
 import EditAddress from "../screens/Client/Other/UserEditAddressScreen";
 import AddNewAddress from "../screens/Client/Other/UserAddNewAddressScreen";
@@ -22,8 +22,6 @@ import Other from "../screens/Client/Other/UserOtherScreen";
 import TabBarIcon from "./components/TabBarIcon";
 import HeaderBackButton from "./components/HeaderBackButton";
 import UserCartScreen from "../screens/Client/PlaceOrder/UserCartScreen";
-import SelectPositionButton from "./components/SelectPositionButton";
-import SearchBar from "./components/SearchBar";
 
 import OrderHistory from "../screens/Client/Other/UserOrderHistoryScreen";
 import Setting from "../screens/Client/Other/UserSettingScreen";
@@ -41,7 +39,7 @@ import History from "../screens/Client/Coupons/UserExchangeHistoryScreen";
 import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
 import YourVoucher from "../screens/Client/Coupons/UserVoucherScreen";
 import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
-
+import CashierNotification from "../screens/Staff/CashierNotification";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -95,6 +93,28 @@ const HomeStack = () => (
             component={UserBestSellerScreen}
             options={{
                 headerTitle: "Sản phẩm bán chạy",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="CashierNotification"
+            component={CashierNotification}
+            options={{
+                headerTitle: "Thông báo",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="UserCartScreen"
+            component={UserCartScreen}
+            options={{
+                headerTitle: "Giỏ hàng",
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
@@ -161,7 +181,7 @@ const OrderStack = () => (
             }}
         />
         <Stack.Screen
-            name="SelectBranch"
+            name="SelectBranchScreen"
             component={SelectBranch}
             options={{
                 headerTitle: "Chọn chi nhánh",
@@ -194,7 +214,7 @@ const OtherStack = () => (
         />
         <Stack.Screen
             name="EditProfile"
-            component={EditProfile}
+            component={EditProfileDetail}
             options={{
                 headerTitle: "Hồ sơ",
                 headerLeftContainerStyle: {
@@ -245,7 +265,7 @@ const OtherStack = () => (
                     paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <SelectPositionButton />
+                headerRight: () => <SelectPositionButton />,
             }}
         />
         <Stack.Screen
@@ -311,7 +331,19 @@ const OtherStack = () => (
                     paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <SelectPositionButton />
+                headerRight: () => <SelectPositionButton />,
+            }}
+        />
+        <Stack.Screen
+            name="SignIn"
+            component={SignInScreen}
+            options={{
+                headerTitle: "Đăng nhập",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerShown: false,
+                headerLeft: () => <HeaderBackButton />,
             }}
         />
         <Stack.Screen
@@ -418,13 +450,13 @@ function UserNavigator() {
                 tabBarLabelStyle: styles.labelStyle,
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
-                    if (route.name === "Home") {
+                    if (route.name === "Trang chủ") {
                         iconName = "home";
-                    } else if (route.name === "Orders") {
+                    } else if (route.name === "Đặt hàng") {
                         iconName = "cart";
-                    } else if (route.name === "Coupons") {
+                    } else if (route.name === "Ưu đãi") {
                         iconName = "bookmark";
-                    } else if (route.name === "Others") {
+                    } else if (route.name === "Khác") {
                         iconName = "reorder-three";
                     }
                     return (
@@ -437,10 +469,10 @@ function UserNavigator() {
                 },
             })}
         >
-            <Tab.Screen name="Home" component={HomeStack} />
-            <Tab.Screen name="Orders" component={OrderStack} />
-            <Tab.Screen name="Coupons" component={CouponsStack} />
-            <Tab.Screen name="Others" component={OtherStack} />
+            <Tab.Screen name="Trang chủ" component={HomeStack} />
+            <Tab.Screen name="Đặt hàng" component={OrderStack} />
+            <Tab.Screen name="Ưu đãi" component={CouponsStack} />
+            <Tab.Screen name="Khác" component={OtherStack} />
         </Tab.Navigator>
     );
 }

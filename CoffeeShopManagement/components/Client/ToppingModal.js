@@ -1,10 +1,19 @@
-import React from "react";
-import { Modal, View, StyleSheet, ScrollView } from "react-native";
+import React, { useState } from "react";
+import {
+	Modal,
+	View,
+	StyleSheet,
+	ScrollView,
+	Pressable,
+	Text,
+	Platform,
+} from "react-native";
 import Section from "./Section";
 import ToppingItem1 from "./ToppingItem1";
 import ModalHeader from "./Header/ModalHeader";
 
-const ToppingModal = ({ visible, onClose }) => {
+const ToppingModal = ({ visible, onClose, onConfirm }) => {
+	const [selectedToppings, setSelectedToppings] = useState([]);
 	const bubbleToppingList = [
 		{ title: "Trân châu trắng", price: 5000 },
 		{ title: "Trân châu đen", price: 5000 },
@@ -24,6 +33,10 @@ const ToppingModal = ({ visible, onClose }) => {
 					style: "currency",
 					currency: "VND",
 				})}
+				isChecked={selectedToppings.some(
+					(topping) => topping.title === item.title
+				)}
+				onToggle={() => handleToppingPress(item)}
 			/>
 		));
 	};
@@ -36,8 +49,30 @@ const ToppingModal = ({ visible, onClose }) => {
 					style: "currency",
 					currency: "VND",
 				})}
+				isChecked={selectedToppings.some(
+					(topping) => topping.title === item.title
+				)}
+				onToggle={() => handleToppingPress(item)}
 			/>
 		));
+	};
+
+	const handleToppingPress = (topping) => {
+		const isSelected = selectedToppings.some(
+			(item) => item.title === topping.title
+		);
+		if (isSelected) {
+			setSelectedToppings(
+				selectedToppings.filter((item) => item.title !== topping.title)
+			);
+		} else {
+			setSelectedToppings([...selectedToppings, topping]);
+		}
+	};
+
+	const handleConfirm = () => {
+		onConfirm(selectedToppings);
+		onClose();
 	};
 
 	return (
@@ -50,18 +85,27 @@ const ToppingModal = ({ visible, onClose }) => {
 			<View style={styles.modalContainer}>
 				<View style={styles.modalContent}>
 					<ModalHeader title="Chọn topping" onClose={onClose} />
-					<ScrollView style={styles.main}>
-						<Section title="Trân châu">
-							<View style={styles.itemListContainer}>
-								{renderBubbleToppingItem()}
+					<View style={{ paddingHorizontal: "5%" }}>
+						<ScrollView style={styles.main}>
+							<View style={{ marginTop: "5%" }}>
+								<Section title="Trân châu">
+									<View style={styles.itemListContainer}>
+										{renderBubbleToppingItem()}
+									</View>
+								</Section>
 							</View>
-						</Section>
-						<Section title="Pudding">
-							<View style={styles.itemListContainer}>
-								{renderPuddingToppingItem()}
+							<View style={{ marginTop: "5%" }}>
+								<Section title="Pudding">
+									<View style={styles.itemListContainer}>
+										{renderPuddingToppingItem()}
+									</View>
+								</Section>
 							</View>
-						</Section>
-					</ScrollView>
+						</ScrollView>
+						<Pressable style={styles.confirmButton} onPress={handleConfirm}>
+							<Text style={styles.confirmButtonText}>Xác nhận</Text>
+						</Pressable>
+					</View>
 				</View>
 			</View>
 		</Modal>
@@ -81,7 +125,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		borderRadius: 20,
 		width: "90%",
-		height: "70%",
+		height: "80%",
 	},
 	header: {
 		flexDirection: "row",
@@ -109,5 +153,31 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		paddingHorizontal: "5%",
 		borderWidth: 1,
+	},
+	confirmButton: {
+		backgroundColor: "#00A188",
+		justifyContent: "center",
+		alignItems: "center",
+		padding: "5%",
+		borderRadius: 20,
+		marginTop: "5%",
+		...Platform.select({
+			ios: {
+				shadowColor: "#3a3a3a",
+				shadowOffset: {
+					width: 0,
+					height: 2,
+				},
+				shadowOpacity: 0.1,
+				shadowRadius: 2,
+			},
+			android: {
+				elevation: 2,
+			},
+		}),
+	},
+	confirmButtonText: {
+		color: "#FFFFFF",
+		fontWeight: "600",
 	},
 });

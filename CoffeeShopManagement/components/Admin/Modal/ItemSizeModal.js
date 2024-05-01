@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native'
+import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 
@@ -8,9 +8,12 @@ const ItemSizeModal = ({ visible, onClose }) => {
         medium: false,
         large: false,
     });
-
-
-
+    const handleSelectType = (type) => {
+        setSelectedTypes(prevState => ({
+            ...prevState,
+            [type]: !prevState[type]
+        }));
+    };
     return (
         <Modal
             animationType="fade"
@@ -21,25 +24,34 @@ const ItemSizeModal = ({ visible, onClose }) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <ModalHeader title="Chọn kích cỡ" onClose={onClose} />
-                    <View style={styles.main}>
-                        <TouchableOpacity style={styles.buttonContainer}>
-                            <Image
-                                source={require("../../../assets/coffee-cup.png")} />
-                            <Text style={styles.title}>Nhỏ</Text>
-                        </TouchableOpacity>
+                    <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
+                        <View style={{ flexDirection: "row" }}>
+                            <TouchableOpacity
+                                onPress={() => handleSelectType("small")}
+                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.small ? "#D3D3D3" : "#ffffff" }]}>
+                                <Image
+                                    source={require("../../../assets/coffee-cup.png")} />
+                                <Text style={styles.title}>Nhỏ</Text>
+                                <Text style={styles.title}>+0đ</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.buttonContainer}>
-                            <Image
-                                source={require("../../../assets/coffee-cup.png")} />
-                            <Text style={styles.title}>Trung bình</Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={() => handleSelectType("medium")}
+                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.medium ? "#D3D3D3" : "#ffffff" }]}>
+                                <Image
+                                    source={require("../../../assets/coffee-cup.png")} />
+                                <Text style={styles.title}>Trung bình</Text>
+                                <Text style={styles.title}>+5.000đ</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity style={styles.buttonContainer}>
-                            <Image
-                                source={require("../../../assets/coffee-cup.png")} />
-                            <Text style={styles.title}>Lớn</Text>
-                        </TouchableOpacity>
-                    </View>
+                            <TouchableOpacity onPress={() => handleSelectType("large")}
+                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.large ? "#D3D3D3" : "#ffffff" }]}>
+                                <Image
+                                    source={require("../../../assets/coffee-cup.png")} />
+                                <Text style={styles.title}>Lớn</Text>
+                                <Text style={styles.title}>+10.000đ</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </ScrollView>
                 </View>
             </View>
         </Modal >
@@ -59,7 +71,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F8F7FA",
         borderRadius: 20,
         width: "90%",
-        height: "22%",
+        height: "24%",
     },
     imageContainer: {
         marginTop: "5%",
@@ -68,8 +80,7 @@ const styles = StyleSheet.create({
     },
     main: {
         paddingHorizontal: "3%",
-        marginVertical: "3%",
-        flexDirection: "row"
+        marginTop: "3%",
     },
     header: {
         color: "#3a3a3a",

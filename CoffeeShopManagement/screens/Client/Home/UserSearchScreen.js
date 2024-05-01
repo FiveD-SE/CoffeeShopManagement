@@ -1,108 +1,110 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../../../components/Client/SearchBar";
-import MustTryItemCard from "../../../components/Client/Card/MustTryItemCard";
-
+import ProductCardHorizontal from "../../../components/Client/Card/ProductCardHorizontal";
+import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
+import { IsOpenProvider } from "../../../utils/IsOpenContext";
+import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
 const UserSearchScreen = () => {
-  const navigation = useNavigation();
+	const navigation = useNavigation();
 
-  const itemList = [
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-  ];
+	const [selectedItem, setSelectedItem] = useState(null);
 
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
+	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 
-  const renderItemList = ({ item }) => (
-    <MustTryItemCard
-      title={item.title}
-      price={item.price.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      })}
-      imageSource={item.imageSource}
-    />
-  );
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <SearchBar />
-        <Pressable
-          style={styles.cancelButton}
-          onPress={handleGoBack}
-          hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
-        >
-          <Text style={styles.cancelButtonText}>Huỷ</Text>
-        </Pressable>
-      </View>
-      <View style={styles.main}>
-        <FlatList
-          data={itemList}
-          renderItem={renderItemList}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    </View>
-  );
+	const itemDetailBottomSheetRef = useRef(null);
+
+	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+
+	const handleGoBack = () => {
+		navigation.goBack();
+	};
+
+	const renderItemList = ({ item }) => (
+		<ProductCardHorizontal
+			title={item.title}
+			price={item.price.toLocaleString("vi-VN", {
+				style: "currency",
+				currency: "VND",
+			})}
+			imageSource={item.imageSource}
+			onPress={() => handleOpenItemDetail(item)}
+		/>
+	);
+	const handleOpenItemDetail = (item) => {
+		setSelectedItem(item);
+		setIsItemDetailVisible(true);
+	};
+
+	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+
+	useEffect(() => {
+		if (isItemDetailVisible) {
+			itemDetailBottomSheetRef.current?.present();
+		}
+	}, [isItemDetailVisible]);
+
+	return (
+		<IsOpenProvider>
+			<View style={styles.container}>
+				<View style={styles.header}>
+					<SearchBar />
+					<Pressable
+						style={styles.cancelButton}
+						onPress={handleGoBack}
+						hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+					>
+						<Text style={styles.cancelButtonText}>Huỷ</Text>
+					</Pressable>
+				</View>
+				<View style={styles.main}>
+					<FlatList
+						data={PRODUCT_ITEM_LIST}
+						renderItem={renderItemList}
+						showsVerticalScrollIndicator={false}
+					/>
+				</View>
+				{isItemDetailVisible && (
+					<ItemDetailBottomSheet
+						bottomSheetRef={itemDetailBottomSheetRef}
+						snapPoints={itemDetailSnapPoints}
+						selectedItem={selectedItem}
+						isVisible={isItemDetailVisible}
+						onClose={handleCloseItemDetail}
+					/>
+				)}
+			</View>
+		</IsOpenProvider>
+	);
 };
 
 export default UserSearchScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-  },
-  header: {
-    width: "100%",
-    flexDirection: "row",
-    padding: "5%",
-    alignItems: "center",
-    marginTop: "10%",
-  },
-  cancelButton: {
-    marginLeft: "5%",
-  },
-  cancelButtonText: {
-    color: "#006C5E",
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  main: {
-    flex: 1,
-    backgroundColor: "#F8F7FA",
-    padding: "5%",
-  },
+	container: {
+		flex: 1,
+		backgroundColor: "#FFFFFF",
+	},
+	header: {
+		width: "100%",
+		flexDirection: "row",
+		padding: "5%",
+		alignItems: "center",
+		marginTop: "10%",
+	},
+	cancelButton: {
+		marginLeft: "5%",
+	},
+	cancelButtonText: {
+		color: "#006C5E",
+		fontSize: 12,
+		fontWeight: "600",
+	},
+	main: {
+		flex: 1,
+		backgroundColor: "#F8F7FA",
+		padding: "5%",
+	},
 });

@@ -1,10 +1,11 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import Icon from 'react-native-vector-icons/Entypo'
-import { Checkbox } from 'react-native-paper'
+import Checkbox from 'expo-checkbox'
 
 export default function ShiftCard2({ item }) {
+    const [toggleCheckBox, setToggleCheckBox] = useState(true)
     return (
         <TouchableOpacity style={styles.cardWrapper}>
             <View>
@@ -16,7 +17,10 @@ export default function ShiftCard2({ item }) {
                     </View>
                 </View>
             </View>
-            <Checkbox />
+            <Checkbox
+                disabled={false}
+                value={toggleCheckBox}
+                onValueChange={(newValue) => setToggleCheckBox(newValue)} />
         </TouchableOpacity>
     )
 }

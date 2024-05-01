@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native'
+import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native'
 import React, { useState } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import SquareWithBorder from '../SquarewithBorder'
@@ -22,7 +22,7 @@ const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <ModalHeader title="Chọn loại khuyến mãi" onClose={onClose} />
-          <View style={styles.main}>
+          <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
             <Text style={styles.header}>Loại khuyến mãi</Text>
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity style={[
@@ -73,7 +73,7 @@ const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
                 <Text style={styles.title}>Ưu đãi vận chuyển</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </ScrollView>
         </View>
       </View>
     </Modal >
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
   },
   main: {
     paddingHorizontal: "5%",
-    marginBottom: "10%",
+    marginBottom: "5%",
   },
   header: {
     color: "#3a3a3a",

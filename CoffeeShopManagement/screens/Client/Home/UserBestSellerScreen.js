@@ -1,67 +1,79 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { FlatList, StyleSheet, View } from "react-native";
+import React, { useState, useRef, useMemo, useEffect } from "react";
 import BestSellerItem from "../../../components/Client/Card/BestSellerItem";
+import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
+import { IsOpenProvider } from "../../../utils/IsOpenContext";
+import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
 const UserBestSellerScreen = () => {
-  const bestSellerItemList = [
-    {
-      title: "Bánh Mì Thịt Nguội VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Heo Quay VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Heo Quay VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Heo Quay VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-    {
-      title: "Bánh Mì Heo Quay VN",
-      price: 35000,
-      imageSource: require("../../../assets/vietnam.png"),
-    },
-  ];
-  const renderBestSellerItemList = ({ item }) => (
-    <BestSellerItem
-      title={item.title}
-      price={item.price.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      })}
-      imageSource={item.imageSource}
-    />
-  );
-  return (
-    <View style={styles.container}>
-      <View style={styles.bestSellerItemListContainer}>
-        <FlatList
-          data={bestSellerItemList}
-          renderItem={renderBestSellerItemList}
-          numColumns={2}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    </View>
-  );
+	const [selectedItem, setSelectedItem] = useState(null);
+
+	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+
+	const itemDetailSnapPoints = useMemo(() => ["85%"]);
+
+	const itemDetailBottomSheetRef = useRef(null);
+
+	const renderBestSellerItemList = ({ item }) => (
+		<BestSellerItem
+			title={item.title}
+			price={item.price.toLocaleString("vi-VN", {
+				style: "currency",
+				currency: "VND",
+			})}
+			imageSource={item.imageSource}
+			vertical={true}
+			onPress={() => handleOpenItemDetail(item)}
+		/>
+	);
+
+	const handleOpenItemDetail = (item) => {
+		setSelectedItem(item);
+		setIsItemDetailVisible(true);
+	};
+
+	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+
+	useEffect(() => {
+		if (isItemDetailVisible) {
+			itemDetailBottomSheetRef.current?.present();
+		}
+	}, [isItemDetailVisible]);
+
+	return (
+		<IsOpenProvider>
+			<View style={styles.container}>
+				<View style={styles.bestSellerItemListContainer}>
+					<FlatList
+						data={PRODUCT_ITEM_LIST}
+						renderItem={renderBestSellerItemList}
+						numColumns={2}
+						showsVerticalScrollIndicator={false}
+						contentContainerStyle={styles.bestSellerItemListContainer}
+					/>
+				</View>
+				{isItemDetailVisible && (
+					<ItemDetailBottomSheet
+						bottomSheetRef={itemDetailBottomSheetRef}
+						snapPoints={itemDetailSnapPoints}
+						selectedItem={selectedItem}
+						isVisible={isItemDetailVisible}
+						onClose={handleCloseItemDetail}
+					/>
+				)}
+			</View>
+		</IsOpenProvider>
+	);
 };
 
 export default UserBestSellerScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F8F7FA",
-  },
-  bestSellerItemListContainer: {
-    marginTop: "5%",
-    paddingHorizontal: "5%",
-  },
+	container: {
+		flex: 1,
+		backgroundColor: "#FFFFFF",
+	},
+	bestSellerItemListContainer: {
+		marginTop: "2%",
+		paddingHorizontal: "2%",
+	},
 });

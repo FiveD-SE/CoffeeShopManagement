@@ -1,12 +1,39 @@
-const jwt = require("jsonwebtoken");
-require("dotenv").config();
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const generateToken = (user) => {
-    return jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1d" });
+const saveToken = async (token) => {
+    try {
+        const tokenString = JSON.stringify(token);
+        await AsyncStorage.setItem("token", tokenString);
+        console.log("Token saved successfully:", tokenString);
+    } catch (error) {
+        console.error("Failed to save token:", error);
+        throw error;
+    }
 };
 
-const verifyToken = (token) => {
-    return jwt.verify(token, process.env.JWT_SECRET);
+const getToken = async () => {
+    try {
+        const tokenString = await AsyncStorage.getItem("token");
+        if (tokenString) {
+            console.log("Token retrieved successfully:", tokenString);
+            return JSON.parse(tokenString);
+        } else {
+            console.log("No token found in storage");
+            return null;
+        }
+    } catch (error) {
+        console.error("Failed to retrieve token:", error);
+        throw error;
+    }
 };
 
-module.exports = { generateToken, verifyToken };
+const removeToken = async () => {
+    try {
+        await AsyncStorage.removeItem("token");
+        console.log("Token removed successfully.");
+    } catch (error) {
+        console.error("Failed to remove token:", error);
+    }
+};
+
+export { saveToken, getToken, removeToken };

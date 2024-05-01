@@ -1,14 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-const MustTryItemCard = ({ title, price, imageSource, onPress }) => {
-	const navigation = useNavigation();
-
-	const goToItemDetail = () => {
-		navigation.navigate("ItemDetailScreen");
-	};
-
+const ProductCardHorizontal = ({ id, title, price, imageSource, onPress }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.imageContainer}>
@@ -25,7 +18,7 @@ const MustTryItemCard = ({ title, price, imageSource, onPress }) => {
 	);
 };
 
-export default MustTryItemCard;
+export default ProductCardHorizontal;
 
 const styles = StyleSheet.create({
 	container: {

@@ -72,7 +72,7 @@ const AdminWareHouseScreen = () => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.branchSelectContainer}>
                 <TouchableOpacity style={styles.subtitleContainer}>
                     <FontAwesome5 name="map-marker-alt" size={20} color="#00A188" />
@@ -100,7 +100,7 @@ const AdminWareHouseScreen = () => {
             <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
                 {renderproductList()}
             </ScrollView>
-        </SafeAreaView>
+        </View>
     )
 }
 

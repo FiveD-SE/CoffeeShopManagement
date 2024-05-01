@@ -7,37 +7,115 @@ import { useNavigation } from '@react-navigation/native'
 export default function ScheduleScreen() {
     const DATA = [
         {
-            idShift: '1',
-            nameShift: 'Ca sáng',
-            startTime: '7:00',
-            endTime: '8:00',
-            quantity: 100,
-        },
-        {
-            idShift: '2',
-            nameShift: 'Ca sáng',
-            startTime: '7:00',
-            endTime: '8:00',
-            quantity: 100,
-        },
-        {
-            idShift: '3',
-            nameShift: 'Ca sáng',
-            startTime: '7:00',
-            endTime: '8:00',
-            quantity: 100,
-        },
-        {
-            idShift: '4',
-            nameShift: 'Ca sáng',
-            startTime: '7:00',
-            endTime: '8:00',
-            quantity: 100,
+            'shift': [
+                {
+                    idShift: '1',
+                    nameShift: 'Ca sáng',
+                    startTime: '7:00',
+                    endTime: '8:00',
+                    quantity: 100,
+                },
+                {
+                    idShift: '2',
+                    nameShift: 'Ca tối',
+                    startTime: '7:00',
+                    endTime: '8:00',
+                    quantity: 100,
+                },
+                {
+                    idShift: '3',
+                    nameShift: 'Ca khuya',
+                    startTime: '7:00',
+                    endTime: '8:00',
+                    quantity: 100,
+                },
+                {
+                    idShift: '4',
+                    nameShift: 'Ca chiều',
+                    startTime: '7:00',
+                    endTime: '8:00',
+                    quantity: 100,
+                },
+                {
+                    idShift: '5',
+                    nameShift: 'Ca chiều',
+                    startTime: '7:00',
+                    endTime: '8:00',
+                    quantity: 100,
+                }
+            ],
+            'staff': [
+                {
+                    idShift: '1',
+                    id: "123456",
+                    name: "Tánh Trần",
+                    SDT: "0352085655",
+                    role: "Nhân viên",
+                },
+                {
+                    idShift: '1',
+                    id: "123457",
+                    name: "Tánh Chan",
+                    SDT: "0352085656",
+                    role: "Nhân viên",
+                },
+                {
+                    idShift: '1',
+                    id: "123458",
+                    name: "Tánh hello",
+                    SDT: "0352085657",
+                    role: "Nhân viên",
+                },
+                {
+                    idShift: '1',
+                    id: "123459",
+                    name: "Tánh Dep Trai",
+                    SDT: "0352085658",
+                    role: "Nhân viên",
+                },
+                {
+                    idShift: '1',
+                    id: "123",
+                    name: "Tánh Phan",
+                    SDT: "0352085658",
+                    role: "Nhân viên",
+                },
+                {
+                    idShift: '1',
+                    id: "124",
+                    name: "Tánh Luu",
+                    SDT: "0352085658",
+                    role: "Nhân viên",
+                },
+                {
+                    idShift: '3',
+                    id: "125",
+                    name: "Tánh Nguyen",
+                    SDT: "0352085658",
+                    role: "Nhân viên",
+                },
+                {
+                    idShift: '3',
+                    id: "126",
+                    name: "Tánh Truong",
+                    SDT: "0352085658",
+                    role: "Nhân viên",
+                },
+            ]
         }
     ]
     const navigation = useNavigation();
-    const goToDetailShift = () => {
-        navigation.navigate('DetailShift')
+    const goToAddShift = () => {
+        const data = DATA[0].shift;
+        // Truyền dữ liệu cần thiết tại đây
+        navigation.navigate('AddShift', { shiftList: data });
+    };
+    const goToDetailShift = (item) => {
+        const { idShift } = item; // Trích xuất idShift từ item
+
+        const selectedStaff = DATA[0].staff.filter(staff => staff.idShift === idShift);
+
+        navigation.navigate('DetailShift', { selectedStaff: selectedStaff })
     }
     return (
         <View style={styles.container}>
@@ -54,11 +132,13 @@ export default function ScheduleScreen() {
             <View style={styles.bodyApp}>
                 <Text style={styles.bodyAppText}>Tên chi nhánh</Text>
                 <FlatList
-                    data={DATA}
+                    showsVerticalScrollIndicator={false}
+                    data={DATA[0].shift}
                     keyExtractor={item => item.idShift}
-                    renderItem={({ item, onPress }) => (
-                        <ShiftCard item={item} onPress={goToDetailShift} />
-                    )} />
+                    renderItem={({ item }) => (
+                        <ShiftCard item={item} onPress={() => goToDetailShift(item)} />
+                    )}
+                />
             </View>
         </View>
     )
@@ -85,10 +165,11 @@ const styles = StyleSheet.create({
     },
     bodyApp: {
 
+        paddingBottom: '20%'
     },
     bodyAppText: {
         fontSize: 16,
         fontWeight: '600',
-        marginBottom: '3%'
+        marginBottom: '3%',
     }
 })

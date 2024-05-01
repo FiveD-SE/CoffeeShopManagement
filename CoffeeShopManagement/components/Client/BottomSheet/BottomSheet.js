@@ -1,8 +1,20 @@
 import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-import { BottomSheetModal, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
+import {
+	BottomSheetModal,
+	BottomSheetBackdrop,
+	BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import { useIsOpen } from "../../../utils/IsOpenContext";
+const BottomSheet = ({
+	bottomSheetRef,
+	snapPoints,
+	isVisible,
+	onClose,
+	children,
+}) => {
+	const { isOpen, setIsOpen } = useIsOpen();
 
-const BottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen, children }) => {
 	const renderBackdrop = useCallback(
 		(props) => (
 			<BottomSheetBackdrop
@@ -17,16 +29,21 @@ const BottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen, children }) => {
 	);
 
 	return (
-		<BottomSheetModal
-			ref={bottomSheetRef}
-			snapPoints={snapPoints}
-			backgroundStyle={styles.bottomSheet}
-			onDismiss={() => setIsOpen(false)}
-			backdropComponent={renderBackdrop}
-			enableContentPanningGesture={false}
-		>
-			<View style={styles.container}>{children}</View>
-		</BottomSheetModal>
+		<BottomSheetModalProvider>
+			<BottomSheetModal
+				ref={bottomSheetRef}
+				snapPoints={snapPoints}
+				backgroundStyle={styles.bottomSheet}
+				onChange={() => setIsOpen(true)}
+				onDismiss={onClose}
+				dismissOnPanDown={true}
+				dismissOnTouchOutside={true}
+				backdropComponent={renderBackdrop}
+				enableContentPanningGesture={false}
+			>
+				<View style={styles.container}>{children}</View>
+			</BottomSheetModal>
+		</BottomSheetModalProvider>
 	);
 };
 

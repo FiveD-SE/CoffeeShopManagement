@@ -1,10 +1,8 @@
+import React from "react";
 import { StyleSheet, Platform } from "react-native";
-import React, { useState, useRef } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
-import { Animated } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
+import TabBarIcon from "./components/TabBarIcon";
 
 import CashierHome from "../screens/Staff/CashierHome";
 import CashierBillingScreen from "../screens/Staff/CashierBillingScreen";
@@ -13,51 +11,12 @@ import CashierHistoryScreen from "../screens/Staff/CashierHistoryScreen";
 import OrderScreen from "../screens/Staff/OrderScreen";
 import CashierNotification from "../screens/Staff/CashierNotification";
 import HeaderBackButton from "./components/HeaderBackButton";
+import SignInScreen from "../screens/Client/SignInScreen";
 
 const Stack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
-function TabBarIcon({ focused, name, color }) {
-    const [isPressed, setIsPressed] = useState(false);
-    const iconAnimation = useRef(new Animated.Value(focused ? 1 : 0)).current;
 
-    const handlePressIn = () => {
-        setIsPressed(true);
-        Animated.timing(iconAnimation, {
-            toValue: 1,
-            duration: 100,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    const handlePressOut = () => {
-        setIsPressed(false);
-        Animated.timing(iconAnimation, {
-            toValue: focused ? 1 : 0,
-            duration: 200,
-            useNativeDriver: true,
-        }).start();
-    };
-
-    const iconStyle = {
-        opacity: iconAnimation.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0.5, 1],
-        }),
-    };
-
-    return (
-        <Animated.View style={iconStyle}>
-            <FontAwesome5
-                name={isPressed || focused ? name : `${name}`}
-                size={28}
-                color={color}
-                onPressIn={handlePressIn}
-                onPressOut={handlePressOut}
-            />
-        </Animated.View>
-    );
-}
 const HomeStack = () => {
     return (
         <Stack.Navigator initialRouteName="CashierHome">
@@ -72,7 +31,7 @@ const HomeStack = () => {
                 options={{
                     headerTitle: "Thông báo",
                     headerLeftContainerStyle: {
-                        padding: "5%",
+                        paddingLeft: "5%",
                     },
                     headerLeft: () => <HeaderBackButton />,
                 }}
@@ -83,7 +42,7 @@ const HomeStack = () => {
                 options={{
                     headerTitle: "Thông tin",
                     headerLeftContainerStyle: {
-                        padding: "5%",
+                        paddingLeft: "5%",
                     },
                     headerLeft: () => <HeaderBackButton />,
                 }}
@@ -94,10 +53,15 @@ const HomeStack = () => {
                 options={{
                     headerTitle: "Chi tiết đơn hàng",
                     headerLeftContainerStyle: {
-                        padding: "5%",
+                        paddingLeft: "5%",
                     },
                     headerLeft: () => <HeaderBackButton />,
                 }}
+            />
+            <Stack.Screen
+                name="SignInScreen"
+                component={SignInScreen}
+                options={{ headerShown: false }}
             />
         </Stack.Navigator>
     );
@@ -117,12 +81,12 @@ const CashierNavigator = () => {
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
-                    if (route.name === "Home") {
+                    if (route.name === "Trang chủ") {
                         iconName = "home";
-                    } else if (route.name === "Bill") {
-                        iconName = "bars";
-                    } else if (route.name === "History") {
-                        iconName = "history";
+                    } else if (route.name === "Đơn hàng") {
+                        iconName = "reorder-four";
+                    } else if (route.name === "Lịch sử") {
+                        iconName = "timer";
                     }
                     return (
                         <TabBarIcon
@@ -136,17 +100,17 @@ const CashierNavigator = () => {
         >
             <Tab.Screen
                 options={{ headerShown: false }}
-                name="Home"
+                name="Trang chủ"
                 component={HomeStack}
             />
             <Tab.Screen
                 options={{ headerShown: false }}
-                name="Bill"
+                name="Đơn hàng"
                 component={CashierBillingScreen}
             />
             <Tab.Screen
                 options={{ headerShown: false }}
-                name="History"
+                name="Lịch sử"
                 component={CashierHistoryScreen}
             />
         </Tab.Navigator>

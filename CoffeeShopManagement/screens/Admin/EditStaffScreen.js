@@ -4,19 +4,26 @@ import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Entypo'
 import Icon1 from 'react-native-vector-icons/Feather'
 import DeleteStaffModal from '../../components/Admin/DeletaStaffModal'
+import SelectBranchModal from '../../components/Admin/Modal/SelectBranchModal'
+import { useNavigation } from '@react-navigation/native'
 
-const TextBox = ({ text }) => {
+const TextBox = ({ text, value, setValue }) => {
     return (
         <TextInput
             placeholder={text}
-            style={styles.textBox} />
+            style={styles.textBox}
+            value={value}
+            onChangeText={setValue} />
     )
 }
-const TextBox2 = ({ text, iconName, marginRate }) => {
+
+const TextBox2 = ({ text, iconName, marginRate, value, setValue }) => {
     return (
         <View style={[styles.textBox, { flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginEnd: marginRate }]}>
             <TextInput
                 placeholder={text}
+                value={value}
+                onChangeText={setValue}
             />
             <TouchableOpacity>
                 <Icon name={iconName} size={28} />
@@ -24,25 +31,43 @@ const TextBox2 = ({ text, iconName, marginRate }) => {
         </View>
     )
 }
-
-const TextBox3 = ({ text, placeholder }) => {
+const ButtonBox = ({ text, placeholder, onPress }) => {
     return (
-        <View style={[styles.textBox, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
+        <TouchableOpacity
+            onPress={onPress}
+            style={[styles.textBox, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
             <Text style={{ fontWeight: '600' }}>{text}</Text>
-            <View style={{ flexDirection: 'row' }}>
-                <TextInput
-                    placeholder={placeholder}
-                />
-                <TouchableOpacity>
-                    <Icon name='chevron-right' size={28} />
-                </TouchableOpacity>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Text style={{ color: '#9c9c9c' }}>{placeholder}</Text>
+                <View>
+                    <Icon name='chevron-right' size={28} color={'#9c9c9c'} />
+                </View>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 
-export default function EditStaffScreen() {
+export default function EditStaffScreen({ route }) {
+    console.log(route.params);
+    const { setValue } = route.params.setValue;
+
+    const [name, setName] = useState(route.params.staffItem.name);
+    const [sdt, setSdt] = useState(route.params.staffItem.SDT);
+    const [birth, setBirth] = useState(route.params.staffItem.birth);
+    const [sex, setSex] = useState(route.params.staffItem.sex);
+    const [cccd, setCccd] = useState(route.params.staffItem.cccd);
+    const [email, setEmail] = useState(route.params.staffItem.email);
+
     const [modalVisible, setModalVisible] = useState(false);
+
+    const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
+    const showSelectBranchModal = () => {
+        setModalSelectBranchVisible(true);
+    };
+
+    const hideSelectBranchModal = () => {
+        setModalSelectBranchVisible(false);
+    };
 
     const showDeleteStaffModal = () => {
         setModalVisible(true);
@@ -50,6 +75,22 @@ export default function EditStaffScreen() {
 
     const hideDeleteStaffModal = () => {
         setModalVisible(false);
+    };
+
+    const navigation = useNavigation();
+    const goBack = () => {
+        const updatedData = {
+            id: route.params.staffItem.id,
+            name: name,
+            SDT: sdt,
+            birth: birth,
+            role: route.params.staffItem.role,
+            sex: sex,
+            cccd: cccd,
+            email: email,
+        };
+
+        navigation.goBack();
     };
     return (
         <View style={styles.container}>
@@ -73,22 +114,25 @@ export default function EditStaffScreen() {
             </View>
             <View style={styles.informationWrapper}>
                 <Text style={styles.topText}>Thông tin cá nhân</Text>
-                <TextBox text={'Họ và tên'} />
-                <TextBox text={'Số điện thoại'} />
+                <TextBox text={'Họ và tên'} value={name} setValue={setName} />
+                <TextBox text={'Số điện thoại'} value={sdt} setValue={setSdt} />
                 <View style={styles.rowContainerTextBox}>
-                    <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'5%'} />
-                    <TextBox2 text={'Giới tính'} iconName={'chevron-right'} />
+                    <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'5%'} value={birth} setValue={setBirth} />
+                    <TextBox2 text={'Giới tính'} iconName={'chevron-right'} value={sex} setValue={setSex} />
                 </View>
-                <TextBox text={'Số CMND/CCCD'} />
-                <TextBox text={'Email'} />
+                <TextBox text={'Số CMND/CCCD'} value={cccd} setValue={setCccd} />
+                <TextBox text={'Email'} value={email} setValue={setEmail} />
             </View>
             <View>
                 <Text style={styles.topText}>Thông tin công việc</Text>
-                <TextBox3 text={'Vai trò'} placeholder={'Tên vai trò'} />
-                <TextBox3 text={'Chi nhánh làm việc'} placeholder={'Tên chi nhánh'} />
+                <ButtonBox text={'Vai trò'} placeholder={'Tên vai trò'} />
+                <ButtonBox text={'Chi nhánh làm việc'} placeholder={'Tên chi nhánh'} onPress={showSelectBranchModal} />
+                <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} />
             </View>
             <View>
-                <Pressable style={styles.acceptButton}>
+                <Pressable
+                    onPress={goBack}
+                    style={styles.acceptButton}>
                     <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>Lưu</Text>
                 </Pressable>
             </View>

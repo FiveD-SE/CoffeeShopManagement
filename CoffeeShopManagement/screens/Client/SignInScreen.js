@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    Pressable,
+    ScrollView,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
@@ -8,8 +15,13 @@ import BrownButton from "../../components/Client/Button/BrownButton";
 import BrownTextButton from "../../components/Client/Button/BrownTextButton";
 import { signIn } from "../../api";
 import UserNavigator from "../../navigation/UserNavigator";
-import { signInSuccess } from "../../redux/actions/userActions";
+import {
+    signInSuccess,
+    savePhoneNumber,
+} from "../../redux/actions/userActions";
 import { connect } from "react-redux";
+import { getToken, saveToken } from "../../services/authServices";
+import store from "../../redux/store/store";
 
 const GOOGLE_ICON_SOURCE = require("../../assets/google.png");
 const BACKGROUND_SOURCE = require("../../assets/background.png");
@@ -34,19 +46,14 @@ const SignInScreen = () => {
     };
 
     useEffect(() => {
-        if (isChecked) {
-            console.log("Remember me");
-        } else {
-            console.log("Don't remember me");
-        }
-    });
-
-    useEffect(() => {
         if (role === "user") {
+            console.log("Role is user");
             navigation.navigate("UserNavigator");
         } else if (role === "cashier") {
+            console.log("Role is cashier");
             navigation.navigate("CashierNavigator");
         } else if (role === "admin") {
+            console.log("Role is admin");
             navigation.navigate("AdminNavigator");
         } else {
             console.log("Role is not defined");
@@ -55,8 +62,19 @@ const SignInScreen = () => {
 
     const handleSignIn = () => {
         signIn(phoneNumber, password).then((data) => {
-            setRole(data.user.role);
-            signInSuccess(data.user);
+            console.log(data);
+            if (isChecked) {
+                saveToken(JSON.stringify(data.user));
+                store.dispatch(savePhoneNumber(data.user.phoneNumber));
+
+                console.log("Store: " + store.getState().auth.phoneNumber);
+                setRole(data.user.role);
+            } else {
+                store.dispatch(savePhoneNumber(data.user.phoneNumber));
+
+                console.log("Store: " + store.getState().auth.phoneNumber);
+                setRole(data.user.role);
+            }
         });
     };
 
