@@ -15,7 +15,7 @@ export default function SelectPositionButton() {
 const styles = StyleSheet.create({
     addButton: {
         backgroundColor: "#fff",
-        width: "60%",
+        width: "auto",
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 10,

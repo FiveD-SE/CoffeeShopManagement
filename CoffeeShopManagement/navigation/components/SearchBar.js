@@ -17,6 +17,7 @@ export default SearchBar;
 
 const styles = StyleSheet.create({
   inputContainer: {
+    flex: 1,
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
@@ -30,8 +31,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginRight: 10,
-    flex: 1,
     width: '100%',
     flexDirection: "row",
     paddingHorizontal: "5%",

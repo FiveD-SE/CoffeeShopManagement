@@ -22,6 +22,8 @@ import Other from "../screens/Client/Other/UserOtherScreen";
 import TabBarIcon from "./components/TabBarIcon";
 import HeaderBackButton from "./components/HeaderBackButton";
 import UserCartScreen from "../screens/Client/PlaceOrder/UserCartScreen";
+import SelectPositionButton from "./components/SelectPositionButton";
+import SearchBar from "./components/SearchBar";
 
 import OrderHistory from "../screens/Client/Other/UserOrderHistoryScreen";
 import Setting from "../screens/Client/Other/UserSettingScreen";
