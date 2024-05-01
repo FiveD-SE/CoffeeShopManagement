@@ -12,17 +12,13 @@ import { signUp } from "../../api";
 import BrownButton from "../../components/Client/Button/BrownButton";
 const EnterOTP = ({ route }) => {
     const { isSignUp, userData } = route.params;
-    // console.log(route);
     const [otp, setOTP] = useState(["", "", "", "", "", ""]);
-    // use firebase to send OTP
 
     const navigation = useNavigation();
 
     const handleEnterOTP = async () => {
-        console.log(otpString);
         if (isSignUp) {
             const { fullName, phoneNumber, password } = userData;
-            // console.log(userData);
             const signUpSuccess = await signUp(fullName, phoneNumber, password);
 
             if (signUpSuccess) {

@@ -1,34 +1,81 @@
-import React, { useState } from "react";
-import { StyleSheet, View, ScrollView, Text, Pressable, Image, TextInput } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+    StyleSheet,
+    View,
+    ScrollView,
+    Text,
+    Pressable,
+    Image,
+    TextInput,
+} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SwitchToggle from "toggle-switch-react-native";
 import { useNavigation } from "@react-navigation/native";
-import SelectGenderModal from '../../../components/Admin/Modal/SelectGenderModal';
-import SelectDateModal from '../../../components/Admin/Modal/SelectDateModal';
+import SelectGenderModal from "../../../components/Admin/Modal/SelectGenderModal";
+import SelectDateModal from "../../../components/Admin/Modal/SelectDateModal";
+import { getUserData, updateUserData } from "../../../api";
+import { getToken } from "../../../services/authServices";
+import store from "../../../redux/store/store";
 
-const ProfileDetails = () => {
+const EditProfileDetails = () => {
     const navigation = useNavigation();
+    const [userData, setUserData] = useState(null);
+    const [phoneNumber, setPhoneNumber] = useState("");
 
     const [isToggled, setIsToggled] = useState(false);
-    const [selectedGender, setSelectedGender] = useState('');
-    const [selectedDateOption, setSelectedDateOption] = useState('');
+    const [selectedGender, setSelectedGender] = useState("");
+    const [selectedDateOption, setSelectedDateOption] = useState("");
 
     const handleToggle = () => {
         setIsToggled(!isToggled);
     };
 
-    const [firstName] = useState("Nguyễn Quốc");
-    const [lastName] = useState("Thắng");
-    const [gender] = useState("Nam");
-    const [birthday] = useState("13/03/2004");
-    const [phone] = useState("346129897");
-    const [email] = useState("22521337@gm.uit.edu.vn");
+    useEffect(() => {
+        const fetchPhoneNumber = async () => {
+            try {
+                setPhoneNumber(store.getState().auth.phoneNumber);
+                console.log("Phone number:", phoneNumber);
+            } catch (error) {
+                console.error("Error fetching phone number:", error);
+            }
+        };
+
+        fetchPhoneNumber();
+    }, []);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userData = await getUserData(phoneNumber);
+                console.log("User data:", userData);
+                if (userData) {
+                    setUserData(userData);
+                } else {
+                    console.log("User not found");
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+        if (phoneNumber) {
+            fetchUserData();
+        }
+    }, [phoneNumber]);
 
     const avatar = require("../../../assets/vietnam.png");
     const flag = require("../../../assets/vietnam.png");
 
-    const navigateToProfileDetails = () => {
-        navigation.navigate("ProfileDetails");
+    const navigateToProfileDetails = async () => {
+        try {
+            const success = await updateUserData(phoneNumber, userData);
+            if (success) {
+                navigation.navigate("ProfileDetails", { userData });
+            } else {
+                console.error("Cập nhật dữ liệu người dùng không thành công");
+            }
+        } catch (error) {
+            console.error("Lỗi khi cập nhật dữ liệu người dùng:", error);
+        }
     };
 
     const showSelectGenderModal = () => {
@@ -55,16 +102,20 @@ const ProfileDetails = () => {
     const handleSelectDateOption = (option) => {
         setSelectedDateOption(option);
     };
-    
+
     const [modalGenderVisible, setModalGenderVisible] = useState(false);
     const [modalSelectDateVisible, setModalSelectDateVisible] = useState(false);
 
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
-                <View style={{ paddingVertical: 10, alignItems: 'center' }}>
+                <View style={{ paddingVertical: 10, alignItems: "center" }}>
                     <Pressable onPress={navigateToProfileDetails}>
-                        <Image alt="avatar" source={avatar} style={styles.profileAvatar} />
+                        <Image
+                            alt="avatar"
+                            source={avatar}
+                            style={styles.profileAvatar}
+                        />
                     </Pressable>
                 </View>
 
@@ -77,19 +128,55 @@ const ProfileDetails = () => {
                     </View>
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "48%" }]}>
-                            <TextInput style={styles.text}>{firstName}</TextInput>
+                            <TextInput
+                                style={styles.text}
+                                onChangeText={(text) => {
+                                    console.log(text);
+                                    setUserData({
+                                        ...userData,
+                                        lastName: text,
+                                    });
+                                }}
+                            >
+                                {userData?.lastName}
+                            </TextInput>
                         </View>
                         <View style={[styles.rowLabelText, { width: "48%" }]}>
-                            <TextInput style={styles.text}>{lastName}</TextInput>
+                            <TextInput
+                                style={styles.text}
+                                onChangeText={(text) =>
+                                    setUserData({
+                                        ...userData,
+                                        firstName: text,
+                                    })
+                                }
+                            >
+                                {userData?.firstName}
+                            </TextInput>
                         </View>
                     </View>
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <Text style={styles.label}>Giới tính</Text>
                             <View style={styles.row_space_between}>
-                                <Text style={styles.text}>{selectedGender || gender}</Text>
+                                <Text
+                                    style={styles.text}
+                                    onChangeText={(text) => {
+                                        setUserData({
+                                            ...userData,
+                                            gender: text,
+                                        });
+                                    }}
+                                >
+                                    {selectedGender || userData?.gender}
+                                </Text>
+
                                 <Pressable onPress={showSelectGenderModal}>
-                                    <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
+                                    <FontAwesome
+                                        name="angle-right"
+                                        size={32}
+                                        style={{ marginLeft: 15 }}
+                                    />
                                 </Pressable>
                             </View>
                         </View>
@@ -98,9 +185,26 @@ const ProfileDetails = () => {
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <Text style={styles.label}>Ngày sinh</Text>
                             <View style={styles.row_space_between}>
-                                <Text style={styles.text}>{selectedDateOption || birthday}</Text>
+                                <Text
+                                    style={styles.text}
+                                    onChangeText={(text) =>
+                                        setUserData({
+                                            ...userData,
+                                            dateOfBirth: Date.parse(text),
+                                        })
+                                    }
+                                >
+                                    {selectedDateOption.replace(/\//g, "-") ||
+                                        userData?.dateOfBirth
+                                            ?.split("T")[0]
+                                            .replace(/\//g, "-")}
+                                </Text>
                                 <Pressable onPress={showSelectDateModal}>
-                                    <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
+                                    <FontAwesome
+                                        name="angle-right"
+                                        size={32}
+                                        style={{ marginLeft: 15 }}
+                                    />
                                 </Pressable>
                             </View>
                         </View>
@@ -111,10 +215,33 @@ const ProfileDetails = () => {
                         <Text style={styles.sectionTitle}>Số điện thoại</Text>
                     </View>
                     <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "100%", justifyContent: "flex-start" }]}>
-                            <Image style={{ height: 32, width: 32, marginRight: 10 }} source={flag} resizeMode="contain" />
+                        <View
+                            style={[
+                                styles.rowLabelText,
+                                { width: "100%", justifyContent: "flex-start" },
+                            ]}
+                        >
+                            <Image
+                                style={{
+                                    height: 32,
+                                    width: 32,
+                                    marginRight: 10,
+                                }}
+                                source={flag}
+                                resizeMode="contain"
+                            />
                             <Text style={styles.text}>+84 </Text>
-                            <TextInput style={styles.text}>{phone}</TextInput>
+                            <TextInput
+                                style={styles.text}
+                                onChangeText={(text) =>
+                                    setUserData({
+                                        ...userData,
+                                        phoneNumber: text,
+                                    })
+                                }
+                            >
+                                {userData?.phoneNumber}
+                            </TextInput>
                         </View>
                     </View>
                 </View>
@@ -124,17 +251,34 @@ const ProfileDetails = () => {
                     </View>
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <TextInput style={styles.text}>{email}</TextInput>
+                            <TextInput
+                                style={styles.text}
+                                onChangeText={(text) =>
+                                    setUserData({ ...userData, email: text })
+                                }
+                            >
+                                {userData?.email}
+                            </TextInput>
                         </View>
                     </View>
                 </View>
 
                 <View style={styles.section}>
                     <View style={styles.row_space_between}>
-                        <Text style={styles.sectionTitle}>Tài khoản liên kết</Text>
+                        <Text style={styles.sectionTitle}>
+                            Tài khoản liên kết
+                        </Text>
                     </View>
                     <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "100%", justifyContent: "space-between" }]}>
+                        <View
+                            style={[
+                                styles.rowLabelText,
+                                {
+                                    width: "100%",
+                                    justifyContent: "space-between",
+                                },
+                            ]}
+                        >
                             <View style={styles.row_space_between}>
                                 <View style={styles.iconContainer}>
                                     <FontAwesome name="google" size={32} />
@@ -154,10 +298,14 @@ const ProfileDetails = () => {
                 </View>
 
                 {/* Modal */}
-                <SelectGenderModal visible={modalGenderVisible} onClose={hideSelectGenderModal} onSelectGender={handleSelectGender} />
-                <SelectDateModal 
-                    visible={modalSelectDateVisible} 
-                    onClose={hideSelectDateModal} 
+                <SelectGenderModal
+                    visible={modalGenderVisible}
+                    onClose={hideSelectGenderModal}
+                    onSelectGender={handleSelectGender}
+                />
+                <SelectDateModal
+                    visible={modalSelectDateVisible}
+                    onClose={hideSelectDateModal}
                     onSelectOption={handleSelectDateOption}
                 />
             </ScrollView>
@@ -219,7 +367,7 @@ const styles = StyleSheet.create({
         fontFamily: "Lato-Regular",
         fontSize: 16,
         fontWeight: "400",
-        lineHeight: 30
+        lineHeight: 30,
     },
     label: {
         color: "black",
@@ -227,4 +375,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProfileDetails;
+export default EditProfileDetails;

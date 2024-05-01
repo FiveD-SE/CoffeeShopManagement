@@ -32,3 +32,8 @@ export const removeFromFavorites = (itemId) => ({
 	type: types.REMOVE_FROM_FAVORITES,
 	payload: itemId,
 });
+
+export const savePhoneNumber = (phoneNumber) => ({
+    type: types.SAVE_PHONE_NUMBER,
+    payload: phoneNumber,
+});

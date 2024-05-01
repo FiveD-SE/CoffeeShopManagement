@@ -15,9 +15,13 @@ import BrownButton from "../../components/Client/Button/BrownButton";
 import BrownTextButton from "../../components/Client/Button/BrownTextButton";
 import { signIn } from "../../api";
 import UserNavigator from "../../navigation/UserNavigator";
-import { signInSuccess } from "../../redux/actions/userActions";
+import {
+    signInSuccess,
+    savePhoneNumber,
+} from "../../redux/actions/userActions";
 import { connect } from "react-redux";
-import { saveToken } from "../../services/authServices";
+import { getToken, saveToken } from "../../services/authServices";
+import store from "../../redux/store/store";
 
 const GOOGLE_ICON_SOURCE = require("../../assets/google.png");
 const BACKGROUND_SOURCE = require("../../assets/background.png");
@@ -58,13 +62,18 @@ const SignInScreen = () => {
 
     const handleSignIn = () => {
         signIn(phoneNumber, password).then((data) => {
+            console.log(data);
             if (isChecked) {
-                saveToken(data.user.role);
+                saveToken(JSON.stringify(data.user));
+                store.dispatch(savePhoneNumber(data.user.phoneNumber));
+
+                console.log("Store: " + store.getState().auth.phoneNumber);
                 setRole(data.user.role);
-                signInSuccess(data.user);
             } else {
+                store.dispatch(savePhoneNumber(data.user.phoneNumber));
+
+                console.log("Store: " + store.getState().auth.phoneNumber);
                 setRole(data.user.role);
-                signInSuccess(data.user);
             }
         });
     };

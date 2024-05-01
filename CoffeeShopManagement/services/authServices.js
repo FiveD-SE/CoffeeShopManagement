@@ -2,20 +2,21 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const saveToken = async (token) => {
     try {
-        await AsyncStorage.setItem("token", token);
-        console.log("Token saved successfully:", token);
+        const tokenString = JSON.stringify(token);
+        await AsyncStorage.setItem("token", tokenString);
+        console.log("Token saved successfully:", tokenString);
     } catch (error) {
         console.error("Failed to save token:", error);
         throw error;
     }
 };
 
-// Lấy token từ AsyncStorage
 const getToken = async () => {
     try {
         const tokenString = await AsyncStorage.getItem("token");
         if (tokenString) {
-            return tokenString;
+            console.log("Token retrieved successfully:", tokenString);
+            return JSON.parse(tokenString);
         } else {
             console.log("No token found in storage");
             return null;
@@ -26,7 +27,6 @@ const getToken = async () => {
     }
 };
 
-// Xóa token từ AsyncStorage
 const removeToken = async () => {
     try {
         await AsyncStorage.removeItem("token");
