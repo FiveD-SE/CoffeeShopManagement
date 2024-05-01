@@ -1,26 +1,18 @@
-import {
-    View,
-    Text,
-    StyleSheet,
-    Image,
-    Pressable,
-    ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
 import InputField from "../../components/Client/InputField";
 import PasswordInput from "../../components/Client/PasswordInput";
 import BrownButton from "../../components/Client/Button/BrownButton";
 import BrownTextButton from "../../components/Client/Button/BrownTextButton";
 import { signIn } from "../../api";
-import UserNavigator from "../../navigation/UserNavigator";
 import {
     signInSuccess,
     savePhoneNumber,
 } from "../../redux/actions/userActions";
 import { connect } from "react-redux";
-import { getToken, saveToken } from "../../services/authServices";
+import { saveToken } from "../../services/authServices";
 import store from "../../redux/store/store";
 
 const GOOGLE_ICON_SOURCE = require("../../assets/google.png");

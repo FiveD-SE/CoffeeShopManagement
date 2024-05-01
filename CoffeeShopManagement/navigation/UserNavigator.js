@@ -1,6 +1,5 @@
 import React from "react";
-import { Text, StyleSheet, Platform } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { StyleSheet, Platform } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
@@ -117,6 +116,28 @@ const HomeStack = () => (
             component={UserCartScreen}
             options={{
                 headerTitle: "Giỏ hàng",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="UserOrderInformationScreen"
+            component={UserOrderInformationScreen}
+            options={{
+                headerTitle: "Đơn hàng",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="UserOrderConfirmationScreen"
+            component={UserOrderConfirmationScreen}
+            options={{
+                headerTitle: "Xác nhận đơn hàng",
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
