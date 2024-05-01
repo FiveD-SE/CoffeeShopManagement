@@ -56,7 +56,7 @@ const startServer = () => {
     app.patch("/users/:phoneNumber", async (req, res) => {
         try {
             const { phoneNumber } = req.params;
-            const { firstName, lastName, gender, dateOfBirth, email, password } = req.body;
+            const { firstName, lastName, gender, dateOfBirth, email } = req.body;
             
             const user = await User.findOne({ phoneNumber });
     
@@ -79,11 +79,7 @@ const startServer = () => {
             if (email) {
                 user.email = email;
             }
-            if (password) {
-                const hashedPassword = await bcrypt.hash(password, 10);
-                user.password = hashedPassword;
-            }
-    
+            
             await user.save();
     
             res.status(200).json({ message: "User updated successfully", user });
@@ -92,6 +88,8 @@ const startServer = () => {
             res.status(500).json({ message: "Internal server error" });
         }
     });    
+
+    
     
 
     app.post("/login", async (req, res) => {
