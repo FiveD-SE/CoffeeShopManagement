@@ -30,12 +30,11 @@ const startServer = () => {
         phoneNumber: { type: String, required: true, unique: true },
         password: { type: String, required: true },
         role: { type: String, default: "user" },
-        gender: { type: String }, 
-        dateOfBirth: { type: Date }, 
-        email: { type: String } 
+        gender: { type: String },
+        dateOfBirth: { type: Date },
+        email: { type: String },
     });
-    
-    
+
     const User = mongoose.model("User", userSchema);
 
     app.get("/users/:phoneNumber", async (req, res) => {
@@ -56,14 +55,15 @@ const startServer = () => {
     app.patch("/users/:phoneNumber", async (req, res) => {
         try {
             const { phoneNumber } = req.params;
-            const { firstName, lastName, gender, dateOfBirth, email } = req.body;
-            
+            const { firstName, lastName, gender, dateOfBirth, email } =
+                req.body;
+
             const user = await User.findOne({ phoneNumber });
-    
+
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
             }
-    
+
             if (firstName) {
                 user.firstName = firstName;
             }
@@ -79,41 +79,40 @@ const startServer = () => {
             if (email) {
                 user.email = email;
             }
-            
+
             await user.save();
-    
-            res.status(200).json({ message: "User updated successfully", user });
+
+            res.status(200).json({
+                message: "User updated successfully",
+                user,
+            });
         } catch (error) {
             console.error("Error updating user", error);
             res.status(500).json({ message: "Internal server error" });
         }
-    });    
-
+    });
 
     // Change password
     app.patch("/users/:phoneNumber", async (req, res) => {
         try {
-          const { phoneNumber } = req.params;
-          const { newPassword } = req.body;
-      
-          const user = await User.findOne({ phoneNumber });
-      
-          if (!user) {
-            return res.status(404).json({ message: "User not found" });
-          }
-      
-          user.password = await bcrypt.hash(newPassword, 10);
-          await user.save();
-      
-          res.status(200).json({ message: "Password updated successfully" });
-        } catch (error) {
-          console.error("Error updating user", error);
-          res.status(500).json({ message: "Internal server error" });
-        }
-      });
+            const { phoneNumber } = req.params;
+            const { newPassword } = req.body;
 
-    
-    
+            const user = await User.findOne({ phoneNumber });
+
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+
+            user.password = await bcrypt.hash(newPassword, 10);
+            await user.save();
+
+            res.status(200).json({ message: "Password updated successfully" });
+        } catch (error) {
+            console.error("Error updating user", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    });
 
     app.post("/login", async (req, res) => {
         try {
@@ -141,11 +140,11 @@ const startServer = () => {
     app.post("/signup", async (req, res) => {
         try {
             const { fullName, phoneNumber, password, role } = req.body;
-    
+
             const fullNameArray = fullName.split(" ");
             const firstName = fullNameArray[fullNameArray.length - 1];
             const lastName = fullNameArray.slice(0, -1).join(" ");
-    
+
             const existingUser = await User.findOne({ phoneNumber });
             if (existingUser) {
                 return res.status(409).json({ message: "User already exists" });
@@ -165,9 +164,27 @@ const startServer = () => {
             res.status(500).json({ message: "Internal server error" });
         }
     });
-    
 
-    
+    // products
+    const productSchema = new mongoose.Schema({
+        name: { type: String, required: true },
+        price: { type: Number, required: true },
+        description: { type: String },
+    });
+
+    const Product = mongoose.model("Product", productSchema);
+
+    app.post("/products", async (req, res) => {
+        try {
+            const { name, price, description } = req.body;
+            const newProduct = new Product({ name, price, description });
+            await newProduct.save();
+            res.status(201).json({ message: "Product created successfully" });
+        } catch (error) {
+            console.error("Error creating product", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    });
 
     app.use((err, req, res, next) => {
         console.error(err.stack);
