@@ -1,21 +1,23 @@
 import React from "react";
-import { StyleSheet, Pressable } from "react-native";
+import { StyleSheet } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 
 export default function SelectPositionButton() {
-    const navigation = useNavigation();
     return (
-        <Pressable style={styles.addButton} onPress={() => navigation.navigate('UserMapScreen')} >
+        <TouchableOpacity
+            style={styles.addButton}
+            onPress={{}}
+        >
             <FontAwesome name="map-marker" size={24} color="#D22F27" />
-        </Pressable>
+        </TouchableOpacity>
     );
 }
 
 const styles = StyleSheet.create({
     addButton: {
         backgroundColor: "#fff",
-        width: "60%",
+        width: "100%",
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 10,

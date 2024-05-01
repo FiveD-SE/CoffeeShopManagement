@@ -33,7 +33,6 @@ import FeedbackAndHelp from "../screens/Client/Other/UserFeedbackAndHelpScreen";
 import ChangePassword from "../screens/Client/ChangePassword";
 import SignInScreen from "../screens/Client/SignInScreen";
 import UserOrderConfirmationScreen from "../screens/Client/PlaceOrder/UserOrderConfirmationScreen";
-import UserMapScreen from "../screens/Client/Other/UserMapScreen";
 
 import Promotions from "../screens/Client/Coupons/UserCouponScreen";
 import MembershipTier from "../screens/Client/Coupons/UserMembershipTierScreen";
@@ -312,17 +311,6 @@ const OtherStack = () => (
                 },
                 headerLeft: () => <HeaderBackButton />,
                 headerRight: () => <SelectPositionButton />
-            }}
-        />
-        <Stack.Screen
-            name="UserMapScreen"
-            component={UserMapScreen}
-            options={{
-                headerTitle: () => <SearchBar />,
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
             }}
         />
     </Stack.Navigator>
