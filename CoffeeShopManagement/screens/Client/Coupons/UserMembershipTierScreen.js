@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable, SafeAreaView } from 'react-native';
+import Bronze from './Membership Type/Bronze';
+import Silver from './Membership Type/Silver';
+import Gold from './Membership Type/Gold';
+import Diamond from './Membership Type/Diamond';
+
 
 export default function MembershipTier() {
   const [selectedTier, setSelectedTier] = useState(null);
@@ -13,15 +18,13 @@ export default function MembershipTier() {
       case 'Mới':
         return
       case 'Đồng':
-        return <Text style={styles.contentText}>Nội dung cho thành viên đồng</Text>;
+        return <Bronze />
       case 'Bạc':
-        return <Text style={styles.contentText}>Nội dung cho thành viên bạc</Text>;
+        return <Silver />
       case 'Vàng':
-        return <Text style={styles.contentText}>Nội dung cho thành viên vàng</Text>;
+        return <Gold />
       case 'Kim Cương':
-        return <Text style={styles.contentText}>Nội dung cho thành viên kim cương</Text>;
-      default:
-        return <Text style={styles.contentText}>Vui lòng chọn một loại thành viên</Text>;
+        return <Diamond />
     }
   };
 
@@ -102,9 +105,10 @@ const styles = StyleSheet.create({
     borderBottomColor: '#006C5E',
   },
   tierText: {
+    fontFamily: 'Lato-Bold',
     fontSize: 16,
-    fontWeight: '500',
     color: '#000',
+    lineHeight: 18
   },
   selectedText: {
     color: '#006C5E',
@@ -116,8 +120,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   contentText: {
+    fontFamily: 'Lato-Bold',
     fontSize: 18,
-    fontWeight: 'bold',
     color: '#333',
+    lineHeight: 20
   },
 });
