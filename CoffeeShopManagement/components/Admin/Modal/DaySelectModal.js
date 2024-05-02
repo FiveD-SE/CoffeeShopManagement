@@ -1,9 +1,13 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image } from 'react-native'
+import { View, Text, Modal, StyleSheet, ScrollView, TextInput, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
+import DatePicker from 'react-native-modern-datepicker'
 
 const DaySelectModal = ({ visible, onClose }) => {
-
+  const [date, setDate] = useState(false)
+  function handleChanged(propDate) {
+    setDate(propDate)
+  }
   return (
     <Modal
       animationType="fade"
@@ -14,9 +18,13 @@ const DaySelectModal = ({ visible, onClose }) => {
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <ModalHeader title="Chọn thời hạn sử dụng" onClose={onClose} />
-          <View style={styles.main}>
-    
-          </View>
+          <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
+            <DatePicker
+              mode='calendar'
+              selected={date}
+              onDateChange={handleChanged}
+            />
+          </ScrollView>
         </View>
       </View>
     </Modal >
@@ -36,7 +44,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F7FA",
     borderRadius: 20,
     width: "90%",
-    height: "40%",
+    height: "55%",
   },
   imageContainer: {
     marginTop: "5%",
