@@ -267,7 +267,13 @@ const HomeStack = () => (
         <Stack.Screen
             name="Notification"
             component={AdminNotification}
-            options={{ headerShown: false }}
+            options={{
+                headerTitle: "Thông báo",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
         />
         <Stack.Screen
             name="Revenue"

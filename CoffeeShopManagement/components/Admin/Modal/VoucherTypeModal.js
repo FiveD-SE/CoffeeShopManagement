@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F7FA",
     borderRadius: 20,
     width: "90%",
-    height: "42%",
+    height: "43%",
   },
   imageContainer: {
     marginTop: "5%",
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   title: {
     marginTop: "3%",
     color: "#3a3a3a",
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "500",
   },
   buttonContainer: {
