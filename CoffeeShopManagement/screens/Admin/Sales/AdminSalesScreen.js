@@ -1,7 +1,6 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native'
 import React, { useRef, useState, useEffect, useMemo } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import AddNewItemButton from '../../../components/Admin/Button/AddNewItemButton';
 import AddNewVoucherButton from '../../../components/Admin/Button/AddNewVoucherButton';
 import Section from '../../../components/Client/Section';
@@ -72,36 +71,34 @@ const AdminSalesScreen = () => {
         ));
     };
     return (
-        <BottomSheetModalProvider>
-            <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-                <View style={styles.sectionContainer}>
-                    <Section
-                        title="Danh sách sản phẩm"
-                        showSubtitle={true}
-                        subtitle="Xem tất cả"
-                        onPressSubtitle={goToItemListScreen}
-                    >
-                        <View style={{ marginTop: "3%" }}>
-                            {renderItemList()}
-                        </View>
-                    </Section>
-                </View>
-                <AddNewItemButton />
-                <View style={styles.sectionContainer}>
-                    <Section
-                        title="Danh sách khuyến mãi"
-                        showSubtitle={true}
-                        subtitle="Xem tất cả"
-                        onPressSubtitle={goToVoucherListScreen}
-                    >
-                        <View style={{ marginTop: "3%" }}>
-                            {renderVoucherList()}
-                        </View>
-                    </Section>
-                </View>
-                <AddNewVoucherButton />
-            </ScrollView>
-        </BottomSheetModalProvider>
+        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+            <View style={styles.sectionContainer}>
+                <Section
+                    title="Danh sách sản phẩm"
+                    showSubtitle={true}
+                    subtitle="Xem tất cả"
+                    onPressSubtitle={goToItemListScreen}
+                >
+                    <View style={{ marginTop: "3%" }}>
+                        {renderItemList()}
+                    </View>
+                </Section>
+            </View>
+            <AddNewItemButton />
+            <View style={styles.sectionContainer}>
+                <Section
+                    title="Danh sách khuyến mãi"
+                    showSubtitle={true}
+                    subtitle="Xem tất cả"
+                    onPressSubtitle={goToVoucherListScreen}
+                >
+                    <View style={{ marginTop: "3%" }}>
+                        {renderVoucherList()}
+                    </View>
+                </Section>
+            </View>
+            <AddNewVoucherButton />
+        </ScrollView>
     )
 }
 
