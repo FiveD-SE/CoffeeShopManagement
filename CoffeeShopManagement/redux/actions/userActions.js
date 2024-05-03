@@ -22,6 +22,12 @@ export const signInSuccess = (userData) => ({
 	type: types.SIGNIN_SUCCESS,
 	payload: userData,
 });
+
+export const getProductList = (productList) => ({
+	type: types.GET_PRODUCT_LIST,
+	payload: productList,
+});
+
 export const initializeFavorites = (favorites) => ({
 	type: types.INITIALIZE_FAVORITES,
 	payload: favorites,
