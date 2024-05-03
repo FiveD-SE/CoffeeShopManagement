@@ -93,25 +93,31 @@ const startServer = () => {
 
 	// Change password
 	app.patch("/users/:phoneNumber", async (req, res) => {
-		try {
-			const { phoneNumber } = req.params;
-			const { newPassword } = req.body;
+    try {
+        const { phoneNumber } = req.params;
+        const { oldPassword, newPassword } = req.body;
 
-			const user = await User.findOne({ phoneNumber });
+        const user = await User.findOne({ phoneNumber });
 
-			if (!user) {
-				return res.status(404).json({ message: "User not found" });
-			}
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
 
-			user.password = await bcrypt.hash(newPassword, 10);
-			await user.save();
+        const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isPasswordMatch) {
+            return res.status(400).json({ message: "Incorrect old password" });
+        }
 
-			res.status(200).json({ message: "Password updated successfully" });
-		} catch (error) {
-			console.error("Error updating user", error);
-			res.status(500).json({ message: "Internal server error" });
-		}
-	});
+        user.password = await bcrypt.hash(newPassword, 10);
+        await user.save();
+
+        res.status(200).json({ message: "Password updated successfully" });
+    } catch (error) {
+        console.error("Error updating user", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
 
 	app.post("/login", async (req, res) => {
 		try {
