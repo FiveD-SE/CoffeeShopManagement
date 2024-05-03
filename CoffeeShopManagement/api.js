@@ -112,3 +112,32 @@ export const signUp = async (fullName, phoneNumber, password) => {
         throw new Error("Lỗi khi đăng ký từ API");
     }
 };
+
+
+export const getVouchers = async () => {
+    try {
+        const response = await api.get(`/vouchers`);
+
+        if (response.status === 200) {
+            return response.data;
+        } else if (response.status === 404) {
+            console.log("Danh sách khuyến mãi không tồn tại");
+            return null;
+        } else if (response.status === 500) {
+            console.error("Lỗi API:", response.data);
+            throw new Error("Đã xảy ra lỗi server khi gửi yêu cầu đến API");
+        } else {
+            throw new Error("Đã xảy ra lỗi khi gửi yêu cầu đến API");
+        }
+    } catch (error) {
+        if (error.response && error.response.data) {
+            console.error(
+                "Lỗi khi lấy thông tin danh sách khuyến mãi:",
+                error.response.data.message
+            );
+        } else {
+            console.error("Lỗi khi lấy thông tin danh sách khuyến mãi:", error);
+        }
+        throw new Error("Lỗi khi lấy thông tin danh sách khuyến mãi từ API");
+    }
+};
