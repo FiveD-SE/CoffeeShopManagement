@@ -232,19 +232,63 @@ const startServer = () => {
 				(productId) => new mongoose.Types.ObjectId(productId)
 			);
 
-			const newFavorites = new Favorite({
-				userId: userId,
-				products: productIds,
-			});
+			let favorites = await Favorite.findOne({ userId });
 
-			await newFavorites.save();
+			if (!favorites) {
+				favorites = new Favorite({
+					userId: userId,
+					products: productIds,
+				});
+			} else {
+				favorites.products = [
+					...new Set([...favorites.products, ...productIds]),
+				];
+			}
+
+			await favorites.save();
 
 			res.status(201).json({
-				message: "Favorites added successfully",
-				favorites: newFavorites,
+				message: "Favorites updated successfully",
+				favorites: favorites,
 			});
 		} catch (error) {
-			console.error("Error adding favorites", error);
+			console.error("Error updating favorites", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
+	});
+
+	app.delete("/favorites/:userId/:productId", async (req, res) => {
+		try {
+			const { userId, productId } = req.params;
+
+			if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+				return res.status(400).json({ message: "Invalid userId" });
+			}
+
+			if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+				return res.status(400).json({ message: "Invalid productId" });
+			}
+
+			let favorites = await Favorite.findOne({ userId });
+
+			if (!favorites) {
+				return res
+					.status(404)
+					.json({ message: "Favorites not found for this user" });
+			}
+
+			favorites.products = favorites.products.filter(
+				(id) => id.toString() !== productId
+			);
+
+			await favorites.save();
+
+			res.status(200).json({
+				message: "Product removed from favorites successfully",
+				favorites: favorites,
+			});
+		} catch (error) {
+			console.error("Error removing product from favorites", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
 	});
@@ -376,20 +420,29 @@ const startServer = () => {
 		dateEnd: { type: Date, required: true },
 		type: { type: String, required: true },
 		point: { type: String, required: true },
-		object: { type: String, required: true},
-	})
+		object: { type: String, required: true },
+	});
 
 	const Voucher = mongoose.model("vouchers", voucherSchema);
 
 	app.post("/vouchers", async (req, res) => {
 		try {
-			const { title, description, dateStart, dateEnd, type, point, object } = req.body;
-			const newVoucher = new Voucher({ title, description, dateStart, dateEnd, type, point, object });
+			const { title, description, dateStart, dateEnd, type, point, object } =
+				req.body;
+			const newVoucher = new Voucher({
+				title,
+				description,
+				dateStart,
+				dateEnd,
+				type,
+				point,
+				object,
+			});
 			await newVoucher.save();
 			res.status(201).json({ message: "Voucher created successfully" });
 		} catch (error) {
 			console.error("Error creating voucher", error);
-			res.status(500).json({ message: "Internal server error" })
+			res.status(500).json({ message: "Internal server error" });
 		}
 	});
 
