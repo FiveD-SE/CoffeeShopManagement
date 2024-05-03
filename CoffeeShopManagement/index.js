@@ -55,14 +55,24 @@ const startServer = () => {
 	app.patch("/users/:phoneNumber", async (req, res) => {
 		try {
 			const { phoneNumber } = req.params;
-			const { firstName, lastName, gender, dateOfBirth, email } = req.body;
-
+			const { oldPassword, newPassword, firstName, lastName, gender, dateOfBirth, email } = req.body;
+	
 			const user = await User.findOne({ phoneNumber });
-
+	
 			if (!user) {
 				return res.status(404).json({ message: "User not found" });
 			}
-
+	
+			// Nếu có oldPassword trong body, thực hiện cập nhật mật khẩu
+			if (oldPassword && newPassword) {
+				const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+				if (!isPasswordMatch) {
+					return res.status(400).json({ message: "Incorrect old password" });
+				}
+				user.password = await bcrypt.hash(newPassword, 10);
+			}
+	
+			// Cập nhật các thông tin người dùng khác nếu được cung cấp
 			if (firstName) {
 				user.firstName = firstName;
 			}
@@ -78,46 +88,16 @@ const startServer = () => {
 			if (email) {
 				user.email = email;
 			}
-
+	
 			await user.save();
-
-			res.status(200).json({
-				message: "User updated successfully",
-				user,
-			});
+	
+			res.status(200).json({ message: "User updated successfully", user });
 		} catch (error) {
 			console.error("Error updating user", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
 	});
-
-	// Change password
-	app.patch("/users/password/:phoneNumber", async (req, res) => {
-    try {
-        const { phoneNumber } = req.params;
-        const { oldPassword, newPassword } = req.body;
-
-        const user = await User.findOne({ phoneNumber });
-
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        const isPasswordMatch = await bcrypt.compare(oldPassword, user.password);
-        if (!isPasswordMatch) {
-            return res.status(400).json({ message: "Incorrect old password" });
-        }
-
-        user.password = await bcrypt.hash(newPassword, 10);
-        await user.save();
-
-        res.status(200).json({ message: "Password updated successfully" });
-    } catch (error) {
-        console.error("Error updating user", error);
-        res.status(500).json({ message: "Internal server error" });
-    }
-});
-
+	
 
 	app.post("/login", async (req, res) => {
 		try {
