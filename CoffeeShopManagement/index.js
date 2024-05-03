@@ -92,7 +92,7 @@ const startServer = () => {
 	});
 
 	// Change password
-	app.patch("/users/:phoneNumber", async (req, res) => {
+	app.patch("/users/password/:phoneNumber", async (req, res) => {
     try {
         const { phoneNumber } = req.params;
         const { oldPassword, newPassword } = req.body;
