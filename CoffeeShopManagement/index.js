@@ -370,7 +370,7 @@ const startServer = () => {
 	//Voucher
 
 	const voucherSchema = new mongoose.Schema({
-		name: { type: String, required: true },
+		title: { type: String, required: true },
 		description: { type: String, required: true },
 		dateStart: { type: Date, required: true },
 		dateEnd: { type: Date, required: true },
@@ -383,8 +383,8 @@ const startServer = () => {
 
 	app.post("/vouchers", async (req, res) => {
 		try {
-			const { name, description, dateStart, dateEnd, type, point, object } = req.body;
-			const newVoucher = new Voucher({ name, description, dateStart, dateEnd, type, point, object });
+			const { title, description, dateStart, dateEnd, type, point, object } = req.body;
+			const newVoucher = new Voucher({ title, description, dateStart, dateEnd, type, point, object });
 			await newVoucher.save();
 			res.status(201).json({ message: "Voucher created successfully" });
 		} catch (error) {
