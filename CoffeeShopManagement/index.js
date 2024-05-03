@@ -342,6 +342,48 @@ const startServer = () => {
 		}
 	});
 
+	//Voucher
+
+	const voucherSchema = new mongoose.Schema({
+		name: { type: String, required: true },
+		description: { type: String, required: true },
+		dateStart: { type: Date, required: true },
+		dateEnd: { type: Date, required: true },
+		type: { type: String, required: true },
+		point: { type: String, required: true },
+		object: { type: String, required: true},
+	})
+
+	const Voucher = mongoose.model("vouchers", voucherSchema);
+
+	app.post("/vouchers", async (req, res) => {
+		try {
+			const { name, description, dateStart, dateEnd, type, point, object } = req.body;
+			const newVoucher = new Voucher({ name, description, dateStart, dateEnd, type, point, object });
+			await newVoucher.save();
+			res.status(201).json({ message: "Voucher created successfully" });
+		} catch (error) {
+			console.error("Error creating voucher", error);
+			res.status(500).json({ message: "Internal server error" })
+		}
+	});
+
+	app.get("/vouchers", async (req, res) => {
+		try {
+			const voucher = await Voucher.find();
+			if (voucher.length > 0) {
+				res.status(200).json({ voucher });
+			} else {
+				res.status(404).json({ message: "Voucher not found" });
+			}
+		} catch (error) {
+			console.error("Error retrieving voucher", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
+	});
+
+	//
+
 	app.use((err, req, res, next) => {
 		console.error(err.stack);
 		res.status(500).json({ message: "Something broke!" });
