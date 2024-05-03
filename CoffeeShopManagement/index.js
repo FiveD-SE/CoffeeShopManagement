@@ -320,6 +320,44 @@ const startServer = () => {
 		}
 	});
 
+	// branches
+	const branchSchema = new mongoose.Schema({
+		name: { type: String, required: true },
+		contact: { type: String, required: true },
+		email: { type: String, required: true },
+		location: { type: String, required: true },
+		openingHour: { type: String, required: true },
+		closingHour: { type: String, required: true },
+	});
+
+	const Branch = mongoose.model("branches", branchSchema);
+
+	app.post("/branches", async (req, res) => {
+		try {
+			const { name, contact, email, location, openingHour, closingHour } = req.body;
+			const newBranch = new Branch({ name, contact, email, location, openingHour, closingHour });
+			await newBranch.save();
+			res.status(201).json({ message: "Branch created successfully" });
+		} catch (error) {
+			console.error("Error creating branch", error);
+			res.status(500).json({ message: "Internal server error" })
+		}
+	});
+
+	app.get("/branches", async (req, res) => {
+		try {
+			const branches = await Branch.find();
+			if (branches.length > 0) {
+				res.status(200).json({ branches });
+			} else {
+				res.status(404).json({ message: "Branches not found" });
+			}
+		} catch (error) {
+			console.error("Error retrieving branches", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
+	});
+
 	app.use((err, req, res, next) => {
 		console.error(err.stack);
 		res.status(500).json({ message: "Something broke!" });
