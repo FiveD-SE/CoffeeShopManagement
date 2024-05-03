@@ -203,10 +203,10 @@ const startServer = () => {
 			}
 
 			const favorites = await Favorite.findOne({ userId }).populate("products");
-			if (favorites) {
+			if (favorites !== null) {
 				res.status(200).json({ favorites });
 			} else {
-				res.status(404).json({ message: "Favorites not found for this user" });
+				res.status(200).json({ favorites: null });
 			}
 		} catch (error) {
 			console.error("Error getting favorites", error);
@@ -260,11 +260,15 @@ const startServer = () => {
 		state: { type: String, required: true },
 		products: [
 			{
-				_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
-				amount: { type: Number, required: true }
-			}
-		]
-	})
+				_id: {
+					type: mongoose.Schema.Types.ObjectId,
+					ref: "Product",
+					required: true,
+				},
+				amount: { type: Number, required: true },
+			},
+		],
+	});
 
 	const Order = mongoose.model("Order", orderSchema);
 
@@ -274,7 +278,7 @@ const startServer = () => {
 			if (orders) {
 				res.status(200).json({ orders });
 			} else {
-				res.status(404).json({ message: "Orders not found" })
+				res.status(404).json({ message: "Orders not found" });
 			}
 		} catch (error) {
 			console.error("Error");
@@ -284,18 +288,31 @@ const startServer = () => {
 
 	app.post("/orders", async (req, res) => {
 		try {
-			const { time, orderType, customer, sdt, orderState, state, products } = req.body;
+			const { time, orderType, customer, sdt, orderState, state, products } =
+				req.body;
 
-			const productsExist = await Promise.all(products.map(async (product) => {
-				const productExist = await Product.findById(product._id);
-				return productExist;
-			}));
+			const productsExist = await Promise.all(
+				products.map(async (product) => {
+					const productExist = await Product.findById(product._id);
+					return productExist;
+				})
+			);
 
-			if (productsExist.some(product => !product)) {
-				return res.status(404).json({ message: "One or more products not found" });
+			if (productsExist.some((product) => !product)) {
+				return res
+					.status(404)
+					.json({ message: "One or more products not found" });
 			}
 
-			const newOrder = new Order({ time, orderType, customer, sdt, orderState, state, products });
+			const newOrder = new Order({
+				time,
+				orderType,
+				customer,
+				sdt,
+				orderState,
+				state,
+				products,
+			});
 			await newOrder.save();
 			res.status(201).json({ message: "Order created successfully", newOrder });
 		} catch (error) {
@@ -318,13 +335,21 @@ const startServer = () => {
 
 	app.post("/branches", async (req, res) => {
 		try {
-			const { name, contact, email, location, openingHour, closingHour } = req.body;
-			const newBranch = new Branch({ name, contact, email, location, openingHour, closingHour });
+			const { name, contact, email, location, openingHour, closingHour } =
+				req.body;
+			const newBranch = new Branch({
+				name,
+				contact,
+				email,
+				location,
+				openingHour,
+				closingHour,
+			});
 			await newBranch.save();
 			res.status(201).json({ message: "Branch created successfully" });
 		} catch (error) {
 			console.error("Error creating branch", error);
-			res.status(500).json({ message: "Internal server error" })
+			res.status(500).json({ message: "Internal server error" });
 		}
 	});
 
