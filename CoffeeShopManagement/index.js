@@ -249,6 +249,24 @@ const startServer = () => {
 		}
 	});
 
+	// oders
+
+	const Order = mongoose.model("Order", orderSchema);
+
+	app.get("/orders", async (req, res) => {
+		try {
+			const orders = await Order.find().populate('products.amount');
+			if (orders) {
+				res.status(200).json({ orders });
+			} else {
+				res.status(404).json({ message: "Orders not found" })
+			}
+		} catch (error) {
+			console.error("Error");
+			res.status(500).json({ message: "Internal server error" });
+		}
+	});
+
 	app.use((err, req, res, next) => {
 		console.error(err.stack);
 		res.status(500).json({ message: "Something broke!" });
