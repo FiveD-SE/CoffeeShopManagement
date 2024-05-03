@@ -260,7 +260,7 @@ const startServer = () => {
 		state: { type: String, required: true },
 		products: [
 			{
-				product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+				_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
 				amount: { type: Number, required: true }
 			}
 		]
@@ -286,35 +286,19 @@ const startServer = () => {
 		try {
 			const { time, orderType, customer, sdt, orderState, state, products } = req.body;
 
-			// Kiểm tra xem mỗi _id trong products có tồn tại trong schema Product không
 			const productsExist = await Promise.all(products.map(async (product) => {
 				const productExist = await Product.findById(product._id);
 				return productExist;
 			}));
 
-			// Nếu có bất kỳ sản phẩm nào không tồn tại, trả về lỗi
 			if (productsExist.some(product => !product)) {
 				return res.status(404).json({ message: "One or more products not found" });
 			}
 
-			// Tạo một đối tượng mới đại diện cho đơn hàng
-			const newOrder = new Order({
-				time,
-				orderType,
-				customer,
-				sdt,
-				orderState,
-				state,
-				products
-			});
-
-			// Lưu đơn hàng mới vào cơ sở dữ liệu
+			const newOrder = new Order({ time, orderType, customer, sdt, orderState, state, products });
 			await newOrder.save();
-
-			// Trả về mã trạng thái 201 (Created) và thông báo cho client
 			res.status(201).json({ message: "Order created successfully", newOrder });
 		} catch (error) {
-			// Nếu có lỗi, ghi log và trả về mã trạng thái 500 (Internal Server Error) cho client
 			console.error("Error creating order", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
