@@ -4,10 +4,6 @@ import Icon from 'react-native-vector-icons/Entypo'
 import OrderCard2 from '../../components/Staff/OrderCard2';
 
 export default function CashierHistoryScreen() {
-    const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
-
-    const [filteredData, setFilteredData] = useState([]);
-
     const DATA = [
         {
             orderId: '#12345',
@@ -46,6 +42,10 @@ export default function CashierHistoryScreen() {
             state: 'Chờ xác nhận'
         },
     ]
+    const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
+
+    const [filteredData, setFilteredData] = useState(DATA);
+
     const handleFilter = (index) => {
         console.log(index);
         console.log(selectionButtons[index]);
