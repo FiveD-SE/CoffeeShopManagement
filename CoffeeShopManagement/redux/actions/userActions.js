@@ -22,18 +22,36 @@ export const signInSuccess = (userData) => ({
 	type: types.SIGNIN_SUCCESS,
 	payload: userData,
 });
-
-export const addToFavorites = (item) => ({
+export const initializeFavorites = (favorites) => ({
+	type: types.INITIALIZE_FAVORITES,
+	payload: favorites,
+});
+export const addToFavorites = (userId, itemId) => ({
 	type: types.ADD_TO_FAVORITES,
-	payload: item,
+	payload: { userId, itemId },
 });
 
-export const removeFromFavorites = (itemId) => ({
+export const removeFromFavorites = (userId, itemId) => ({
 	type: types.REMOVE_FROM_FAVORITES,
-	payload: itemId,
+	payload: { userId, itemId },
+});
+
+export const addToFavoritesSuccess = (favorites) => ({
+	type: types.ADD_TO_FAVORITES_SUCCESS,
+	payload: favorites,
+});
+
+export const removeFromFavoritesSuccess = (favorites) => ({
+	type: types.REMOVE_FROM_FAVORITES_SUCCESS,
+	payload: favorites,
 });
 
 export const savePhoneNumber = (phoneNumber) => ({
-    type: types.SAVE_PHONE_NUMBER,
-    payload: phoneNumber,
+	type: types.SAVE_PHONE_NUMBER,
+	payload: phoneNumber,
+});
+
+export const saveUserData = (userData) => ({
+	type: types.SAVE_USER_DATA,
+	payload: userData,
 });

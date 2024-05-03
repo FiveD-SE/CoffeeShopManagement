@@ -16,7 +16,7 @@ const UserFavoriteItemScreen = ({ favoriteList }) => {
 	const renderFavoriteItemList = ({ item }) => (
 		<ProductCardVertical
 			id={item.id}
-			title={item.title}
+			name={item.itemId}
 			price={item.price?.toLocaleString("vi-VN", {
 				style: "currency",
 				currency: "VND",
