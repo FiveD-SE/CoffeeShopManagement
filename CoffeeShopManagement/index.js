@@ -52,7 +52,7 @@ const startServer = () => {
 		}
 	});
 
-	app.patch("/users/:phoneNumber", async (req, res) => {
+	app.put("/users/:phoneNumber", async (req, res) => {
 		try {
 			const { phoneNumber } = req.params;
 			const { oldPassword, newPassword, firstName, lastName, gender, dateOfBirth, email } = req.body;
