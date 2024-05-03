@@ -2,6 +2,7 @@ import * as types from "../constants/userConstants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { addToFavorites, removeFromFavorites } from "../../api";
 const initialState = {
+	productList: [],
 	favoriteList: [],
 };
 
@@ -29,6 +30,11 @@ const userReducer = (state = initialState, action) => {
 			return {
 				...state,
 				favoriteList: updatedFavoritesRemove,
+			};
+		case types.GET_PRODUCT_LIST:
+			return {
+				...state,
+				productList: action.payload,
 			};
 		case types.INITIALIZE_FAVORITES:
 			return {

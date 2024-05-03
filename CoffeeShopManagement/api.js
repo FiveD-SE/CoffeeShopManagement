@@ -113,6 +113,34 @@ export const signUp = async (fullName, phoneNumber, password) => {
 	}
 };
 
+export const getProductsList = async () => {
+	try {
+		const response = await api.get("/products");
+
+		if (response.status === 200) {
+			return response.data;
+		} else if (response.status === 404) {
+			console.log("Danh sách sản phẩm không tồn tại");
+			return null;
+		} else if (response.status === 500) {
+			console.error("Lỗi API:", response.data);
+			throw new Error("Đã xảy ra lỗi server khi gửi yêu cầu đến API");
+		} else {
+			throw new Error("Đã xảy ra lỗi khi gửi yêu cầu đến API");
+		}
+	} catch (error) {
+		if (error.response && error.response.data) {
+			console.error(
+				"Lỗi khi lấy thông tin danh sách sản phẩm:",
+				error.response.data.message
+			);
+		} else {
+			console.error("Lỗi khi lấy thông tin danh sách sản phẩm:", error);
+		}
+		throw new Error("Lỗi khi lấy thông tin danh sách sản phẩm từ API");
+	}
+};
+
 export const getFavoritesListById = async (userId) => {
 	try {
 		const response = await api.get(`/favorites/${userId}`);
@@ -160,31 +188,30 @@ export const removeFromFavorites = async (userId, productId) => {
 	}
 };
 
-
 export const getVouchers = async () => {
-    try {
-        const response = await api.get(`/vouchers`);
+	try {
+		const response = await api.get(`/vouchers`);
 
-        if (response.status === 200) {
-            return response.data;
-        } else if (response.status === 404) {
-            console.log("Danh sách khuyến mãi không tồn tại");
-            return null;
-        } else if (response.status === 500) {
-            console.error("Lỗi API:", response.data);
-            throw new Error("Đã xảy ra lỗi server khi gửi yêu cầu đến API");
-        } else {
-            throw new Error("Đã xảy ra lỗi khi gửi yêu cầu đến API");
-        }
-    } catch (error) {
-        if (error.response && error.response.data) {
-            console.error(
-                "Lỗi khi lấy thông tin danh sách khuyến mãi:",
-                error.response.data.message
-            );
-        } else {
-            console.error("Lỗi khi lấy thông tin danh sách khuyến mãi:", error);
-        }
-        throw new Error("Lỗi khi lấy thông tin danh sách khuyến mãi từ API");
-    }
+		if (response.status === 200) {
+			return response.data;
+		} else if (response.status === 404) {
+			console.log("Danh sách khuyến mãi không tồn tại");
+			return null;
+		} else if (response.status === 500) {
+			console.error("Lỗi API:", response.data);
+			throw new Error("Đã xảy ra lỗi server khi gửi yêu cầu đến API");
+		} else {
+			throw new Error("Đã xảy ra lỗi khi gửi yêu cầu đến API");
+		}
+	} catch (error) {
+		if (error.response && error.response.data) {
+			console.error(
+				"Lỗi khi lấy thông tin danh sách khuyến mãi:",
+				error.response.data.message
+			);
+		} else {
+			console.error("Lỗi khi lấy thông tin danh sách khuyến mãi:", error);
+		}
+		throw new Error("Lỗi khi lấy thông tin danh sách khuyến mãi từ API");
+	}
 };

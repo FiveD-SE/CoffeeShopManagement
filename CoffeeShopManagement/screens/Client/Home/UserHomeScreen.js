@@ -10,8 +10,7 @@ import Section from "../../../components/Client/Section";
 import RecentlyViewedItem from "../../../components/Client/Card/RecentlyViewedItem";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
-import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
-
+import { useSelector } from "react-redux";
 const USER_IMAGE_SOURCE = require("../../../assets/google.png");
 
 const COFFEE_BEANS_ICONS = require("../../../assets/coffee-beans.png");
@@ -24,7 +23,7 @@ const UserHomeScreen = () => {
 	const [selectedIndex, setSelectedIndex] = useState(null);
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
-
+	const productList = useSelector((state) => state.user.productList);
 	const handleCategoryPress = (index) => setSelectedIndex(index);
 	const handleOpenItemDetail = (item) => {
 		setSelectedItem(item);
@@ -68,7 +67,7 @@ const UserHomeScreen = () => {
 		));
 
 	const renderBestSellerItemList = () =>
-		PRODUCT_ITEM_LIST.map((item, index) => (
+		productList.map((item, index) => (
 			<BestSellerItem
 				key={index}
 				id={item.id}
@@ -84,7 +83,7 @@ const UserHomeScreen = () => {
 		));
 
 	const renderRecentlyViewedItemList = () =>
-		PRODUCT_ITEM_LIST.map((item, index) => (
+		productList.map((item, index) => (
 			<RecentlyViewedItem
 				key={index}
 				title={item.title}
