@@ -31,7 +31,7 @@ const AdminAddVoucherScreen = () => {
     setVoucherTypeModalVisible(false);
   };
 
-  const showDaySelectModal= () => {
+  const showDaySelectModal = () => {
     setDaySelectModalVisible(true);
   };
 
@@ -45,7 +45,7 @@ const AdminAddVoucherScreen = () => {
         <SquareWithBorder text="Ảnh khuyến mãi" />
       </View>
       <View style={styles.inputContainer}>
-      <Text style={styles.header}>Thông tin khuyến mãi</Text>
+        <Text style={styles.header}>Thông tin khuyến mãi</Text>
         <View style={styles.inputBox}>
           <TextInput
             style={styles.input}
@@ -70,14 +70,14 @@ const AdminAddVoucherScreen = () => {
             </View>
             <MaterialIcons name="keyboard-arrow-right" size={30} color="#CCCCCC" />
           </TouchableOpacity>
-          <RankUserModal visible={rankUserModalVisible} onClose={hideRankUserModal}/>
+          <RankUserModal visible={rankUserModalVisible} onClose={hideRankUserModal} />
         </View>
 
         <View style={{ flexDirection: "row" }}>
-          <View style={[styles.inputBox, { flex: 1, marginRight:"2%" }]}>
+          <View style={[styles.inputBox, { flex: 1, marginRight: "2%" }]}>
             <Text style={styles.input}>Chiết khấu</Text>
           </View>
-          <View style={[styles.inputBox, { flex: 1, marginLeft:"2%" }]}>
+          <View style={[styles.inputBox, { flex: 1, marginLeft: "2%" }]}>
             <TextInput
               style={styles.input}
               placeholder="Giá tiền sản phẩm"
@@ -94,6 +94,14 @@ const AdminAddVoucherScreen = () => {
           </TouchableOpacity>
           <DaySelectModal visible={daySelectModalVisible} onClose={hideDaySelectModal} />
         </View>
+      </View>
+      <View style={[styles.inputBox, { marginTop: "0%", marginBottom: "3%" }]}>
+        <TextInput
+          style={[styles.input, { flex: 1, textAlignVertical: "top" }]}
+          placeholder="Mô tả khuyến mãi"
+          multiline={true}
+          numberOfLines={4}
+        />
       </View>
       <ColorButton color="#00A188" text="Thêm mới" textColor="#ffffff" />
     </ScrollView >

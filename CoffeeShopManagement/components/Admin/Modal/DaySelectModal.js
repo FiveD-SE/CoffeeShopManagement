@@ -4,7 +4,7 @@ import ModalHeader from '../../Client/Header/ModalHeader'
 import DatePicker from 'react-native-modern-datepicker'
 
 const DaySelectModal = ({ visible, onClose }) => {
-  const [date, setDate] = useState(false)
+  const [date, setDate] = useState(null);
   function handleChanged(propDate) {
     setDate(propDate)
   }

@@ -96,7 +96,15 @@ const AdminEditVoucherScreen = () => {
           <DaySelectModal visible={daySelectModalVisible} onClose={hideDaySelectModal} />
         </View>
       </View>
-      <DeleteButton/>
+      <View style={[styles.inputBox, { marginTop: "0%", marginBottom:"3%" }]}>
+        <TextInput
+          style={[styles.input, { flex: 1, textAlignVertical: "top" }]}
+          placeholder="Mô tả khuyến mãi"
+          multiline={true}
+          numberOfLines={4}
+        />
+      </View>
+      <DeleteButton />
       <ColorButton color="#00A188" text="Hoàn thành" textColor="#ffffff" />
     </ScrollView >
   )

@@ -5,7 +5,7 @@ import NotificationCard from '../../../components/Staff/NotificationCard';
 
 export default function AdminNotification() {
 
-    const [selectedButtonIndex, setSelectedButtonIndex] = useState(null);
+    const [selectedButtonIndex, setSelectedButtonIndex] = useState(1);
 
     useEffect(() => {
         const randomIndex = Math.floor(Math.random() * 3);
@@ -103,11 +103,12 @@ export default function AdminNotification() {
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        marginHorizontal: "3%",
+        marginTop: "2%",
+        marginBottom: "3%"
     },
     filter: {
-        paddingHorizontal: '5%',
-        paddingTop: "5%",
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: "center"
@@ -135,10 +136,12 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     listNotification: {
-        padding: '5%'
+        marginTop: '5%',
+        flex: 1
     },
     allNotificationText: {
         fontSize: 18,
         fontWeight: '600',
+        marginBottom: "2%"
     }
 })

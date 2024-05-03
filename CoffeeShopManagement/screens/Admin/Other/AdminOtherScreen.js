@@ -229,7 +229,7 @@ export default function AdminOtherScreen() {
                         <Text style={styles.sectionTitle}>Quản lý</Text>
 
                         <View style={styles.sectionBody}>
-                            <View style={[styles.rowWrapper, styles.rowFirst]}>
+                            <View style={[styles.rowWrapper, styles.rowFirst, styles.rowLast]}>
                                 <TouchableOpacity
                                     onPress={() => {
                                         navigation.navigate("BranchManagement");
@@ -244,33 +244,6 @@ export default function AdminOtherScreen() {
                                     />
                                     <Text style={styles.rowLabel}>
                                         Chi nhánh
-                                    </Text>
-
-                                    <View style={styles.rowSpacer} />
-
-                                    <FeatherIcon
-                                        color="#bcbcbc"
-                                        name="chevron-right"
-                                        size={19}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-
-                            <View style={[styles.rowWrapper, styles.rowLast]}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        // handle onPress
-                                    }}
-                                    style={styles.row}
-                                >
-                                    <Ionicons
-                                        color="#006C5E"
-                                        name="cube"
-                                        size={19}
-                                        marginRight={10}
-                                    />
-                                    <Text style={styles.rowLabel}>
-                                        Kho hàng
                                     </Text>
 
                                     <View style={styles.rowSpacer} />
