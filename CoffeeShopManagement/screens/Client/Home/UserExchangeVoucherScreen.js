@@ -1,33 +1,31 @@
 import { StyleSheet, Text, View, Image, FlatList } from "react-native";
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 import Section from "../../../components/Client/Section";
 import VoucherCard from "../../../components/Client/Card/VoucherCard";
+import { getVouchers } from "../../../api";
 
 const UserExchangeVoucherScreen = () => {
-  const voucherItemList = [
-    {
-      title: "Mua 1 tặng 1 + Freeship",
-      point: 300,
-      imageSource: require("../../../assets/voucher.jpeg"),
-    },
-    {
-      title: "Mua 1 tặng 1 + Freeship",
-      point: 300,
-      imageSource: require("../../../assets/voucher.jpeg"),
-    },
-    {
-      title: "Mua 1 tặng 1 + Freeship",
-      point: 300,
-      imageSource: require("../../../assets/voucher.jpeg"),
-    },
-  ];
+  const [voucherItemList, setVoucherItemList] = useState([]);
+
+  useEffect(() => {
+    const fetchVouchers = async () => {
+      try {
+        const vouchers = await getVouchers();
+        setVoucherItemList(vouchers);
+        console.log("Vouchers:", vouchers);
+      } catch (error) {
+        console.error("Error fetching vouchers:", error);
+      }
+    };
+
+    fetchVouchers();
+  }, []);
 
   const renderVoucherItem = ({ item }) => (
     <VoucherCard
-      title={item.title}
-      point={item.point}
-      imageSource={item.imageSource}
+      title={item?.title}
+      point={item?.point}
+      imageSource={{}}
     />
   );
 
