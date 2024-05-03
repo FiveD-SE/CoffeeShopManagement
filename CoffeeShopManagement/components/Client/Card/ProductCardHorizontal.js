@@ -1,14 +1,14 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome6";
-const ProductCardHorizontal = ({ id, title, price, imageSource, onPress }) => {
+const ProductCardHorizontal = ({ id, name, price, imageSource, onPress }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.imageContainer}>
 				<Image style={styles.image} source={imageSource} resizeMode="cover" />
 			</View>
 			<View style={styles.main}>
-				<Text style={styles.title}>{title}</Text>
+				<Text style={styles.name}>{name}</Text>
 				<Text style={styles.price}>{price}</Text>
 			</View>
 			<Pressable style={styles.addButton} onPress={onPress}>
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingHorizontal: "5%",
 	},
-	title: {
+	name: {
 		width: "100%",
 		color: "#3a3a3a",
 		fontSize: 16,

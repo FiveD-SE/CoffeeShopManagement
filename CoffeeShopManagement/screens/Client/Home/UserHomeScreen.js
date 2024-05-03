@@ -71,7 +71,8 @@ const UserHomeScreen = () => {
 		PRODUCT_ITEM_LIST.map((item, index) => (
 			<BestSellerItem
 				key={index}
-				title={item.title}
+				id={item.id}
+				name={item.name}
 				price={item.price.toLocaleString("vi-VN", {
 					style: "currency",
 					currency: "VND",

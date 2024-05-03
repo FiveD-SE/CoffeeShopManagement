@@ -2,7 +2,8 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 
 const BestSellerItem = ({
-	title,
+	id,
+	name,
 	price,
 	imageSource,
 	description,
@@ -23,8 +24,8 @@ const BestSellerItem = ({
 				<Image style={styles.image} source={imageSource} resizeMode="cover" />
 			</View>
 			<View style={styles.main}>
-				<Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
-					{title}
+				<Text style={styles.name} numberOfLines={2} ellipsizeMode="tail">
+					{name}
 				</Text>
 				<Text style={styles.price}>{price}</Text>
 			</View>
@@ -57,7 +58,7 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		marginTop: "5%",
 	},
-	title: {
+	name: {
 		width: "100%",
 		color: "#3a3a3a",
 		fontSize: 16,
