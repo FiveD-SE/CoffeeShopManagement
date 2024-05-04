@@ -66,12 +66,12 @@ const ItemDetailBottomSheet = ({
 			if (!localIsFavorite) {
 				await addToFavorites(
 					store.getState().auth.userData._id,
-					selectedItem.id
+					selectedItem._id
 				);
 			} else {
 				await removeFromFavorites(
 					store.getState().auth.userData._id,
-					selectedItem.id
+					selectedItem._id
 				);
 			}
 			setLocalIsFavorite(!localIsFavorite);
@@ -174,7 +174,7 @@ const ItemDetailBottomSheet = ({
 
 	useEffect(() => {
 		setLocalIsFavorite(isFavorite);
-	}, [isFavorite]);
+	}, [selectedItem]);
 
 	return (
 		<BottomSheet
@@ -354,11 +354,9 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state, { selectedItem }) => {
-	console.log(state.user);
+	const favoriteIds = state.user.favoriteList.map((id) => id);
 	return {
-		isFavorite: state.user.favoriteList.some(
-			(item) => item.itemId === selectedItem?.id
-		),
+		isFavorite: favoriteIds.some((item) => item._id === selectedItem?._id),
 	};
 };
 

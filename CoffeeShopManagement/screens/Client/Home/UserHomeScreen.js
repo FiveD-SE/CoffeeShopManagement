@@ -67,25 +67,28 @@ const UserHomeScreen = () => {
 		));
 
 	const renderBestSellerItemList = () =>
-		productList.map((item, index) => (
-			<BestSellerItem
-				key={index}
-				id={item.id}
-				name={item.name}
-				price={item.price.toLocaleString("vi-VN", {
-					style: "currency",
-					currency: "VND",
-				})}
-				imageSource={item.imageSource}
-				onPress={() => handleOpenItemDetail(item)}
-				horizontal={true}
-			/>
-		));
+		productList.map((item, index) => {
+			return (
+				<BestSellerItem
+					key={index}
+					id={item._id}
+					name={item.name}
+					price={item.price.toLocaleString("vi-VN", {
+						style: "currency",
+						currency: "VND",
+					})}
+					imageSource={item.imageSource}
+					onPress={() => handleOpenItemDetail(item)}
+					horizontal={true}
+				/>
+			);
+		});
 
 	const renderRecentlyViewedItemList = () =>
 		productList.map((item, index) => (
 			<RecentlyViewedItem
 				key={index}
+				id={item._id}
 				title={item.title}
 				price={item.price.toLocaleString("vi-VN", {
 					style: "currency",

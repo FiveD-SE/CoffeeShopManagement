@@ -144,8 +144,8 @@ export const getProductsList = async () => {
 export const getFavoritesListById = async (userId) => {
 	try {
 		const response = await api.get(`/favorites/${userId}`);
-		console.log(response.data);
 		if (response.status === 200) {
+			console.log("GET FAVORITE LIST BY USER ID SUCCESSFULLY");
 			return response.data.favorites;
 		} else if (response.status === 404) {
 			throw new Error("Favorites not found for this user");
@@ -164,6 +164,7 @@ export const addToFavorites = async (userId, products) => {
 	try {
 		const response = await api.post("/favorites", { userId, products });
 		if (response.status === 201) {
+			console.log("ADD TO FAVORITES LIST SUCCESSFULLY");
 			return response.data.favorites;
 		} else {
 			throw new Error("Failed to add product to favorites");
@@ -178,6 +179,7 @@ export const removeFromFavorites = async (userId, productId) => {
 	try {
 		const response = await api.delete(`/favorites/${userId}/${productId}`);
 		if (response.status === 200) {
+			console.log("REMOVE FROM FAVORITES LIST SUCCESSFULLY");
 			return response.data.favorites;
 		} else {
 			throw new Error("Failed to remove product from favorites");

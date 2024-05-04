@@ -42,19 +42,6 @@ export default function App() {
 		getRole();
 	}, []);
 
-	useEffect(() => {
-		const fetchProductList = async () => {
-			try {
-				const productList = await getProductsList();
-				store.dispatch(getProductList(productList));
-			} catch (error) {
-				console.error("Error fetching product list:", error);
-			}
-		};
-
-		fetchProductList();
-	}, []);
-
 	if (loaded) {
 		return (
 			<Provider store={store}>

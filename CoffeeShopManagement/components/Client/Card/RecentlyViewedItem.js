@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React from "react";
 
-const RecentlyViewedItem = ({ title, price, imageSource, onPress }) => {
+const RecentlyViewedItem = ({ id, title, price, imageSource, onPress }) => {
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
 			<View style={styles.imageContainer}>
