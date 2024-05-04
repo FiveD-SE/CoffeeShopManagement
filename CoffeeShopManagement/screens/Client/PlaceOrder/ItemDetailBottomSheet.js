@@ -22,8 +22,8 @@ import {
 	addToFavorites,
 	removeFromFavorites,
 } from "../../../redux/actions/userActions";
-
 import store from "../../../redux/store/store";
+import { checkProductInFavorites } from "../../../api";
 const ItemDetailBottomSheet = ({
 	bottomSheetRef,
 	snapPoints,
@@ -42,7 +42,7 @@ const ItemDetailBottomSheet = ({
 
 	const [selectedToppings, setSelectedToppings] = useState([]);
 
-	const [localIsFavorite, setLocalIsFavorite] = useState(isFavorite);
+	const [localIsFavorite, setLocalIsFavorite] = useState(null);
 
 	const sizeItemList = [
 		{ size: "S", price: 59000 },
@@ -64,17 +64,23 @@ const ItemDetailBottomSheet = ({
 	const toggleFavorite = async () => {
 		try {
 			if (!localIsFavorite) {
-				await addToFavorites(
+				const response = await addToFavorites(
 					store.getState().auth.userData._id,
 					selectedItem._id
 				);
+				if (response.type === "ADD_TO_FAVORITES") {
+					setLocalIsFavorite(true);
+				}
 			} else {
-				await removeFromFavorites(
+				const response = await removeFromFavorites(
 					store.getState().auth.userData._id,
 					selectedItem._id
 				);
+
+				if (response.type === "REMOVE_FROM_FAVORITES") {
+					setLocalIsFavorite(false);
+				}
 			}
-			setLocalIsFavorite(!localIsFavorite);
 		} catch (error) {
 			console.error("Error toggling favorite:", error);
 		}
@@ -173,7 +179,24 @@ const ItemDetailBottomSheet = ({
 	}, []);
 
 	useEffect(() => {
-		setLocalIsFavorite(isFavorite);
+		if (selectedItem) {
+			const fetchData = async () => {
+				try {
+					const response = await checkProductInFavorites(
+						store.getState().auth.userData._id,
+						selectedItem._id
+					);
+					if (response) {
+						setLocalIsFavorite(true);
+					} else {
+						setLocalIsFavorite(false);
+					}
+				} catch (error) {
+					console.error("Error checking favorite status:", error);
+				}
+			};
+			fetchData();
+		}
 	}, [selectedItem]);
 
 	return (
@@ -353,10 +376,18 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = (state, { selectedItem }) => {
+const mapStateToProps = (state, ownProps) => {
+	const { selectedItem } = ownProps; // Lấy selectedItem từ props
+
+	if (!selectedItem) {
+		return {
+			isFavorite: false, // Trả về false nếu không có selectedItem
+		};
+	}
+
 	const favoriteIds = state.user.favoriteList.map((id) => id);
 	return {
-		isFavorite: favoriteIds.some((item) => item._id === selectedItem?._id),
+		isFavorite: favoriteIds.some((item) => item._id === selectedItem._id),
 	};
 };
 

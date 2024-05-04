@@ -63,20 +63,17 @@ const SignInScreen = () => {
 				store.dispatch(savePhoneNumber(data.user.phoneNumber));
 				store.dispatch(saveUserData(data.user));
 				console.log("Store: " + store.getState().auth.phoneNumber);
-				console.log("Store: " + store.getState().auth.userData);
 				setRole(data.user.role);
 			} else {
 				store.dispatch(savePhoneNumber(data.user.phoneNumber));
 				store.dispatch(saveUserData(data.user));
 				console.log("Store: " + store.getState().auth.phoneNumber);
-				console.log("Store: " + store.getState().auth.userData._id);
 				setRole(data.user.role);
 			}
 			getFavoritesListById(data.user._id)
 				.then((favorites) => {
 					if (favorites !== null) {
 						const { products } = favorites;
-						console.log("SIGN IN SCREEN FAVORITES: ", products);
 						store.dispatch(initializeFavorites(products));
 					} else {
 						console.log("Favorites is null");
