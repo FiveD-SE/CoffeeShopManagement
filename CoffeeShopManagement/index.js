@@ -240,6 +240,49 @@ const startServer = () => {
 		}
 	});
 
+	app.get("/favorites/:userId/products/:productId", async (req, res) => {
+		try {
+			const { userId, productId } = req.params;
+
+			if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+				return res.status(400).json({ message: "Invalid userId" });
+			}
+
+			if (!productId || !mongoose.Types.ObjectId.isValid(productId)) {
+				return res.status(400).json({ message: "Invalid productId" });
+			}
+
+			const favorites = await Favorite.findOne({ userId });
+
+			if (!favorites) {
+				return res
+					.status(404)
+					.json({ message: "Favorites not found for this user" });
+			}
+
+			const product = favorites.products.find(
+				(id) => id.toString() === productId
+			);
+
+			if (!product) {
+				return res
+					.status(404)
+					.json({ message: "Product not found in favorites" });
+			}
+
+			const productDetails = await Product.findById(productId);
+
+			if (!productDetails) {
+				return res.status(404).json({ message: "Product details not found" });
+			}
+
+			res.status(200).json(productDetails);
+		} catch (error) {
+			console.error("Error finding product in favorites", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
+	});
+
 	app.post("/favorites", async (req, res) => {
 		try {
 			const { userId, products } = req.body;
