@@ -37,6 +37,53 @@ const startServer = () => {
 
 	const User = mongoose.model("User", userSchema);
 
+
+	app.post("/login", async (req, res) => {
+		try {
+			const { phoneNumber, password } = req.body;
+			const user = await User.findOne({ phoneNumber });
+			if (user) {
+				const validPassword = await bcrypt.compare(password, user.password);
+				if (validPassword) {
+					res.status(200).json({ user });
+				} else {
+					res.status(401).json({ message: "Unauthorized" });
+				}
+			} else {
+				res.status(401).json({ message: "Unauthorized" });
+			}
+		} catch (error) {
+			console.error("Error logging in", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
+	});
+
+	app.post("/signin", async (req, res) => {
+		try {
+		  const { fullName, phoneNumber, password } = req.body;
+		  const fullNameArray = fullName.split(" ");
+		  const firstName = fullNameArray[fullNameArray.length - 1];
+		  const lastName = fullNameArray.slice(0, -1).join(" ");
+		  const existingUser = await User.findOne({ phoneNumber });
+		  if (existingUser) {
+			return res.status(409).json({ message: "User already exists" });
+		  }
+		  const hashedPassword = await bcrypt.hash(password, 10);
+		  const newUser = new User({
+			firstName,
+			lastName,
+			phoneNumber,
+			password: hashedPassword,
+			role: "user",
+		  });
+		  await newUser.save();
+		  res.status(201).json({ message: "User created successfully" });
+		} catch (error) {
+		  console.error("Error signing up", error);
+		  res.status(500).json({ message: "Internal server error" });
+		}
+	  });
+
 	app.get("/users/:phoneNumber", async (req, res) => {
 		try {
 			const { phoneNumber } = req.params;
@@ -141,52 +188,8 @@ const startServer = () => {
 	});
 
 
-	app.post("/login", async (req, res) => {
-		try {
-			const { phoneNumber, password } = req.body;
-			const user = await User.findOne({ phoneNumber });
-			if (user) {
-				const validPassword = await bcrypt.compare(password, user.password);
-				if (validPassword) {
-					res.status(200).json({ user });
-				} else {
-					res.status(401).json({ message: "Unauthorized" });
-				}
-			} else {
-				res.status(401).json({ message: "Unauthorized" });
-			}
-		} catch (error) {
-			console.error("Error logging in", error);
-			res.status(500).json({ message: "Internal server error" });
-		}
-	});
+	
 
-	app.post("/users", async (req, res) => {
-		try {
-		  const { fullName, phoneNumber, password } = req.body;
-		  const fullNameArray = fullName.split(" ");
-		  const firstName = fullNameArray[fullNameArray.length - 1];
-		  const lastName = fullNameArray.slice(0, -1).join(" ");
-		  const existingUser = await User.findOne({ phoneNumber });
-		  if (existingUser) {
-			return res.status(409).json({ message: "User already exists" });
-		  }
-		  const hashedPassword = await bcrypt.hash(password, 10);
-		  const newUser = new User({
-			firstName,
-			lastName,
-			phoneNumber,
-			password: hashedPassword,
-			role: "user",
-		  });
-		  await newUser.save();
-		  res.status(201).json({ message: "User created successfully" });
-		} catch (error) {
-		  console.error("Error signing up", error);
-		  res.status(500).json({ message: "Internal server error" });
-		}
-	  });
-	  
 	// products
 	const productSchema = new mongoose.Schema({
 		name: { type: String, required: true },
