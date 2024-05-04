@@ -6,12 +6,13 @@ import InputField from "../../components/Client/InputField";
 import PasswordInput from "../../components/Client/PasswordInput";
 import BrownButton from "../../components/Client/Button/BrownButton";
 import BrownTextButton from "../../components/Client/Button/BrownTextButton";
-import { signIn, getFavoritesListById } from "../../api";
+import { signIn, getFavoritesListById, getProductsList } from "../../api";
 import {
 	signInSuccess,
 	savePhoneNumber,
 	saveUserData,
 	initializeFavorites,
+	getProductList,
 } from "../../redux/actions/userActions";
 import { connect } from "react-redux";
 import { saveToken } from "../../services/authServices";
@@ -73,13 +74,10 @@ const SignInScreen = () => {
 			}
 			getFavoritesListById(data.user._id)
 				.then((favorites) => {
-					console.log("Favorites:", favorites);
 					if (favorites !== null) {
 						const { products } = favorites;
+						console.log("SIGN IN SCREEN FAVORITES: ", products);
 						store.dispatch(initializeFavorites(products));
-						console.log(
-							"Store: " + JSON.stringify(store.getState().user.favoriteList)
-						);
 					} else {
 						console.log("Favorites is null");
 					}
@@ -87,6 +85,16 @@ const SignInScreen = () => {
 				.catch((error) => {
 					console.error("Error fetching favorites:", error);
 				});
+			const fetchProductList = async () => {
+				try {
+					const productList = await getProductsList();
+					store.dispatch(getProductList(productList));
+				} catch (error) {
+					console.error("Error fetching product list:", error);
+				}
+			};
+
+			fetchProductList();
 		});
 	};
 

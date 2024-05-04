@@ -1,29 +1,52 @@
 import { StyleSheet, FlatList, View } from "react-native";
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React, {
+	useState,
+	useMemo,
+	useRef,
+	useEffect,
+	useCallback,
+} from "react";
 import ProductCardVertical from "../../../components/Client/Card/ProductCardHorizontal";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { connect } from "react-redux";
-const UserFavoriteItemScreen = ({ favoriteList }) => {
+import { getFavoritesListById } from "../../../api";
+const UserFavoriteItemScreen = ({ userId, productList }) => {
 	const [selectedItem, setSelectedItem] = useState(null);
-
+	const [favoritesList, setFavoritesList] = useState([]);
 	const itemDetailSnapPoints = useMemo(() => ["85%"]);
 
 	const itemDetailBottomSheetRef = useRef(null);
 
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+	console.log("productList:", productList);
+	const getProductInfo = useCallback((itemId) => {
+		return productList.find((product) => product._id === itemId);
+	}, []);
 
-	const renderFavoriteItemList = ({ item }) => (
-		<ProductCardVertical
-			id={item.id}
-			name={item.itemId}
-			price={item.price?.toLocaleString("vi-VN", {
-				style: "currency",
-				currency: "VND",
-			})}
-			imageSource={item.imageSource}
-			onPress={() => handleOpenItemDetail(item)}
-		/>
+	const renderFavoriteItemList = useCallback(
+		({ item }) => {
+			console.log("item: ", item);
+			const productInfo = getProductInfo(item._id);
+			console.log("productInfo: ", productInfo);
+			if (productInfo) {
+				return (
+					<ProductCardVertical
+						id={productInfo.id}
+						name={productInfo.name}
+						price={productInfo.price?.toLocaleString("vi-VN", {
+							style: "currency",
+							currency: "VND",
+						})}
+						imageSource={productInfo.imageSource}
+						onPress={() => handleOpenItemDetail(productInfo)}
+					/>
+				);
+			} else {
+				return null;
+			}
+		},
+		[getProductInfo, handleOpenItemDetail]
 	);
 
 	const handleOpenItemDetail = (item) => {
@@ -39,12 +62,21 @@ const UserFavoriteItemScreen = ({ favoriteList }) => {
 		}
 	}, [isItemDetailVisible]);
 
+	useEffect(() => {
+		getFavoritesListById(userId)
+			.then((favorites) => {
+				setFavoritesList(favorites.products);
+			})
+			.catch((error) => {
+				console.error("Error fetching favorites:", error);
+			});
+	}, []);
 	return (
 		<IsOpenProvider>
 			<View style={styles.container}>
 				<View style={styles.favoriteItemListContainer}>
 					<FlatList
-						data={favoriteList}
+						data={favoritesList}
 						renderItem={renderFavoriteItemList}
 						showsVerticalScrollIndicator={false}
 					/>
@@ -76,7 +108,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-	favoriteList: state.user.favoriteList,
+	productList: state.user.productList,
+	userId: state.auth.userData._id,
 });
 
 export default connect(mapStateToProps)(UserFavoriteItemScreen);
