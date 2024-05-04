@@ -160,6 +160,29 @@ export const getFavoritesListById = async (userId) => {
 	}
 };
 
+export const checkProductInFavorites = async (userId, productId) => {
+	try {
+		const response = await api.get(
+			`/favorites/${userId}/products/${productId}`
+		);
+		if (response.status === 200) {
+			console.log("Product exists in favorites");
+			return true;
+		} else {
+			console.log("Product does not exist in favorites");
+			return false;
+		}
+	} catch (error) {
+		if (error.response && error.response.status === 404) {
+			console.log("Product does not exist in favorites");
+			return false;
+		} else {
+			console.error("Error checking product in favorites:", error);
+			return null;
+		}
+	}
+};
+
 export const addToFavorites = async (userId, products) => {
 	try {
 		const response = await api.post("/favorites", { userId, products });

@@ -19,16 +19,13 @@ const UserFavoriteItemScreen = ({ userId, productList }) => {
 	const itemDetailBottomSheetRef = useRef(null);
 
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
-	console.log("productList:", productList);
 	const getProductInfo = useCallback((itemId) => {
 		return productList.find((product) => product._id === itemId);
 	}, []);
 
 	const renderFavoriteItemList = useCallback(
 		({ item }) => {
-			console.log("item: ", item);
 			const productInfo = getProductInfo(item._id);
-			console.log("productInfo: ", productInfo);
 			if (productInfo) {
 				return (
 					<ProductCardVertical
