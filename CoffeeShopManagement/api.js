@@ -240,3 +240,31 @@ export const getVouchers = async () => {
 		throw new Error("Lỗi khi lấy thông tin danh sách khuyến mãi từ API");
 	}
 };
+
+export const getOrderData = async () => {
+	try {
+		const response = await api.get(`/orders`);
+
+		if (response.status === 200) {
+			return response.data;
+		} else if (response.status === 404) {
+			console.log("Đơn hàng không tồn tại");
+			return null;
+		} else if (response.status === 500) {
+			console.error("Lỗi API:", response.data);
+			throw new Error("Đã xảy ra lỗi server khi gửi yêu cầu đến API");
+		} else {
+			throw new Error("Đã xảy ra lỗi khi gửi yêu cầu đến API");
+		}
+	} catch (error) {
+		if (error.response && error.response.data) {
+			console.error(
+				"Lỗi khi lấy thông tin đơn hàng:",
+				error.response.data.message
+			);
+		} else {
+			console.error("Lỗi khi lấy thông tin đơn hàng:", error);
+		}
+		throw new Error("Lỗi khi lấy thông tin đơn hàng từ API");
+	}
+};
