@@ -30,7 +30,6 @@ const ItemDetailBottomSheet = ({
 	selectedItem,
 	isVisible,
 	onClose,
-	isFavorite,
 	addToFavorites,
 	removeFromFavorites,
 }) => {
@@ -376,27 +375,9 @@ const styles = StyleSheet.create({
 	},
 });
 
-const mapStateToProps = (state, ownProps) => {
-	const { selectedItem } = ownProps; // Lấy selectedItem từ props
-
-	if (!selectedItem) {
-		return {
-			isFavorite: false, // Trả về false nếu không có selectedItem
-		};
-	}
-
-	const favoriteIds = state.user.favoriteList.map((id) => id);
-	return {
-		isFavorite: favoriteIds.some((item) => item._id === selectedItem._id),
-	};
-};
-
 const mapDispatchToProps = {
 	addToFavorites,
 	removeFromFavorites,
 };
 
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(ItemDetailBottomSheet);
+export default connect(null, mapDispatchToProps)(ItemDetailBottomSheet);
