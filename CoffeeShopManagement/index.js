@@ -33,7 +33,7 @@ const startServer = () => {
 		gender: { type: String },
 		dateOfBirth: { type: Date },
 		email: { type: String },
-	});
+	  });
 
 	const User = mongoose.model("User", userSchema);
 
@@ -140,6 +140,7 @@ const startServer = () => {
 		}
 	});
 
+
 	app.post("/login", async (req, res) => {
 		try {
 			const { phoneNumber, password } = req.body;
@@ -160,34 +161,32 @@ const startServer = () => {
 		}
 	});
 
-	app.post("/signup", async (req, res) => {
+	app.post("/users", async (req, res) => {
 		try {
-			const { fullName, phoneNumber, password, role } = req.body;
-
-			const fullNameArray = fullName.split(" ");
-			const firstName = fullNameArray[fullNameArray.length - 1];
-			const lastName = fullNameArray.slice(0, -1).join(" ");
-
-			const existingUser = await User.findOne({ phoneNumber });
-			if (existingUser) {
-				return res.status(409).json({ message: "User already exists" });
-			}
-			const hashedPassword = await bcrypt.hash(password, 10);
-			const newUser = new User({
-				firstName,
-				lastName,
-				phoneNumber,
-				password: hashedPassword,
-				role: role || "user",
-			});
-			await newUser.save();
-			res.status(201).json({ message: "User created successfully" });
+		  const { fullName, phoneNumber, password } = req.body;
+		  const fullNameArray = fullName.split(" ");
+		  const firstName = fullNameArray[fullNameArray.length - 1];
+		  const lastName = fullNameArray.slice(0, -1).join(" ");
+		  const existingUser = await User.findOne({ phoneNumber });
+		  if (existingUser) {
+			return res.status(409).json({ message: "User already exists" });
+		  }
+		  const hashedPassword = await bcrypt.hash(password, 10);
+		  const newUser = new User({
+			firstName,
+			lastName,
+			phoneNumber,
+			password: hashedPassword,
+			role: "user",
+		  });
+		  await newUser.save();
+		  res.status(201).json({ message: "User created successfully" });
 		} catch (error) {
-			console.error("Error signing up", error);
-			res.status(500).json({ message: "Internal server error" });
+		  console.error("Error signing up", error);
+		  res.status(500).json({ message: "Internal server error" });
 		}
-	});
-
+	  });
+	  
 	// products
 	const productSchema = new mongoose.Schema({
 		name: { type: String, required: true },
