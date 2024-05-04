@@ -1,14 +1,19 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-
+import unidecode from "unidecode";
 import SearchBar from "../../../components/Client/SearchBar";
 import ProductCardHorizontal from "../../../components/Client/Card/ProductCardHorizontal";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
+import { getProductsList } from "../../../api";
 const UserSearchScreen = () => {
 	const navigation = useNavigation();
+
+	const [searchQuery, setSearchQuery] = useState("");
+
+	const [filteredProductList, setFilteredProductList] = useState([]);
 
 	const [selectedItem, setSelectedItem] = useState(null);
 
@@ -18,13 +23,25 @@ const UserSearchScreen = () => {
 
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 
+	const [productList, setProductList] = useState([]);
+
 	const handleGoBack = () => {
 		navigation.goBack();
 	};
 
+	const handleSearch = (text) => {
+		setSearchQuery(text);
+		const normalizedSearchText = unidecode(text.toLowerCase().trim());
+		const filteredList = productList.filter((item) =>
+			unidecode(item.name.toLowerCase()).includes(normalizedSearchText)
+		);
+		setFilteredProductList(filteredList);
+	};
+
 	const renderItemList = ({ item }) => (
 		<ProductCardHorizontal
-			title={item.title}
+			id={item._id}
+			name={item.name}
 			price={item.price.toLocaleString("vi-VN", {
 				style: "currency",
 				currency: "VND",
@@ -46,11 +63,24 @@ const UserSearchScreen = () => {
 		}
 	}, [isItemDetailVisible]);
 
+	useEffect(() => {
+		const fetchProductList = async () => {
+			try {
+				const productList = await getProductsList();
+				setProductList(productList);
+			} catch (error) {
+				console.error("Error fetching product list:", error);
+			}
+		};
+
+		fetchProductList();
+	}, []);
+
 	return (
 		<IsOpenProvider>
 			<View style={styles.container}>
 				<View style={styles.header}>
-					<SearchBar />
+					<SearchBar onChangeText={handleSearch} />
 					<Pressable
 						style={styles.cancelButton}
 						onPress={handleGoBack}
@@ -61,7 +91,7 @@ const UserSearchScreen = () => {
 				</View>
 				<View style={styles.main}>
 					<FlatList
-						data={PRODUCT_ITEM_LIST}
+						data={searchQuery ? filteredProductList : productList}
 						renderItem={renderItemList}
 						showsVerticalScrollIndicator={false}
 					/>
