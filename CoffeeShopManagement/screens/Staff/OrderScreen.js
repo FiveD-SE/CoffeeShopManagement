@@ -4,6 +4,7 @@ import ProductCard from '../../components/Staff/ProductCard';
 
 export default function OrderScreen({ route }) {
     const selectedProduct = route.params.selectedProduct;
+
     console.log(selectedProduct);
 
     return (
@@ -13,7 +14,7 @@ export default function OrderScreen({ route }) {
                     <Text style={styles.topText}>Sản phẩm</Text>
                     <FlatList
                         data={selectedProduct}
-                        keyExtractor={item => item.id}
+                        keyExtractor={item => item._id}
                         style={styles.productList}
                         renderItem={({ item }) => (
                             <ProductCard item={item} />

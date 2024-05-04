@@ -12,11 +12,12 @@ import OrderCard1 from "../../components/Staff/OrderCard1";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import { useState, useEffect } from "react";
 import store from "../../redux/store/store";
-import { getUserData } from "../../api";
+import { getOrderData, getUserData } from "../../api";
 
 export default function CashierHome() {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [userData, setUserData] = useState({});
+    const [orderData, setOrderData] = useState({});
 
     useEffect(() => {
         const fetchPhoneNumber = async () => {
@@ -50,18 +51,32 @@ export default function CashierHome() {
         }
     }, [phoneNumber]);
 
+    useEffect(() => {
+        const fetchOrderData = async () => {
+            try {
+                const orderData = await getOrderData();
+                console.log("Order data: ", orderData);
+                if (orderData) {
+                    setOrderData(orderData);
+                } else {
+                    console.log("Order not found");
+                }
+            } catch (error) {
+                console.log("Error fetching order data: ", error);
+            }
+        };
+        fetchOrderData();
+    }, []);
+
     const navigation = useNavigation();
     const handleNotification = () => {
         navigation.navigate("CashierNotification");
     };
-    const handleDetailOrder = (orderId) => {
-        console.log(orderId);
-        const selectedProduct = DATA[0].product.filter(
-            (product) => product.orderId === orderId
-        );
+    const handleDetailOrder = (products) => {
+        console.log(products);
 
         navigation.navigate("OrderScreen", {
-            selectedProduct: selectedProduct,
+            selectedProduct: products,
         });
     };
     const handleCashierInfor = () => {
@@ -161,14 +176,14 @@ export default function CashierHome() {
             </View>
             <Text style={styles.listOrderText}>Chờ xác nhận</Text>
             <FlatList
-                data={DATA[0].order}
+                data={orderData['orders']}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={(item) => item.orderId}
+                keyExtractor={(item) => item._id}
                 renderItem={({ item }) => (
                     <OrderCard1
                         item={item}
                         handleDetailOrder={() =>
-                            handleDetailOrder(item.orderId)
+                            handleDetailOrder(item.products)
                         }
                     />
                 )}
