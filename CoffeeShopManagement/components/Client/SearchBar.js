@@ -1,12 +1,16 @@
 import { StyleSheet, TextInput, View } from "react-native";
 import React from "react";
 
-const SearchBar = ({ onFocus }) => {
+const SearchBar = ({ onFocus, onChangeText }) => {
+	const handleTextChange = (text) => {
+		onChangeText(text);
+	};
 	return (
 		<View style={styles.inputContainer}>
 			<TextInput
 				style={styles.input}
 				placeholder="Tìm kiếm"
+				onChangeText={handleTextChange}
 				onFocus={onFocus}
 			/>
 		</View>

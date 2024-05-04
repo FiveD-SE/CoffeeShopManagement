@@ -13,12 +13,15 @@ import { connect } from "react-redux";
 import { getFavoritesListById } from "../../../api";
 const UserFavoriteItemScreen = ({ userId, productList }) => {
 	const [selectedItem, setSelectedItem] = useState(null);
+
 	const [favoritesList, setFavoritesList] = useState([]);
+
 	const itemDetailSnapPoints = useMemo(() => ["85%"]);
 
 	const itemDetailBottomSheetRef = useRef(null);
 
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+
 	const getProductInfo = useCallback((itemId) => {
 		return productList.find((product) => product._id === itemId);
 	}, []);
@@ -60,9 +63,10 @@ const UserFavoriteItemScreen = ({ userId, productList }) => {
 	}, [isItemDetailVisible]);
 
 	useEffect(() => {
+		console.log(userId);
 		getFavoritesListById(userId)
 			.then((favorites) => {
-				setFavoritesList(favorites.products);
+				setFavoritesList(favorites?.products);
 			})
 			.catch((error) => {
 				console.error("Error fetching favorites:", error);

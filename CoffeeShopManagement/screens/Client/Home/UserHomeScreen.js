@@ -11,6 +11,8 @@ import RecentlyViewedItem from "../../../components/Client/Card/RecentlyViewedIt
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { useSelector } from "react-redux";
+
+import { getProductsList } from "../../../api";
 const USER_IMAGE_SOURCE = require("../../../assets/google.png");
 
 const COFFEE_BEANS_ICONS = require("../../../assets/coffee-beans.png");
@@ -23,7 +25,7 @@ const UserHomeScreen = () => {
 	const [selectedIndex, setSelectedIndex] = useState(null);
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
-	const productList = useSelector((state) => state.user.productList);
+	const [productList, setProductList] = useState([]);
 	const handleCategoryPress = (index) => setSelectedIndex(index);
 	const handleOpenItemDetail = (item) => {
 		setSelectedItem(item);
@@ -104,6 +106,19 @@ const UserHomeScreen = () => {
 			itemDetailBottomSheetRef.current?.present();
 		}
 	}, [isItemDetailVisible]);
+
+	useEffect(() => {
+		const fetchProductList = async () => {
+			try {
+				const productList = await getProductsList();
+				setProductList(productList);
+			} catch (error) {
+				console.error("Error fetching product list:", error);
+			}
+		};
+
+		fetchProductList();
+	}, []);
 
 	return (
 		<IsOpenProvider>

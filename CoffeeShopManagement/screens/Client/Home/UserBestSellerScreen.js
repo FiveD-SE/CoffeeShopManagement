@@ -4,6 +4,7 @@ import BestSellerItem from "../../../components/Client/Card/BestSellerItem";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
+import { getProductsList } from "../../../api";
 const UserBestSellerScreen = () => {
 	const [selectedItem, setSelectedItem] = useState(null);
 
@@ -13,9 +14,12 @@ const UserBestSellerScreen = () => {
 
 	const itemDetailBottomSheetRef = useRef(null);
 
+	const [productList, setProductList] = useState([]);
+
 	const renderBestSellerItemList = ({ item }) => (
 		<BestSellerItem
-			title={item.title}
+			id={item._id}
+			name={item.name}
 			price={item.price.toLocaleString("vi-VN", {
 				style: "currency",
 				currency: "VND",
@@ -39,12 +43,25 @@ const UserBestSellerScreen = () => {
 		}
 	}, [isItemDetailVisible]);
 
+	useEffect(() => {
+		const fetchProductList = async () => {
+			try {
+				const productList = await getProductsList();
+				setProductList(productList);
+			} catch (error) {
+				console.error("Error fetching product list:", error);
+			}
+		};
+
+		fetchProductList();
+	}, []);
+
 	return (
 		<IsOpenProvider>
 			<View style={styles.container}>
 				<View style={styles.bestSellerItemListContainer}>
 					<FlatList
-						data={PRODUCT_ITEM_LIST}
+						data={productList}
 						renderItem={renderBestSellerItemList}
 						numColumns={2}
 						showsVerticalScrollIndicator={false}

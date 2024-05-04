@@ -70,18 +70,6 @@ const SignInScreen = () => {
 				console.log("Store: " + store.getState().auth.phoneNumber);
 				setRole(data.user.role);
 			}
-			getFavoritesListById(data.user._id)
-				.then((favorites) => {
-					if (favorites !== null) {
-						const { products } = favorites;
-						store.dispatch(initializeFavorites(products));
-					} else {
-						console.log("Favorites is null");
-					}
-				})
-				.catch((error) => {
-					console.error("Error fetching favorites:", error);
-				});
 			const fetchProductList = async () => {
 				try {
 					const productList = await getProductsList();

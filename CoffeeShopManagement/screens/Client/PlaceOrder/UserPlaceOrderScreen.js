@@ -20,21 +20,25 @@ import CategoryBottomSheet from "../../../components/Client/BottomSheet/Category
 import ItemDetailBottomSheet from "./ItemDetailBottomSheet";
 import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
+import { getProductsList } from "../../../api";
 
 const UserPlaceOrderScreen = () => {
 	const navigation = useNavigation();
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+
+	const [productList, setProductList] = useState([]);
 	const categorySnapPoints = useMemo(() => ["40%"], []);
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 	const itemDetailBottomSheetRef = useRef(null);
 	const categoryBottomSheetRef = useRef(null);
 
 	const renderMustTryList = () => {
-		return PRODUCT_ITEM_LIST.map((item, index) => (
+		return productList.map((item, index) => (
 			<ProductCardHorizontal
 				key={index}
-				title={item.title}
+				id={item._id}
+				name={item.name}
 				price={item.price.toLocaleString("vi-VN", {
 					style: "currency",
 					currency: "VND",
@@ -46,10 +50,10 @@ const UserPlaceOrderScreen = () => {
 	};
 
 	const renderRecentItemList = () => {
-		return PRODUCT_ITEM_LIST.map((item, index) => (
+		return productList.map((item, index) => (
 			<RecentItemCard
 				key={index}
-				title={item.title}
+				title={item.name}
 				price={item.price.toLocaleString("vi-VN", {
 					style: "currency",
 					currency: "VND",
@@ -71,6 +75,10 @@ const UserPlaceOrderScreen = () => {
 
 	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
 
+	const goToMustTryItemList = () => {
+		navigation.navigate("UserMustTryItemScreen");
+	};
+
 	const goToSearchScreen = () => {
 		navigation.navigate("UserSearchScreen");
 	};
@@ -86,11 +94,25 @@ const UserPlaceOrderScreen = () => {
 	const goToDeliverdOrderScreen = () => {
 		navigation.navigate("UserOrderScreen");
 	};
+
 	useEffect(() => {
 		if (isItemDetailVisible) {
 			itemDetailBottomSheetRef.current?.present();
 		}
 	}, [isItemDetailVisible]);
+
+	useEffect(() => {
+		const fetchProductList = async () => {
+			try {
+				const productList = await getProductsList();
+				setProductList(productList);
+			} catch (error) {
+				console.error("Error fetching product list:", error);
+			}
+		};
+
+		fetchProductList();
+	}, []);
 	return (
 		<IsOpenProvider>
 			<SafeAreaView style={styles.container}>
@@ -129,7 +151,7 @@ const UserPlaceOrderScreen = () => {
 							title="Món Mới Phải Thử"
 							showSubtitle={true}
 							subtitle="Xem thêm"
-							onPressSubtitle={goToFavoriteItemScreen}
+							onPressSubtitle={goToMustTryItemList}
 						>
 							<ScrollView contentContainerStyle={styles.mustTryList}>
 								{renderMustTryList()}
