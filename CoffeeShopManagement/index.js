@@ -58,7 +58,7 @@ const startServer = () => {
 		}
 	});
 
-	app.post("/signin", async (req, res) => {
+	app.post("/signup", async (req, res) => {
 		try {
 		  const { fullName, phoneNumber, password } = req.body;
 		  const fullNameArray = fullName.split(" ");
