@@ -88,7 +88,7 @@ const startServer = () => {
 			res.status(500).json({ message: "Internal server error" });
 		}
 	});
-	
+
 	app.put("/users/:phoneNumber/change-password", async (req, res) => {
 		try {
 			const { phoneNumber } = req.params;
@@ -111,6 +111,31 @@ const startServer = () => {
 			res.status(200).json({ message: "Password updated successfully" });
 		} catch (error) {
 			console.error("Error updating password", error);
+			res.status(500).json({ message: "Internal server error" });
+		}
+	});
+
+	app.delete("/users/:phoneNumber", async (req, res) => {
+		try {
+			const { phoneNumber } = req.params;
+			const { password } = req.body; 
+	
+			const user = await User.findOne({ phoneNumber });
+	
+			if (!user) {
+				return res.status(404).json({ message: "User not found" });
+			}
+	
+			const isPasswordMatch = await bcrypt.compare(password, user.password);
+			if (!isPasswordMatch) {
+				return res.status(400).json({ message: "Incorrect password" });
+			}
+	
+			await user.remove();
+	
+			res.status(200).json({ message: "User deleted successfully" });
+		} catch (error) {
+			console.error("Error deleting user", error);
 			res.status(500).json({ message: "Internal server error" });
 		}
 	});
