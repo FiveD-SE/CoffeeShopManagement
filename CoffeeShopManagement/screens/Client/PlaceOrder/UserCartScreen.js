@@ -1,53 +1,36 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import Section from "../../../components/Client/Section";
 import CartItemCard from "../../../components/Client/Card/CartItemCard";
-
-const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
-
-const UserCartScreen = () => {
+import { connect } from "react-redux";
+import { updateCartItemQuantity } from "../../../redux/actions/userActions";
+const UserCartScreen = ({ cartList, updateQuantity }) => {
 	const navigation = useNavigation();
 
-	const [cartList, setCartList] = useState([
-		{
-			title: "Smoothie Xoài Nhiệt Đới Granola",
-			price: 65000,
-			imageSource: PRODUCT_IMAGE_SOURCE,
-		},
-		{
-			title: "Smoothie Phúc Bồn Tử Granola",
-			price: 65000,
-			imageSource: PRODUCT_IMAGE_SOURCE,
-		},
-		{
-			title: "Oolong Tứ Quý Vải",
-			price: 65000,
-			imageSource: PRODUCT_IMAGE_SOURCE,
-		},
-	]);
-
-	const removeCartItem = (index) => {
-		const newCartList = [...cartList];
-		newCartList.splice(index, 1);
-		setCartList(newCartList);
+	const handleQuantityChange = (id, newQuantity) => {
+		if (newQuantity < 1) {
+			updateQuantity(id, 0);
+		} else {
+			updateQuantity(id, newQuantity);
+		}
 	};
 
 	const totalPrice = cartList.reduce((total, item) => total + item.price, 0);
 
 	const renderCartList = ({ item, index }) => (
 		<CartItemCard
-			title={item.title}
+			id={item._id}
+			name={item.name}
 			price={item.price.toLocaleString("vi-VN", {
 				style: "currency",
 				currency: "VND",
 			})}
 			imageSource={item.imageSource}
+			quantity={item.quantity}
 			onQuantityChange={(newQuantity) => {
-				if (newQuantity <= 0) {
-					removeCartItem(index);
-				}
+				handleQuantityChange(item._id, newQuantity);
 			}}
 		/>
 	);
@@ -55,6 +38,7 @@ const UserCartScreen = () => {
 	const handleConfirmOrdering = () => {
 		navigation.navigate("UserOrderConfirmationScreen");
 	};
+
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
@@ -83,8 +67,6 @@ const UserCartScreen = () => {
 		</View>
 	);
 };
-
-export default UserCartScreen;
 
 const styles = StyleSheet.create({
 	container: {
@@ -131,3 +113,13 @@ const styles = StyleSheet.create({
 		fontWeight: "600",
 	},
 });
+
+const mapStateToProps = (state) => ({
+	cartList: state.user.cartList,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+	updateQuantity: (itemId, newQuantity) =>
+		dispatch(updateCartItemQuantity(itemId, newQuantity)),
+});
+export default connect(mapStateToProps, mapDispatchToProps)(UserCartScreen);

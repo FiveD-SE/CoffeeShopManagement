@@ -3,18 +3,22 @@ import React, { useState } from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome6";
 
-const CartItemCard = ({ title, price, imageSource, onQuantityChange }) => {
-	const [quantity, setQuantity] = useState(1);
-
+const CartItemCard = ({
+	id,
+	name,
+	price,
+	imageSource,
+	quantity,
+	onQuantityChange,
+}) => {
 	const handleIncrement = () => {
-		setQuantity(quantity + 1);
+		console.log("Before increment:", quantity);
+		onQuantityChange(quantity + 1);
 	};
 
 	const handleDecrement = () => {
-		const newQuantity = quantity - 1;
-		if (newQuantity <= 0) {
-			onQuantityChange(newQuantity);
-		}
+		console.log("Before decrement:", quantity);
+		onQuantityChange(quantity - 1);
 	};
 
 	return (
@@ -23,7 +27,7 @@ const CartItemCard = ({ title, price, imageSource, onQuantityChange }) => {
 				<Image style={styles.image} source={imageSource} resizeMode="cover" />
 			</View>
 			<View style={styles.main}>
-				<Text style={styles.title}>{title}</Text>
+				<Text style={styles.name}>{name}</Text>
 				<Text style={styles.price}>{price}</Text>
 			</View>
 			<View style={styles.adjustButtonContainer}>
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 		paddingHorizontal: "5%",
 	},
-	title: {
+	name: {
 		width: "100%",
 		color: "#3a3a3a",
 		fontSize: 16,
