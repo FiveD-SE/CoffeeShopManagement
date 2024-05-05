@@ -42,6 +42,21 @@ export const removeFromFavorites = (userId, itemId) => ({
 	payload: { userId, itemId },
 });
 
+export const addToCart = (item) => ({
+	type: types.ADD_TO_CART,
+	payload: item,
+});
+
+export const updateCartItemQuantity = (itemId, newQuantity) => (dispatch) => {
+	dispatch({
+		type: types.UPDATE_CART_ITEM_QUANTITY,
+		payload: {
+			itemId,
+			newQuantity,
+		},
+	});
+};
+
 export const savePhoneNumber = (phoneNumber) => ({
 	type: types.SAVE_PHONE_NUMBER,
 	payload: phoneNumber,

@@ -6,6 +6,8 @@ import {
 	Image,
 	Pressable,
 	ScrollView,
+	Platform,
+	Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome6";
@@ -19,6 +21,7 @@ import BottomSheet from "../../../components/Client/BottomSheet/BottomSheet";
 import { useIsOpen } from "../../../utils/IsOpenContext";
 import { connect } from "react-redux";
 import {
+	addToCart,
 	addToFavorites,
 	removeFromFavorites,
 } from "../../../redux/actions/userActions";
@@ -32,6 +35,8 @@ const ItemDetailBottomSheet = ({
 	onClose,
 	addToFavorites,
 	removeFromFavorites,
+	addToCart,
+	cartList,
 }) => {
 	const { setIsOpen } = useIsOpen();
 
@@ -44,7 +49,7 @@ const ItemDetailBottomSheet = ({
 	const [localIsFavorite, setLocalIsFavorite] = useState(null);
 
 	const sizeItemList = [
-		{ size: "S", price: 59000 },
+		{ size: "S", price: 30000 },
 		{ size: "M", price: 79000 },
 		{ size: "L", price: 99000 },
 	];
@@ -158,7 +163,7 @@ const ItemDetailBottomSheet = ({
 	};
 
 	const calculateTotalPrice = () => {
-		let totalPrice = selectedItem ? selectedItem.price : 0;
+		let totalPrice = 0;
 		if (selectedSizeIndex !== null) {
 			totalPrice += sizeItemList[selectedSizeIndex].price;
 		}
@@ -168,9 +173,44 @@ const ItemDetailBottomSheet = ({
 		return totalPrice;
 	};
 
+	const handleAddToCart = () => {
+		if (selectedItem && selectedSizeIndex !== null) {
+			const isAlreadyInCart = cartList.some(
+				(item) => item._id === selectedItem._id
+			);
+
+			if (isAlreadyInCart) {
+				Alert.alert(
+					"Đã được thêm vào giỏ hàng",
+					"Kiểm tra giỏ hàng bạn ngay bạn nhé !",
+					[
+						{
+							text: "Cancel",
+							style: "destructive",
+						},
+						{
+							text: "OK",
+							onPress: () => goToCartScreen(),
+							style: "default",
+						},
+					]
+				);
+			} else {
+				const itemToAdd = {
+					...selectedItem,
+					size: sizeItemList[selectedSizeIndex].size,
+					quantity: 1,
+					totalPrice: calculateTotalPrice(),
+				};
+				addToCart(itemToAdd);
+			}
+		}
+	};
+
 	const goToCartScreen = () => navigation.navigate("UserCartScreen");
 
 	useEffect(() => {
+		setSelectedSizeIndex(0);
 		return () => {
 			setSelectedSizeIndex(null);
 			setSelectedToppings([]);
@@ -255,7 +295,7 @@ const ItemDetailBottomSheet = ({
 					</View>
 				</View>
 				<View style={styles.footer}>
-					<Pressable style={styles.addToCartButton}>
+					<Pressable style={styles.addToCartButton} onPress={handleAddToCart}>
 						<Text style={styles.addToCartButtonText}>Thêm vào giỏ</Text>
 						<Icon name="ellipsis-vertical" color="#FFFFFF" />
 						<Text style={styles.addToCartButtonText}>
@@ -355,6 +395,20 @@ const styles = StyleSheet.create({
 		paddingVertical: "4%",
 		borderRadius: 20,
 		marginRight: "2%",
+		...Platform.select({
+			ios: {
+				shadowColor: "#3a3a3a",
+				shadowOffset: {
+					width: 0,
+					height: 2,
+				},
+				shadowOpacity: 0.1,
+				shadowRadius: 2,
+			},
+			android: {
+				elevation: 2,
+			},
+		}),
 	},
 	addToCartButtonText: {
 		color: "#FFFFFF",
@@ -375,9 +429,17 @@ const styles = StyleSheet.create({
 	},
 });
 
+const mapStateToProps = (state) => ({
+	cartList: state.user.cartList,
+});
+
 const mapDispatchToProps = {
 	addToFavorites,
 	removeFromFavorites,
+	addToCart,
 };
 
-export default connect(null, mapDispatchToProps)(ItemDetailBottomSheet);
+export default connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(ItemDetailBottomSheet);
