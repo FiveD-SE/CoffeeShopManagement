@@ -5,19 +5,16 @@ import { useNavigation } from "@react-navigation/native";
 import Section from "../../../components/Client/Section";
 import CartItemCard from "../../../components/Client/Card/CartItemCard";
 import { connect } from "react-redux";
-import { updateCartItemQuantity } from "../../../redux/actions/userActions";
-const UserCartScreen = ({ cartList, updateQuantity }) => {
+import {
+	confirmOrder,
+	updateCartItemQuantity,
+} from "../../../redux/actions/userActions";
+const UserCartScreen = ({ cartList, updateQuantity, confirmOrder }) => {
 	const navigation = useNavigation();
 
-	const handleQuantityChange = (id, newQuantity) => {
-		if (newQuantity < 1) {
-			updateQuantity(id, 0);
-		} else {
-			updateQuantity(id, newQuantity);
-		}
-	};
+	const [totalPrice, setTotalPrice] = useState(0);
 
-	const totalPrice = cartList.reduce((total, item) => total + item.price, 0);
+	const [updateTrigger, setUpdateTrigger] = useState(false);
 
 	const renderCartList = ({ item, index }) => (
 		<CartItemCard
@@ -29,15 +26,37 @@ const UserCartScreen = ({ cartList, updateQuantity }) => {
 			})}
 			imageSource={item.imageSource}
 			quantity={item.quantity}
+			options={`${item.size}, ${item.options
+				.map((i) => i.toLowerCase())
+				.join(", ")}`}
 			onQuantityChange={(newQuantity) => {
 				handleQuantityChange(item._id, newQuantity);
 			}}
 		/>
 	);
 
+	const handleQuantityChange = (id, newQuantity) => {
+		if (newQuantity < 1) {
+			updateQuantity(id, 0);
+		} else {
+			updateQuantity(id, newQuantity);
+		}
+
+		setUpdateTrigger(!updateTrigger);
+	};
+
 	const handleConfirmOrdering = () => {
 		navigation.navigate("UserOrderConfirmationScreen");
+		confirmOrder(cartList);
 	};
+
+	useEffect(() => {
+		let newTotalPrice = 0;
+		for (const item of cartList) {
+			newTotalPrice += item.totalPrice * item.quantity;
+		}
+		setTotalPrice(newTotalPrice);
+	}, [cartList, updateTrigger]);
 
 	return (
 		<View style={styles.container}>
@@ -121,5 +140,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
 	updateQuantity: (itemId, newQuantity) =>
 		dispatch(updateCartItemQuantity(itemId, newQuantity)),
+	confirmOrder: (cartList) => dispatch(confirmOrder(cartList)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(UserCartScreen);

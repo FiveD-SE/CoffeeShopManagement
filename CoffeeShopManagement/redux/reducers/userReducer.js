@@ -5,6 +5,7 @@ const initialState = {
 	productList: [],
 	favoriteList: [],
 	cartList: [],
+	orderInformation: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -69,6 +70,11 @@ const userReducer = (state = initialState, action) => {
 					return state;
 				}
 			}
+		case types.CONFIRM_ORDER:
+			return {
+				...state,
+				orderInformation: action.payload,
+			};
 
 		default:
 			return state;

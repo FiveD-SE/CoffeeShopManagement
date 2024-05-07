@@ -46,12 +46,18 @@ const ItemDetailBottomSheet = ({
 
 	const [selectedToppings, setSelectedToppings] = useState([]);
 
+	const [selectedSugarOption, setSelectedSugarOption] = useState("Bình thường");
+
+	const [selectedMilkOption, setSelectedMilkOption] = useState("Bình thường");
+
+	const [selectedIceOption, setSelectedIceOption] = useState("Bình thường");
+
 	const [localIsFavorite, setLocalIsFavorite] = useState(null);
 
 	const sizeItemList = [
-		{ size: "S", price: 30000 },
-		{ size: "M", price: 79000 },
-		{ size: "L", price: 99000 },
+		{ size: "S", price: selectedItem.price },
+		{ size: "M", price: selectedItem.price + 10000 },
+		{ size: "L", price: selectedItem.price + 20000 },
 	];
 
 	const optionList = [{ title: "Đường" }, { title: "Sữa" }, { title: "Đá" }];
@@ -65,6 +71,7 @@ const ItemDetailBottomSheet = ({
 	const handleClose = () => {
 		onClose();
 	};
+
 	const toggleFavorite = async () => {
 		try {
 			if (!localIsFavorite) {
@@ -133,9 +140,24 @@ const ItemDetailBottomSheet = ({
 				key={index}
 				title={item.title}
 				options={chooseOptionList(item.title)}
+				onSelectOption={(title, optionValue) => {
+					console.log("title, optionValue: ", title, optionValue);
+					switch (title) {
+						case "Đường":
+							setSelectedSugarOption(optionValue);
+							break;
+						case "Sữa":
+							setSelectedMilkOption(optionValue);
+							break;
+						case "Đá":
+							setSelectedIceOption(optionValue);
+							break;
+						default:
+							break;
+					}
+				}}
 			/>
 		));
-
 	const handleToppingsSelected = (toppings) => {
 		setSelectedToppings(toppings);
 	};
@@ -200,6 +222,7 @@ const ItemDetailBottomSheet = ({
 					...selectedItem,
 					size: sizeItemList[selectedSizeIndex].size,
 					quantity: 1,
+					options: [selectedSugarOption, selectedMilkOption, selectedIceOption],
 					totalPrice: calculateTotalPrice(),
 				};
 				addToCart(itemToAdd);

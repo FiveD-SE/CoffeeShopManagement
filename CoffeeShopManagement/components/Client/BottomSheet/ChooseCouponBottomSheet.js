@@ -6,7 +6,12 @@ import SelectCouponCard from "../Card/SelectCouponCard";
 
 const COUPON_IMAGE = require("../../../assets/coupon-image.png");
 
-const ChooseCouponBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
+const ChooseCouponBottomSheet = ({
+	bottomSheetRef,
+	snapPoints,
+	setIsOpen,
+	onSelectCoupon,
+}) => {
 	const [selectedDeliveryCoupon, setSelectedDeliveryCoupon] = useState(null);
 	const [selectedDiscountCoupon, setSelectedDiscountCoupon] = useState(null);
 
@@ -48,17 +53,31 @@ const ChooseCouponBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 	};
 
 	const handleSelectedDeliveryCouponChange = (index) => {
-		setSelectedDeliveryCoupon(index);
+		setSelectedDeliveryCoupon({
+			index: index,
+			coupon: couponList.deliveryFee[index],
+		});
 	};
 
 	const handleSelectedDiscountCouponChange = (index) => {
-		setSelectedDiscountCoupon(index);
+		setSelectedDiscountCoupon({
+			index: index,
+			coupon: couponList.discount[index],
+		});
+	};
+
+	const handleApplyCoupon = () => {
+		onSelectCoupon(
+			selectedDeliveryCoupon.coupon,
+			selectedDiscountCoupon.coupon
+		);
 	};
 
 	const renderDeliveryFee = () => {
 		const delivery = couponList.deliveryFee;
 		return delivery.map((item, index) => {
-			const isChecked = selectedDeliveryCoupon === index;
+			const isChecked =
+				selectedDeliveryCoupon && selectedDeliveryCoupon.index === index;
 			return (
 				<SelectCouponCard
 					key={index}
@@ -75,7 +94,8 @@ const ChooseCouponBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 	const renderDiscount = () => {
 		const discount = couponList.discount;
 		return discount.map((item, index) => {
-			const isChecked = selectedDiscountCoupon === index;
+			const isChecked =
+				selectedDiscountCoupon && selectedDiscountCoupon.index === index;
 			return (
 				<SelectCouponCard
 					key={index}
@@ -106,7 +126,7 @@ const ChooseCouponBottomSheet = ({ bottomSheetRef, snapPoints, setIsOpen }) => {
 						</Section>
 					</View>
 				</ScrollView>
-				<Pressable style={styles.applyButton}>
+				<Pressable style={styles.applyButton} onPress={handleApplyCoupon}>
 					<Text style={styles.applyButtonText}>Áp dụng</Text>
 				</Pressable>
 			</View>

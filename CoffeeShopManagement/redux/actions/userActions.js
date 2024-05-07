@@ -47,15 +47,18 @@ export const addToCart = (item) => ({
 	payload: item,
 });
 
-export const updateCartItemQuantity = (itemId, newQuantity) => (dispatch) => {
-	dispatch({
-		type: types.UPDATE_CART_ITEM_QUANTITY,
-		payload: {
-			itemId,
-			newQuantity,
-		},
-	});
-};
+export const updateCartItemQuantity = (itemId, newQuantity) => ({
+	type: types.UPDATE_CART_ITEM_QUANTITY,
+	payload: {
+		itemId,
+		newQuantity,
+	},
+});
+
+export const confirmOrder = (cartList) => ({
+	type: types.CONFIRM_ORDER,
+	payload: cartList,
+});
 
 export const savePhoneNumber = (phoneNumber) => ({
 	type: types.SAVE_PHONE_NUMBER,

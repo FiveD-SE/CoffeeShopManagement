@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome6";
 
@@ -9,15 +9,14 @@ const CartItemCard = ({
 	price,
 	imageSource,
 	quantity,
+	options,
 	onQuantityChange,
 }) => {
 	const handleIncrement = () => {
-		console.log("Before increment:", quantity);
 		onQuantityChange(quantity + 1);
 	};
 
 	const handleDecrement = () => {
-		console.log("Before decrement:", quantity);
 		onQuantityChange(quantity - 1);
 	};
 
@@ -28,7 +27,8 @@ const CartItemCard = ({
 			</View>
 			<View style={styles.main}>
 				<Text style={styles.name}>{name}</Text>
-				<Text style={styles.price}>{price}</Text>
+				<Text style={styles.subtitle}>{price}</Text>
+				<Text style={styles.subtitle}>{options}</Text>
 			</View>
 			<View style={styles.adjustButtonContainer}>
 				<Pressable style={styles.adjustButton} onPress={handleDecrement}>
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		marginVertical: "1%",
-		padding: "3%",
+		padding: "4%",
 		borderRadius: 20,
 		justifyContent: "space-between",
 	},
@@ -74,10 +74,11 @@ const styles = StyleSheet.create({
 		fontWeight: "500",
 		lineHeight: 20,
 	},
-	price: {
+	subtitle: {
 		marginTop: "5%",
 		color: "rgba(58,58,58,0.5)",
-		fontSize: 14,
+		fontSize: 12,
+		lineHeight: 12,
 		fontWeight: "500",
 	},
 	adjustButtonContainer: {

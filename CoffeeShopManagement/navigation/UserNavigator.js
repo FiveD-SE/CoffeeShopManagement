@@ -41,6 +41,7 @@ import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
 import YourVoucher from "../screens/Client/Coupons/UserVoucherScreen";
 import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
 import CashierNotification from "../screens/Staff/CashierNotification";
+import UserChooseAddressScreen from "../screens/Client/PlaceOrder/UserChooseAddressScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -204,8 +205,8 @@ const OrderStack = () => (
 			}}
 		/>
 		<Stack.Screen
-			name="SelectAddressScreen"
-			component={SelectAdress}
+			name="UserChooseAddressScreen"
+			component={UserChooseAddressScreen}
 			options={{
 				headerTitle: "Chọn địa chỉ",
 				headerLeftContainerStyle: {
