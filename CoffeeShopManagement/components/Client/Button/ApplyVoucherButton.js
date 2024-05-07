@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Pressable } from "react-native";
+import { StyleSheet, Text, Image, Pressable } from "react-native";
 import React from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome6";
@@ -7,13 +7,11 @@ const COUPON_ICON = require("../../../assets/voucher.png");
 
 const ApplyVoucherButton = ({ onPress }) => {
 	return (
-		<>
-			<Pressable style={styles.container} onPress={onPress}>
-				<Image source={COUPON_ICON} style={styles.image} />
-				<Text style={styles.title}>Áp dụng ưu đãi</Text>
-				<Icon name="chevron-right" style={styles.icon} size={16} />
-			</Pressable>
-		</>
+		<Pressable style={styles.container} onPress={onPress}>
+			<Image source={COUPON_ICON} style={styles.image} />
+			<Text style={styles.title}>Áp dụng ưu đãi</Text>
+			<Icon name="chevron-right" style={styles.icon} size={16} />
+		</Pressable>
 	);
 };
 

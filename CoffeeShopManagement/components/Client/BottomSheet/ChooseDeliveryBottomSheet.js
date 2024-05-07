@@ -1,6 +1,5 @@
 import { StyleSheet, View } from "react-native";
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 
 import BottomSheet from "./BottomSheet";
 import DeliveryOption from "../DeliveryOption";
@@ -9,29 +8,28 @@ const ChooseDeliveryBottomSheet = ({
 	bottomSheetRef,
 	snapPoints,
 	setIsOpen,
+	onDeliveryTypeSelect,
 }) => {
-	const navigation = useNavigation();
-
 	const deliveryOption = [
-		{ title: "Giao hàng tận nơi", iconName: "moped", type: "Delivery" },
-		{ title: "Tự đến lấy hàng", iconName: "handshake", type: "Pickup" },
+		{ title: "Giao hàng tận nơi", iconName: "moped", type: "delivery" },
+		{ title: "Tự đến lấy hàng", iconName: "handshake", type: "takeaway" },
 	];
 
-	const goToSelectAddressScreen = () => {
-		navigation.navigate("SelectAddressScreen");
+	const handleSelectDelivery = () => {
+		onDeliveryTypeSelect("delivery");
 	};
 
-	const goToSelectBranchScreen = () => {
-		navigation.navigate("SelectBranchScreen");
+	const handleSelectTakeaway = () => {
+		onDeliveryTypeSelect("takeaway");
 	};
 
 	const renderDeliveryOption = () => {
 		return deliveryOption.map((item, index) => {
 			let deliveryType;
-			if (item.type === "Delivery") {
-				deliveryType = goToSelectAddressScreen;
-			} else if (item.type === "Pickup") {
-				deliveryType = goToSelectBranchScreen;
+			if (item.type === "delivery") {
+				deliveryType = handleSelectDelivery;
+			} else if (item.type === "takeaway") {
+				deliveryType = handleSelectTakeaway;
 			}
 			return (
 				<View key={index} style={{ marginVertical: "1%" }}>

@@ -11,7 +11,7 @@ const DeliveryOption = ({ title, iconName, onPress }) => {
 				<Text style={styles.title}>{title}</Text>
 			</View>
 			<Pressable style={styles.buttonContainer} onPress={onPress}>
-				<Text style={styles.buttonText}>Chọn địa chỉ</Text>
+				<Text style={styles.buttonText}>Chọn</Text>
 			</Pressable>
 		</View>
 	);
