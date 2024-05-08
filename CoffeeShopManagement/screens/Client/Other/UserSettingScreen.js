@@ -6,12 +6,37 @@ import {
     SafeAreaView,
     ScrollView,
     Pressable,
+    Alert,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 
 const Setting = () => {
     const navigation = useNavigation();
+    const handleDeleteAccount = () => {
+        // alert with input to input password
+        Alert.prompt(
+            "Xác nhận xóa tài khoản",
+            "Nhập mật khẩu để xác nhận xóa tài khoản",
+            [
+                {
+                    text: "Hủy",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                },
+                {
+                    text: "Xác nhận",
+                    onPress: (password) => {
+                        // check password
+                        // if correct, delete account
+                        // if not, alert "Mật khẩu không đúng"
+                        console.log(password);
+                    },
+                },
+            ],
+            "secure-text"
+        );
+    };
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -34,7 +59,12 @@ const Setting = () => {
 
                 <View style={styles.section}>
                     <Text style={styles.primaryText}>Cài đặt tài khoản</Text>
-                    <Pressable style={styles.itemContainer}>
+                    <Pressable
+                        style={styles.itemContainer}
+                        onPress={() => {
+                            navigation.navigate("ConfirmPassword");
+                        }}
+                    >
                         <FontAwesome
                             name="trash"
                             size={24}

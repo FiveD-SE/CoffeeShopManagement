@@ -338,6 +338,13 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         marginBottom: 15,
     },
+    profile: {
+        backgroundColor: "#fff",
+        borderRadius: 12,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start",
+    },
     profileAvatar: {
         width: 150,
         height: 150,
