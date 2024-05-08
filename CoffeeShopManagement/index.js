@@ -162,7 +162,7 @@ const startServer = () => {
 		}
 	});
 
-	app.delete("/users/:phoneNumber", async (req, res) => {
+	app.delete("/users/:phoneNumber/delete", async (req, res) => {
 		try {
 			const { phoneNumber } = req.params;
 			const { password } = req.body; 
