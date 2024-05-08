@@ -178,7 +178,7 @@ const startServer = () => {
 				return res.status(400).json({ message: "Incorrect password" });
 			}
 	
-			await user.remove();
+			await User.deleteOne({ phoneNumber }); 
 	
 			res.status(200).json({ message: "User deleted successfully" });
 		} catch (error) {
@@ -186,6 +186,7 @@ const startServer = () => {
 			res.status(500).json({ message: "Internal server error" });
 		}
 	});
+	
 	// products
 	const productSchema = new mongoose.Schema({
 		name: { type: String, required: true },
