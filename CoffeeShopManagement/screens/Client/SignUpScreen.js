@@ -33,18 +33,44 @@ export default function SignUpScreen() {
         navigation.navigate("SignInScreen");
     };
 
-    const handleSignUp = () => {
-        if (password !== confirmPassword) {
-            return;
-        }
-
+    const handleSignUp = async () => {
         if (isChecked && fullName && phoneNumber && password) {
-            const signUpSuccess = signUp(fullName, phoneNumber, password);
-            if (signUpSuccess) {
-                Alert.alert("Đăng ký thành công", "Vui lòng đăng nhập");
-                navigation.navigate("SignInScreen");
-            } else {
-                Alert.alert("Đăng ký thất bại", "Người dùng đã tồn tại");
+            if (phoneNumber.length !== 10) {
+                Alert.alert("Đăng ký thất bại", "Số điện thoại không hợp lệ");
+                return;
+            }
+
+            if (password.length < 8) {
+                Alert.alert(
+                    "Đăng ký thất bại",
+                    "Mật khẩu phải chứa ít nhất 8 ký tự"
+                );
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                Alert.alert("Đăng ký thất bại", "Mật khẩu không khớp");
+                return;
+            }
+
+            try {
+                const signUpSuccess = await signUp(
+                    fullName,
+                    phoneNumber,
+                    password
+                );
+                if (signUpSuccess) {
+                    Alert.alert("Đăng ký thành công", "Vui lòng đăng nhập");
+                    navigation.navigate("SignInScreen");
+                }
+            } catch (error) {
+                Alert.alert(
+                    "Đăng ký thất bại",
+                    "Người dùng đã tồn tại",
+                    [{ text: "OK", onPress: () => {}, style: "cancel" }],
+                    { cancelable: false }
+                );
+                console.error("Error signing up:", error);
             }
         } else {
             Alert.alert("Đăng ký thất bại", "Vui lòng điền đầy đủ thông tin");
