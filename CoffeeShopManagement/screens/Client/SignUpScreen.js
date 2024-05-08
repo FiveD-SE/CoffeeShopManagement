@@ -64,12 +64,7 @@ export default function SignUpScreen() {
                     navigation.navigate("SignInScreen");
                 }
             } catch (error) {
-                Alert.alert(
-                    "Đăng ký thất bại",
-                    "Người dùng đã tồn tại",
-                    [{ text: "OK", onPress: () => {}, style: "cancel" }],
-                    { cancelable: false }
-                );
+                Alert.alert("Đăng ký thất bại", "Số điện thoại đã tồn tại");
                 console.error("Error signing up:", error);
             }
         } else {

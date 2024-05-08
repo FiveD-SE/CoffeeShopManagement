@@ -124,7 +124,7 @@ export const deleteUser = async (phoneNumber, password) => {
         }
     } catch (error) {
         console.error("Lỗi khi xóa tài khoản:", error.message);
-        throw error; // Đẩy lỗi gốc ra ngoài
+        throw error;
     }
 };
 
