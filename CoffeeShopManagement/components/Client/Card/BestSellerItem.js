@@ -1,6 +1,14 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+	Dimensions,
+	Image,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 import React from "react";
-
+import { colors } from "../../../assets/colors/colors";
+const cardWidth = (Dimensions.get("window").width - 10) / 2 - 10;
 const BestSellerItem = ({
 	id,
 	name,
@@ -21,7 +29,7 @@ const BestSellerItem = ({
 			]}
 		>
 			<View style={styles.imageContainer}>
-				<Image style={styles.image} source={imageSource} resizeMode="cover" />
+				<Image style={styles.image} source={imageSource} resizeMode="stretch" />
 			</View>
 			<View style={styles.main}>
 				<Text style={styles.name} numberOfLines={2} ellipsizeMode="tail">
@@ -42,7 +50,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: "column",
-		maxWidth: 200,
+		maxWidth: cardWidth,
 	},
 	imageContainer: {
 		borderRadius: 10,
@@ -60,16 +68,17 @@ const styles = StyleSheet.create({
 	},
 	name: {
 		width: "100%",
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 16,
-		fontWeight: "500",
-		lineHeight: 20,
+		fontFamily: "lato-bold",
+		lineHeight: 30,
 	},
 	price: {
 		marginTop: "5%",
-		color: "rgba(58,58,58,0.5)",
+		color: colors.grey_100,
 		fontSize: 14,
-		fontWeight: "500",
+		lineHeight: 20,
+		fontFamily: "lato-bold",
 	},
 	addButton: {
 		justifyContent: "center",
@@ -77,12 +86,12 @@ const styles = StyleSheet.create({
 		paddingVertical: "4%",
 		paddingHorizontal: "6%",
 		marginTop: "8%",
-		backgroundColor: "#FFE8D2",
+		backgroundColor: colors.green_100,
 		borderRadius: 5,
 	},
 	addButtonText: {
-		color: "#FFA730",
-		fontSize: 12,
-		fontWeight: "600",
+		color: colors.white_100,
+		fontSize: 14,
+		fontFamily: "lato-bold",
 	},
 });

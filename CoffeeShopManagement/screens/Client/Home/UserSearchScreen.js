@@ -5,7 +5,6 @@ import unidecode from "unidecode";
 import SearchBar from "../../../components/Client/SearchBar";
 import ProductCardHorizontal from "../../../components/Client/Card/ProductCardHorizontal";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
-import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
 import { getProductsList } from "../../../api";
 const UserSearchScreen = () => {
@@ -77,7 +76,7 @@ const UserSearchScreen = () => {
 	}, []);
 
 	return (
-		<IsOpenProvider>
+		<>
 			<View style={styles.container}>
 				<View style={styles.header}>
 					<SearchBar onChangeText={handleSearch} />
@@ -106,7 +105,7 @@ const UserSearchScreen = () => {
 					/>
 				)}
 			</View>
-		</IsOpenProvider>
+		</>
 	);
 };
 
