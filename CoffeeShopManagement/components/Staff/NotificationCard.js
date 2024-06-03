@@ -1,65 +1,76 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, Pressable, StyleSheet, Platform } from "react-native";
+import React from "react";
+import { colors } from "../../assets/colors";
+import { Ionicons } from "@expo/vector-icons";
 
-const NotificationCard = ({item}) => {
+const isIOS = Platform.OS === "ios";
 
-    const [backgroundCl, setBackgroundColor] = useState('rgba(166, 166, 170, 0.1)');
-    const onPress = () => {
-        setBackgroundColor('#fff')
-    }
+const NotificationCard = ({ item }) => {
+    const onPress = () => { };
 
-    let icon;
-    let background;
     switch (item.state) {
-        case 'Success':
-            icon = require('../../assets/successful_icon.png');
-            background = 'rgba(114, 255, 148, 0.3)'
+        case "Success":
+            icon = require("../../assets/account_icon.png");
+            background = "rgba(114, 255, 148, 0.3)";
             break;
-        case 'Failed':
-            icon = require('../../assets/error_icon.png');
-            background = '#f8e0e3'
+        case "Failed":
+            icon = require("../../assets/account_icon.png");
+            background = "#f8e0e3";
             break;
         default:
-            icon = null;
-            background = '#d6d6d6';
+            icon = require("../../assets/account_icon.png");
+            background = "#d6d6d6";
             break;
     }
-  return (
-    <TouchableOpacity 
-        onPress={onPress}
-        style={{ ...styles.container, backgroundColor: backgroundCl }}>
-        <View style={{width: 60, height: 60, backgroundColor: background, justifyContent: 'center', alignItems: 'center', zIndex: 10, borderRadius: 10}}>
-            {icon ? (
-                <Image source={icon} style={styles.image} />
-            ) : (
-                <View style={styles.placeholder} />
-            )}
-        </View>
-        <View style={{flexDirection: 'column', height: 60, paddingStart: 10}}>
-            <Text style={{fontSize: 18, fontWeight: '500', color: 'rgba(58, 58, 58, 1)'}}>{item.title}</Text>
-            <Text style={{fontSize: 14, color: 'rgba(166, 166, 170, 1)'}}>{item.content}</Text>
-        </View>
-    </TouchableOpacity>
-  )
-}
+    return (
+        <Pressable
+            onPress={onPress}
+            style={[
+                styles.container,
+                {
+                    backgroundColor: item.isRead
+                        ? colors.background.white_100
+                        : colors.background.lightGrey_10,
+                },
+            ]}
+        >
+            <View style={styles.textContainer}>
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.content} numberOfLines={1}>
+                    {item.content}
+                </Text>
+            </View>
+            {item.isRead ? <></> : <Ionicons name="ellipse" color="#FFC567" />}
+        </Pressable>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row', 
-        height: 80, 
-        alignItems: 'center', 
-        paddingStart: 10, 
-        borderRadius: 20, 
-        marginTop: 10
+        flexDirection: "row",
+        borderWidth: 1,
+        borderColor: colors.background.black_20,
+        alignItems: "center",
+        borderRadius: 10,
+        marginVertical: "2%",
+        padding: isIOS ? "4%" : "2%",
     },
-    image: {
-        width: 32,
-        height: 32,
+    textContainer: {
+        flex: 1,
+        flexDirection: "column",
+        marginRight: "10%",
+        marginLeft: "2%",
     },
-    placeholder: {
-        width: 32,
-        height: 32,
-    }
-})
+    title: {
+        fontSize: 16,
+        fontFamily: "helvetica-neue-bold",
+        color: colors.text.black_100,
+        marginBottom: isIOS ? "4%" : "2%",
+    },
+    content: {
+        fontSize: 14,
+        color: colors.text.grey_100,
+    },
+});
 
 export default NotificationCard;

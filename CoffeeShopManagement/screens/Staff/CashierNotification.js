@@ -1,135 +1,133 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native'
-import React, {  useState, useEffect } from 'react'
-import Icon from 'react-native-vector-icons/Entypo'
-import NotificationCard from '../../components/Staff/NotificationCard';
+import React, { useState, useEffect } from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Pressable,
+    FlatList,
+    Platform,
+    SafeAreaView,
+} from "react-native";
+import NotificationCard from "../../components/Staff/NotificationCard";
+import { colors } from "../../assets/colors";
+
+const isIOS = Platform.OS === "ios";
+const isAndroid = Platform.OS === "android";
 
 export default function CashierNotification() {
+    const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
 
-    const [selectedButtonIndex, setSelectedButtonIndex] = useState(null);
-
-    useEffect(() => {
-        // Chọn ngẫu nhiên một TouchableOpacity làm màu cam ban đầu
-        const randomIndex = Math.floor(Math.random() * 3);
-        setSelectedButtonIndex(randomIndex);
-    }, []);
-
-    const selectionButtons = ['Tất cả', 'Chưa đọc', 'Đã đọc'];
+    const selectionButtons = ["Tất cả", "Chưa đọc", "Đã đọc"];
     const DATA = [
         {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12341',
-            state: 'Success',
-            isRead: false
+            title: "Tiêu đề",
+            content: "Nội dung",
+            orderId: "#12342",
+            state: "Success",
+            isRead: true,
         },
         {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12342',
-            state: 'Success',
-            isRead: true
+            title: "Tiêu đề",
+            content: "Nội dung",
+            orderId: "#12344",
+            state: "Failed",
+            isRead: true,
         },
         {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12343',
-            state: 'Failed',
-            isRead: false
+            title: "Tiêu đề",
+            content: "Nội dung Nội dung Nội dung Nội dungNội dung Nội dung ",
+            orderId: "#123456",
+            state: "None",
+            isRead: false,
         },
         {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12344',
-            state: 'Failed',
-            isRead: true
+            title: "Tiêu đề",
+            content: "Nội dung Nội dung Nội dung Nội dungNội dung Nội dung ",
+            orderId: "#123456",
+            state: "None",
+            isRead: false,
         },
-        {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12345',
-            state: 'None',
-            isRead: false
-        },
-        {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#123456',
-            state: 'None',
-            isRead: true
-        },
-    ]
-  return (
-    <View style={styles.container}>
-        <View>
+    ];
+
+    return (
+        <SafeAreaView style={styles.container}>
             <View style={styles.filter}>
                 <View style={styles.filterWrapper}>
                     {selectionButtons.map((buttonTitle, index) => (
-                        <TouchableOpacity 
+                        <Pressable
                             key={index}
                             style={[
                                 styles.filterDetail,
-                                selectedButtonIndex === index && { borderWidth: 1, borderColor: '#ffdfe7', backgroundColor: '#fff6f8' }
+                                selectedButtonIndex === index && styles.filterDetailSelected,
                             ]}
                             onPress={() => setSelectedButtonIndex(index)}
                         >
-                            <Text style={[{fontSize: 20}, selectedButtonIndex === index && {color: '#ff9cb2'}]}>{buttonTitle}</Text>
-                        </TouchableOpacity>
+                            <Text
+                                style={[
+                                    styles.filterDetailText,
+                                    selectedButtonIndex === index &&
+                                    styles.filterDetailTextSelected,
+                                ]}
+                            >
+                                {buttonTitle}
+                            </Text>
+                        </Pressable>
                     ))}
                 </View>
-                <View>
-                    <TouchableOpacity style={styles.filterButton}>
-                        <Icon name='list' size={40}/>
-                    </TouchableOpacity>
-                </View>
             </View>
-        </View>
-        <View style={styles.listNotification}>
-            <Text style={styles.allNotificationText}>Tất cả thông báo</Text>
-            <FlatList
-                data={DATA}
-                renderItem={({item}) => (
-                    <NotificationCard item={item}/>
-                )}/>
-        </View>
-    </View>
-  )
+            <View style={styles.listNotification}>
+                <Text style={styles.allNotificationText}>Tất cả thông báo</Text>
+                <FlatList
+                    data={DATA}
+                    showsVerticalScrollIndicator={false}
+                    renderItem={({ item }) => <NotificationCard item={item} />}
+                />
+            </View>
+        </SafeAreaView>
+    );
 }
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: colors.background.white_100,
     },
     filter: {
-        padding: '5%',
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
-    filterDetail: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 20,
-        padding: '3%',
-        backgroundColor: '#fafafb'
-    },
-    filterButton: {
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: 'rgba(58, 58, 58, 0.1)',
-        borderWidth: 1,
-        borderRadius: 10,
-        padding: '1%'
+        padding: "5%",
+        flexDirection: "row",
+        justifyContent: "space-between",
     },
     filterWrapper: {
-        flexDirection: 'row', 
-        justifyContent: 'space-between', 
-        width: '80%', 
-        alignItems: 'center'
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    filterDetail: {
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 8,
+        paddingVertical: isIOS ? "4%" : "2%",
+        paddingHorizontal: "6%",
+        backgroundColor: colors.background.lightGrey_10,
+    },
+    filterDetailSelected: {
+        backgroundColor: colors.background.black_100,
+    },
+    filterDetailText: {
+        color: colors.text.black_100,
+        fontFamily: "helvetica-neue-medium",
+        fontSize: 14,
+    },
+    filterDetailTextSelected: {
+        color: colors.text.white_100,
+        fontFamily: "helvetica-neue-bold",
+        fontSize: 14,
     },
     listNotification: {
-        padding: '5%'
+        padding: "5%",
     },
     allNotificationText: {
-        fontSize: 18,
-        fontWeight: '600',
-    }
-})
+        color: colors.text.black_100,
+        fontFamily: "helvetica-neue-bold",
+        fontSize: 16,
+    },
+});

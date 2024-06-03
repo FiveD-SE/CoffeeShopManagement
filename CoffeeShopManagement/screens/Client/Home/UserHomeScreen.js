@@ -14,6 +14,10 @@ import BestSellerItem from "../../../components/Client/Card/BestSellerItem";
 import Section from "../../../components/Client/Section";
 import RecentlyViewedItem from "../../../components/Client/Card/RecentlyViewedItem";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
+import { IsOpenProvider } from "../../../utils/IsOpenContext";
+import { useSelector } from "react-redux";
+import store from "../../../redux/store/store";
+import { getUserData } from "../../../api";
 
 import { getProductsList } from "../../../api";
 const USER_IMAGE_SOURCE = require("../../../assets/google.png");
@@ -25,77 +29,139 @@ const FRUITS_ICONS = require("../../../assets/fruits.png");
 const cardWidth = Dimensions.get("window").width;
 
 const UserHomeScreen = () => {
-	const navigation = useNavigation();
-	const itemDetailBottomSheetRef = useRef(null);
-	const [selectedIndex, setSelectedIndex] = useState(null);
-	const [selectedItem, setSelectedItem] = useState(null);
-	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
-	const [productList, setProductList] = useState([]);
-	const handleCategoryPress = (index) => setSelectedIndex(index);
-	const handleOpenItemDetail = (item) => {
-		setSelectedItem(item);
-		setIsItemDetailVisible(true);
-	};
-	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+ const navigation = useNavigation();
+    const itemDetailBottomSheetRef = useRef(null);
+    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+    const [productList, setProductList] = useState([]);
+    const handleCategoryPress = (index) => setSelectedIndex(index);
+    const handleOpenItemDetail = (item) => {
+        setSelectedItem(item);
+        setIsItemDetailVisible(true);
+    };
+    const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+    const [phoneNumber, setPhoneNumber] = useState("");
+    const [userData, setUserData] = useState({});
 
-	const goToExchangeVoucher = () => navigation.navigate("ExchangeVoucher");
-	const goToSearchScreen = () => navigation.navigate("SearchScreen");
-	const goToBestSellerScreen = () => navigation.navigate("BestSeller");
-	const goToFavoriteItemScreen = () => navigation.navigate("FavoriteItem");
-	const goToNotificationScreen = () =>
-		navigation.navigate("CashierNotification");
+    useEffect(() => {
+        const fetchPhoneNumber = async () => {
+            try {
+                setPhoneNumber(store.getState().auth.phoneNumber);
+                console.log("Phone number:", phoneNumber);
+            } catch (error) {
+                console.error("Error fetching phone number:", error);
+            }
+        };
 
-	const renderBestSellerItemList = () =>
-		productList.map((item, index) => {
-			return (
-				<BestSellerItem
-					key={index}
-					id={item._id}
-					name={item.name}
-					price={item.price.toLocaleString("vi-VN", {
-						style: "currency",
-						currency: "VND",
-					})}
-					imageSource={item.imageSource}
-					onPress={() => handleOpenItemDetail(item)}
-					horizontal={true}
-				/>
-			);
-		});
+        fetchPhoneNumber();
+    }, []);
 
-	const renderRecentlyViewedItemList = () =>
-		productList.map((item, index) => (
-			<RecentlyViewedItem
-				key={index}
-				id={item._id}
-				name={item.name}
-				price={item.price.toLocaleString("vi-VN", {
-					style: "currency",
-					currency: "VND",
-				})}
-				imageSource={item.imageSource}
-				onPress={() => handleOpenItemDetail(item)}
-			/>
-		));
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const userData = await getUserData(phoneNumber);
+                console.log("User data:", userData);
+                if (userData) {
+                    setUserData(userData);
+                } else {
+                    console.log("User not found");
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+        if (phoneNumber) {
+            fetchUserData();
+        }
+    }, [phoneNumber]);
 
-	useEffect(() => {
-		if (isItemDetailVisible) {
-			itemDetailBottomSheetRef.current?.present();
-		}
-	}, [isItemDetailVisible]);
+    const goToExchangeVoucher = () => navigation.navigate("ExchangeVoucher");
+    const goToSearchScreen = () => navigation.navigate("SearchScreen");
+    const goToBestSellerScreen = () => navigation.navigate("BestSeller");
+    const goToFavoriteItemScreen = () => navigation.navigate("FavoriteItem");
+    const goToNotificationScreen = () =>
+        navigation.navigate("CashierNotification");
 
-	useEffect(() => {
-		const fetchProductList = async () => {
-			try {
-				const productList = await getProductsList();
-				setProductList(productList);
-			} catch (error) {
-				console.error("Error fetching product list:", error);
-			}
-		};
+    const categoriesList = [
+        {
+            backgroundColor: "210, 124, 44",
+            icon: COFFEE_BEANS_ICONS,
+            title: "Cà phê",
+        },
+        {
+            backgroundColor: "255, 156, 178",
+            icon: MILK_TEA_ICONS,
+            title: "Trà sữa",
+        },
+        { backgroundColor: "78, 203, 113", icon: FRUITS_ICONS, title: "Trà" },
+        { backgroundColor: "203, 203, 212", title: "Khác" },
+    ];
 
-		fetchProductList();
-	}, []);
+    const renderCategoryItem = () =>
+        categoriesList.map((category, index) => (
+            <CategoryItem
+                key={index}
+                index={index}
+                backgroundColor={category.backgroundColor}
+                icon={category.icon}
+                title={category.title}
+                isSelected={selectedIndex === index}
+                onPress={handleCategoryPress}
+            />
+        ));
+
+    const renderBestSellerItemList = () =>
+        productList.map((item, index) => {
+            return (
+                <BestSellerItem
+                    key={index}
+                    id={item._id}
+                    name={item.name}
+                    price={item.price.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                    })}
+                    imageSource={item.imageSource}
+                    onPress={() => handleOpenItemDetail(item)}
+                    horizontal={true}
+                />
+            );
+        });
+
+    const renderRecentlyViewedItemList = () =>
+        productList.map((item, index) => (
+            <RecentlyViewedItem
+                key={index}
+                id={item._id}
+                title={item.title}
+                price={item.price.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                })}
+                imageSource={item.imageSource}
+                onPress={() => handleOpenItemDetail(item)}
+            />
+        ));
+
+    useEffect(() => {
+        if (isItemDetailVisible) {
+            itemDetailBottomSheetRef.current?.present();
+        }
+    }, [isItemDetailVisible]);
+
+    useEffect(() => {
+        const fetchProductList = async () => {
+            try {
+                const productList = await getProductsList();
+                setProductList(productList);
+            } catch (error) {
+                console.error("Error fetching product list:", error);
+            }
+        };
+
+        fetchProductList();
+    }, []);
 
 	return (
 		<SafeAreaView style={styles.container}>
