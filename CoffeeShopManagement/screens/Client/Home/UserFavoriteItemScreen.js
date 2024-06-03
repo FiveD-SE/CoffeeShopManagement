@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import ProductCardVertical from "../../../components/Client/Card/ProductCardHorizontal";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
-import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { connect } from "react-redux";
 import { getFavoritesListById } from "../../../api";
 const UserFavoriteItemScreen = ({ userId, productList }) => {
@@ -73,7 +72,7 @@ const UserFavoriteItemScreen = ({ userId, productList }) => {
 			});
 	}, []);
 	return (
-		<IsOpenProvider>
+		<>
 			<View style={styles.container}>
 				<View style={styles.favoriteItemListContainer}>
 					<FlatList
@@ -92,7 +91,7 @@ const UserFavoriteItemScreen = ({ userId, productList }) => {
 					/>
 				)}
 			</View>
-		</IsOpenProvider>
+		</>
 	);
 };
 

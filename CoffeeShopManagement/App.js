@@ -13,12 +13,13 @@ import { saveToken, getToken, removeToken } from "./services/authServices";
 import { initializeFavorites } from "./services/favoritesService";
 import { getProductsList } from "./api";
 import { getProductList } from "./redux/actions/userActions";
+import { IsOpenProvider } from "./utils/IsOpenContext";
 export default function App() {
 	const [role, setRole] = useState("");
 	const [loaded] = useFonts({
-		"Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
-		"Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
-		"Lato-Light": require("./assets/fonts/Lato-Light.ttf"),
+		"lato-bold": require("./assets/fonts/Lato-Bold.ttf"),
+		"lato-regular": require("./assets/fonts/Lato-Regular.ttf"),
+		"lato-light": require("./assets/fonts/Lato-Light.ttf"),
 	});
 
 	useEffect(() => {
@@ -46,7 +47,9 @@ export default function App() {
 		return (
 			<Provider store={store}>
 				<NavigationContainer>
-					{role ? <AppNavigator role={role} /> : <AuthNavigator />}
+					<IsOpenProvider>
+						{role ? <AppNavigator role={role} /> : <AuthNavigator />}
+					</IsOpenProvider>
 				</NavigationContainer>
 			</Provider>
 		);
