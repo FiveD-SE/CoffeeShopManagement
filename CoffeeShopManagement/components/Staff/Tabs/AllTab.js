@@ -3,15 +3,18 @@ import React, { useEffect, useState } from 'react'
 import OrderCard1 from '../OrderCard1';
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore'
 import { db } from '../../../services/firebaseService';
+import { useNavigation } from '@react-navigation/native';
 
 export default function AllTab() {
     const [orderData, setOrderData] = useState([]);
+    const navigation = useNavigation();
     const handleDetailOrder = (item) => {
         navigation.navigate('OrderScreen', { selectedOrder: item })
     }
     useEffect(() => {
         const unsub = onSnapshot(query(collection(db, 'orders'), where('orderState', '==', 'Đã hoàn thành')), (snapshot) => {
             setOrderData(snapshot.docs.map(doc => doc.data()));
+            console.log(orderData);
         });
     }, []);
     return (
