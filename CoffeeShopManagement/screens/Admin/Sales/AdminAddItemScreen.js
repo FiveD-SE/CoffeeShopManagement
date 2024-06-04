@@ -137,7 +137,6 @@ const AdminAddItemScreen = () => {
     }
   };
 
-
   const formatPrice = (price) => {
 
     const formatter = new Intl.NumberFormat('vi-VN', {
