@@ -10,12 +10,14 @@ import ItemSizeModal from '../../../components/Admin/Modal/ItemSizeModal';
 import Toast from "react-native-toast-message";
 import { colors } from '../../../assets/colors/colors';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../services/firebaseService';
+import { db, uploadImageToFirebase } from '../../../services/firebaseService';
 
 const AdminAddItemScreen = () => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
   const [productDescription, setProductDescription] = useState("");
+
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [sugarEnable, setSugarEnable] = useState(false);
   const [iceEnable, setIceEnable] = useState(false);
@@ -78,40 +80,63 @@ const AdminAddItemScreen = () => {
     setItemType(itemType);
   }
 
-  //Save to firebase
+  //Image Selection Handler
+  const handleImageSelected = (uri) => {
+    setSelectedImage(uri);
+  };
+
   const handleSaveProductToFirebase = async () => {
     if (productName === "" || productPrice === "" || productDescription === "" || serviceType === null || size === null || itemType === "") {
-      console.log("123");
       Toast.show({
         type: "error",
         text1: "Lỗi",
-        text2:
-          "Vui lòng nhập đầy đủ thông tin",
+        text2: "Vui lòng nhập đầy đủ thông tin",
       });
-    }
-    else {
-      console.log("3");
-      const docRef = await addDoc(collection(db, "products"), {
-        productName: productName,
-        productPrice: productPrice,
-        productDescription: productDescription,
-        productOptions: {
-          sugarEnable: sugarEnable,
-          iceEnable: iceEnable,
-          milkEnable: milkEnable,
-        },
-        serviceType: serviceType,
-        branchSelectIds: [1, 2, 3],
-        itemType: itemType,
-        size: size,
-      });
-      const productId = docRef.id;
+    } else {
+      try {
+        let imageDownloadUrl = null;
+        if (selectedImage) {
+          const imagename = `productImage_${productName}_${new Date().getTime()}.jpg`;
+          imageDownloadUrl = await uploadImageToFirebase(selectedImage, imagename);
+        }
 
-      await updateDoc(doc(collection(db, "products"), productId), {
-        productId: productId,
-      });
+        const docRef = await addDoc(collection(db, "products"), {
+          productName: productName,
+          productPrice: productPrice,
+          productDescription: productDescription,
+          productOptions: {
+            sugarEnable: sugarEnable,
+            iceEnable: iceEnable,
+            milkEnable: milkEnable,
+          },
+          serviceType: serviceType,
+          branchSelectIds: [1, 2, 3],
+          itemType: itemType,
+          size: size,
+          productImage: imageDownloadUrl,
+        });
+        const productId = docRef.id;
+
+        await updateDoc(doc(collection(db, "products"), productId), {
+          productId: productId,
+        });
+
+        Toast.show({
+          type: "success",
+          text1: "Thành công",
+          text2: "Sản phẩm đã được thêm mới",
+        });
+      } catch (error) {
+        console.log(error);
+        Toast.show({
+          type: "error",
+          text1: "Lỗi",
+          text2: "Có lỗi xảy ra khi thêm sản phẩm",
+        });
+      }
     }
   };
+
 
   const formatPrice = (price) => {
 
@@ -125,7 +150,11 @@ const AdminAddItemScreen = () => {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.imageContainer}>
-        <SquareWithBorder text="Ảnh sản phẩm" />
+        <SquareWithBorder
+          text="Ảnh sản phẩm"
+          onImageSelected={handleImageSelected}
+          selectedImage={selectedImage}
+        />
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.header}>Thông tin sản phẩm</Text>
