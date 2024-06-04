@@ -1,11 +1,38 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
-import React from 'react'
+import { View, Text, Modal, StyleSheet, Image, TextInput } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
-import SquareWithBorder from '../SquarewithBorder'
 import ColorButton from '../Button/ColorButton'
 import { ScrollView } from 'react-native-gesture-handler'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db } from '../../../services/firebaseService'
 
-const AddGoodModal = ({ visible, onClose }) => {
+const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
+	const [selectedQuantity, setSelectedQuantity] = useState(0);
+	const [importGoods, setImportGoods] = useState({});
+	const handleAdd = async () => {
+		if (selectedQuantity === 0) {
+			Alert.alert("Cảnh báo", "Hãy chọn số lượng hàng hóa.");
+			return;
+		}
+		try {
+			const goodsDoc = doc(db, 'goods', selectedGoods?.goodsId);
+			await updateDoc(goodsDoc, {
+				goodsQuantity: selectedGoods?.goodsQuantity - selectedQuantity,
+			});
+			const importGoodsLabel = {
+				goodsId: selectedGoods?.goodsId,
+				goodsName: selectedGoods?.goodsName,
+				goodsPrice: selectedGoods?.goodsPrice,
+				goodsQuantity: selectedQuantity,
+				goodsImage: selectedGoods?.goodsImage,
+			};
+			setImportGoods(importGoodsLabel);
+			onAdd(importGoods);
+			onClose();
+		} catch (error) {
+			console.error("Error updating document: ", error);
+		}
+	}
 
 	return (
 		<Modal
@@ -20,9 +47,9 @@ const AddGoodModal = ({ visible, onClose }) => {
 					<ScrollView style={styles.main}>
 						<View style={{ flexDirection: "column", alignItems: "center" }}>
 							<View style={styles.imageContainer}>
-								<SquareWithBorder text="Ảnh mặt hàng" />
+								<Image style={styles.image} source={{ uri: selectedGoods?.goodsImage }} />
 							</View>
-							<Text style={styles.title}>Tên mặt hàng</Text>
+							<Text style={styles.title}>{selectedGoods?.goodsName}</Text>
 						</View>
 						<Text style={styles.header}>Thông tin mặt hàng</Text>
 						<View style={styles.inputContainer}>
@@ -31,17 +58,15 @@ const AddGoodModal = ({ visible, onClose }) => {
 									keyboardType="phone-pad"
 									style={styles.input}
 									placeholder="Số lượng"
+									value={selectedQuantity}
+									onChangeText={(newText) => setSelectedQuantity(newText)}
 								/>
 							</View>
 							<View style={styles.inputBox}>
-								<TextInput
-									style={styles.input}
-									keyboardType="phone-pad"
-									placeholder="Giá nhập mới (bỏ trống để giữ giá cũ)"
-								/>
+								<Text style={styles.text}>{selectedGoods?.goodsPrice} VNĐ</Text>
 							</View>
 						</View>
-						<ColorButton color="#00A188" text="Thêm mới" textColor="#ffffff" />
+						<ColorButton color="#00A188" text="Thêm" textColor="#ffffff" OnPress={handleAdd}/>
 					</ScrollView>
 				</View>
 			</View>
@@ -62,7 +87,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#F8F7FA",
 		borderRadius: 20,
 		width: "90%",
-		height: "57%",
+		height: "auto",
 	},
 	imageContainer: {
 		marginTop: "5%",
@@ -71,7 +96,7 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		paddingHorizontal: "5%",
-		marginBottom: "10%",
+		paddingVertical: "5%",
 		borderRadius: 20,
 	},
 	header: {
@@ -96,14 +121,27 @@ const styles = StyleSheet.create({
 		backgroundColor: "#ffffff"
 	},
 	input: {
-		color: "#9D9D9D",
+		color: "#3a3a3a",
+		width: "100%",
 		fontSize: 15,
 		fontWeight: "400",
 	},
 	title: {
 		marginTop: "2%",
 		color: "#3a3a3a",
+		fontSize: 20,
+		fontWeight: "600",
+	},
+	image: {
+		width: 150,
+		height: 150,
+		resizeMode: "cover",
+		borderRadius: 20,
+	},
+	text: {
+		color: "#3a3a3a",
 		fontSize: 15,
-		fontWeight: "500",
+		lineHeight: 25,
+		fontWeight: "400",
 	},
 });

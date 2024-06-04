@@ -112,17 +112,17 @@ export default function Promotions() {
 							onPress={() => navigation.navigate("YourVoucher")}
 						>
 							<Image
-								style={{ height: 20, width: 20, marginRight: 6 }}
+								style={{ height: 25, width: 25, marginRight: 6 }}
 								source={coupon}
 								resizeMode="contain"
 							/>
 							<Text
 								style={{
-									fontFamily: "Lato-Regular",
+									fontFamily: "lato-regular",
 									color: "#006C5E",
 									fontStyle: "normal",
-									fontSize: 13,
-									fontWeight: "600",
+									fontSize: 16,
+									lineHeight: 20,
 									textAlign: "center",
 								}}
 							>
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 	},
 	textColumn: {
-		fontFamily: "Lato-Regular",
+		fontFamily: "lato-regular",
 		color: "#fff",
 		textAlign: "center",
 		paddingVertical: 5,
@@ -256,8 +256,8 @@ const styles = StyleSheet.create({
 		position: "absolute",
 		bottom: 0,
 		right: 0,
-		width: 150,
-		height: 40,
+		width: 160,
+		height: 45,
 		backgroundColor: "#FFFFFF",
 		borderRadius: 30,
 		justifyContent: "center",
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	headingText: {
-		fontFamily: "Lato-Regular",
+		fontFamily: "lato-regular",
 		color: "#FFFFFF",
 		fontSize: 10,
 		fontWeight: "500",
@@ -297,8 +297,9 @@ const styles = StyleSheet.create({
 		width: 20,
 	},
 	componentText: {
-		fontFamily: "Lato-Regular",
+		fontFamily: "lato-regular",
 		textAlign: "center",
+		lineHeight: 20,
 		fontSize: 15,
 		fontWeight: "600",
 	},
@@ -314,7 +315,7 @@ const styles = StyleSheet.create({
 		marginBottom: 15,
 	},
 	rowLabelText: {
-		fontFamily: "Lato-Regular",
+		fontFamily: "lato-regular",
 		textAlign: "center",
 		fontSize: 18,
 		fontStyle: "normal",
@@ -333,7 +334,7 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	viewMoreText: {
-		fontFamily: "Lato-Regular",
+		fontFamily: "lato-regular",
 		textAlign: "center",
 		fontSize: 10,
 		fontStyle: "normal",

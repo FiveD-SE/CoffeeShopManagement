@@ -39,6 +39,7 @@
     "react-native-bcrypt": "^2.4.0",
     "react-native-calendars": "^1.1304.1",
     "react-native-element-dropdown": "^2.10.4",
+    "react-native-fast-image": "^8.6.3",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-gifted-charts": "^1.4.10",
     "react-native-ionicons": "^4.6.5",

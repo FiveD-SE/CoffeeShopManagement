@@ -1,91 +1,107 @@
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 import { useNavigation } from "@react-navigation/native";
 
 import AddGoodButton from '../../../components/Admin/Button/AddGoodButton'
 import SearchBar from '../../../components/Client/SearchBar'
-import ColorButton from '../../../components/Admin/Button/ColorButton'
 import ProductCardwithPlus from '../../../components/Admin/Card/ProductCardwithPlus'
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../../services/firebaseService';
+import AddGoodModal from '../../../components/Admin/Modal/AddGoodModal';
+import EditGoodInfoModal from '../../../components/Admin/Modal/EditGoodInfoModal';
 
 const AdminImportGoodsScreen = () => {
   const navigation = useNavigation();
+  const [goodsList, setGoodsList] = useState([]);
+  const [selectedGoods, setSelectedGoods] = useState({});
+  const [selectedGoodsList, setSelectedGoodsList] = useState([]);
+  const [totalImportedGoods, setTotalImportedGoods] = useState(0);
 
   const goToListImport = () => {
     navigation.navigate("AdminListImport");
   };
-  const productList = [
-    {
-      title: "Tên hàng hóa",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa1",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa2",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa3",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa4",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa5",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-  ];
 
-  const renderproductList = () => {
-    return productList.map((item, index) => (
+  const [addNewModalVisible, setAddNewModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+
+  const showAddNewModal = (item) => {
+    setSelectedGoods(item);
+    setAddNewModalVisible(true);
+  };
+
+  const hideAddNewModal = () => {
+    setAddNewModalVisible(false);
+  };
+
+  const showEditGoodInfoModal = (item) => {
+    setSelectedGoods(item);
+    setEditModalVisible(true);
+  };
+
+  const hideEditGoodInfoModal = () => {
+    setEditModalVisible(false);
+  };
+
+  const handleAddGoods = (newGoods) => {
+    const updatedGoodsList = [...selectedGoodsList, newGoods];
+    setSelectedGoodsList(updatedGoodsList);
+    const label = updatedGoodsList.reduce((total, item) => total + (Number(item.goodsQuantity) || 0), 0);
+    setTotalImportedGoods(label);
+  };
+
+  useEffect(() => {
+    const fetchGoods = async () => {
+        const goodsCollection = collection(db, 'goods');
+        const goodsSnapshot = await getDocs(goodsCollection);
+        const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
+        console.log(goodsListData)
+        setGoodsList(goodsListData);
+      };
+      
+      fetchGoods();
+  }, [editModalVisible, addNewModalVisible]);
+
+  const rendergoodsList = () => {
+    return goodsList.map((item, index) => (
       <ProductCardwithPlus
         key={index}
-        title={item.title}
-        unit={item.unit}
-        quantity={item.quantity}
-        price={item.price}
+        imageSource={{ uri: item.goodsImage }}
+        name={item.goodsName}
+        unit={item.goodsUnit}
+        quantity={item.goodsQuantity}
+        price={item.goodsPrice}
+        onPressEdit={() => showEditGoodInfoModal(item)}
+        onPressAddNew={() => showAddNewModal(item)}
       />
     ));
   };
-
+  
   return (
     <View style={styles.container}>
       <AddGoodButton title="Thêm mặt hàng mới" />
-      <Text style={styles.title}>Các mặt hàng sẵn có</Text>
+      <Text style={styles.name}>Các mặt hàng sẵn có</Text>
       <View style={styles.sreachBar}>
         <SearchBar />
       </View>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
-        {renderproductList()}
+        {rendergoodsList()}
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.importTitle}>Số mặt hàng nhập mới:</Text>
-          <Text style={styles.importNumber}>10000</Text>
+        <View style={{ flexDirection: "column" }}>
+          <Text style={styles.importName}>Số mặt hàng nhập mới:</Text>
+          <Text style={styles.importNumber}>{totalImportedGoods.toString()}</Text>
         </View>
-        <ColorButton color="#00A188" text="Nhập hàng" textColor="#ffffff" OnPress={goToListImport} />
+        <TouchableOpacity style={styles.colorButton}  onPress={goToListImport}>
+            <Text style={styles.nameText}>Nhập hàng</Text>
+        </TouchableOpacity>
       </View>
+      <AddGoodModal visible={addNewModalVisible} onClose={hideAddNewModal} selectedGoods={selectedGoods} onAdd={handleAddGoods}/>
+      <EditGoodInfoModal visible={editModalVisible} onClose={hideEditGoodInfoModal} selectedGoods={selectedGoods} />
     </View>
   )
 }
 
-export default AdminImportGoodsScreen
+export default AdminImportGoodsScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -93,7 +109,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: "3%",
     paddingTop: "3%"
   },
-  title: {
+  name: {
     color: "#3a3a3a",
     fontSize: 16,
     fontWeight: "600",
@@ -109,20 +125,33 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
+    paddingHorizontal: "2%",
+    paddingVertical: "2%",
     alignItems: "center",
     justifyContent: "space-between",
   },
-  importTitle: {
+  importName: {
     color: "#3a3a3a",
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "700",
     marginRight: "2%",
   },
-
-  importNumber:
-  {
+  importNumber: {
     color: "#00A188",
-    fontSize: 16,
+    fontSize: 25,
     fontWeight: "700",
+  }, 
+  colorButton: {
+    borderRadius: 15,
+    backgroundColor: "#00A188",
+    paddingVertical: "4%",
+    paddingHorizontal: "4%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  nameText: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: "#ffffff"
   }
 })

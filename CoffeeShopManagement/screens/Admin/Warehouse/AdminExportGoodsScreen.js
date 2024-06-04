@@ -3,7 +3,6 @@ import React from 'react'
 import { useNavigation } from "@react-navigation/native";
 
 import SearchBar from '../../../components/Client/SearchBar'
-import ColorButton from '../../../components/Admin/Button/ColorButton'
 import ProductCardwithMinus from '../../../components/Admin/Card/ProductCardwithMinus';
 import BranchSelectBar from '../../../components/Admin/BranchSelectBar'
 const AdminExportGoodsScreen = () => {
@@ -80,7 +79,9 @@ const AdminExportGoodsScreen = () => {
           <Text style={styles.importTitle}>Số mặt hàng xuất kho:</Text>
           <Text style={styles.importNumber}>10000</Text>
         </View>
-        <ColorButton color="#00A188" text="Xuất hàng" textColor="#ffffff" OnPress={goToListExport} />
+        <TouchableOpacity style={styles.colorButton}  onPress={goToListExport}>
+            <Text style={styles.titleText}>Xuất hàng</Text>
+        </TouchableOpacity>      
       </View>
     </View>
   )
@@ -129,5 +130,19 @@ const styles = StyleSheet.create({
     color: "#00A188",
     fontSize: 16,
     fontWeight: "700",
+  },
+  colorButton: {
+    borderRadius: 15,
+    backgroundColor: "#00A188",
+    margin: "2%",
+    paddingVertical: "4%",
+    paddingHorizontal: "8%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  titleText: {
+      fontSize: 16,
+      fontWeight: "700",
+      color: "#ffffff"
   }
 })

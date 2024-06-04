@@ -6,35 +6,16 @@ import AddGoodModal from '../Modal/AddGoodModal';
 import EditGoodInfoModal from '../Modal/EditGoodInfoModal';
 
 const ProductCardwithPlus = ({
-    title, quantity, price, imageSource, unit, OnPress
+   name, quantity, price, imageSource, unit, onPressEdit, onPressAddNew
 }) => {
-    const [modalVisible, setModalVisible] = useState(false);
-    const [editmodalVisible, seteditModalVisible] = useState(false);
-
-    const showAddNewModal = () => {
-        setModalVisible(true);
-    };
-
-    const hideAddNewModal = () => {
-        setModalVisible(false);
-    };
-
-    const showEditGoodInfoModal = () => {
-        seteditModalVisible(true);
-    };
-
-    const hideEditGoodInfoModal = () => {
-        seteditModalVisible(false);
-    };
-
     return (
         <View>
-            <TouchableOpacity style={styles.container} onPress={showEditGoodInfoModal}>
+            <TouchableOpacity style={styles.container} onPress={onPressEdit}>
                 <View style={styles.imageContainer}>
-                    <Image style={styles.image} source={imageSource} resizeMode="center" />
+                    <Image style={styles.image} source={imageSource} resizeMode="cover" />
                 </View>
                 <View style={styles.main}>
-                    <Text style={styles.title}>{title}</Text>
+                    <Text style={styles.name}>{name}</Text>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                         <View>
                             <Text style={styles.label}>Số lượng:</Text>
@@ -55,13 +36,11 @@ const ProductCardwithPlus = ({
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity onPress={showAddNewModal}>
+                    <TouchableOpacity onPress={onPressAddNew}>
                         <AntDesign name="pluscircle" size={36} color="#FFA730" />
                     </TouchableOpacity>
-                    <AddGoodModal visible={modalVisible} onClose={hideAddNewModal} />
                 </View>
             </TouchableOpacity>
-            <EditGoodInfoModal visible={editmodalVisible} onClose={hideEditGoodInfoModal} />
         </View>
     )
 }
@@ -96,7 +75,7 @@ const styles = StyleSheet.create({
         paddingRight: "5%",
         paddingLeft: "3%"
     },
-    title: {
+    name: {
         width: "100%",
         color: "#3a3a3a",
         fontSize: 16,

@@ -7,38 +7,38 @@ import ProductCardwithPrice from '../../../components/Admin/Card/ProductCardwith
 const AdminListImportScreen = () => {
   const productList = [
     {
-      title: "Tên hàng hóa",
-      unit: "Bịch",
+      name: "Tên hàng hóa",
+      unit: "Túi",
       price: "100.000",
       quantity: "100",
     },
     {
-      title: "Tên hàng hóa1",
-      unit: "Bịch",
+      name: "Tên hàng hóa1",
+      unit: "Túi",
       price: "100.000",
       quantity: "100",
     },
     {
-      title: "Tên hàng hóa2",
-      unit: "Bịch",
+      name: "Tên hàng hóa2",
+      unit: "Túi",
       price: "100.000",
       quantity: "100",
     },
     {
-      title: "Tên hàng hóa3",
-      unit: "Bịch",
+      name: "Tên hàng hóa3",
+      unit: "Túi",
       price: "100.000",
       quantity: "100",
     },
     {
-      title: "Tên hàng hóa4",
-      unit: "Bịch",
+      name: "Tên hàng hóa4",
+      unit: "Túi",
       price: "100.000",
       quantity: "100",
     },
     {
-      title: "Tên hàng hóa5",
-      unit: "Bịch",
+      name: "Tên hàng hóa5",
+      unit: "Túi",
       price: "100.000",
       quantity: "100",
     },
@@ -48,7 +48,7 @@ const AdminListImportScreen = () => {
     return productList.map((item, index) => (
       <ProductCardwithPrice
         key={index}
-        title={item.title}
+        name={item.name}
         unit={item.unit}
         quantity={item.quantity}
         price={item.price}
@@ -61,12 +61,12 @@ const AdminListImportScreen = () => {
       <View style={styles.bar}>
         <BranchSelectBar branchName="ThanhTai1" />
       </View>
-      <Text style={styles.title}>Danh sách nhập hàng</Text>
+      <Text style={styles.name}>Danh sách nhập hàng</Text>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
         {renderproductList()}
       </ScrollView>
       <View style={styles.costContaner}>
-        <Text style={styles.costTitle}>Tổng cộng</Text>
+        <Text style={styles.costname}>Tổng cộng</Text>
         <Text style={styles.cost}>118.000 VNĐ</Text>
       </View>
       <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" />
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: "2%",
   },
-  title: {
+  name: {
     color: "#3a3a3a",
     fontSize: 16,
     fontWeight: "600",
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between"
   },
-  costTitle: {
+  costname: {
     color: "#3a3a3a",
     fontSize: 18,
     fontWeight: "600",

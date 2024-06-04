@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Modal } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 
@@ -7,10 +7,13 @@ import SearchBar from "../../../components/Client/SearchBar";
 import ColorButton from '../../../components/Admin/Button/ColorButton';
 import { ScrollView } from 'react-native-gesture-handler';
 import ProductCard from '../../../components/Admin/Card/ProductCard';
+import { db } from '../../../services/firebaseService';
+import { collection, getDocs } from 'firebase/firestore';
 
 
 const AdminWareHouseScreen = () => {
     const navigation = useNavigation();
+    const [goodsList, setGoodsList] = useState([]);
 
     const goToImportGoodsScreen = () => {
         navigation.navigate("AdminImportGoods");
@@ -20,53 +23,26 @@ const AdminWareHouseScreen = () => {
         navigation.navigate("AdminExportGoods");
     };
 
-    const productList = [
-        {
-            title: "Tên hàng hóa",
-            unit: "Bịch",
-            price: "100.000",
-            quantity: "100",
-        },
-        {
-            title: "Tên hàng hóa1",
-            unit: "Bịch",
-            price: "100.000",
-            quantity: "100",
-        },
-        {
-            title: "Tên hàng hóa2",
-            unit: "Bịch",
-            price: "100.000",
-            quantity: "100",
-        },
-        {
-            title: "Tên hàng hóa3",
-            unit: "Bịch",
-            price: "100.000",
-            quantity: "100",
-        },
-        {
-            title: "Tên hàng hóa4",
-            unit: "Bịch",
-            price: "100.000",
-            quantity: "100",
-        },
-        {
-            title: "Tên hàng hóa5",
-            unit: "Bịch",
-            price: "100.000",
-            quantity: "100",
-        },
-    ];
+    useEffect(() => {
+        const fetchGoods = async () => {
+            const goodsCollection = collection(db, 'goods');
+            const goodsSnapshot = await getDocs(goodsCollection);
+            const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
+            setGoodsList(goodsListData);
+        };
 
-    const renderproductList = () => {
-        return productList.map((item, index) => (
+        fetchGoods();
+    }, []);
+
+    const rendergoodsList = () => {
+        return goodsList.map((item, index) => (
             <ProductCard
                 key={index}
-                title={item.title}
-                unit={item.unit}
-                quantity={item.quantity}
-                price={item.price}
+                imageSource={{uri: item.goodsImage }}
+                name={item.goodsName}
+                unit={item.goodsUnit}
+                quantity={item.goodsQuantity}
+                price={item.goodsPrice}
             />
         ));
     };
@@ -74,11 +50,11 @@ const AdminWareHouseScreen = () => {
     return (
         <View style={styles.container}>
             <View style={styles.branchSelectContainer}>
-                <TouchableOpacity style={styles.subtitleContainer}>
+                <TouchableOpacity style={styles.subnameContainer}>
                     <FontAwesome5 name="map-marker-alt" size={20} color="#00A188" />
                     <Text style={[styles.normalText, { marginLeft: "3%" }]}>Chi nhánh trung tâm</Text>
                 </TouchableOpacity>
-                <View style={styles.subtitleContainer}>
+                <View style={styles.subnameContainer}>
                     <Text style={styles.greenText}>5</Text>
                     <Text style={styles.normalText}>Mặt hàng - Số lượng trong kho:</Text>
                     <Text style={styles.greenText}>100</Text>
@@ -98,7 +74,7 @@ const AdminWareHouseScreen = () => {
             </View>
 
             <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
-                {renderproductList()}
+                {rendergoodsList()}
             </ScrollView>
         </View>
     )
@@ -140,7 +116,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff"
     },
 
-    subtitleContainer: {
+    subnameContainer: {
         flexDirection: "row",
         alignItems: "center"
     },

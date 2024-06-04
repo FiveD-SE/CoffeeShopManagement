@@ -6,11 +6,11 @@ export default function Bronze() {
   return (
     <View style={styles.container}>
         <View style={styles.section}>
-            <MaterialCommunityIcons name='sale' size={50} color={'#006C5E'} style={styles.icon}/>
+            <MaterialCommunityIcons name='sale' size={30} color={'#006C5E'} style={styles.icon}/>
             <Text style={styles.text}>1 voucher giảm giá 10% cho{"\n"}mọi loại nước</Text>
         </View>
         <View style={styles.section}>
-            <MaterialCommunityIcons name='coffee' size={50} color={'#006C5E'} style={styles.icon}/>
+            <MaterialCommunityIcons name='coffee' size={30} color={'#006C5E'} style={styles.icon}/>
             <Text style={styles.text}>Mở khóa tính năng đỗi thưởng{"\n"}bằng BEAN</Text>
         </View>
     </View>
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     text: {
-        fontFamily: 'Lato-Bold',
+        fontFamily: 'lato-regular',
         fontSize: 16,
         color: '#000',
         lineHeight: 22

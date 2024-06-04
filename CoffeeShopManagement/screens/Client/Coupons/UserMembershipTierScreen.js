@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#006C5E',
   },
   tierText: {
-    fontFamily: 'Lato-Bold',
+    fontFamily: 'lato-bold',
     fontSize: 16,
     color: '#000',
     lineHeight: 18
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   contentText: {
-    fontFamily: 'Lato-Bold',
+    fontFamily: 'lato-bold',
     fontSize: 18,
     color: '#333',
     lineHeight: 20

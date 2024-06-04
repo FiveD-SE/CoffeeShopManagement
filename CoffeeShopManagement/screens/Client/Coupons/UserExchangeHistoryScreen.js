@@ -35,7 +35,7 @@ export default function History() {
           <Text style={styles.itemPoint}>{item.point}</Text>
         </View>
         <Text style={{
-          fontFamily: 'Lato-Regular',
+          fontFamily: 'lato-regular',
           fontSize: 13,
           color: '#333',
         }}>BEAN</Text>
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F9F9',
   },
   text: {
-    fontFamily: 'Lato-Regular',
+    fontFamily: 'lato-regular',
     fontSize: 20,
     marginBottom: 20,
     color: '#333',
@@ -86,13 +86,13 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   itemBrand: {
-    fontFamily: 'Lato-Bold',
+    fontFamily: 'lato-bold',
     fontSize: 16,
     color: '#A6A6AA',
     marginBottom: 5,
   },
   itemTitle: {
-    fontFamily: 'Lato-Regular',
+    fontFamily: 'lato-regular',
     fontSize: 14,
     color: '#000000',
   },
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   itemPoint: {
-    fontFamily: 'Lato-Bold',
+    fontFamily: 'lato-bold',
     fontSize: 16,
     color: '#4ECB71',
   },
