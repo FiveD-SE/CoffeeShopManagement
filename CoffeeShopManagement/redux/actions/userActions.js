@@ -43,29 +43,34 @@ export const removeFromFavorites = (userId, itemId) => ({
 });
 
 export const addToCart = (item) => ({
-	type: types.ADD_TO_CART,
-	payload: item,
+    type: types.ADD_TO_CART,
+    payload: item,
 });
 
 export const updateCartItemQuantity = (itemId, newQuantity) => ({
-	type: types.UPDATE_CART_ITEM_QUANTITY,
-	payload: {
-		itemId,
-		newQuantity,
-	},
+    type: types.UPDATE_CART_ITEM_QUANTITY,
+    payload: {
+        itemId,
+        newQuantity,
+    },
 });
 
 export const confirmOrder = (cartList) => ({
-	type: types.CONFIRM_ORDER,
-	payload: cartList,
+    type: types.CONFIRM_ORDER,
+    payload: cartList,
 });
 
-export const savePhoneNumber = (phoneNumber) => ({
-    type: types.SAVE_PHONE_NUMBER,
-    payload: phoneNumber,
+export const saveEmail = (email) => ({
+    type: types.SAVE_EMAIL,
+    payload: email,
 });
 
 export const saveUserData = (userData) => ({
     type: types.SAVE_USER_DATA,
     payload: userData,
+});
+
+export const updateUserLikes = (likedProductId) => ({
+    type: types.UPDATE_LIKES,
+    payload: likedProductId,
 });

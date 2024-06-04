@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     StyleSheet,
     Text,
@@ -14,15 +14,19 @@ import PasswordInput from "../../components/Client/PasswordInput";
 import BrownButton from "../../components/Client/Button/BrownButton";
 import BrownTextButton from "../../components/Client/Button/BrownTextButton";
 import { useNavigation } from "@react-navigation/native";
-// import { connect } from "react-redux"; // Commented out
-// import { signUpRequest } from "../../redux/actions/userActions"; // Commented out
-import { signUp } from "../../api";
+import {
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+} from "firebase/auth";
+import { auth, db, storage } from "../../services/firebaseService";
+import { doc, setDoc, updateDoc, collection } from "firebase/firestore";
+import { getDownloadURL, ref } from "firebase/storage";
 
 const BACKGROUND_SOURCE = require("../../assets/background.png");
 
 export default function SignUpScreen() {
     const [fullName, setFullName] = useState("");
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isChecked, setChecked] = useState(false);
@@ -34,16 +38,16 @@ export default function SignUpScreen() {
     };
 
     const handleSignUp = async () => {
-        if (isChecked && fullName && phoneNumber && password) {
-            if (phoneNumber.length !== 10) {
-                Alert.alert("Đăng ký thất bại", "Số điện thoại không hợp lệ");
+        if (isChecked && fullName && email && password && confirmPassword) {
+            if (email.indexOf("@") === -1) {
+                Alert.alert("Đăng ký thất bại", "Email không hợp lệ");
                 return;
             }
 
-            if (password.length < 8) {
+            if (password.length < 6) {
                 Alert.alert(
                     "Đăng ký thất bại",
-                    "Mật khẩu phải chứa ít nhất 8 ký tự"
+                    "Mật khẩu phải chứa ít nhất 6 ký tự"
                 );
                 return;
             }
@@ -54,17 +58,53 @@ export default function SignUpScreen() {
             }
 
             try {
-                const signUpSuccess = await signUp(
-                    fullName,
-                    phoneNumber,
+                const userCredential = await createUserWithEmailAndPassword(
+                    auth,
+                    email,
                     password
                 );
-                if (signUpSuccess) {
-                    Alert.alert("Đăng ký thành công", "Vui lòng đăng nhập");
-                    navigation.navigate("SignInScreen");
-                }
+                const user = userCredential.user;
+                const storageRef = ref(storage, "avatars/default.png");
+                const downloadURL = await getDownloadURL(storageRef);
+
+                await setDoc(doc(collection(db, "users"), user.uid), {
+                    email: email,
+                    fullName: fullName,
+                    password: password,
+                    credit: 0,
+                    likedProductId: [],
+                    createdAt: new Date(),
+                    userImage: downloadURL,
+                    role: "user",
+                });
+
+                const userId = user.uid;
+                await updateDoc(doc(db, "users", userId), {
+                    userId: userId,
+                });
+
+                const newNotificationRef = doc(collection(db, "notifications"));
+                const notificationId = newNotificationRef.id;
+
+                const notification = {
+                    notificationId,
+                    notificationContent: "Tạo tài khoản thành công!",
+                    notificationTitle: "Chào mừng bạn đến với Enigma",
+                    notificationCreatedDate: new Date(),
+                    notificationStatus: false,
+                    notificationType: 1,
+                    productOrder: [],
+                    userId: user.uid,
+                };
+
+                await setDoc(newNotificationRef, notification);
+
+                await sendEmailVerification(user);
+
+                Alert.alert("Đăng ký thành công", "Vui lòng xác thực email");
+                navigation.navigate("SignInScreen");
             } catch (error) {
-                Alert.alert("Đăng ký thất bại", "Số điện thoại đã tồn tại");
+                Alert.alert("Đăng ký thất bại", "Email đã tồn tại");
                 console.error("Error signing up:", error);
             }
         } else {
@@ -86,9 +126,9 @@ export default function SignUpScreen() {
                     onChangeText={setFullName}
                 />
                 <InputField
-                    placeholder="Số điện thoại"
-                    onChangeText={setPhoneNumber}
-                    keyboardType="phone-pad"
+                    placeholder="Email"
+                    onChangeText={setEmail}
+                    keyboardType="email-address"
                 />
                 <PasswordInput
                     placeholder="Mật khẩu"
