@@ -43,6 +43,7 @@ import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderIn
 import CashierNotification from "../screens/Staff/CashierNotification";
 import UserChooseAddressScreen from "../screens/Client/PlaceOrder/UserChooseAddressScreen";
 import ConfirmPassword from "../screens/Client/ConfirmPassword";
+import StorePolicyScreen from "../screens/Client/Other/StorePolicyScreen";
 
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { colors } from "../assets/colors/colors";
@@ -410,6 +411,17 @@ const OtherStack = () => (
             component={ConfirmPassword}
             options={{
                 headerTitle: "Xác nhận mật khẩu",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+        <Stack.Screen
+            name="StorePolicyScreen"
+            component={StorePolicyScreen}
+            options={{
+                headerTitle: "Chính sách",
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },

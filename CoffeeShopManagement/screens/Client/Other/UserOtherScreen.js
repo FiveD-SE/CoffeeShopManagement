@@ -252,7 +252,9 @@ const UserOtherScreen = ({ userData }) => {
                             <View style={[styles.rowWrapper, styles.rowFirst]}>
                                 <Pressable
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate(
+                                            "StorePolicyScreen"
+                                        );
                                     }}
                                     style={styles.row}
                                 >
