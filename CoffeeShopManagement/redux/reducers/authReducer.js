@@ -39,9 +39,18 @@ const authReducer = (state = initialState, action) => {
                 phoneNumber: action.payload,
             };
         case types.SAVE_USER_DATA:
+            console.log("SAVE_USER_DATA", action.payload);
             return {
                 ...state,
                 userData: action.payload,
+            };
+        case types.UPDATE_USER_DATA:
+            return {
+                ...state,
+                userData: {
+                    ...state.userData, // Keep existing data
+                    ...(action.payload || {}), // Merge changed fields
+                },
             };
         default:
             return state;

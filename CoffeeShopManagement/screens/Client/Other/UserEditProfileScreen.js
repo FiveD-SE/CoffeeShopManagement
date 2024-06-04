@@ -7,116 +7,86 @@ import {
     Pressable,
     Image,
     TextInput,
+    TouchableOpacity,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import SwitchToggle from "toggle-switch-react-native";
 import { useNavigation } from "@react-navigation/native";
-import SelectGenderModal from "../../../components/Admin/Modal/SelectGenderModal";
-import SelectDateModal from "../../../components/Admin/Modal/SelectDateModal";
-import { getUserData, updateUserData } from "../../../api";
-import { getToken } from "../../../services/authServices";
-import store from "../../../redux/store/store";
+import { connect } from "react-redux";
+import { db, auth } from "../../../services/firebaseService";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { saveUserData } from "../../../redux/actions/userActions";
+import SwitchToggle from "toggle-switch-react-native";
 
-const EditProfileDetails = () => {
+const EditProfileDetails = ({ userData, saveUserData }) => {
     const navigation = useNavigation();
-    const [userData, setUserData] = useState(null);
-    const [phoneNumber, setPhoneNumber] = useState("");
 
     const [isToggled, setIsToggled] = useState(false);
-    const [selectedGender, setSelectedGender] = useState("");
-    const [selectedDateOption, setSelectedDateOption] = useState("");
+    const [name, setName] = useState(userData?.name || "");
+    const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
 
     const handleToggle = () => {
         setIsToggled(!isToggled);
     };
 
-    useEffect(() => {
-        const fetchPhoneNumber = async () => {
-            try {
-                setPhoneNumber(store.getState().auth.phoneNumber);
-                console.log("Phone number:", phoneNumber);
-            } catch (error) {
-                console.error("Error fetching phone number:", error);
-            }
-        };
-
-        fetchPhoneNumber();
-    }, []);
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await getUserData(phoneNumber);
-                console.log("User data:", userData);
-                if (userData) {
-                    setUserData(userData);
-                } else {
-                    console.log("User not found");
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-        if (phoneNumber) {
-            fetchUserData();
-        }
-    }, [phoneNumber]);
-
     const avatar = require("../../../assets/vietnam.png");
     const flag = require("../../../assets/vietnam.png");
 
+    // UserEditProfileScreen.js
+
     const navigateToProfileDetails = async () => {
         try {
-            const success = await updateUserData(phoneNumber, userData);
-            if (success) {
-                navigation.navigate("ProfileDetails", { userData });
-            } else {
-                console.error("Cập nhật dữ liệu người dùng không thành công");
+            const user = auth.currentUser;
+            const docRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                // Update Firestore
+                await updateDoc(docRef, {
+                    fullName: name, // Use the state values
+                    phoneNumber: phoneNumber,
+                });
+
+                // Update Redux with ONLY the changed fields
+                saveUserData({
+                    ...userData,
+                    name: name,
+                    phoneNumber: phoneNumber,
+                });
+
+                navigation.navigate("ProfileDetails");
+
+                console.log("Cập nhật dữ liệu người dùng thành công");
             }
         } catch (error) {
-            console.error("Lỗi khi cập nhật dữ liệu người dùng:", error);
+            console.error(
+                "Lỗi khi lấy hoặc cập nhật dữ liệu người dùng:",
+                error
+            );
         }
     };
-
-    const showSelectGenderModal = () => {
-        setModalGenderVisible(true);
-    };
-
-    const hideSelectGenderModal = () => {
-        setModalGenderVisible(false);
-    };
-
-    const handleSelectGender = (option) => {
-        setSelectedGender(option);
-        hideSelectGenderModal();
-    };
-
-    const showSelectDateModal = () => {
-        setModalSelectDateVisible(true);
-    };
-
-    const hideSelectDateModal = () => {
-        setModalSelectDateVisible(false);
-    };
-
-    const handleSelectDateOption = (option) => {
-        setSelectedDateOption(option);
-    };
-
-    const [modalGenderVisible, setModalGenderVisible] = useState(false);
-    const [modalSelectDateVisible, setModalSelectDateVisible] = useState(false);
 
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
                 <View style={{ paddingVertical: 10, alignItems: "center" }}>
-                    <Pressable onPress={navigateToProfileDetails}>
-                        <Image
-                            alt="avatar"
-                            source={avatar}
-                            style={styles.profileAvatar}
-                        />
-                    </Pressable>
+                    <View
+                        style={[
+                            {
+                                paddingTop: 60,
+                                paddingBottom: 50,
+                                alignContent: "center",
+                                alignItems: "center", // Add alignItems: 'center'
+                            },
+                        ]}
+                    >
+                        <TouchableOpacity onPress={navigateToProfileDetails}>
+                            <Image
+                                alt="avatar"
+                                source={{ uri: userData?.userImage }}
+                                style={styles.profileAvatar}
+                            />
+                        </TouchableOpacity>
+                    </View>
                 </View>
 
                 <View style={styles.section}>
@@ -127,93 +97,15 @@ const EditProfileDetails = () => {
                         </Pressable>
                     </View>
                     <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "48%" }]}>
+                        <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <TextInput
                                 style={styles.text}
-                                onChangeText={(text) => {
-                                    console.log(text);
-                                    setUserData({
-                                        ...userData,
-                                        lastName: text,
-                                    });
-                                }}
-                            >
-                                {userData?.lastName}
-                            </TextInput>
-                        </View>
-                        <View style={[styles.rowLabelText, { width: "48%" }]}>
-                            <TextInput
-                                style={styles.text}
-                                onChangeText={(text) =>
-                                    setUserData({
-                                        ...userData,
-                                        firstName: text,
-                                    })
-                                }
-                            >
-                                {userData?.firstName}
-                            </TextInput>
+                                onChangeText={setName} // Cập nhật state name
+                                value={name} // Hiển thị giá trị hiện tại của state name
+                            />
                         </View>
                     </View>
-                    <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <Text style={styles.label}>Giới tính</Text>
-                            <View style={styles.row_space_between}>
-                                <Text
-                                    style={styles.text}
-                                    onChangeText={(text) => {
-                                        setUserData({
-                                            ...userData,
-                                            gender: text,
-                                        });
-                                    }}
-                                >
-                                    {selectedGender || userData?.gender}
-                                </Text>
 
-                                <Pressable onPress={showSelectGenderModal}>
-                                    <FontAwesome
-                                        name="angle-right"
-                                        size={32}
-                                        style={{ marginLeft: 15 }}
-                                    />
-                                </Pressable>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <Text style={styles.label}>Ngày sinh</Text>
-                            <View style={styles.row_space_between}>
-                                <Text
-                                    style={styles.text}
-                                    onChangeText={(text) =>
-                                        setUserData({
-                                            ...userData,
-                                            dateOfBirth: Date.parse(text),
-                                        })
-                                    }
-                                >
-                                    {selectedDateOption.replace(/\//g, "-") ||
-                                        userData?.dateOfBirth
-                                            ?.split("T")[0]
-                                            .replace(/\//g, "-")}
-                                </Text>
-                                <Pressable onPress={showSelectDateModal}>
-                                    <FontAwesome
-                                        name="angle-right"
-                                        size={32}
-                                        style={{ marginLeft: 15 }}
-                                    />
-                                </Pressable>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.section}>
-                    <View style={styles.row_space_between}>
-                        <Text style={styles.sectionTitle}>Số điện thoại</Text>
-                    </View>
                     <View style={styles.row_space_between}>
                         <View
                             style={[
@@ -233,15 +125,9 @@ const EditProfileDetails = () => {
                             <Text style={styles.text}>+84 </Text>
                             <TextInput
                                 style={styles.text}
-                                onChangeText={(text) =>
-                                    setUserData({
-                                        ...userData,
-                                        phoneNumber: text,
-                                    })
-                                }
-                            >
-                                {userData?.phoneNumber}
-                            </TextInput>
+                                onChangeText={setPhoneNumber} // Cập nhật state phoneNumber
+                                value={phoneNumber} // Hiển thị giá trị hiện tại của state phoneNumber
+                            />
                         </View>
                     </View>
                 </View>
@@ -251,18 +137,10 @@ const EditProfileDetails = () => {
                     </View>
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <TextInput
-                                style={styles.text}
-                                onChangeText={(text) =>
-                                    setUserData({ ...userData, email: text })
-                                }
-                            >
-                                {userData?.email}
-                            </TextInput>
+                            <Text style={styles.text}>{userData?.email}</Text>
                         </View>
                     </View>
                 </View>
-
                 <View style={styles.section}>
                     <View style={styles.row_space_between}>
                         <Text style={styles.sectionTitle}>
@@ -296,18 +174,6 @@ const EditProfileDetails = () => {
                         </View>
                     </View>
                 </View>
-
-                {/* Modal */}
-                <SelectGenderModal
-                    visible={modalGenderVisible}
-                    onClose={hideSelectGenderModal}
-                    onSelectGender={handleSelectGender}
-                />
-                <SelectDateModal
-                    visible={modalSelectDateVisible}
-                    onClose={hideSelectDateModal}
-                    onSelectOption={handleSelectDateOption}
-                />
             </ScrollView>
         </View>
     );
@@ -325,14 +191,14 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         color: "#000",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         fontWeight: "bold",
         marginBottom: 15,
     },
     editButton: {
         color: "#006C5E",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         fontWeight: "bold",
         lineHeight: 20,
@@ -371,7 +237,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "#000",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
         fontSize: 16,
         fontWeight: "400",
         lineHeight: 30,
@@ -381,5 +247,14 @@ const styles = StyleSheet.create({
         fontWeight: "900",
     },
 });
+const mapStateToProps = (state) => {
+    return {
+        userData: state.auth.userData, // Get user data from the 'user' state
+    };
+};
 
-export default EditProfileDetails;
+const mapDispatchToProps = {
+    saveUserData, // Save user data
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditProfileDetails);

@@ -12,7 +12,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SwitchToggle from "toggle-switch-react-native";
 import { useNavigation } from "@react-navigation/native";
 
-export default function ProfileDetails() {
+const ProfileDetails = ({ userData }) => {
     const navigtion = useNavigation();
     const [isToggled, setIsToggled] = useState(false);
 
@@ -41,7 +41,7 @@ export default function ProfileDetails() {
                             <Image
                                 alt="avatar"
                                 source={{
-                                    uri: "https://scontent-sin6-4.xx.fbcdn.net/v/t39.30808-1/393698679_1495878884508043_550350055410841475_n.jpg?stp=dst-jpg_p720x720&_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFQrRjJ4jcgm8OBg7oq1eI7I8q4OwXieYQjyrg7BeJ5hD9X8Ob17MNrJO2IF7pH46QHD9cdI-6578xG94UN4G7L&_nc_ohc=uEpw-hwbqVYAb7LoagK&_nc_ht=scontent-sin6-4.xx&oh=00_AfDH00MtvepW5D0qWXtOMEuXwJUyyWmBtxDl9CVNwBYceg&oe=661FF5EA",
+                                    uri: userData.avatar,
                                 }}
                                 style={styles.profileAvatar}
                             />
@@ -136,7 +136,7 @@ export default function ProfileDetails() {
             </ScrollView>
         </SafeAreaView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -204,3 +204,11 @@ const styles = StyleSheet.create({
         fontWeight: "400",
     },
 });
+
+const mapStateToProps = (state) => {
+    return {
+        userData: state.auth.userData,
+    };
+};
+
+export default connect(mapStateToProps)(ProfileDetails);

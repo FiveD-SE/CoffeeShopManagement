@@ -13,45 +13,156 @@ import Feather from "react-native-vector-icons/Feather";
 import { deleteUser, getUserData } from "../../api";
 import store from "../../redux/store/store";
 import * as Updates from "expo-updates";
+import {
+    getAuth,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+} from "firebase/auth";
+import { db } from "../../services/firebaseService"; // Import your Firebase auth instance
+import { doc, updateDoc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
+import { colors } from "../../assets/colors/colors"; // Assuming you have a colors file
+import { connect } from "react-redux";
+import { saveUserData } from "../../redux/actions/userActions";
 
-const ConfirmPassword = () => {
+const ConfirmPassword = ({ userData, saveUserData }) => {
     const [password, setPassword] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState("");
 
-    useEffect(() => {
-        const fetchPhoneNumber = async () => {
-            try {
-                setPhoneNumber(store.getState().auth.phoneNumber);
-                console.log("Phone number:", phoneNumber);
-            } catch (error) {
-                console.error("Error fetching phone number:", error);
-            }
-        };
-
-        fetchPhoneNumber();
-    }, []);
-
-    const deleteAccountHandler = async () => {
-        if (!password) {
-            Alert.alert("Vui lòng điền mật khẩu");
-            return;
-        }
-
+    const handleConfirmDeleteAccount = async () => {
         try {
-            const deleteSuccess = await deleteUser(phoneNumber, password);
-            if (deleteSuccess) {
-                Alert.alert(
-                    "Xoá tài khoản thành công",
-                    "Tài khoản đã được xoá",
-                    [{ text: "OK", onPress: () => Updates.reloadAsync() }]
-                );
-            } else {
-                Alert.alert("Xoá tài khoản thất bại", "Mật khẩu không đúng");
+            const auth = getAuth();
+            const user = auth.currentUser;
+
+            if (!user) {
+                Alert.alert("Lỗi", "Vui lòng đăng nhập để xoá tài khoản.");
+                return;
             }
+
+            // Kiểm tra xem người dùng đã nhập mật khẩu xác nhận chưa
+            if (!password) {
+                Alert.alert(
+                    "Lỗi",
+                    "Vui lòng nhập mật khẩu để xác nhận xóa tài khoản."
+                );
+                return;
+            }
+
+            // Xác nhận xóa tài khoản
+            Alert.alert(
+                "Xác nhận",
+                "Bạn có chắc chắn muốn xoá tài khoản? Hành động này không thể hoàn tác.",
+                [
+                    {
+                        text: "Huỷ",
+                        style: "cancel",
+                    },
+                    {
+                        text: "Xoá",
+                        style: "destructive",
+                        onPress: async () => {
+                            // Xác thực lại tài khoản bằng mật khẩu
+                            const credential = EmailAuthProvider.credential(
+                                userData.email,
+                                password
+                            );
+                            try {
+                                await reauthenticateWithCredential(
+                                    user,
+                                    credential
+                                );
+                            } catch (error) {
+                                console.log("Error reauthenticating:", error);
+                                Toast.show({
+                                    type: "error",
+                                    text1: "Lỗi",
+                                    text2: "Mật khẩu không chính xác.",
+                                    text1Style: {
+                                        fontSize: 16,
+                                        fontFamily: "lato-regular",
+                                        color: colors.black_100,
+                                    },
+                                    text2Style: {
+                                        fontSize: 12,
+                                        fontFamily: "lato-regular",
+                                        color: colors.grey_100,
+                                    },
+                                });
+                                return;
+                            }
+
+                            // Xoá tài khoản trên Firebase
+                            try {
+                                await user.delete();
+                            } catch (error) {
+                                console.log("Error deleting account:", error);
+                                Toast.show({
+                                    type: "error",
+                                    text1: "Lỗi",
+                                    text2: "Đã có lỗi xảy ra khi xoá tài khoản.",
+                                    text1Style: {
+                                        fontSize: 16,
+                                        fontFamily: "lato-regular",
+                                        color: colors.black_100,
+                                    },
+                                    text2Style: {
+                                        fontSize: 12,
+                                        fontFamily: "lato-regular",
+                                        color: colors.grey_100,
+                                    },
+                                });
+                                return;
+                            }
+
+                            // Xoá dữ liệu liên quan đến tài khoản người dùng
+                            // ...
+
+                            // Xoá thông tin đăng nhập trên thiết bị
+                            await AsyncStorage.removeItem("email");
+                            await AsyncStorage.removeItem("password");
+                            await AsyncStorage.removeItem("isRemembered");
+
+                            // Tải lại ứng dụng
+                            await Updates.reloadAsync();
+
+                            Toast.show({
+                                type: "success",
+                                text1: "Thành công",
+                                text2: "Tài khoản của bạn đã được xoá.",
+                                text1Style: {
+                                    fontSize: 16,
+                                    fontFamily: "lato-regular",
+                                    color: colors.black_100,
+                                },
+                                text2Style: {
+                                    fontSize: 12,
+                                    fontFamily: "lato-regular",
+                                    color: colors.grey_100,
+                                },
+                            });
+                        },
+                    },
+                ]
+            );
         } catch (error) {
-            console.error("Lỗi khi xóa tài khoản:", error.message);
-            Alert.alert("Lỗi", "Đã xảy ra lỗi khi xóa tài khoản");
+            console.log("Error deleting account:", error);
+            // Xử lý lỗi chung
+            Toast.show({
+                type: "error",
+                text1: "Lỗi",
+                text2: "Đã có lỗi xảy ra khi xoá tài khoản.",
+                text1Style: {
+                    fontSize: 16,
+                    fontFamily: "lato-regular",
+                    color: colors.black_100,
+                },
+                text2Style: {
+                    fontSize: 12,
+                    fontFamily: "lato-regular",
+                    color: colors.grey_100,
+                },
+            });
         }
     };
 
@@ -81,7 +192,10 @@ const ConfirmPassword = () => {
                     </View>
                 </View>
 
-                <Pressable style={styles.button} onPress={deleteAccountHandler}>
+                <Pressable
+                    style={styles.button}
+                    onPress={handleConfirmDeleteAccount}
+                >
                     <Text style={styles.buttonText}>Xoá tài khoản</Text>
                 </Pressable>
             </ScrollView>
@@ -121,7 +235,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: "#FFFFFF",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-regular",
         fontSize: 18,
     },
     rowLabelText: {
@@ -141,4 +255,12 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ConfirmPassword;
+const mapStateToProps = (state) => ({
+    userData: state.auth.userData,
+});
+
+const mapDispatchToProps = {
+    saveUserData,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ConfirmPassword);
