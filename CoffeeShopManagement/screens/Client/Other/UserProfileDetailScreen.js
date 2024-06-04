@@ -212,14 +212,14 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         color: "#000",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         fontWeight: "bold",
         marginBottom: 15,
     },
     editButton: {
         color: "#006C5E",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         fontWeight: "bold",
         lineHeight: 20,
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "#000",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
         fontSize: 16,
         fontWeight: "400",
         lineHeight: 30,

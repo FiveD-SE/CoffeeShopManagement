@@ -1,10 +1,41 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
-import React from 'react'
+import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native'
+import React, { useState } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import SquareWithBorder from '../SquarewithBorder'
 import ColorButton from '../Button/ColorButton'
+import { collection, doc, setDoc } from 'firebase/firestore'
+import { db, uploadImageToFirebase } from '../../../services/firebaseService'
 
 const AddNewGoodModal = ({ visible, onClose }) => {
+	const [selectedImage, setSelectedImage] = useState("");
+	const [goodsName, setGoodsName] = useState("");
+	const [goodsUnit, setGoodsUnit] = useState("");
+	const [goodsPrice, setGoodsPrice] = useState(0);
+
+	const handleAddNewGood = async () => {
+		if (selectedImage && goodsName && goodsUnit && goodsPrice) {
+			const newGoodsRef = doc(collection(db, "goods"));
+			const goodsId = newGoodsRef.id;
+			
+			const imageURI = await uploadImageToFirebase(selectedImage, goodsId);
+			
+			const goods = {
+				goodsId: goodsId,
+				goodsImage: imageURI,
+				goodsName: goodsName,
+				goodsUnit: goodsUnit,
+				goodsPrice: goodsPrice,
+				goodsQuantity: 0,
+			};
+			
+			setDoc(newGoodsRef, goods);
+			Alert.alert("Thêm mới thành công", "Mặt hàng đã được thêm vào kho");
+			onClose();
+		}
+		else {
+            Alert.alert("Thêm mới thất bại", "Vui lòng điền đầy đủ thông tin");
+		}
+	}
 
 	return (
 		<Modal
@@ -18,7 +49,7 @@ const AddNewGoodModal = ({ visible, onClose }) => {
 					<ModalHeader title="Thêm mặt hàng mới" onClose={onClose} />
 					<View style={styles.main}>
 						<View style={styles.imageContainer}>
-							<SquareWithBorder text="Ảnh mặt hàng" />
+							<SquareWithBorder text="Ảnh mặt hàng" onImageSelected={setSelectedImage}	/>
 						</View>
 						<Text style={styles.header}>Thông tin mặt hàng</Text>
 						<View style={styles.inputContainer}>
@@ -26,12 +57,14 @@ const AddNewGoodModal = ({ visible, onClose }) => {
 								<TextInput
 									style={styles.input}
 									placeholder="Tên mặt hàng"
+									onChangeText={setGoodsName}
 								/>
 							</View>
 							<View style={styles.inputBox}>
 								<TextInput
 									style={styles.input}
 									placeholder="Đơn vị"
+									onChangeText={setGoodsUnit}
 								/>
 							</View>
 							<View style={styles.inputBox}>
@@ -39,10 +72,11 @@ const AddNewGoodModal = ({ visible, onClose }) => {
 									keyboardType="phone-pad"
 									style={styles.input}
 									placeholder="Giá nhập ban đầu"
+									onChangeText={(text) => setGoodsPrice(Number(text))}
 								/>
 							</View>
 						</View>
-						<ColorButton color="#00A188" text="Thêm mới" textColor="#ffffff" />
+						<ColorButton color="#00A188" text="Thêm mới" textColor="#ffffff" OnPress={handleAddNewGood}/>
 					</View>
 				</View>
 			</View>
@@ -63,7 +97,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		borderRadius: 20,
 		width: "90%",
-		height: "61%",
+		height: "auto",
 	},
 	imageContainer: {
 		marginTop: "5%",
@@ -72,7 +106,8 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		paddingHorizontal: "5%",
-		marginBottom: "10%",
+		paddingVertical: "5%",
+		borderRadius: 20,
 		backgroundColor: "#F8F7FA",
 	},
 	header: {

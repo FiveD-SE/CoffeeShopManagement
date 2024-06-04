@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     headingText: {
-        fontFamily: 'Lato-Regular',
+        fontFamily: 'lato-regular',
         color: '#000000',
         textAlign: 'center',
         fontSize: 15,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     sectionText: {
-        fontFamily: 'Lato-Regular',
+        fontFamily: 'lato-regular',
         color: '#000000',
         textAlign: 'left',
         fontSize: 18,

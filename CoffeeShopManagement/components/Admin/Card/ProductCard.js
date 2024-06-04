@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import EditGoodInfoModal from '../Modal/EditGoodInfoModal';
 const ProductCard = ({
-  title, quantity, price, imageSource, unit, OnPress
+  name, quantity, price, imageSource, unit, OnPress
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -18,10 +18,10 @@ const ProductCard = ({
     <View>
       <TouchableOpacity style={styles.container} onPress={showEditGoodInfoModal}>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={imageSource} resizeMode="center" />
+          <Image style={styles.image} source={imageSource} resizeMode="cover" />
         </View>
         <View style={styles.main}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.name}>{name}</Text>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <View>
               <Text style={styles.label}>Số lượng:</Text>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     paddingRight: "5%",
     paddingLeft: "3%"
   },
-  title: {
+  name: {
     width: "100%",
     color: "#3a3a3a",
     fontSize: 16,

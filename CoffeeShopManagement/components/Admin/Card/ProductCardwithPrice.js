@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
 const ProductCardwithPrice = ({
-    title, quantity, price, imageSource, unit, OnPress
+    name, quantity, price, imageSource, unit, OnPress
 }) => {
     return (
         <SafeAreaView style={styles.container}>
@@ -9,7 +9,7 @@ const ProductCardwithPrice = ({
                 <Image style={styles.image} source={imageSource} resizeMode="center" />
             </View>
             <View style={styles.main}>
-                <Text style={styles.title}>{title}</Text>
+                <Text style={styles.name}>{name}</Text>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                     <View>
                         <Text style={styles.label}>Số lượng:</Text>
@@ -55,8 +55,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     image: {
-        width: "100%",
-        height: 100,
+        width: 80,
+        height: 80,
         aspectRatio: 1,
     },
     main: {
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         borderRightWidth: 1,
         borderColor: "rgba(58,58,58,0.5)"
     },
-    title: {
+    name: {
         width: "100%",
         color: "#3a3a3a",
         fontSize: 16,

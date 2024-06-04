@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker'; 
+import * as ImagePicker from 'expo-image-picker';
 
-const SquareWithBorder = ({ text }) => {
+const SquareWithBorder = ({ text, onImageSelected, selectedImage: initialSelectedImage }) => {
   const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    setSelectedImage(initialSelectedImage);
+  }, [initialSelectedImage]);
 
   const handleImagePick = async () => {
     try {
       const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (!permissionResult.granted) {
-        alert('Cần cấp quyền truy cập thư viện ảnh!');
+        Alert.alert('Quyền truy cập bị từ chối', 'Cần cấp quyền truy cập thư viện ảnh!');
         return;
       }
 
@@ -21,8 +25,9 @@ const SquareWithBorder = ({ text }) => {
         quality: 1,
       });
 
-      if (!pickerResult.cancelled) {
-        setSelectedImage(pickerResult.uri);
+      if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
+        setSelectedImage(pickerResult.assets[0].uri);
+        onImageSelected(pickerResult.assets[0].uri);
       }
     } catch (error) {
       console.log('Lỗi chọn ảnh:', error);
@@ -50,17 +55,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#9D9D9D',
     borderRadius: 10,
-    paddingHorizontal: '4%',
-    paddingVertical: '8%',
+    width: 150,
+    height: 150,
     borderStyle: 'dashed',
-    alignItems: 'center',
   },
   content: {
     flexDirection: 'column',
     alignItems: 'center',
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
   },
   placeholder: {
     alignItems: 'center',
+    justifyContent: 'center',
   },
   text: {
     color: '#9D9D9D',
@@ -69,8 +77,8 @@ const styles = StyleSheet.create({
     marginTop: '2%',
   },
   image: {
-    width: 100,
-    height: 100,
+    width: '100%',
+    height: '100%',
     resizeMode: 'cover',
     borderRadius: 10,
   },
