@@ -71,6 +71,6 @@ export const saveUserData = (userData) => ({
 });
 
 export const updateUserLikes = (likedProductId) => ({
-    type: types.UPDATE_LIKES,
+    type: types.UPDATE_USER_LIKES,
     payload: likedProductId,
 });

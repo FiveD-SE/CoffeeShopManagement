@@ -19,6 +19,7 @@ import { getUserData } from "../../../api";
 import store from "../../../redux/store/store";
 
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function UserOtherScreen() {
     const navigation = useNavigation();
@@ -374,7 +375,9 @@ export default function UserOtherScreen() {
                             >
                                 <Pressable
                                     onPress={() => {
-                                        removeToken();
+                                        AsyncStorage.removeItem("isRemembered");
+                                        AsyncStorage.removeItem("email");
+                                        AsyncStorage.removeItem("password");
                                         Updates.reloadAsync();
                                         navigation.navigate("SignIn");
                                     }}

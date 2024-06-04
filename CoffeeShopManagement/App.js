@@ -14,14 +14,15 @@ import { initializeFavorites } from "./services/favoritesService";
 import { getProductsList } from "./api";
 import { getProductList } from "./redux/actions/userActions";
 import { auth, db } from "../CoffeeShopManagement/services/firebaseService";
-import { signInWithEmailAndPassword } from "./services/authServices";
-import { getDoc } from "firebase/firestore";
+import { getDoc, doc } from "firebase/firestore";
 import { saveUserData, updateUserLikes } from "./redux/actions/userActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import { signInWithEmailAndPassword } from "./services/firebaseService";
 
 export default function App() {
     const [role, setRole] = useState("");
+    const [isLogin, setIsLogin] = useState(false);
     const [loaded] = useFonts({
         "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
         "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
@@ -30,7 +31,6 @@ export default function App() {
 
     useEffect(() => {
         // remove async storage
-        AsyncStorage.removeItem("isRemembered");
         // Check if the user is remembered and attempt to log them in
         const checkLogin = async () => {
             const isRemembered = await AsyncStorage.getItem("isRemembered");
