@@ -18,7 +18,6 @@ import RecentItemCard from "../../../components/Client/Card/RecentItemCard";
 import CategoryItemList from "../../../components/Client/List/CategoryItemList";
 import CategoryBottomSheet from "../../../components/Client/BottomSheet/CategoryBottomSheet";
 import ItemDetailBottomSheet from "./ItemDetailBottomSheet";
-import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
 import { getProductsList } from "../../../api";
 
@@ -114,7 +113,7 @@ const UserPlaceOrderScreen = () => {
 		fetchProductList();
 	}, []);
 	return (
-		<IsOpenProvider>
+		<>
 			<SafeAreaView style={styles.container}>
 				<ScrollView
 					showsVerticalScrollIndicator={false}
@@ -184,7 +183,7 @@ const UserPlaceOrderScreen = () => {
 					/>
 				)}
 			</SafeAreaView>
-		</IsOpenProvider>
+		</>
 	);
 };
 

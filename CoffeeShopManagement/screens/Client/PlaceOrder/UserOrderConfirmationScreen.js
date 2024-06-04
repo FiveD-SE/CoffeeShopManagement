@@ -11,7 +11,6 @@ import DeliveryInformationButton from "../../../components/Client/Button/Deliver
 import ChooseCouponBottomSheet from "../../../components/Client/BottomSheet/ChooseCouponBottomSheet";
 import OrderConfirmationFooter from "../../../components/Client/OrderConfirmationFooter";
 import { useNavigation } from "@react-navigation/native";
-import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { connect } from "react-redux";
 
 const CASH_ICON = require("../../../assets/cash.png");
@@ -194,7 +193,7 @@ const UserOrderConfirmationScreen = ({ orderInformation }) => {
 	};
 
 	return (
-		<IsOpenProvider>
+		<>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={styles.container} showsVerticalScrollIndicator={false}>
 					<ChooseDeliveryButton
@@ -238,7 +237,7 @@ const UserOrderConfirmationScreen = ({ orderInformation }) => {
 				snapPoints={chooseCouponSnapPoints}
 				onSelectCoupon={handleSelectCoupon}
 			/>
-		</IsOpenProvider>
+		</>
 	);
 };
 

@@ -57,7 +57,7 @@ const UserBestSellerScreen = () => {
 	}, []);
 
 	return (
-		<IsOpenProvider>
+		<>
 			<View style={styles.container}>
 				<View style={styles.bestSellerItemListContainer}>
 					<FlatList
@@ -78,7 +78,7 @@ const UserBestSellerScreen = () => {
 					/>
 				)}
 			</View>
-		</IsOpenProvider>
+		</>
 	);
 };
 

@@ -22,10 +22,11 @@ export default SearchBar;
 const styles = StyleSheet.create({
 	inputContainer: {
 		flex: 1,
+		minHeight: 48,
 		flexDirection: "row",
 		alignItems: "center",
 		borderWidth: 1,
-		borderRadius: 15,
+		borderRadius: 8,
 		borderColor: "#CCCCCC",
 		paddingHorizontal: "5%",
 		paddingVertical: "2%",
