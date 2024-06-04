@@ -1,12 +1,22 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native'
-import React, { useState } from 'react'
-import ModalHeader from '../../Client/Header/ModalHeader'
-import { FontAwesome5, Entypo  } from '@expo/vector-icons';
+import { View, Text, Modal, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import ModalHeader from '../../Client/Header/ModalHeader';
+import { FontAwesome5, Entypo } from '@expo/vector-icons';
 import Checkbox from 'expo-checkbox';
 
-const ServiceTypeModal = ({ visible, onClose }) => {
+const ServiceTypeModal = ({ visible, onClose, setServiceType }) => {
   const [isShipChecked, setShipChecked] = useState(false);
   const [isChecked, setChecked] = useState(false);
+
+  const handleSave = () => {
+    if (!isShipChecked && !isChecked) {
+      setServiceType(null);
+    } else {
+      setServiceType({ deliveryEnabled: isShipChecked, pickupEnabled: isChecked });
+      onClose();
+    }
+  };
+
   return (
     <Modal
       animationType="fade"
@@ -32,7 +42,7 @@ const ServiceTypeModal = ({ visible, onClose }) => {
             </View>
             <View style={styles.checkBoxContainer}>
               <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Entypo  name="drink" size={28} color="#3a3a3a" />
+                <Entypo name="drink" size={28} color="#3a3a3a" />
                 <Text style={styles.title}>Tự đến lấy hàng</Text>
               </View>
               <Checkbox
@@ -42,14 +52,17 @@ const ServiceTypeModal = ({ visible, onClose }) => {
                 color={isChecked ? '#00A188' : undefined}
               />
             </View>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveButtonText}>Lưu</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </View>
     </Modal>
-  )
+  );
 }
 
-export default ServiceTypeModal
+export default ServiceTypeModal;
 
 const styles = StyleSheet.create({
   modalContainer: {
@@ -62,7 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F7FA",
     borderRadius: 20,
     width: "90%",
-    height: "35%",
+    height: "45%",
   },
   imageContainer: {
     marginTop: "5%",
@@ -71,11 +84,11 @@ const styles = StyleSheet.create({
   },
   main: {
     paddingHorizontal: "3%",
-    marginVertical:"2%"
+    marginVertical: "2%"
   },
   checkBoxContainer: {
     padding: "8%",
-    marginVertical:"2%",
+    marginVertical: "2%",
     backgroundColor: "#ffffff",
     borderWidth: 1,
     borderRadius: 20,
@@ -84,7 +97,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center"
   },
-  
   title: {
     color: "#3a3a3a",
     marginLeft: "5%",
@@ -93,5 +105,18 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     borderRadius: 5
+  },
+  saveButton: {
+    backgroundColor: '#00A188',
+    borderRadius: 10,
+    paddingVertical: "4%",
+    paddingHorizontal: "5%",
+    alignItems: 'center',
+    marginVertical: "5%",
+  },
+  saveButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
   }
 });

@@ -2,24 +2,41 @@ import { View, Text, Modal, StyleSheet, FlatList, ScrollView } from 'react-nativ
 import React, { useState, useEffect } from 'react'
 import CategoryIcon from '../../Client/Button/CategoryIcon';
 import ModalHeader from '../../Client/Header/ModalHeader'
-const GOOGLE_ICON = require("../../../assets/google.png");
-const FRUITS_ICON = require("../../../assets/fruits.png");
-const MILKTEA_ICON = require("../../../assets/milktea.png");
-const ItemTypeModal = ({ visible, onClose }) => {
-    const categoriesData = [
-        { type: "Category 1", iconSource: GOOGLE_ICON },
-        { type: "Category 2", iconSource: GOOGLE_ICON },
-        { type: "Category 1", iconSource: GOOGLE_ICON },
-        { type: "Category 2", iconSource: GOOGLE_ICON },
-        { type: "Category 2", iconSource: FRUITS_ICON },
-        { type: "Category 2", iconSource: FRUITS_ICON },
-        { type: "Category 2", iconSource: FRUITS_ICON },
-        { type: "Category 2", iconSource: MILKTEA_ICON },
-    ];
+import CategoryItemList from '../../Client/List/CategoryItemList';
+import { colors } from '../../../assets/colors/colors';
+const COFFEE_ICON = require("../../../assets/images/coffee.png");
+const JUICE_ICON = require("../../../assets/images/juice.png");
+const MILKTEA_ICON = require("../../../assets/images/milktea.png");
+const ICE_BLENDED_ICON = require("../../../assets/images/ice-blended.png");
 
-    const renderCategoryItemList = ({ item }) => (
-        <CategoryIcon iconSource={item.iconSource} size={56} />
-    );
+const categoriesData = [
+    { type: "Cà phê", iconSource: COFFEE_ICON },
+    { type: "Trà sữa", iconSource: MILKTEA_ICON },
+    { type: "Nước trái cây", iconSource: JUICE_ICON },
+    { type: "Đá xay", iconSource: ICE_BLENDED_ICON },
+];
+const ItemTypeModal = ({ visible, onClose, setItemType }) => {
+
+    const handleSelectItemType = (itemType) => {
+        setItemType(itemType);
+        onClose();
+    };
+
+    const renderCategoryItemList = () => {
+        return (
+            <View style={styles.container}>
+                {categoriesData.map((category, index) => (
+                    <CategoryIcon
+                        key={index}
+                        iconSource={category.iconSource}
+                        size={64}
+                        OnPress={() => handleSelectItemType(category.type)}
+                        name={category.type}
+                    />
+                ))}
+            </View>
+        );
+    };
 
     return (
         <Modal
@@ -32,14 +49,7 @@ const ItemTypeModal = ({ visible, onClose }) => {
                 <View style={styles.modalContent}>
                     <ModalHeader title="Chọn loại sản phẩm" onClose={onClose} />
                     <View style={styles.main}>
-                        <FlatList
-                            data={categoriesData}
-                            renderItem={renderCategoryItemList}
-                            numColumns={4}
-                            keyExtractor={(item, index) => index.toString()}
-                            contentContainerStyle={styles.listContent}
-                            columnWrapperStyle={styles.columnWrapper}
-                        />
+                        {renderCategoryItemList()}
                     </View>
                 </View>
             </View>
@@ -60,7 +70,16 @@ const styles = StyleSheet.create({
         backgroundColor: "#F8F7FA",
         borderRadius: 20,
         width: "90%",
-        height: "30%",
+        height: "25%",
+    },
+    container: {
+        flexDirection: "row",
+        borderColor: colors.grey_50,
+        backgroundColor: colors.grey_20,
+        justifyContent: "space-between",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: "5%",
     },
     imageContainer: {
         marginTop: "5%",
@@ -68,7 +87,7 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     main: {
-        paddingHorizontal: "3%",
+
         marginTop: "2%",
     },
     header: {

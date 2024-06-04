@@ -2,10 +2,10 @@ import { StyleSheet, Pressable, Image, View, Text } from "react-native";
 import React from "react";
 import { colors } from "../../../assets/colors/colors";
 
-const CategoryIcon = ({ iconSource, size, name }) => {
+const CategoryIcon = ({ iconSource, size, name, OnPress }) => {
 	return (
 		<View style={styles.container}>
-			<Pressable style={[styles.iconButton, { width: size, height: size }]}>
+			<Pressable onPress = {OnPress} style={[styles.iconButton, { width: size, height: size }]}>
 				<Image source={iconSource} style={styles.icon} />
 			</Pressable>
 			<Text style={styles.title}>{name}</Text>
