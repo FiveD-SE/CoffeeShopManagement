@@ -27,12 +27,10 @@ const UserPlaceOrderScreen = () => {
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 
 	const [productList, setProductList] = useState([]);
-	const categorySnapPoints = useMemo(() => ["40%"], []);
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 	const itemDetailBottomSheetRef = useRef(null);
-	const categoryBottomSheetRef = useRef(null);
 
-	const renderMustTryList = () => {
+	const renderProductList = () => {
 		return productList.map((item, index) => (
 			<ProductCardHorizontal
 				key={index}
@@ -46,25 +44,6 @@ const UserPlaceOrderScreen = () => {
 				onPress={() => handleOpenItemDetail(item)}
 			/>
 		));
-	};
-
-	const renderRecentItemList = () => {
-		return productList.map((item, index) => (
-			<RecentItemCard
-				key={index}
-				title={item.name}
-				price={item.price.toLocaleString("vi-VN", {
-					style: "currency",
-					currency: "VND",
-				})}
-				imageSource={item.imageSource}
-				onPress={() => handleOpenItemDetail(item)}
-			/>
-		));
-	};
-
-	const handleOpenCategoryItemList = () => {
-		categoryBottomSheetRef.current?.present();
 	};
 
 	const handleOpenItemDetail = (item) => {
@@ -121,23 +100,20 @@ const UserPlaceOrderScreen = () => {
 				>
 					<View style={styles.header}>
 						<View style={styles.headerLeft}>
-							<Pressable
-								style={styles.chooseCategoriesContainer}
-								onPress={handleOpenCategoryItemList}
-							>
-								<Text style={styles.chooseCategoriesText}>Danh mục</Text>
-								<Icon name="chevron-down" size={20} />
-							</Pressable>
+							<Text style={styles.chooseCategoriesText}>Danh mục</Text>
 						</View>
 						<View style={styles.headerRight}>
 							<IconButton
-								iconName="rectangle-list"
+								iconName="receipt-outline"
 								onPress={goToDeliverdOrderScreen}
 							/>
-							<IconButton iconName="cart-shopping" onPress={goToCartScreen} />
-							<IconButton iconName="heart" onPress={goToFavoriteItemScreen} />
+							<IconButton iconName="cart-outline" onPress={goToCartScreen} />
 							<IconButton
-								iconName="magnifying-glass"
+								iconName="heart-outline"
+								onPress={goToFavoriteItemScreen}
+							/>
+							<IconButton
+								iconName="search-outline"
 								onPress={goToSearchScreen}
 							/>
 						</View>
@@ -153,26 +129,40 @@ const UserPlaceOrderScreen = () => {
 							onPressSubtitle={goToMustTryItemList}
 						>
 							<ScrollView contentContainerStyle={styles.mustTryList}>
-								{renderMustTryList()}
+								{renderProductList()}
+							</ScrollView>
+						</Section>
+					</View>
+
+					<View style={{ marginTop: "5%" }}>
+						<Section title="Cà Phê">
+							<ScrollView contentContainerStyle={styles.mustTryList}>
+								{renderProductList()}
 							</ScrollView>
 						</Section>
 					</View>
 					<View style={{ marginTop: "5%" }}>
-						<Section title="Món Đã Đặt Gần Đây">
-							<ScrollView
-								horizontal
-								showsHorizontalScrollIndicator={false}
-								contentContainerStyle={styles.recentItemList}
-							>
-								{renderRecentItemList()}
+						<Section title="Trà Sữa">
+							<ScrollView contentContainerStyle={styles.mustTryList}>
+								{renderProductList()}
+							</ScrollView>
+						</Section>
+					</View>
+					<View style={{ marginTop: "5%" }}>
+						<Section title="Nước Trái Cây">
+							<ScrollView contentContainerStyle={styles.mustTryList}>
+								{renderProductList()}
+							</ScrollView>
+						</Section>
+					</View>
+					<View style={{ marginTop: "5%" }}>
+						<Section title="Đá Xay">
+							<ScrollView contentContainerStyle={styles.mustTryList}>
+								{renderProductList()}
 							</ScrollView>
 						</Section>
 					</View>
 				</ScrollView>
-				<CategoryBottomSheet
-					bottomSheetRef={categoryBottomSheetRef}
-					snapPoints={categorySnapPoints}
-				/>
 				{isItemDetailVisible && (
 					<ItemDetailBottomSheet
 						bottomSheetRef={itemDetailBottomSheetRef}
@@ -201,7 +191,7 @@ const styles = StyleSheet.create({
 		}),
 	},
 	headerLeft: {
-		flex: 0.8,
+		flex: 0.5,
 		justifyContent: "center",
 	},
 	headerRight: {
