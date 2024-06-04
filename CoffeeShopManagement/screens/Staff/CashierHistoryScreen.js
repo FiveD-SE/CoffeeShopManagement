@@ -13,15 +13,6 @@ export default function CashierHistoryScreen() {
     const [filteredData, setFilteredData] = useState([]);
 
     const navigation = useNavigation();
-    const handleDetailOrder = (item) => {
-        navigation.navigate('OrderScreen', { selectedOrder: item })
-    }
-    useFocusEffect(useCallback(() => {
-        const unsub = onSnapshot(query(collection(db, 'orders'), where('orderState', '==', 'Đã hoàn thành')), (snapshot) => {
-            setOrderData(snapshot.docs.map(doc => doc.data()));
-            setFilteredData(snapshot.docs.map(doc => doc.data()));
-        });
-    }, []));
 
     return (
         <View style={styles.container}>

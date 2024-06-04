@@ -3,9 +3,11 @@ import React, { useEffect, useState } from 'react'
 import OrderCard1 from '../OrderCard1';
 import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore'
 import { db } from '../../../services/firebaseService';
+import { useNavigation } from '@react-navigation/native';
 
 export default function DeliveryTab() {
     const [orderData, setOrderData] = useState([]);
+    const navigation = useNavigation();
     const handleDetailOrder = (item) => {
         navigation.navigate('OrderScreen', { selectedOrder: item })
     }

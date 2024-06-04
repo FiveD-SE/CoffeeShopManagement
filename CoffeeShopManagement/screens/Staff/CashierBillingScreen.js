@@ -17,6 +17,40 @@ export default function CashierBillingScreen() {
             setOrderData(snapshot.docs.map(doc => doc.data()));
         });
     }, []);
+
+    const renderListOrder = () => {
+
+        if (orderData.length === 0) {
+            return (
+                <View style={{ justifyContent: 'center', flex: 1 }}>
+                    <Text style={{ fontFamily: 'lato-regular', justifyContent: 'center', alignSelf: 'center', fontSize: 16 }}>Không có đơn hàng nào</Text>
+                </View>
+            )
+        } else {
+            return (
+                <FlatList
+                    data={orderData}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={(item) => item.orderId}
+                    renderItem={({ item }) => (
+                        <OrderCard1
+                            orderId={item.orderId}
+                            orderTime={item.orderTime.toDate().toDateString()}
+                            orderType={item.orderType}
+                            orderOwner={item.orderOwner}
+                            orderOwnerPhone={item.orderOwnerPhone}
+                            orderState={item.orderState}
+                            orderPaymentState={item.orderPaymentState}
+                            handleDetailOrder={() =>
+                                handleDetailOrder(item)
+                            }
+                        />
+                    )}
+                />
+            )
+        }
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.searchBoxWrapper}>
@@ -24,24 +58,7 @@ export default function CashierBillingScreen() {
                     placeholder='Tra cứu mã đơn hàng'
                     style={styles.searchBox} />
             </View>
-            <FlatList
-                showsVerticalScrollIndicator={false}
-                data={orderData}
-                keyExtractor={item => item.orderId}
-                renderItem={({ item }) => (
-                    <OrderCard1
-                        orderId={item.orderId}
-                        orderTime={item.orderTime.toDate().toDateString()}
-                        orderType={item.orderType}
-                        orderOwner={item.orderOwner}
-                        orderOwnerPhone={item.orderOwnerPhone}
-                        orderState={item.orderState}
-                        orderPaymentState={item.orderPaymentState}
-                        handleDetailOrder={() =>
-                            handleDetailOrder(item)
-                        }
-                    />
-                )} />
+            {renderListOrder()}
         </View>
     )
 }
