@@ -5,6 +5,7 @@ import {
     StyleSheet,
     TouchableOpacity,
     ScrollView,
+    Image,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -13,56 +14,58 @@ import { Calendar } from "react-native-calendars";
 import { removeToken } from "../../services/authServices";
 import store from "../../redux/store/store";
 import { getUserData } from "../../api";
+import { connect } from "react-redux";
+import * as ImagePicker from "expo-image-picker";
+import { saveUserData } from "../../redux/actions/userActions";
+import { db, uploadImageToFirebase } from "../../services/firebaseService";
+import { doc, updateDoc } from "firebase/firestore";
 
-export default function CashierInformation() {
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [userData, setUserData] = useState({});
+const CashierInformation = ({ userData, saveUserData }) => {
 
-    useEffect(() => {
-        const fetchPhoneNumber = async () => {
-            try {
-                setPhoneNumber(store.getState().auth.phoneNumber);
-                console.log("Phone number:", phoneNumber);
-            } catch (error) {
-                console.error("Error fetching phone number:", error);
-            }
-        };
 
-        fetchPhoneNumber();
-    }, []);
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await getUserData(phoneNumber);
-                console.log("User data:", userData);
-                if (userData) {
-                    setUserData(userData);
-                } else {
-                    console.log("User not found");
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-        if (phoneNumber) {
-            fetchUserData();
+    const handleImagePicker = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+            alert("Sorry, we need camera roll permissions to make this work!");
+            return;
         }
-    }, [phoneNumber]);
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            const userImage = await uploadImageToFirebase(
+                result.assets[0].uri,
+                "user_" + userData.id
+            );
+            const updatedUserData = { ...userData, userImage: userImage };
+            saveUserData(updatedUserData);
+            const userDocRef = doc(db, "users", userData.id);
+            await updateDoc(userDocRef, {
+                userImage: userImage,
+            });
+        }
+    };
 
     const navigation = useNavigation();
     return (
         <ScrollView style={styles.container}>
             <View style={styles.inforWrapper}>
-                <Icon name="account-circle" size={60} color={"#fff"} />
+                <TouchableOpacity
+                    style={styles.imageWrapper}
+                    onPress={() => handleImagePicker()}>
+                    <Image source={{ uri: userData.userImage }} resizeMode="stretch" style={styles.userImage} />
+                </TouchableOpacity>
                 <View style={styles.inforTextWrapper}>
                     <Text style={styles.shopNameText}>TaiCoffeeShop</Text>
                     <Text style={{ color: "#fff", fontSize: 14 }}>
                         <Text>
-                            {userData.lastName} {userData.firstName}
+                            {userData.name}
                         </Text>
                         <Text> | </Text>
-                        <Text style={{ fontWeight: "600" }}>Cashier</Text>
+                        <Text style={{ fontWeight: "600" }}>{userData.role}</Text>
                     </Text>
                 </View>
             </View>
@@ -109,6 +112,15 @@ export default function CashierInformation() {
         </ScrollView>
     );
 }
+
+const mapStateToProps = (state) => ({
+    userData: state.auth.userData,
+})
+
+const mapDispatchToProps = {
+    saveUserData,
+};
+export default connect(mapStateToProps, mapDispatchToProps)(CashierInformation);
 
 const styles = StyleSheet.create({
     container: {
@@ -190,4 +202,17 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#fff",
     },
+    imageWrapper: {
+        width: 64,
+        height: 64,
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: "5%",
+    },
+    userImage: {
+        width: "80%",
+        height: "80%",
+        borderRadius: 100,
+        aspectRatio: 1,
+    }
 });
