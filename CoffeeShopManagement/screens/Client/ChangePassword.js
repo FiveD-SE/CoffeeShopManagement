@@ -10,86 +10,189 @@ import {
     Alert,
 } from "react-native";
 import Feather from "react-native-vector-icons/Feather";
-import { getUserData, updatePassword } from "../../api";
-import store from "../../redux/store/store";
+import {
+    getAuth,
+    updatePassword,
+    EmailAuthProvider,
+    reauthenticateWithCredential,
+} from "firebase/auth";
+import { db } from "../../services/firebaseService";
+import { doc, updateDoc } from "firebase/firestore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Updates from "expo-updates";
+import Toast from "react-native-toast-message";
+import { colors } from "../../assets/colors/colors";
+import { connect } from "react-redux";
+import { saveUserData } from "../../redux/actions/userActions";
 
-const ChangePassword = () => {
+const ChangePassword = ({ userData, saveUserData }) => {
     const [oldPassword, setOldPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showOldPassword, setShowOldPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [userData, setUserData] = useState({});
 
-    useEffect(() => {
-        const fetchPhoneNumber = async () => {
-            try {
-                setPhoneNumber(store.getState().auth.phoneNumber);
-                console.log("Phone number:", phoneNumber);
-            } catch (error) {
-                console.error("Error fetching phone number:", error);
-            }
-        };
-
-        fetchPhoneNumber();
-    }, []);
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await getUserData(phoneNumber);
-                console.log("User data:", userData);
-                if (userData) {
-                    setUserData(userData);
-                } else {
-                    console.log("User not found");
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-        if (phoneNumber) {
-            fetchUserData();
-        }
-    }, [phoneNumber]);
-
-    const updatePasswordHandler = async () => {
-        if (!oldPassword || !newPassword || !confirmPassword) {
-            Alert.alert("Vui lòng điền đầy đủ thông tin");
-            return;
-        }
-
-        if (newPassword !== confirmPassword) {
-            Alert.alert("Mật khẩu mới không khớp");
-            return;
-        }
-
-        if (oldPassword === newPassword) {
-            Alert.alert("Mật khẩu mới không được trùng với mật khẩu cũ");
-            return;
-        }
-
-        if (newPassword.length < 8) {
-            Alert.alert("Mật khẩu mới phải chứa ít nhất 8 ký tự");
-            return;
-        }
-
+    const handlePasswordChange = async () => {
         try {
-            const response = await updatePassword(
-                phoneNumber,
-                oldPassword,
-                newPassword
-            );
-            if (response) {
-                Alert.alert("Cập nhật mật khẩu thành công");
-            } else {
-                Alert.alert("Mật khẩu cũ không chính xác");
+            if (!oldPassword || !newPassword || !confirmPassword) {
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Vui lòng điền đầy đủ thông tin",
+                    text1Style: {
+                        fontSize: 16,
+                        fontFamily: "lato-bold",
+                        color: colors.black_100,
+                    },
+                    text2Style: {
+                        fontSize: 12,
+                        fontFamily: "lato-bold",
+                        color: colors.grey_100,
+                    },
+                });
+                return;
             }
+
+            if (newPassword !== confirmPassword) {
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Mật khẩu mới không trùng khớp",
+                    text1Style: {
+                        fontSize: 16,
+                        fontFamily: "lato-bold",
+                        color: colors.black_100,
+                    },
+                    text2Style: {
+                        fontSize: 12,
+                        fontFamily: "lato-bold",
+                        color: colors.grey_100,
+                    },
+                });
+                return;
+            }
+
+            if (oldPassword === newPassword) {
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Mật khẩu mới không được trùng với mật khẩu cũ",
+                    text1Style: {
+                        fontSize: 16,
+                        fontFamily: "lato-bold",
+                        color: colors.black_100,
+                    },
+                    text2Style: {
+                        fontSize: 12,
+                        fontFamily: "lato-bold",
+                        color: colors.grey_100,
+                    },
+                });
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Mật khẩu mới phải có ít nhất 6 ký tự",
+                    text1Style: {
+                        fontSize: 16,
+                        fontFamily: "lato-bold",
+                        color: colors.black_100,
+                    },
+                    text2Style: {
+                        fontSize: 12,
+                        fontFamily: "lato-bold",
+                        color: colors.grey_100,
+                    },
+                });
+                return;
+            }
+
+            const auth = getAuth();
+            const user = auth.currentUser;
+
+            if (!user) {
+                Alert.alert("Lỗi", "Người dùng chưa đăng nhập");
+                return;
+            }
+
+            const credential = EmailAuthProvider.credential(
+                userData.email,
+                oldPassword
+            );
+            await reauthenticateWithCredential(user, credential);
+
+            await updatePassword(user, newPassword);
+            // set password to firestore
+            const userDocRef = doc(db, "users", userData.id);
+            await updateDoc(userDocRef, {
+                password: newPassword,
+            });
+
+            // Update Redux state with the new password (optional)
+            saveUserData({ ...userData, password: newPassword });
+
+            await AsyncStorage.setItem("password", newPassword);
+
+            await AsyncStorage.removeItem("email");
+            await AsyncStorage.removeItem("password");
+            await AsyncStorage.removeItem("isRemembered");
+            await Updates.reloadAsync();
+
+            Toast.show({
+                type: "success",
+                text1: "Thành công",
+                text2: "Mật khẩu đã được thay đổi thành công",
+                text1Style: {
+                    fontSize: 16,
+                    fontFamily: "lato-bold",
+                    color: colors.text.black_100,
+                },
+                text2Style: {
+                    fontSize: 12,
+                    fontFamily: "lato-bold",
+                    color: colors.text.black_50,
+                },
+            });
         } catch (error) {
             console.error("Lỗi khi cập nhật mật khẩu:", error.message);
-            Alert.alert("Đã xảy ra lỗi khi cập nhật mật khẩu");
+
+            if (error.code === "auth/wrong-password") {
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Mật khẩu cũ không chính xác",
+                    text1Style: {
+                        fontSize: 16,
+                        fontFamily: "lato-bold",
+                        color: colors.text.black_100,
+                    },
+                    text2Style: {
+                        fontSize: 12,
+                        fontFamily: "lato-bold",
+                        color: colors.text.black_50,
+                    },
+                });
+            } else {
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Đã xảy ra lỗi khi cập nhật mật khẩu",
+                    text1Style: {
+                        fontSize: 16,
+                        fontFamily: "lato-bold",
+                        color: colors.text.black_100,
+                    },
+                    text2Style: {
+                        fontSize: 12,
+                        fontFamily: "lato-bold",
+                        color: colors.text.black_50,
+                    },
+                });
+            }
         }
     };
 
@@ -165,10 +268,7 @@ const ChangePassword = () => {
                     </View>
                 </View>
 
-                <Pressable
-                    style={styles.button}
-                    onPress={updatePasswordHandler}
-                >
+                <Pressable style={styles.button} onPress={handlePasswordChange}>
                     <Text style={styles.buttonText}>Xác nhận</Text>
                 </Pressable>
             </ScrollView>
@@ -198,7 +298,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         fontSize: 14,
         color: "#9C9C9C",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
     },
     button: {
         backgroundColor: "#3A3A3A",
@@ -208,7 +308,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: "#FFFFFF",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 18,
     },
     rowLabelText: {
@@ -228,4 +328,12 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ChangePassword;
+const mapStateToProps = (state) => ({
+    userData: state.auth.userData,
+});
+
+const mapDispatchToProps = {
+    saveUserData,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChangePassword);

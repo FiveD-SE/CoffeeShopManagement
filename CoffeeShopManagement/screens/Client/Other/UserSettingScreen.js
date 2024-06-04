@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     },
     primaryText: {
         color: "#000",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 18,
         fontWeight: "600",
         marginBottom: 15,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     itemText: {
         fontSize: 16,
         color: "#3A3A3A",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
     },
 });
 

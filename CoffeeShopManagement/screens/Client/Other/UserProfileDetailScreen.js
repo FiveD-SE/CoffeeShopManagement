@@ -1,133 +1,72 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     StyleSheet,
+    SafeAreaView,
     View,
     ScrollView,
     Text,
-    Pressable,
+    TouchableOpacity,
     Image,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SwitchToggle from "toggle-switch-react-native";
 import { useNavigation } from "@react-navigation/native";
-import { getUserData } from "../../../api";
-import { getToken } from "../../../services/authServices";
-import store from "../../../redux/store/store";
+import { connect } from "react-redux";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../../../services/firebaseService";
 
-const ProfileDetails = () => {
+const ProfileDetails = ({ userData }) => {
     const navigation = useNavigation();
-    const [userData, setUserData] = useState(null);
-    const [phoneNumber, setPhoneNumber] = useState("");
-
     const [isToggled, setIsToggled] = useState(false);
 
     const handleToggle = () => {
         setIsToggled(!isToggled);
     };
 
-    useEffect(() => {
-        const fetchPhoneNumber = async () => {
-            try {
-                setPhoneNumber(store.getState().auth.phoneNumber);
-                console.log("Phone number:", phoneNumber);
-            } catch (error) {
-                console.error("Error fetching phone number:", error);
-            }
-        };
-
-        fetchPhoneNumber();
-    }, []);
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await getUserData(phoneNumber);
-                console.log("User data:", userData);
-                if (userData) {
-                    setUserData(userData);
-                } else {
-                    console.log("User not found");
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-        if (phoneNumber) {
-            fetchUserData();
-        }
-    }, [phoneNumber]);
-
-    const avatar = require("../../../assets/vietnam.png");
     const flag = require("../../../assets/vietnam.png");
-
-    const navigateToEditProfile = () => {
-        navigation.navigate("EditProfile");
-    };
 
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
                 <View style={{ paddingVertical: 10, alignItems: "center" }}>
-                    <Image
-                        alt="avatar"
-                        source={avatar}
-                        style={styles.profileAvatar}
-                    />
+                    <View
+                        style={[
+                            {
+                                paddingTop: 60,
+                                paddingBottom: 50,
+                                alignContent: "center",
+                                alignItems: "center", // Add alignItems: 'center'
+                            },
+                        ]}
+                    >
+                        <Image
+                            alt="avatar"
+                            source={{
+                                uri: userData?.userImage,
+                            }}
+                            style={styles.profileAvatar}
+                        />
+                    </View>
                 </View>
 
                 <View style={styles.section}>
                     <View style={styles.row_space_between}>
                         <Text style={styles.sectionTitle}>Thông tin chung</Text>
-                        <Pressable onPress={navigateToEditProfile}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate("EditProfile");
+                            }}
+                        >
                             <Text style={styles.editButton}>Sửa</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
-                    <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "48%" }]}>
-                            <Text style={styles.text}>
-                                {userData?.lastName}
-                            </Text>
-                        </View>
-                        <View style={[styles.rowLabelText, { width: "48%" }]}>
-                            <Text style={styles.text}>
-                                {userData?.firstName}
-                            </Text>
-                        </View>
-                    </View>
+
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <Text style={styles.label}>Giới tính</Text>
-                            <View style={styles.row_space_between}>
-                                <Text
-                                    style={[styles.text, { marginRight: 15 }]}
-                                >
-                                    {userData?.gender}
-                                </Text>
-                            </View>
+                            <Text style={styles.text}>{userData.name}</Text>
                         </View>
                     </View>
-                    <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <Text style={styles.label}>Ngày sinh</Text>
-                            <View style={styles.row_space_between}>
-                                <View style={styles.row_space_between}>
-                                    <Text
-                                        style={[
-                                            styles.text,
-                                            { marginRight: 15 },
-                                        ]}
-                                    >
-                                        {userData?.dateOfBirth?.split("T")[0]}
-                                    </Text>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.section}>
-                    <View style={styles.row_space_between}>
-                        <Text style={styles.sectionTitle}>Số điện thoại</Text>
-                    </View>
+
                     <View style={styles.row_space_between}>
                         <View
                             style={[
@@ -144,24 +83,24 @@ const ProfileDetails = () => {
                                 source={flag}
                                 resizeMode="contain"
                             />
+                            <Text style={styles.text}>+84 </Text>
                             <Text style={styles.text}>
-                                +84
-                                {userData?.phoneNumber}
+                                {userData.phoneNumber}
                             </Text>
                         </View>
                     </View>
                 </View>
+
                 <View style={styles.section}>
                     <View style={styles.row_space_between}>
                         <Text style={styles.sectionTitle}>Email</Text>
                     </View>
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <Text style={styles.text}>{userData?.email}</Text>
+                            <Text style={styles.text}>{userData.email}</Text>
                         </View>
                     </View>
                 </View>
-
                 <View style={styles.section}>
                     <View style={styles.row_space_between}>
                         <Text style={styles.sectionTitle}>
@@ -212,14 +151,14 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         color: "#000",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         fontWeight: "bold",
         marginBottom: 15,
     },
     editButton: {
         color: "#006C5E",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         fontWeight: "bold",
         lineHeight: 20,
@@ -258,7 +197,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "#000",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
         fontSize: 16,
         fontWeight: "400",
         lineHeight: 30,
@@ -269,4 +208,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProfileDetails;
+const mapStateToProps = (state) => {
+    return {
+        userData: state.auth.userData,
+    };
+};
+
+export default connect(mapStateToProps)(ProfileDetails);

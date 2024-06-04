@@ -70,7 +70,6 @@ const HomeStack = () => {
 const BillingStack = () => {
     return (
         <Stack.Navigator initialRouteName="CashierBillingScreen">
-
             <Stack.Screen
                 name="CashierBillingScreen"
                 component={CashierBillingScreen}
@@ -88,7 +87,6 @@ const BillingStack = () => {
                     headerLeft: () => <HeaderBackButton />,
                 }}
             />
-
         </Stack.Navigator>
     );
 };
@@ -96,7 +94,6 @@ const BillingStack = () => {
 const HistoryStack = () => {
     return (
         <Stack.Navigator initialRouteName="CashierHistoryScreen">
-
             <Stack.Screen
                 name="CashierHistoryScreen"
                 component={CashierHistoryScreen}
@@ -114,7 +111,6 @@ const HistoryStack = () => {
                     headerLeft: () => <HeaderBackButton />,
                 }}
             />
-
         </Stack.Navigator>
     );
 };
@@ -182,7 +178,7 @@ const styles = StyleSheet.create({
     labelStyle: {
         fontSize: 12,
         marginTop: 0,
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         marginBottom: isIOS ? 0 : 15,
     },
 });

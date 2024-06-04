@@ -17,3 +17,4 @@ export const SAVE_EMAIL = "SAVE_EMAIL";
 export const SAVE_USER_DATA = "SAVE_USER_DATA";
 export const SAVE_USER_ID = "SAVE_USER_ID";
 export const UPDATE_USER_LIKES = "UPDATE_USER_LIKES";
+export const UPDATE_USER_DATA = "UPDATE_USER_DATA";

@@ -377,8 +377,7 @@ const SalesStack = () => (
                     paddingLeft: "5%",
                 },
                 headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddVoucherButton />
-
+                headerRight: () => <AddVoucherButton />,
             })}
         />
         <Stack.Screen
@@ -541,7 +540,7 @@ const styles = StyleSheet.create({
     labelStyle: {
         fontSize: 12,
         marginTop: 0,
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         marginBottom: isIOS ? 0 : 15,
     },
 });

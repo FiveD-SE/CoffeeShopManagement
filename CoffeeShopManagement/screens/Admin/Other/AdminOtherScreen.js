@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     StyleSheet,
     SafeAreaView,
@@ -17,10 +17,10 @@ import { removeToken } from "../../../services/authServices";
 import * as Updates from "expo-updates";
 import { getUserData } from "../../../api";
 import store from "../../../redux/store/store";
+import { connect } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function AdminOtherScreen() {
-    const [userData, setUserData] = useState(null); // [1
-    const [phoneNumber, setPhoneNumber] = useState(""); // [2
+const AdminOtherScreen = ({ userData }) => {
     const navigation = useNavigation();
 
     const goToStaff = () => {
@@ -36,38 +36,6 @@ export default function AdminOtherScreen() {
         pushNotifications: false,
     });
 
-    useEffect(() => {
-        const fetchPhoneNumber = async () => {
-            try {
-                setPhoneNumber(store.getState().auth.phoneNumber);
-                console.log("Phone number:", phoneNumber);
-            } catch (error) {
-                console.error("Error fetching phone number:", error);
-            }
-        };
-
-        fetchPhoneNumber();
-    }, []);
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await getUserData(phoneNumber);
-                console.log("User data:", userData);
-                if (userData) {
-                    setUserData(userData);
-                } else {
-                    console.log("User not found");
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-        if (phoneNumber) {
-            fetchUserData();
-        }
-    }, [phoneNumber]);
-
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#F8F7FA" }}>
             <View style={styles.container}>
@@ -76,20 +44,19 @@ export default function AdminOtherScreen() {
                         <View style={styles.sectionBody}>
                             <TouchableOpacity
                                 onPress={() => {
-                                    // handle onPress
+                                    navigation.navigate("AdminProfileDetail");
                                 }}
                                 style={styles.profile}
                             >
                                 <Image
                                     alt="avatar"
-                                    source={{ uri: userData?.avatar }}
+                                    source={{ uri: userData?.userImage }}
                                     style={styles.profileAvatar}
                                 />
 
                                 <View style={styles.profileBody}>
                                     <Text style={styles.profileName}>
-                                        {userData?.lastName}{" "}
-                                        {userData?.firstName}
+                                        {userData?.name}
                                     </Text>
 
                                     <Text style={styles.profileHandle}>
@@ -229,7 +196,13 @@ export default function AdminOtherScreen() {
                         <Text style={styles.sectionTitle}>Quản lý</Text>
 
                         <View style={styles.sectionBody}>
-                            <View style={[styles.rowWrapper, styles.rowFirst, styles.rowLast]}>
+                            <View
+                                style={[
+                                    styles.rowWrapper,
+                                    styles.rowFirst,
+                                    styles.rowLast,
+                                ]}
+                            >
                                 <TouchableOpacity
                                     onPress={() => {
                                         navigation.navigate("BranchManagement");
@@ -355,7 +328,9 @@ export default function AdminOtherScreen() {
                             >
                                 <TouchableOpacity
                                     onPress={() => {
-                                        removeToken();
+                                        AsyncStorage.removeItem("isRemembered");
+                                        AsyncStorage.removeItem("email");
+                                        AsyncStorage.removeItem("password");
                                         Updates.reloadAsync();
                                     }}
                                     style={styles.row}
@@ -373,7 +348,7 @@ export default function AdminOtherScreen() {
             </View>
         </SafeAreaView>
     );
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -425,7 +400,7 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#3A3A3A",
         textTransform: "uppercase",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
     },
     sectionBody: {
         borderRadius: 12,
@@ -460,14 +435,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
         color: "#292929",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
     },
     profileHandle: {
         marginTop: 2,
         fontSize: 16,
         fontWeight: "400",
         color: "#858585",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
     },
     /** Row */
     row: {
@@ -492,7 +467,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         letterSpacing: 0.24,
         color: "#000",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
     },
     rowSpacer: {
         flexGrow: 1,
@@ -508,7 +483,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: "600",
         color: "#dc2626",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
     },
     /** button */
     button: {
@@ -526,7 +501,15 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         color: "#fff",
         textAlign: "center",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontStyle: "normal",
     },
 });
+
+const mapStateToProps = (state) => {
+    return {
+        userData: state.auth.userData,
+    };
+};
+
+export default connect(mapStateToProps)(AdminOtherScreen);
