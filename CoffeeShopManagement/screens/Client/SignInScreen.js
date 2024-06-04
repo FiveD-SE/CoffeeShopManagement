@@ -9,14 +9,27 @@ import BrownTextButton from "../../components/Client/Button/BrownTextButton";
 import { signIn, getFavoritesListById, getProductsList } from "../../api";
 import {
     signInSuccess,
-    savePhoneNumber,
+    saveEmail,
     saveUserData,
     initializeFavorites,
     getProductList,
+    updateUserLikes,
 } from "../../redux/actions/userActions";
 import { connect } from "react-redux";
 import { saveToken } from "../../services/authServices";
 import store from "../../redux/store/store";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../../services/firebaseService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
+import {
+    getDocs,
+    query,
+    where,
+    getDoc,
+    doc,
+    collection,
+} from "firebase/firestore";
 
 const GOOGLE_ICON_SOURCE = require("../../assets/google.png");
 const BACKGROUND_SOURCE = require("../../assets/background.png");
@@ -24,7 +37,7 @@ const BACKGROUND_SOURCE = require("../../assets/background.png");
 const SignInScreen = () => {
     const navigation = useNavigation();
     const [isChecked, setChecked] = useState(false);
-    const [phoneNumber, setPhoneNumber] = useState("");
+    const [email, setEmail] = useState(""); // Changed to email
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("");
 
@@ -38,6 +51,42 @@ const SignInScreen = () => {
 
     const handleRememberMe = () => {
         setChecked(!isChecked);
+    };
+
+    const getFavoritesListById = async (userId) => {
+        try {
+            const favoritesRef = collection(db, "favorites");
+            // Create a query to find favorites belonging to the current user
+            const q = query(favoritesRef, where("userId", "==", userId));
+            const favoritesSnapshot = await getDocs(q);
+            if (favoritesSnapshot.empty) {
+                console.log("Favorites not found for this user");
+                return null;
+            }
+            const favoritesData = favoritesSnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            return favoritesData.map((favorite) => favorite.products); // Get the products array
+        } catch (error) {
+            console.error("Error fetching favorites:", error);
+            throw error;
+        }
+    };
+
+    const getProductsList = async () => {
+        try {
+            const productsRef = collection(db, "products");
+            const productsSnapshot = await getDocs(productsRef);
+            const productsData = productsSnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            return productsData;
+        } catch (error) {
+            console.error("Error fetching product list:", error);
+            throw error;
+        }
     };
 
     useEffect(() => {
@@ -55,49 +104,72 @@ const SignInScreen = () => {
         }
     }, [role]);
 
-    const handleSignIn = () => {
-        signIn(phoneNumber, password).then((data) => {
-            if (data.error) {
-                Alert.alert("Đăng nhập thất bại", data.error);
-                return;
-            }
+    const handleSignIn = async () => {
+        console.log("Signing in...");
+        try {
+            const userCredential = await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
 
-            console.log(data);
-            if (isChecked) {
-                saveToken(JSON.stringify(data.user));
-                store.dispatch(savePhoneNumber(data.user.phoneNumber));
-                store.dispatch(saveUserData(data.user));
-                console.log("Store: " + store.getState().auth.phoneNumber);
-                setRole(data.user.role);
-            } else {
-                store.dispatch(savePhoneNumber(data.user.phoneNumber));
-                store.dispatch(saveUserData(data.user));
-                console.log("Store: " + store.getState().auth.phoneNumber);
-                setRole(data.user.role);
-            }
-            getFavoritesListById(data.user._id)
-                .then((favorites) => {
-                    if (favorites !== null) {
-                        const { products } = favorites;
-                        store.dispatch(initializeFavorites(products));
+            const user = userCredential.user;
+            console.log("User ID:", user.uid);
+            // Kiểm tra xem email đã được xác minh hay chưa
+            if (user.emailVerified) {
+                // Thực hiện đăng nhập
+                const userDocSnap = await getDoc(doc(db, "users", user.uid));
+                if (userDocSnap.exists()) {
+                    const userDoc = userDocSnap.data();
+
+                    const userData = {
+                        id: user.uid,
+                        email: user.email,
+                        name: userDoc.fullName,
+                        likedProductId: userDoc.likedProductId,
+                        userImage: userDoc.userImage,
+                        role: userDoc.role,
+                    };
+
+                    saveUserData(userData);
+                    console.log("User data: ", userData);
+                    setRole(userDoc.role);
+                    console.log("Role: ", userDoc.role);
+
+                    if (isChecked) {
+                        await AsyncStorage.setItem("email", email);
+                        await AsyncStorage.setItem("password", password);
+                        await AsyncStorage.setItem("isRemembered", "true");
                     } else {
-                        console.log("Favorites is null");
+                        await AsyncStorage.removeItem("email");
+                        await AsyncStorage.removeItem("password");
+                        await AsyncStorage.setItem("isRemembered", "false");
                     }
-                })
-                .catch((error) => {
-                    console.error("Error fetching favorites:", error);
-                });
-            const fetchProductList = async () => {
-                try {
-                    const productList = await getProductsList();
-                    store.dispatch(getProductList(productList));
-                } catch (error) {
-                    console.error("Error fetching product list:", error);
+                    updateUserLikes(userData.likedProductId || []);
+                    const favorites = await getFavoritesListById(user.uid);
+                    if (favorites) {
+                        initializeFavorites(favorites);
+                    }
+                    const products = await getProductsList();
+                    getProductList(products);
+                    signInSuccess(userData);
                 }
-            };
-
-            fetchProductList();
-        });
+            } else {
+                // Nếu email chưa được xác minh, hiển thị thông báo lỗi
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi đăng nhập",
+                    text2: "Email của bạn chưa được xác minh. Vui lòng kiểm tra email và xác minh tài khoản của bạn trước khi đăng nhập.",
+                });
+            }
+        } catch (error) {
+            console.error("Error signing in:", error);
+            Toast.show({
+                type: "error",
+                text1: "Lỗi đăng nhập",
+                text2: "Đăng nhập thất bại. Vui lòng kiểm tra thông tin đăng nhập của bạn.",
+            });
+        }
     };
 
     return (
@@ -106,9 +178,9 @@ const SignInScreen = () => {
             <View style={styles.main}>
                 <Text style={styles.title}>Đăng nhập</Text>
                 <InputField
-                    placeholder="Số điện thoại"
-                    keyboardType="phone-pad"
-                    onChangeText={setPhoneNumber}
+                    placeholder="Email" // Changed to Email
+                    keyboardType="email-address" // Added keyboard type
+                    onChangeText={setEmail}
                 />
                 <PasswordInput
                     placeholder="Mật khẩu"

@@ -18,10 +18,23 @@ import { IsOpenProvider } from "../../../utils/IsOpenContext";
 import { useSelector } from "react-redux";
 import store from "../../../redux/store/store";
 import { getUserData } from "../../../api";
-
 import { getProductsList } from "../../../api";
-const USER_IMAGE_SOURCE = require("../../../assets/google.png");
 
+import {
+    getDocs,
+    query,
+    where,
+    getDoc,
+    doc,
+    collection,
+} from "firebase/firestore";
+import { auth, db } from "../../../services/firebaseService";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
+import { saveToken, loadToken } from "../../../services/authServices"; // Import saveToken and loadToken
+import { getUser } from "../../../redux/actions/userActions"; // Import getUser
+
+const USER_IMAGE_SOURCE = require("../../../assets/google.png");
 const COFFEE_BEANS_ICONS = require("../../../assets/coffee-beans.png");
 const MILK_TEA_ICONS = require("../../../assets/milktea.png");
 const FRUITS_ICONS = require("../../../assets/fruits.png");
@@ -35,46 +48,15 @@ const UserHomeScreen = () => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
     const [productList, setProductList] = useState([]);
+    const [userData, setUserData] = useState({});
+    const user = useSelector((state) => state.user.user); // Get user data from Redux
+
     const handleCategoryPress = (index) => setSelectedIndex(index);
     const handleOpenItemDetail = (item) => {
         setSelectedItem(item);
         setIsItemDetailVisible(true);
     };
     const handleCloseItemDetail = () => setIsItemDetailVisible(false);
-    const [phoneNumber, setPhoneNumber] = useState("");
-    const [userData, setUserData] = useState({});
-
-    useEffect(() => {
-        const fetchPhoneNumber = async () => {
-            try {
-                setPhoneNumber(store.getState().auth.phoneNumber);
-                console.log("Phone number:", phoneNumber);
-            } catch (error) {
-                console.error("Error fetching phone number:", error);
-            }
-        };
-
-        fetchPhoneNumber();
-    }, []);
-
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await getUserData(phoneNumber);
-                console.log("User data:", userData);
-                if (userData) {
-                    setUserData(userData);
-                } else {
-                    console.log("User not found");
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-        if (phoneNumber) {
-            fetchUserData();
-        }
-    }, [phoneNumber]);
 
     const goToExchangeVoucher = () => navigation.navigate("ExchangeVoucher");
     const goToSearchScreen = () => navigation.navigate("SearchScreen");
@@ -161,6 +143,26 @@ const UserHomeScreen = () => {
         };
 
         fetchProductList();
+    }, []);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const user = auth.currentUser;
+                if (user) {
+                    const userDocSnap = await getDoc(
+                        doc(db, "users", user.uid)
+                    );
+                    if (userDocSnap.exists()) {
+                        const userDoc = userDocSnap.data();
+                        setUserData(userDoc);
+                    }
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+            }
+        };
+        fetchUserData();
     }, []);
 
 	return (
