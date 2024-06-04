@@ -51,7 +51,6 @@ const SendOTP = () => {
             });
 
             navigation.goBack();
-            // You might want to navigate to a different screen after sending the email
         } catch (error) {
             console.error("Error sending reset email:", error);
             Toast.show({
