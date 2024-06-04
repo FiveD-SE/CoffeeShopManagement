@@ -4,167 +4,65 @@ import {
     View,
     Image,
     TouchableOpacity,
-    SafeAreaView,
     FlatList,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import OrderCard1 from "../../components/Staff/OrderCard1";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import { useState, useEffect } from "react";
-import store from "../../redux/store/store";
-import { getOrderData, getUserData } from "../../api";
+import { collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { db } from "../../services/firebaseService";
+import { connect } from "react-redux";
 
-export default function CashierHome() {
+const CashierHome = ({ userData }) => {
+    console.log(userData)
     const [phoneNumber, setPhoneNumber] = useState("");
-    const [userData, setUserData] = useState({});
-    const [orderData, setOrderData] = useState({});
+    const [orderData, setOrderData] = useState([]);
 
     useEffect(() => {
-        const fetchPhoneNumber = async () => {
-            try {
-                setPhoneNumber(store.getState().auth.phoneNumber);
-                console.log("Phone number:", phoneNumber);
-            } catch (error) {
-                console.error("Error fetching phone number:", error);
-            }
-        };
-
-        fetchPhoneNumber();
+        const unsub = onSnapshot(query(collection(db, 'orders'), where('orderState', '==', 'Chờ xác nhận')), (snapshot) => {
+            setOrderData(snapshot.docs.map(doc => doc.data()));
+        });
     }, []);
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const userData = await getUserData(phoneNumber);
-                console.log("User data:", userData);
-                if (userData) {
-                    setUserData(userData);
-                } else {
-                    console.log("User not found");
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error);
-            }
-        };
-        if (phoneNumber) {
-            fetchUserData();
-        }
-    }, [phoneNumber]);
-
-    useEffect(() => {
-        const fetchOrderData = async () => {
-            try {
-                const orderData = await getOrderData();
-                console.log("Order data: ", orderData);
-                if (orderData) {
-                    setOrderData(orderData);
-                } else {
-                    console.log("Order not found");
-                }
-            } catch (error) {
-                console.log("Error fetching order data: ", error);
-            }
-        };
-        fetchOrderData();
-    }, []);
+        console.log(orderData);
+        console.log(userData);
+    }, [orderData])
 
     const navigation = useNavigation();
     const handleNotification = () => {
         navigation.navigate("CashierNotification");
     };
-    const handleDetailOrder = (products) => {
-        console.log(products);
+    const handleDetailOrder = (item) => {
+        console.log(item);
 
         navigation.navigate("OrderScreen", {
-            selectedProduct: products,
+            selectedOrder: item,
         });
     };
     const handleCashierInfor = () => {
         navigation.navigate("CashierInformation");
     };
-    const DATA = [
-        {
-            order: [
-                {
-                    orderId: "#12345",
-                    time: "10:45 SA 16/03/2024",
-                    orderType: "Tự đến lấy hàng",
-                    customer: "Tánh",
-                    sdt: "0352085655",
-                    orderState: "Chưa thanh toán",
-                    state: "Đang làm",
-                },
-                {
-                    orderId: "#12346",
-                    time: "10:45 SA 16/03/2024",
-                    orderType: "Tự đến lấy hàng",
-                    customer: "Tánh",
-                    sdt: "0352085655",
-                    orderState: "Chưa thanh toán",
-                    state: "Chờ xác nhận",
-                },
-                {
-                    orderId: "#12347",
-                    time: "10:45 SA 16/03/2024",
-                    orderType: "Tự đến lấy hàng",
-                    customer: "Tánh",
-                    sdt: "0352085655",
-                    orderState: "Chưa thanh toán",
-                    state: "Đã xong",
-                },
-                {
-                    orderId: "#12348",
-                    time: "10:45 SA 16/03/2024",
-                    orderType: "Tự đến lấy hàng",
-                    customer: "Tánh",
-                    sdt: "0352085655",
-                    orderState: "Chưa thanh toán",
-                    state: "Đã hoàn thành",
-                },
-            ],
-            product: [
-                {
-                    orderId: "#12348",
-                    id: "1234",
-                    name: "Oolong Tứ Quý Kim Quất Trân Châu",
-                    price: "59.000",
-                    topping: "Size S, Ít đường, Trân châu trắng",
-                    amount: "1",
-                },
-                {
-                    orderId: "#12345",
-                    id: "1235",
-                    name: "Oolong Tứ Quý Kim Quất Trân Châu",
-                    price: "59.000",
-                    topping: "Size S, Ít đường, Trân châu trắng",
-                    amount: "1",
-                },
-                {
-                    orderId: "#12345",
-                    id: "1236",
-                    name: "Oolong Tứ Quý Kim Quất Trân Châu",
-                    price: "59.000",
-                    topping: "Size S, Ít đường, Trân châu trắng",
-                    amount: "1",
-                },
-            ],
-        },
-    ];
+
     return (
         <View style={styles.container}>
             <View style={styles.cashierInforWrapper}>
                 <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity onPress={handleCashierInfor}>
+                    <TouchableOpacity onPress={handleCashierInfor} style={styles.imageWrapper}>
                         <Image
-                            source={require("../../assets/account_icon.png")}
-                            style={{ height: 60, width: 60 }}
+                            source={{ uri: userData.userImage }}
+                            style={styles.userImage}
                         />
                     </TouchableOpacity>
                     <View style={styles.inforTextWrapper}>
                         <Text style={styles.nameText}>
-                            {userData.lastName} {userData.firstName}
+                            {userData.name}
                         </Text>
-                        <Text style={styles.roleText}>Cashier</Text>
+                        <Text style={styles.emailText}>
+                            {userData.email}
+                        </Text>
+                        <Text style={styles.roleText}>{userData.role}</Text>
                     </View>
                 </View>
                 <TouchableOpacity
@@ -176,14 +74,20 @@ export default function CashierHome() {
             </View>
             <Text style={styles.listOrderText}>Chờ xác nhận</Text>
             <FlatList
-                data={orderData['orders']}
+                data={orderData}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={(item) => item._id}
+                keyExtractor={(item) => item.orderId}
                 renderItem={({ item }) => (
                     <OrderCard1
-                        item={item}
+                        orderId={item.orderId}
+                        orderTime={item.orderTime.toDate().toDateString()}
+                        orderType={item.orderType}
+                        orderOwner={item.orderOwner}
+                        orderOwnerPhone={item.orderOwnerPhone}
+                        orderState={item.orderState}
+                        orderPaymentState={item.orderPaymentState}
                         handleDetailOrder={() =>
-                            handleDetailOrder(item.products)
+                            handleDetailOrder(item)
                         }
                     />
                 )}
@@ -191,6 +95,12 @@ export default function CashierHome() {
         </View>
     );
 }
+
+const mapStateToProps = (state) => ({
+    userData: state.auth.userData,
+})
+
+export default connect(mapStateToProps)(CashierHome);
 
 const styles = StyleSheet.create({
     container: {
@@ -213,11 +123,15 @@ const styles = StyleSheet.create({
     },
     nameText: {
         fontSize: 16,
-        fontWeight: "600",
+        fontFamily: 'lato-bold'
+    },
+    emailText: {
+        fontFamily: 'lato-regular',
+        fontSize: 14,
     },
     roleText: {
-        color: "#9c9c9c",
         fontSize: 14,
+        fontStyle: 'italic',
     },
     notiButton: {
         justifyContent: "center",
@@ -232,4 +146,17 @@ const styles = StyleSheet.create({
         fontWeight: "600",
         marginBottom: "5%",
     },
+    imageWrapper: {
+        width: 64,
+        height: 64,
+        justifyContent: "center",
+        alignItems: "center",
+        marginRight: "5%",
+    },
+    userImage: {
+        width: "80%",
+        height: "80%",
+        borderRadius: 100,
+        aspectRatio: 1,
+    }
 });

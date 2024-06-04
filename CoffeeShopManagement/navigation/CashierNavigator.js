@@ -67,6 +67,58 @@ const HomeStack = () => {
     );
 };
 
+const BillingStack = () => {
+    return (
+        <Stack.Navigator initialRouteName="CashierBillingScreen">
+
+            <Stack.Screen
+                name="CashierBillingScreen"
+                component={CashierBillingScreen}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="OrderScreen"
+                component={OrderScreen}
+                options={{
+                    headerTitle: "Chi tiết đơn hàng",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+
+        </Stack.Navigator>
+    );
+};
+
+const HistoryStack = () => {
+    return (
+        <Stack.Navigator initialRouteName="CashierHistoryScreen">
+
+            <Stack.Screen
+                name="CashierHistoryScreen"
+                component={CashierHistoryScreen}
+                options={{ headerShown: false }}
+            />
+
+            <Stack.Screen
+                name="OrderScreen"
+                component={OrderScreen}
+                options={{
+                    headerTitle: "Chi tiết đơn hàng",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+
+        </Stack.Navigator>
+    );
+};
+
 const CashierNavigator = () => {
     return (
         <Tab.Navigator
@@ -106,12 +158,12 @@ const CashierNavigator = () => {
             <Tab.Screen
                 options={{ headerShown: false }}
                 name="Đơn hàng"
-                component={CashierBillingScreen}
+                component={BillingStack}
             />
             <Tab.Screen
                 options={{ headerShown: false }}
                 name="Lịch sử"
-                component={CashierHistoryScreen}
+                component={HistoryStack}
             />
         </Tab.Navigator>
     );

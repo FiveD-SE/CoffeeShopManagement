@@ -1,18 +1,27 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Entypo'
 
-const OrderCard1 = ({ item, handleDetailOrder }) => {
+const OrderCard1 = ({
+    orderId,
+    orderTime,
+    orderType,
+    orderOwner,
+    orderOwnerPhone,
+    orderState,
+    orderPaymentState,
+    handleDetailOrder
+}) => {
     const getColorForState = (state) => {
         switch (state) {
-            case 'Đã xong':
+            case 'Đã hoàn thành':
                 return '#4ecb71';
             case 'Chờ xác nhận':
                 return '#FFA730';
             case 'Đang làm':
                 return '#f61a3d';
             default:
-                return '#4ecb71'; // Màu mặc định
+                return '#FFA730'; // Màu mặc định
         }
     };
 
@@ -21,19 +30,23 @@ const OrderCard1 = ({ item, handleDetailOrder }) => {
             onPress={handleDetailOrder}
             style={styles.orderDetail}>
             <View style={{ flexDirection: 'column', color: '#3A3A3A' }}>
-                <Text style={{ fontSize: 16 }}>Mã đơn hàng: {item._id}</Text>
-                <Text style={{ color: 'rgba(58, 58, 58, 0.50)', marginTop: '1%', marginBottom: '1%' }}>Thời gian: {item.time}</Text>
-                <Text>Loại đơn: {item.orderType}</Text>
-                <Text>Người nhận: {item.customer}</Text>
-                <Text>SDT Người nhận: {item.sdt}</Text>
-                <Text style={{ marginBottom: '1%' }}>Trạng thái thanh toán: {item.orderState}</Text>
-                <Text>
+                <Text style={styles.orderId}>Mã đơn hàng: FiveD-{orderId.substring(0, 5)}</Text>
+                <Text style={styles.orderTime}>Thời gian: {orderTime}</Text>
+                <Text style={styles.orderText}>
+                    <Text>Khách hàng: </Text>
+                    <Text style={{ fontFamily: 'lato-bold' }}>{orderOwner}</Text>
+                </Text>
+                <Text style={styles.orderText}>
+                    <Text>Trạng thái thanh toán: </Text>
+                    <Text style={{ fontFamily: 'lato-bold' }}>{orderPaymentState}</Text>
+                </Text>
+                <Text style={styles.orderText}>
                     <Text>Trạng thái: </Text>
-                    <Text style={{ color: getColorForState(item.state), fontWeight: '600' }}>{item.state}</Text>
+                    <Text style={{ color: getColorForState(orderState), fontFamily: 'lato-bold' }}>{orderState}</Text>
                 </Text>
             </View>
             <View style={{ justifyContent: 'center' }}>
-                <Icon name="chevron-small-right" size={48} />
+                <Image style={{ width: 48, height: 48 }} source={orderType === 'Giao hàng tận nơi' ? require('../../assets/images/delivery_icon.png') : require('../../assets/images/takeaway_icon.png')} />
             </View>
         </TouchableOpacity>
     )
@@ -41,7 +54,6 @@ const OrderCard1 = ({ item, handleDetailOrder }) => {
 
 const styles = StyleSheet.create({
     orderDetail: {
-
         borderRadius: 20,
         padding: '4%',
         flexDirection: "row",
@@ -49,6 +61,27 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginBottom: '5%'
     },
+    orderId: {
+        fontSize: 16,
+        fontFamily: 'lato-bold'
+    },
+    orderTime: {
+        color: 'rgba(58, 58, 58, 0.50)',
+        marginTop: '1%',
+        marginBottom: '1%',
+        fontFamily: 'lato-light'
+    },
+    orderText: {
+        fontFamily: 'lato-regular',
+        fontSize: 14,
+        marginBottom: '1%'
+    },
+    orderDetailText: {
+        fontFamily: 'lato-regular',
+        fontSize: 14,
+        marginBottom: '1%',
+        fontWeight: '600'
+    }
 })
 
 export default OrderCard1
