@@ -45,7 +45,11 @@ const styles = StyleSheet.create({
 	},
 	subtitleContainer: {
 		flexDirection: "row",
+		backgroundColor: colors.green_20,
+		justifyContent: "center",
 		alignItems: "center",
+		padding: "2%",
+		borderRadius: 8,
 	},
 	subtitle: {
 		marginRight: "5%",
