@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, Pressable, StyleSheet } from "react-native";
+import { colors } from "../../../assets/colors/colors";
 
 const OptionButton = ({ option, index, onPress, isSelected }) => {
 	const handlePress = () => {
@@ -24,17 +25,20 @@ export default OptionButton;
 
 const styles = StyleSheet.create({
 	optionButton: {
+		minHeight: 48,
+		justifyContent: "center",
+		alignItems: "center",
 		marginRight: "2%",
 		alignSelf: "flex-start",
 		borderWidth: 1,
-		borderColor: "rgba(58, 58, 58, 0.20)",
-		paddingHorizontal: "5%",
+		borderColor: colors.grey_50,
+		paddingHorizontal: "6%",
 		paddingVertical: "2%",
 		borderRadius: 100,
 	},
 	optionText: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 14,
-		fontWeight: "400",
+		fontFamily: "lato-regular",
 	},
 });

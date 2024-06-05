@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, Pressable, Image } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import ToppingModal from "../ToppingModal";
+import { colors } from "../../../assets/colors/colors";
 
 const TOPPING_ICON = require("../../../assets/topping-icon.png");
 
@@ -41,6 +42,7 @@ export default ToppingButton;
 
 const styles = StyleSheet.create({
 	container: {
+		backgroundColor: colors.white_100,
 		borderWidth: 1,
 		borderRadius: 20,
 		borderColor: "rgba(58, 58, 58, 0.2)",
@@ -48,6 +50,14 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		padding: "5%",
 		alignItems: "center",
+		shadowColor: colors.black_100,
+		shadowOffset: {
+			width: 0,
+			height: 5,
+		},
+		shadowOpacity: 0.1,
+		shadowRadius: 2,
+		elevation: 2,
 	},
 	image: {},
 	title: {

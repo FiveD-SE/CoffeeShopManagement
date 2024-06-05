@@ -20,6 +20,8 @@ import CategoryBottomSheet from "../../../components/Client/BottomSheet/Category
 import ItemDetailBottomSheet from "./ItemDetailBottomSheet";
 import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
 import { getProductsList } from "../../../api";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../../services/firebaseService";
 
 const UserPlaceOrderScreen = () => {
 	const navigation = useNavigation();
@@ -30,20 +32,26 @@ const UserPlaceOrderScreen = () => {
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 	const itemDetailBottomSheetRef = useRef(null);
 
-	const renderProductList = () => {
-		return productList.map((item, index) => (
-			<ProductCardHorizontal
-				key={index}
-				id={item._id}
-				name={item.name}
-				price={item.price.toLocaleString("vi-VN", {
-					style: "currency",
-					currency: "VND",
-				})}
-				imageSource={item?.imageSource}
-				onPress={() => handleOpenItemDetail(item)}
-			/>
-		));
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
+	};
+
+	const renderProductList = (productType) => {
+		return productList
+			.filter((item) => item.productType === productType)
+			.map((item, index) => (
+				<ProductCardHorizontal
+					key={index}
+					id={item.productId}
+					name={item.productName}
+					price={formatCurrency(item.productPrice)}
+					imageSource={item?.productImage}
+					onPress={() => handleOpenItemDetail(item)}
+				/>
+			));
 	};
 
 	const handleOpenItemDetail = (item) => {
@@ -81,8 +89,15 @@ const UserPlaceOrderScreen = () => {
 
 	useEffect(() => {
 		const fetchProductList = async () => {
+			const productList = [];
+
 			try {
-				const productList = await getProductsList();
+				const querySnapshot = await getDocs(collection(db, "products"));
+				querySnapshot.forEach((doc) => {
+					const data = doc.data();
+					productList.push({ ...data, id: doc.id });
+				});
+
 				setProductList(productList);
 			} catch (error) {
 				console.error("Error fetching product list:", error);
@@ -91,6 +106,7 @@ const UserPlaceOrderScreen = () => {
 
 		fetchProductList();
 	}, []);
+
 	return (
 		<>
 			<SafeAreaView style={styles.container}>
@@ -137,28 +153,28 @@ const UserPlaceOrderScreen = () => {
 					<View style={{ marginTop: "5%" }}>
 						<Section title="Cà Phê">
 							<ScrollView contentContainerStyle={styles.mustTryList}>
-								{renderProductList()}
+								{renderProductList("Cà phê")}
 							</ScrollView>
 						</Section>
 					</View>
 					<View style={{ marginTop: "5%" }}>
 						<Section title="Trà Sữa">
 							<ScrollView contentContainerStyle={styles.mustTryList}>
-								{renderProductList()}
+								{renderProductList("Trà sữa")}
 							</ScrollView>
 						</Section>
 					</View>
 					<View style={{ marginTop: "5%" }}>
 						<Section title="Nước Trái Cây">
 							<ScrollView contentContainerStyle={styles.mustTryList}>
-								{renderProductList()}
+								{renderProductList("Nước trái cây")}
 							</ScrollView>
 						</Section>
 					</View>
 					<View style={{ marginTop: "5%" }}>
 						<Section title="Đá Xay">
 							<ScrollView contentContainerStyle={styles.mustTryList}>
-								{renderProductList()}
+								{renderProductList("Đá xay")}
 							</ScrollView>
 						</Section>
 					</View>
