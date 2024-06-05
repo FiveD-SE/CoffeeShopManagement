@@ -1,107 +1,47 @@
-import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, Pressable } from "react-native";
+import React from "react";
+import { View, StyleSheet } from "react-native";
 import CategoryIcon from "../Button/CategoryIcon";
+import { colors } from "../../../assets/colors/colors";
 
-const GOOGLE_ICON = require("../../../assets/google.png");
-const FRUITS_ICON = require("../../../assets/fruits.png");
-const MILKTEA_ICON = require("../../../assets/milktea.png");
+const COFFEE_ICON = require("../../../assets/images/coffee.png");
+const JUICE_ICON = require("../../../assets/images/juice.png");
+const MILKTEA_ICON = require("../../../assets/images/milktea.png");
+const ICE_BLENDED_ICON = require("../../../assets/images/ice-blended.png");
 
 const categoriesData = [
-	{ type: "Category 1", iconSource: GOOGLE_ICON },
-	{ type: "Category 2", iconSource: GOOGLE_ICON },
-	{ type: "Category 1", iconSource: GOOGLE_ICON },
-	{ type: "Category 2", iconSource: GOOGLE_ICON },
-
-	{ type: "Category 2", iconSource: FRUITS_ICON },
-	{ type: "Category 2", iconSource: FRUITS_ICON },
-	{ type: "Category 2", iconSource: FRUITS_ICON },
-
-	{ type: "Category 2", iconSource: MILKTEA_ICON },
-	{ type: "Category 2", iconSource: MILKTEA_ICON },
+	{ type: "Cà phê", iconSource: COFFEE_ICON },
+	{ type: "Trà sữa", iconSource: MILKTEA_ICON },
+	{ type: "Nước trái cây", iconSource: JUICE_ICON },
+	{ type: "Đá xay", iconSource: ICE_BLENDED_ICON },
 ];
 
-const itemsPerPage = 4;
-
 const CategoryItemList = () => {
-	const [currentPage, setCurrentPage] = useState(0);
-
-	const totalPages = Math.ceil(categoriesData.length / itemsPerPage);
-
-	const getCurrentPageCategories = () => {
-		const startIndex = currentPage * itemsPerPage;
-		const endIndex = Math.min(startIndex + itemsPerPage, categoriesData.length);
-		return categoriesData.slice(startIndex, endIndex);
-	};
-
-	const renderPageIndicators = () => {
-		const indicators = [];
-		for (let i = 0; i < totalPages; i++) {
-			indicators.push(
-				<Pressable
-					key={i}
-					style={[
-						styles.pageIndicator,
-						i === currentPage && styles.activePageIndicator,
-					]}
-					onPress={() => setCurrentPage(i)}
-				></Pressable>
-			);
-		}
-		return indicators;
-	};
-
 	return (
-		<>
-			<View style={styles.container}>
-				<ScrollView
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					contentContainerStyle={{
-						width: "100%",
-						justifyContent: "space-evenly",
-					}}
-					pagingEnabled
-				>
-					{getCurrentPageCategories().map((category, index) => (
-						<CategoryIcon
-							key={index}
-							iconSource={category.iconSource}
-							size={48}
-						/>
-					))}
-				</ScrollView>
-			</View>
-			<View style={styles.pageIndicatorsContainer}>
-				{renderPageIndicators()}
-			</View>
-		</>
+		<View style={styles.container}>
+			{categoriesData.map((category, index) => (
+				<CategoryIcon
+					key={index}
+					iconSource={category.iconSource}
+					size={56}
+					name={category.type}
+				/>
+			))}
+		</View>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
-		flexDirection: "column",
+		flexDirection: "row",
 		borderWidth: 1,
 		borderRadius: 10,
-		borderColor: "rgba(58, 58, 58, 0.10)",
+		borderColor: colors.grey_50,
+		backgroundColor: colors.grey_20,
 		padding: "5%",
-		marginTop: "5%",
-	},
-	pageIndicatorsContainer: {
-		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
 		justifyContent: "center",
-		marginTop: "2%",
-	},
-	pageIndicator: {
-		paddingHorizontal: "3%",
-		paddingVertical: "1%",
-		borderWidth: 1,
-		borderColor: "#ccc",
-		borderRadius: 30,
-		marginHorizontal: "1%",
-	},
-	activePageIndicator: {
-		backgroundColor: "#00A188",
+		marginTop: "5%",
 	},
 });
 

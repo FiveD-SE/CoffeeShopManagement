@@ -10,10 +10,14 @@ import ProductCardVertical from "../../../components/Client/Card/ProductCardHori
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { connect } from "react-redux";
 import { getFavoritesListById } from "../../../api";
-const UserFavoriteItemScreen = ({ userId, productList }) => {
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { db } from "../../../services/firebaseService";
+const UserFavoriteItemScreen = ({ userData }) => {
 	const [selectedItem, setSelectedItem] = useState(null);
 
 	const [favoritesList, setFavoritesList] = useState([]);
+
+	const [productList, setProductList] = useState([]);
 
 	const itemDetailSnapPoints = useMemo(() => ["85%"]);
 
@@ -21,23 +25,21 @@ const UserFavoriteItemScreen = ({ userId, productList }) => {
 
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 
-	const getProductInfo = useCallback((itemId) => {
-		return productList.find((product) => product._id === itemId);
-	}, []);
-
 	const renderFavoriteItemList = useCallback(
 		({ item }) => {
-			const productInfo = getProductInfo(item._id);
+			const productInfo = productList.find((product) => product.id === item);
+			console.log(productInfo);
+
 			if (productInfo) {
 				return (
 					<ProductCardVertical
-						id={productInfo.id}
-						name={productInfo.name}
-						price={productInfo.price?.toLocaleString("vi-VN", {
+						id={productInfo.productId}
+						name={productInfo.productName}
+						price={productInfo.productPrice?.toLocaleString("vi-VN", {
 							style: "currency",
 							currency: "VND",
 						})}
-						imageSource={productInfo.imageSource}
+						imageSource={productInfo.productImage}
 						onPress={() => handleOpenItemDetail(productInfo)}
 					/>
 				);
@@ -45,7 +47,7 @@ const UserFavoriteItemScreen = ({ userId, productList }) => {
 				return null;
 			}
 		},
-		[getProductInfo, handleOpenItemDetail]
+		[productList, handleOpenItemDetail]
 	);
 
 	const handleOpenItemDetail = (item) => {
@@ -62,15 +64,29 @@ const UserFavoriteItemScreen = ({ userId, productList }) => {
 	}, [isItemDetailVisible]);
 
 	useEffect(() => {
-		console.log(userId);
-		getFavoritesListById(userId)
-			.then((favorites) => {
-				setFavoritesList(favorites?.products);
-			})
-			.catch((error) => {
-				console.error("Error fetching favorites:", error);
-			});
-	}, []);
+		const fetchFavorite = async () => {
+			const favoritesRef = doc(db, "favorites", userData.id);
+			const favoritesDoc = await getDoc(favoritesRef);
+
+			if (favoritesDoc.exists()) {
+				const favoriteProductIds = favoritesDoc.data().productIds;
+				setFavoritesList(favoriteProductIds);
+			}
+		};
+
+		const fetchProducts = async () => {
+			const productsSnapshot = await getDocs(collection(db, "products"));
+			const productsData = productsSnapshot.docs.map((doc) => ({
+				...doc.data(),
+				id: doc.id,
+			}));
+			setProductList(productsData);
+		};
+
+		fetchFavorite();
+		fetchProducts();
+	}, [userData, isItemDetailVisible]);
+
 	return (
 		<>
 			<View style={styles.container}>
@@ -108,8 +124,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-	productList: state.user.productList,
-	userId: state.auth.userData._id,
+	userData: state.auth.userData,
 });
 
 export default connect(mapStateToProps)(UserFavoriteItemScreen);
