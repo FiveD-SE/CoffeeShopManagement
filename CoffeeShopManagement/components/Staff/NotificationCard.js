@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 const isIOS = Platform.OS === "ios";
 
 const NotificationCard = ({ item }) => {
-    const onPress = () => { };
+    const onPress = () => {};
 
     switch (item.state) {
         case "Success":
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 16,
-        fontFamily: "helvetica-neue-bold",
+        fontFamily: "lato-bold",
         color: colors.text.black_100,
         marginBottom: isIOS ? "4%" : "2%",
     },

@@ -15,8 +15,8 @@ import Section from "../../../components/Client/Section";
 import RecentlyViewedItem from "../../../components/Client/Card/RecentlyViewedItem";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
 import { useSelector } from "react-redux";
-import { db } from "../../../services/firebaseService"; // Import from Firebase services file
-import { collection, getDocs } from "firebase/firestore"; // Import from Firebase firestore
+import { db, auth } from "../../../services/firebaseService";
+import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { connect } from "react-redux";
 
 const USER_IMAGE_SOURCE = require("../../../assets/google.png");
@@ -33,6 +33,10 @@ const UserHomeScreen = ({ userData }) => {
     const [selectedItem, setSelectedItem] = useState(null);
     const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
     const [productList, setProductList] = useState([]);
+    const [bestSellerList, setBestSellerList] = useState([]);
+    const [recentlyViewedList, setRecentlyViewedList] = useState([]);
+    const [currentCredit, setCurrentCredit] = useState(0);
+    const [username, setUsername] = useState("");
 
     const handleCategoryPress = (index) => setSelectedIndex(index);
     const handleOpenItemDetail = (item) => {
@@ -72,14 +76,13 @@ const UserHomeScreen = ({ userData }) => {
             return (
                 <BestSellerItem
                     key={index}
-                    id={item.productId} // Use productId instead of _id
+                    id={item.productId}
                     name={item.productName}
                     price={item.productPrice.toLocaleString("vi-VN", {
                         style: "currency",
                         currency: "VND",
                     })}
-                    // Assuming you have an imageSource property
-                    imageSource={item.imageSource}
+                    imageSource={item.productImage}
                     onPress={() => handleOpenItemDetail(item)}
                     horizontal={true}
                 />
@@ -90,14 +93,13 @@ const UserHomeScreen = ({ userData }) => {
         productList.map((item, index) => (
             <RecentlyViewedItem
                 key={index}
-                id={item.productId} // Use productId instead of _id
+                id={item.productId}
                 title={item.productName}
                 price={item.productPrice.toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
                 })}
-                // Assuming you have an imageSource property
-                imageSource={item.imageSource}
+                imageSource={item.productImage}
                 onPress={() => handleOpenItemDetail(item)}
             />
         ));
@@ -115,7 +117,7 @@ const UserHomeScreen = ({ userData }) => {
                 const querySnapshot = await getDocs(productsCollectionRef);
                 const fetchedProducts = querySnapshot.docs.map((doc) => ({
                     ...doc.data(),
-                    productId: doc.id, // Add productId from the document ID
+                    productId: doc.id,
                 }));
                 setProductList(fetchedProducts);
             } catch (error) {
@@ -126,6 +128,22 @@ const UserHomeScreen = ({ userData }) => {
         fetchProductList();
     }, []);
 
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const userDocRef = doc(db, "users", auth.currentUser.uid);
+            const userDoc = await getDoc(userDocRef);
+
+            if (userDoc.exists()) {
+                setCurrentCredit(userDoc.data().credit);
+                setUsername(userDoc.data().fullName);
+            } else {
+                console.log("User document does not exist.");
+            }
+        };
+
+        fetchUserData();
+    }, []);
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView
@@ -133,9 +151,9 @@ const UserHomeScreen = ({ userData }) => {
                 contentContainerStyle={styles.contentContainer}
             >
                 <UserHomeScreenHeader
-                    username={userData?.name}
+                    username={username}
                     userImageSource={USER_IMAGE_SOURCE}
-                    totalPoint={20}
+                    totalPoint={currentCredit}
                     onPressBean={goToExchangeVoucher}
                     onPressFavorite={goToFavoriteItemScreen}
                     onPressNotify={goToNotificationScreen}
