@@ -5,15 +5,29 @@ import SquareWithBorder from '../../../components/Admin/SquarewithBorder'
 import CustomChooseButton from '../../../components/Admin/Button/CustomChooseButton'
 import ColorButton from '../../../components/Admin/Button/ColorButton'
 import VoucherTypeModal from '../../../components/Admin/Modal/VoucherTypeModal';
-import ServiceTypeModal from '../../../components/Admin/Modal/ServiceTypeModal';
 import RankUserModal from '../../../components/Admin/Modal/RankUserModal';
 import DaySelectModal from '../../../components/Admin/Modal/DaySelectModal';
 
 const AdminAddVoucherScreen = () => {
-  const [voucherType, setVoucherType] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [voucherName, setVoucherName] = useState("");
+  const [voucherPrice, setVoucherPrice] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [voucherDescription, setVoucherDescription] = useState("");
+
   const [rankUserModalVisible, setRankUserModalVisible] = useState(false);
+
+
   const [voucherTypeModalVisible, setVoucherTypeModalVisible] = useState(false);
+  const [voucherType, setVoucherType] = useState(null);
+
+
   const [daySelectModalVisible, setDaySelectModalVisible] = useState(false);
+
+  //Image Selection Handler
+  const handleImageSelected = (uri) => {
+    setSelectedImage(uri);
+  };
 
   const showRankUserModal = () => {
     setRankUserModalVisible(true);
@@ -39,10 +53,32 @@ const AdminAddVoucherScreen = () => {
     setDaySelectModalVisible(false);
   };
 
+  const formatPrice = (price) => {
+
+    const formatter = new Intl.NumberFormat('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
+    return formatter.format(price);
+  };
+
+  const handlePriceChange = (text) => {
+    const numericValue = text.replace(/\D/g, '');
+    setVoucherName(numericValue);
+  };
+
+  const getDisplayPrice = () => {
+    return isFocused || voucherPrice === "" ? voucherPrice : formatPrice(voucherPrice);
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.imageContainer}>
-        <SquareWithBorder text="Ảnh khuyến mãi" />
+        <SquareWithBorder
+          text="Ảnh khuyến mãi"
+          onImageSelected={handleImageSelected}
+          selectedImage={selectedImage}
+        />
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.header}>Thông tin khuyến mãi</Text>
@@ -50,6 +86,7 @@ const AdminAddVoucherScreen = () => {
           <TextInput
             style={styles.input}
             placeholder="Tên khuyến mãi"
+            onChangeText={(text) => setVoucherName(text)}
           />
         </View>
 
@@ -80,7 +117,11 @@ const AdminAddVoucherScreen = () => {
           <View style={[styles.inputBox, { flex: 1, marginLeft: "2%" }]}>
             <TextInput
               style={styles.input}
-              placeholder="Giá tiền sản phẩm"
+              value={getDisplayPrice() === "" ? null : getDisplayPrice()}
+              placeholder="Giá tiền giảm"
+              onChangeText={handlePriceChange}
+              onBlur={() => setIsFocused(false)}
+              onFocus={() => setIsFocused(true)}
             />
           </View>
         </View>
@@ -101,6 +142,7 @@ const AdminAddVoucherScreen = () => {
           placeholder="Mô tả khuyến mãi"
           multiline={true}
           numberOfLines={4}
+          onChangeText={(text) => setVoucherDescription(text)}
         />
       </View>
       <ColorButton color="#00A188" text="Thêm mới" textColor="#ffffff" />

@@ -1,6 +1,7 @@
 import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
+import { colors } from '../../../assets/colors/colors';
 
 const RankUserModal = ({ visible, onClose }) => {
   const [selectedTypes, setSelectedTypes] = useState({
@@ -32,6 +33,9 @@ const RankUserModal = ({ visible, onClose }) => {
       return newSelectedTypes;
     });
   };
+  const handleSave = () => {
+
+  }
   return (
     <Modal
       animationType="fade"
@@ -46,7 +50,7 @@ const RankUserModal = ({ visible, onClose }) => {
             <View style={{ flexDirection: "row", marginTop: "5%" }}>
               <TouchableOpacity style={[
                 styles.buttonContainer,
-                { marginRight: "1%", backgroundColor: selectedTypes.all ? "#D3D3D3" : "#ffffff" }
+                { marginRight: "1%", backgroundColor: selectedTypes.all ? colors.green_20 : "#ffffff" }
               ]}
                 onPress={() => handleSelectType("all")}
               >
@@ -61,7 +65,7 @@ const RankUserModal = ({ visible, onClose }) => {
               <TouchableOpacity
                 style={[
                   styles.buttonContainer,
-                  { flex: 1, marginRight: "1%", backgroundColor: selectedTypes.bronze ? "#D3D3D3" : "#ffffff" }
+                  { flex: 1, marginRight: "1%", backgroundColor: selectedTypes.bronze ? colors.green_20 : "#ffffff" }
                 ]}
                 onPress={() => handleSelectType("bronze")}
               >
@@ -73,7 +77,7 @@ const RankUserModal = ({ visible, onClose }) => {
               <TouchableOpacity
                 style={[
                   styles.buttonContainer,
-                  { flex: 1, marginRight: "1%", backgroundColor: selectedTypes.silver ? "#D3D3D3" : "#ffffff" }
+                  { flex: 1, marginRight: "1%", backgroundColor: selectedTypes.silver ? colors.green_20 : "#ffffff" }
                 ]}
                 onPress={() => handleSelectType("silver")}
               >
@@ -85,7 +89,7 @@ const RankUserModal = ({ visible, onClose }) => {
               <TouchableOpacity
                 style={[
                   styles.buttonContainer,
-                  { flex: 1, marginRight: "1%", backgroundColor: selectedTypes.gold ? "#D3D3D3" : "#ffffff" }
+                  { flex: 1, marginRight: "1%", backgroundColor: selectedTypes.gold ? colors.green_20 : "#ffffff" }
                 ]}
                 onPress={() => handleSelectType("gold")}
               >
@@ -97,7 +101,7 @@ const RankUserModal = ({ visible, onClose }) => {
               <TouchableOpacity
                 style={[
                   styles.buttonContainer,
-                  { flex: 1, marginRight: "1%", backgroundColor: selectedTypes.diamond ? "#D3D3D3" : "#ffffff" }
+                  { flex: 1, marginRight: "1%", backgroundColor: selectedTypes.diamond ? colors.green_20 : "#ffffff" }
                 ]}
                 onPress={() => handleSelectType("diamond")}
               >
@@ -107,6 +111,9 @@ const RankUserModal = ({ visible, onClose }) => {
               </TouchableOpacity>
 
             </View>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveButtonText}>Lưu</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </View>
@@ -127,7 +134,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F7FA",
     borderRadius: 20,
     width: "90%",
-    height: "40%",
+    height: "49%",
   },
   imageContainer: {
     marginTop: "5%",
@@ -159,5 +166,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: "#ECECEC"
+  },
+  saveButton: {
+    backgroundColor: '#00A188',
+    borderRadius: 10,
+    paddingVertical: "4%",
+    paddingHorizontal: "5%",
+    alignItems: 'center',
+    marginVertical: "5%",
+  },
+  saveButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
   }
 });

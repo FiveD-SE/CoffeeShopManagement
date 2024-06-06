@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import SquareWithBorder from '../SquarewithBorder'
 import ColorButton from '../Button/ColorButton'
+import { colors } from '../../../assets/colors/colors'
 
 const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
   const [type, setType] = useState(null);
@@ -10,8 +11,11 @@ const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
   const [selectedDiscount, setSelectedDiscount] = useState("discount");
   const handleSelectType = (selectedType) => {
     setType(selectedType);
-    onSelect(selectedType); 
+    onSelect(selectedType);
   };
+  const handleSave = () => {
+
+  }
   return (
     <Modal
       animationType="fade"
@@ -27,7 +31,7 @@ const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
             <View style={{ flexDirection: "row" }}>
               <TouchableOpacity style={[
                 styles.buttonContainer,
-                { marginRight: "1%", backgroundColor: selectedType === "exchange" ? "#D3D3D3" : "#ffffff" }
+                { marginRight: "1%", backgroundColor: selectedType === "exchange" ? colors.green_20 : "#ffffff" }
               ]}
                 onPress={() => setSelectedType("exchange")}
               >
@@ -38,7 +42,7 @@ const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
 
               <TouchableOpacity style={[
                 styles.buttonContainer,
-                { marginLeft: "1%", backgroundColor: selectedType === "free" ? "#D3D3D3" : "#ffffff" }
+                { marginLeft: "1%", backgroundColor: selectedType === "free" ? colors.green_20 : "#ffffff" }
               ]}
                 onPress={() => setSelectedType("free")}>
                 <Image
@@ -52,7 +56,7 @@ const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
               <TouchableOpacity
                 style={[
                   styles.buttonContainer,
-                  { marginRight: "1%", backgroundColor: selectedDiscount === "discount" ? "#D3D3D3" : "#ffffff" }
+                  { marginRight: "1%", backgroundColor: selectedDiscount === "discount" ? colors.green_20 : "#ffffff" }
                 ]}
                 onPress={() => setSelectedDiscount("discount")}
               >
@@ -64,7 +68,7 @@ const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
               <TouchableOpacity
                 style={[
                   styles.buttonContainer,
-                  { marginLeft: "1%", backgroundColor: selectedDiscount === "ship" ? "#D3D3D3" : "#ffffff" }
+                  { marginLeft: "1%", backgroundColor: selectedDiscount === "ship" ? colors.green_20 : "#ffffff" }
                 ]}
                 onPress={() => setSelectedDiscount("ship")}
               >
@@ -73,6 +77,9 @@ const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
                 <Text style={styles.title}>Ưu đãi vận chuyển</Text>
               </TouchableOpacity>
             </View>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveButtonText}>Lưu</Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </View>
@@ -93,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F7FA",
     borderRadius: 20,
     width: "90%",
-    height: "43%",
+    height: "51%",
   },
   imageContainer: {
     marginTop: "5%",
@@ -125,5 +132,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     borderColor: "#ECECEC"
+  },
+  saveButton: {
+    backgroundColor: '#00A188',
+    borderRadius: 10,
+    paddingVertical: "4%",
+    paddingHorizontal: "5%",
+    alignItems: 'center',
+    marginVertical: "5%",
+  },
+  saveButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '600',
   }
 });
