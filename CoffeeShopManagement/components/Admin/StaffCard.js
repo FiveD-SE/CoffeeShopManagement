@@ -1,21 +1,26 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native"; // Import các thành phần cần thiết từ react-native
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native"; // Import các thành phần cần thiết từ react-native
 import Icon from "react-native-vector-icons/Entypo";
 
-const StaffCard = ({ item, onPress }) => {
+const StaffCard = ({
+    cashierName,
+    cashierPhone,
+    cashierImage,
+    onPress }) => {
     return (
         <TouchableOpacity
             onPress={onPress}
-            key={item.id} style={styles.staffItem}>
+            style={styles.staffItem}>
             <View style={{ flexDirection: "row" }}>
-                <View
+                <Image
                     style={{
                         width: 80,
                         height: 80,
                         backgroundColor: "#cbcbd4",
                         borderRadius: 10,
                     }}
-                ></View>
+                    source={{ uri: cashierImage }}
+                />
                 <View
                     style={{
                         marginStart: "5%",
@@ -23,10 +28,10 @@ const StaffCard = ({ item, onPress }) => {
                     }}
                 >
                     <Text style={{ fontSize: 16, fontWeight: "600" }}>
-                        {item.name}
+                        {cashierName}
                     </Text>
                     <Text style={{ fontSize: 14, color: "#808080" }}>
-                        {item.SDT}
+                        {cashierPhone}
                     </Text>
                     <View
                         style={{
@@ -40,7 +45,7 @@ const StaffCard = ({ item, onPress }) => {
                         <Text
                             style={{ color: "#5bcf7c", fontSize: 14 }}
                         >
-                            {item.role}
+                            Nhân viên
                         </Text>
                     </View>
                 </View>

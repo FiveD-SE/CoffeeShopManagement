@@ -15,50 +15,24 @@ import { ScrollView } from "react-native-gesture-handler";
 import StaffCard from "../../components/Admin/StaffCard";
 
 import RoleListScreen from "./RoleListScreen";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../../services/firebaseService";
 
 export default function ManageStaffScreen({ route }) {
-	const [DATA, setDATA] = useState([
-		{
-			id: "123456",
-			name: "Tánh Trần",
-			SDT: "0352085655",
-			role: "Nhân viên",
-			birth: "22/07/2004",
-			sex: "Nam",
-			cccd: "0123456789",
-			email: "henrytsuki@gmail.com",
-		},
-		{
-			id: "123457",
-			name: "Gia Bảo",
-			SDT: "0352085656",
-			role: "Nhân viên",
-			birth: "22/07/2004",
-			sex: "Nam",
-			cccd: "0123456789",
-			email: "henrytsuki@gmail.com",
-		},
-		{
-			id: "123458",
-			name: "Quốc Thắng",
-			SDT: "0352085657",
-			role: "Nhân viên",
-			birth: "22/07/2004",
-			sex: "Nam",
-			cccd: "0123456789",
-			email: "henrytsuki@gmail.com",
-		},
-		{
-			id: "123459",
-			name: "Thành Tài",
-			SDT: "0352085658",
-			role: "Nhân viên",
-			birth: "22/07/2004",
-			sex: "Nam",
-			cccd: "0123456789",
-			email: "henrytsuki@gmail.com",
-		},
-	]);
+	const [cashiers, setCashiers] = useState([]);
+
+	useEffect(() => {
+		const unsub = onSnapshot(
+			query(
+				collection(db, "cashier"),
+			),
+			(snapshot) => {
+				setCashiers(snapshot.docs.map((doc) => doc.data()));
+			}
+		);
+	}, []);
+
+
 	const [isOpen, setIsOpen] = useState(false);
 	const chooseRoleListSnapPoints = useMemo(() => ["60%"], []);
 	const chooseRoleListBottomSheetRef = useRef(null);
@@ -92,8 +66,8 @@ export default function ManageStaffScreen({ route }) {
 	const handleback = () => {
 		navigation.goBack();
 	};
-	const goToAddStaff = (addNewStaff) => {
-		navigation.navigate("AddStaff", { onAddNewStaff: addNewStaff });
+	const goToAddStaff = () => {
+		navigation.navigate("AddStaff");
 	};
 	const goToEditStaff = (item, setValue) => {
 		navigation.navigate("EditStaff", { staffItem: item, setValue: setValue });
@@ -140,16 +114,17 @@ export default function ManageStaffScreen({ route }) {
 					</View>
 					<ScrollView style={styles.listStaff}>
 						<View>
-							{DATA.map((item) => (
+							{cashiers.map((item) => (
 								<StaffCard
-									key={item.id}
-									item={item}
-									onPress={() => goToEditStaff(item, setDATA)}
+									key={item.cashierId}
+									cashierName={item.fullName}
+									cashierPhone={item.phoneNumber}
+									cashierImage={item.cashierImage}
 								/>
 							))}
 						</View>
 						<TouchableOpacity
-							onPress={() => goToAddStaff(addNewStaff)}
+							onPress={() => goToAddStaff()}
 							style={styles.addStaffButton}
 						>
 							<Ionicons name="add" size={24} />
