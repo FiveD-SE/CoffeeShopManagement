@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import React from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome6";
+import { colors } from "../../../assets/colors/colors";
 
 const CartItemCard = ({
 	id,
@@ -36,11 +37,11 @@ const CartItemCard = ({
 			</View>
 			<View style={styles.adjustButtonContainer}>
 				<Pressable style={styles.adjustButton} onPress={handleDecrement}>
-					<Icon name="minus" color="#FFFFFF" size={12} />
+					<Icon name="minus" color="#FFFFFF" size={14} />
 				</Pressable>
 				<Text style={styles.quantity}>{quantity}</Text>
 				<Pressable style={styles.adjustButton} onPress={handleIncrement}>
-					<Icon name="plus" color="#FFFFFF" size={12} />
+					<Icon name="plus" color="#FFFFFF" size={14} />
 				</Pressable>
 			</View>
 		</View>
@@ -51,13 +52,21 @@ export default CartItemCard;
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "#FFFFFF",
+		backgroundColor: colors.white_100,
 		flexDirection: "row",
-		alignItems: "center",
-		marginVertical: "1%",
-		padding: "4%",
-		borderRadius: 20,
 		justifyContent: "space-between",
+		alignItems: "center",
+		marginVertical: "2%",
+		padding: "4%",
+		borderRadius: 12,
+		shadowColor: colors.grey_100,
+		shadowOffset: {
+			width: -5,
+			height: 10,
+		},
+		shadowOpacity: 0.2,
+		shadowRadius: 10,
+		elevation: 2,
 	},
 	imageContainer: {
 		flex: 0.5,
@@ -73,17 +82,17 @@ const styles = StyleSheet.create({
 	},
 	name: {
 		width: "100%",
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 16,
-		fontWeight: "500",
+		fontFamily: "lato-bold",
 		lineHeight: 20,
 	},
 	subtitle: {
 		marginTop: "5%",
-		color: "rgba(58,58,58,0.5)",
-		fontSize: 12,
-		lineHeight: 12,
-		fontWeight: "500",
+		color: colors.grey_100,
+		fontSize: 14,
+		lineHeight: 20,
+		fontFamily: "lato-regular",
 	},
 	adjustButtonContainer: {
 		flex: 0.5,
@@ -92,15 +101,15 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	adjustButton: {
-		padding: "4%",
+		padding: "6%",
 		justifyContent: "center",
 		alignItems: "center",
-		backgroundColor: "#00A188",
+		backgroundColor: colors.green_100,
 		borderRadius: 100,
 	},
 	quantity: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 16,
-		fontWeight: "500",
+		fontFamily: "lato-regular",
 	},
 });
