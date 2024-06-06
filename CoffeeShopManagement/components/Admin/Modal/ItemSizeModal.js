@@ -1,6 +1,7 @@
 import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
+import { colors } from '../../../assets/colors/colors';
 
 const ItemSizeModal = ({ visible, onClose, setSize }) => {
     const [selectedTypes, setSelectedTypes] = useState({
@@ -37,7 +38,7 @@ const ItemSizeModal = ({ visible, onClose, setSize }) => {
                         <View style={{ flexDirection: "row" }}>
                             <TouchableOpacity
                                 onPress={() => handleSelectType("smallEnabled")}
-                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.smallEnabled ? "#D3D3D3" : "#ffffff" }]}>
+                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.smallEnabled ? colors.green_20 : "#ffffff" }]}>
                                 <Image
                                     source={require("../../../assets/coffee-cup.png")} />
                                 <Text style={styles.title}>Nhỏ</Text>
@@ -45,7 +46,7 @@ const ItemSizeModal = ({ visible, onClose, setSize }) => {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => handleSelectType("mediumEnabled")}
-                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.mediumEnabled ? "#D3D3D3" : "#ffffff" }]}>
+                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.mediumEnabled ? colors.green_20 : "#ffffff" }]}>
                                 <Image
                                     source={require("../../../assets/coffee-cup.png")} />
                                 <Text style={styles.title}>Trung bình</Text>
@@ -53,7 +54,7 @@ const ItemSizeModal = ({ visible, onClose, setSize }) => {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => handleSelectType("largeEnabled")}
-                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.largeEnabled ? "#D3D3D3" : "#ffffff" }]}>
+                                style={[styles.buttonContainer, { backgroundColor: selectedTypes.largeEnabled ? colors.green_20 : "#ffffff" }]}>
                                 <Image
                                     source={require("../../../assets/coffee-cup.png")} />
                                 <Text style={styles.title}>Lớn</Text>

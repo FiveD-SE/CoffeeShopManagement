@@ -15,6 +15,7 @@ import { db, uploadImageToFirebase } from '../../../services/firebaseService';
 const AdminAddItemScreen = () => {
   const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
   const [productDescription, setProductDescription] = useState("");
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -102,7 +103,7 @@ const AdminAddItemScreen = () => {
 
         const docRef = await addDoc(collection(db, "products"), {
           productName: productName,
-          productPrice: productPrice,
+          productPrice: parseInt(productPrice),
           productDescription: productDescription,
           productOptions: {
             sugarEnable: sugarEnable,
@@ -146,6 +147,16 @@ const AdminAddItemScreen = () => {
     return formatter.format(price);
   };
 
+  const handlePriceChange = (text) => {
+    const numericValue = text.replace(/\D/g, '');
+    setProductPrice(numericValue);
+  };
+
+  const getDisplayPrice = () => {
+    return isFocused || productPrice === "" ? productPrice : formatPrice(productPrice);
+  };
+
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.imageContainer}>
@@ -168,9 +179,11 @@ const AdminAddItemScreen = () => {
           <TextInput
             keyboardType="phone-pad"
             style={[styles.input, { flex: 1 }]}
-            value={formatPrice(productPrice)}
+            value={getDisplayPrice() === "" ? null : getDisplayPrice()}
             placeholder="Giá tiền sản phẩm"
-            onChangeText={(text) => setProductPrice(Number(text.replace(/\D/g, '')))}
+            onChangeText={handlePriceChange}
+            onBlur={() => setIsFocused(false)}
+            onFocus={() => setIsFocused(true)}
           />
         </View>
         <View style={styles.inputBox}>
