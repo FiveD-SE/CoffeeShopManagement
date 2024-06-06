@@ -34,6 +34,10 @@ const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
 		}
 	}
 
+	function formatVND(number) {
+		return number.toLocaleString('vi-VN');
+	}
+
 	return (
 		<Modal
 			animationType="fade"
@@ -63,7 +67,7 @@ const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
 								/>
 							</View>
 							<View style={styles.inputBox}>
-								<Text style={styles.text}>{selectedGoods?.goodsPrice} VNĐ</Text>
+								<Text style={styles.text}>{formatVND(Number(selectedGoods?.goodsPrice))} VNĐ</Text>
 							</View>
 						</View>
 						<ColorButton color="#00A188" text="Thêm" textColor="#ffffff" OnPress={handleAdd}/>

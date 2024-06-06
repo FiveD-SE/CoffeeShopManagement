@@ -22,7 +22,7 @@ const ProductCardwithPlus = ({
                         </View>
                         <View style={{ flexDirection: "row" }}>
                             <Text style={styles.label}>{quantity}</Text>
-                            <Text style={styles.label}>/{unit}</Text>
+                            <Text style={styles.label}> {unit}</Text>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>

@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState, useEffect, memo } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from "@react-navigation/native";
 
-import AddGoodButton from '../../../components/Admin/Button/AddGoodButton'
-import SearchBar from '../../../components/Client/SearchBar'
-import ProductCardwithPlus from '../../../components/Admin/Card/ProductCardwithPlus'
+import AddGoodButton from '../../../components/Admin/Button/AddGoodButton';
+import SearchBar from '../../../components/Client/SearchBar';
+import ProductCardwithPlus from '../../../components/Admin/Card/ProductCardwithPlus';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../services/firebaseService';
 import AddGoodModal from '../../../components/Admin/Modal/AddGoodModal';
@@ -14,8 +14,6 @@ const AdminImportGoodsScreen = () => {
   const navigation = useNavigation();
   const [goodsList, setGoodsList] = useState([]);
   const [selectedGoods, setSelectedGoods] = useState({});
-  const [selectedGoodsList, setSelectedGoodsList] = useState([]);
-  const [totalImportedGoods, setTotalImportedGoods] = useState(0);
 
   const goToListImport = () => {
     navigation.navigate("AdminListImport");
@@ -42,24 +40,20 @@ const AdminImportGoodsScreen = () => {
     setEditModalVisible(false);
   };
 
-  const handleAddGoods = (newGoods) => {
-    const updatedGoodsList = [...selectedGoodsList, newGoods];
-    setSelectedGoodsList(updatedGoodsList);
-    const label = updatedGoodsList.reduce((total, item) => total + (Number(item.goodsQuantity) || 0), 0);
-    setTotalImportedGoods(label);
-  };
-
   useEffect(() => {
     const fetchGoods = async () => {
-        const goodsCollection = collection(db, 'goods');
-        const goodsSnapshot = await getDocs(goodsCollection);
-        const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
-        console.log(goodsListData)
-        setGoodsList(goodsListData);
-      };
-      
-      fetchGoods();
+      const goodsCollection = collection(db, 'goods');
+      const goodsSnapshot = await getDocs(goodsCollection);
+      const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
+      setGoodsList(goodsListData);
+    };
+
+    fetchGoods();
   }, [editModalVisible, addNewModalVisible]);
+
+  function formatVND(number) {
+    return number.toLocaleString('vi-VN');
+  }
 
   const rendergoodsList = () => {
     return goodsList.map((item, index) => (
@@ -69,13 +63,12 @@ const AdminImportGoodsScreen = () => {
         name={item.goodsName}
         unit={item.goodsUnit}
         quantity={item.goodsQuantity}
-        price={item.goodsPrice}
+        price={formatVND(Number(item.goodsPrice))}
         onPressEdit={() => showEditGoodInfoModal(item)}
         onPressAddNew={() => showAddNewModal(item)}
       />
     ));
   };
-  
   return (
     <View style={styles.container}>
       <AddGoodButton title="Thêm mặt hàng mới" />
@@ -89,13 +82,13 @@ const AdminImportGoodsScreen = () => {
       <View style={styles.buttonContainer}>
         <View style={{ flexDirection: "column" }}>
           <Text style={styles.importName}>Số mặt hàng nhập mới:</Text>
-          <Text style={styles.importNumber}>{totalImportedGoods.toString()}</Text>
+          <Text style={styles.importNumber}>1000</Text>
         </View>
-        <TouchableOpacity style={styles.colorButton}  onPress={goToListImport}>
-            <Text style={styles.nameText}>Nhập hàng</Text>
+        <TouchableOpacity style={styles.colorButton} onPress={goToListImport}>
+          <Text style={styles.nameText}>Nhập hàng</Text>
         </TouchableOpacity>
       </View>
-      <AddGoodModal visible={addNewModalVisible} onClose={hideAddNewModal} selectedGoods={selectedGoods} onAdd={handleAddGoods}/>
+      <AddGoodModal visible={addNewModalVisible} onClose={hideAddNewModal} selectedGoods={selectedGoods} />
       <EditGoodInfoModal visible={editModalVisible} onClose={hideEditGoodInfoModal} selectedGoods={selectedGoods} />
     </View>
   )
@@ -150,8 +143,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   nameText: {
-      fontSize: 16,
-      fontWeight: "700",
-      color: "#ffffff"
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#ffffff"
   }
-})
+});
