@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, SafeAreaView, Pressable, TextInput } from 'react-native';
-import SwitchToggle from 'toggle-switch-react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import React, { useState } from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    SafeAreaView,
+    Pressable,
+    TextInput,
+} from "react-native";
+import SwitchToggle from "toggle-switch-react-native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 
 export default function EditAddress() {
@@ -11,7 +19,7 @@ export default function EditAddress() {
     const [addressType, setAddressType] = useState(null);
 
     const handleToggle = () => {
-        setIsToggled(isToggled => !isToggled);
+        setIsToggled((isToggled) => !isToggled);
     };
 
     const handleAddressType = (type) => {
@@ -29,15 +37,22 @@ export default function EditAddress() {
                                 style={styles.input}
                                 placeholder="Địa chỉ"
                             />
-                            <Pressable onPress={() => navigation.navigate('SelectBranch')}>
-                                <FontAwesome 
-                                name='angle-right' 
-                                size={30} 
-                                style={styles.navIcon} 
+                            <Pressable
+                                onPress={() =>
+                                    navigation.navigate("SelectBranch")
+                                }
+                            >
+                                <FontAwesome
+                                    name="angle-right"
+                                    size={30}
+                                    style={styles.navIcon}
                                 />
                             </Pressable>
-                        </View>                        
-                        <TextInput style={styles.labelInput} placeholder="Chi nhánh" />
+                        </View>
+                        <TextInput
+                            style={styles.labelInput}
+                            placeholder="Chi nhánh"
+                        />
                     </View>
                 </View>
 
@@ -48,18 +63,42 @@ export default function EditAddress() {
                             <Text style={styles.rowText}>Loại địa chỉ:</Text>
                             <View style={styles.kindContainer}>
                                 <Pressable
-                                    style={[styles.kind, addressType === 'home' ? styles.selectedKind : null]}
-                                    onPress={() => handleAddressType('home')}
+                                    style={[
+                                        styles.kind,
+                                        addressType === "home"
+                                            ? styles.selectedKind
+                                            : null,
+                                    ]}
+                                    onPress={() => handleAddressType("home")}
                                 >
-                                    <Text style={[styles.kindText, addressType === 'home' ? styles.selectedKindText : null]}>
+                                    <Text
+                                        style={[
+                                            styles.kindText,
+                                            addressType === "home"
+                                                ? styles.selectedKindText
+                                                : null,
+                                        ]}
+                                    >
                                         Nhà riêng
                                     </Text>
                                 </Pressable>
                                 <Pressable
-                                    style={[styles.kind, addressType === 'office' ? styles.selectedKind : null]}
-                                    onPress={() => handleAddressType('office')}
+                                    style={[
+                                        styles.kind,
+                                        addressType === "office"
+                                            ? styles.selectedKind
+                                            : null,
+                                    ]}
+                                    onPress={() => handleAddressType("office")}
                                 >
-                                    <Text style={[styles.kindText, addressType === 'office' ? styles.selectedKindText : null]}>
+                                    <Text
+                                        style={[
+                                            styles.kindText,
+                                            addressType === "office"
+                                                ? styles.selectedKindText
+                                                : null,
+                                        ]}
+                                    >
                                         Văn phòng
                                     </Text>
                                 </Pressable>
@@ -67,7 +106,9 @@ export default function EditAddress() {
                         </View>
                         <View style={styles.divider} />
                         <View style={styles.row}>
-                            <Text style={styles.rowText}>Đặt làm địa chỉ mặc định</Text>
+                            <Text style={styles.rowText}>
+                                Đặt làm địa chỉ mặc định
+                            </Text>
                             <SwitchToggle
                                 onColor="#4ECB71"
                                 offColor="#CCCCCC"
@@ -83,13 +124,24 @@ export default function EditAddress() {
                 <View style={styles.section}>
                     <Text style={styles.sectionHeading}>Liên hệ</Text>
                     <View style={styles.label}>
-                        <TextInput style={styles.labelInput} placeholder="Họ và tên" />
-                        <TextInput style={styles.labelInput} placeholder="Số điện thoại" />
+                        <TextInput
+                            style={styles.labelInput}
+                            placeholder="Họ và tên"
+                        />
+                        <TextInput
+                            style={styles.labelInput}
+                            placeholder="Số điện thoại"
+                        />
                     </View>
                 </View>
 
                 <Pressable style={styles.deleteButton}>
-                    <FontAwesome name='trash'size={25} style={styles.icon} color='#F61A3D'/>
+                    <FontAwesome
+                        name="trash"
+                        size={25}
+                        style={styles.icon}
+                        color="#F61A3D"
+                    />
                     <Text style={styles.deleteButtonText}>Xóa địa chỉ</Text>
                 </Pressable>
 
@@ -114,24 +166,24 @@ const styles = StyleSheet.create({
     },
     sectionHeading: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         marginBottom: 10,
-        color: '#3A3A3A',
-        fontFamily: 'Lato-Bold',
+        color: "#3A3A3A",
+        fontFamily: "Lato-Bold",
     },
     rowText: {
         fontSize: 16,
-        color: '#000',
+        color: "#000",
         lineHeight: 18,
-        fontFamily: 'Lato-Regular',
+        fontFamily: "Lato-Regular",
     },
     row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
     },
     kindContainer: {
-        flexDirection: 'row',
+        flexDirection: "row",
         gap: 10,
     },
     kind: {
@@ -139,25 +191,25 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         borderRadius: 5,
         borderWidth: 1,
-        borderColor: '#CCCCCC',
-        backgroundColor: '#FFFFFF',
+        borderColor: "#CCCCCC",
+        backgroundColor: "#FFFFFF",
     },
     selectedKind: {
-        backgroundColor: '#FFA730',
+        backgroundColor: "#FFA730",
     },
     kindText: {
-        color: '#3A3A3A',
-        fontFamily: 'Lato-Regular',
+        color: "#3A3A3A",
+        fontFamily: "Lato-Regular",
     },
     selectedKindText: {
-        color: '#FFF',
+        color: "#FFF",
     },
     labelInput: {
         height: 50,
         paddingHorizontal: 15,
-        backgroundColor: '#FFF',
+        backgroundColor: "#FFF",
         borderWidth: 1,
-        borderColor: '#CCCCCC',
+        borderColor: "#CCCCCC",
         borderRadius: 10,
     },
     input: {
@@ -167,65 +219,65 @@ const styles = StyleSheet.create({
     },
     button: {
         marginVertical: 20,
-        backgroundColor: '#FFA730',
+        backgroundColor: "#FFA730",
         paddingVertical: 15,
         borderRadius: 20,
-        alignItems: 'center',
+        alignItems: "center",
     },
     buttonText: {
-        color: '#FFFFFF',
-        fontFamily: 'Lato-Bold',
-        fontSize: 18
+        color: "#FFFFFF",
+        fontFamily: "Lato-Bold",
+        fontSize: 18,
     },
     divider: {
-        width: '100%',
+        width: "100%",
         borderWidth: 0.5,
         marginVertical: 5,
-        borderColor: '#CCCCCC',
+        borderColor: "#CCCCCC",
     },
     toggleLabel: {
-        color: '#3A3A3A',
-        fontFamily: 'Lato-Regular',
+        color: "#3A3A3A",
+        fontFamily: "Lato-Regular",
         fontSize: 15,
     },
     label: {
-        width: '100%',
-        backgroundColor: '#FFF',
-        borderColor: '#CCCCCC',
+        width: "100%",
+        backgroundColor: "#FFF",
+        borderColor: "#CCCCCC",
         borderRadius: 20,
         paddingHorizontal: 15,
         paddingVertical: 15,
-        gap: 15
+        gap: 15,
     },
     deleteButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
         marginTop: 20,
-        backgroundColor: '#FFF',
+        backgroundColor: "#FFF",
         paddingVertical: 15,
         borderRadius: 20,
     },
     deleteButtonText: {
-        color: '#F61A3D',
-        fontFamily: 'Lato-Bold',
+        color: "#F61A3D",
+        fontFamily: "Lato-Bold",
         fontSize: 18,
         marginLeft: 10,
     },
     icon: {
-        color: '#F61A3D',
+        color: "#F61A3D",
     },
     rowLabelText: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#fff',
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        backgroundColor: "#fff",
         borderWidth: 1,
-        borderColor: '#CCCCCC',
+        borderColor: "#CCCCCC",
         borderRadius: 10,
     },
     navIcon: {
-        color: '#CCCCCC',
+        color: "#CCCCCC",
         marginRight: 15,
-    }
+    },
 });
