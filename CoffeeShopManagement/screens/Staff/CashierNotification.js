@@ -98,8 +98,10 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     filterWrapper: {
+        width: "100%",
+        height: "100%",
         flexDirection: "row",
-        justifyContent: "space-between",
+        justifyContent: "space-around",
         alignItems: "center",
     },
     filterDetail: {
@@ -109,18 +111,20 @@ const styles = StyleSheet.create({
         paddingVertical: isIOS ? "4%" : "2%",
         paddingHorizontal: "6%",
         backgroundColor: colors.background.lightGrey_10,
+        flex: 1,
+        marginRight: 10,
     },
     filterDetailSelected: {
         backgroundColor: colors.background.black_100,
     },
     filterDetailText: {
         color: colors.text.black_100,
-        fontFamily: "helvetica-neue-medium",
+        fontFamily: "lato-bold",
         fontSize: 14,
     },
     filterDetailTextSelected: {
         color: colors.text.white_100,
-        fontFamily: "helvetica-neue-bold",
+        fontFamily: "lato-bold",
         fontSize: 14,
     },
     listNotification: {
@@ -128,7 +132,7 @@ const styles = StyleSheet.create({
     },
     allNotificationText: {
         color: colors.text.black_100,
-        fontFamily: "helvetica-neue-bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
     },
 });
