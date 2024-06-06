@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import { colors } from '../../../assets/colors/colors';
 
-const RankUserModal = ({ visible, onClose }) => {
+const RankUserModal = ({ visible, onClose, setRankUser }) => {
   const [selectedTypes, setSelectedTypes] = useState({
     all: false,
     bronze: false,
@@ -34,8 +34,21 @@ const RankUserModal = ({ visible, onClose }) => {
     });
   };
   const handleSave = () => {
+    if (!selectedTypes.bronze && selectedTypes.silver && selectedTypes.gold && selectedTypes.diamond) {
+      setRankUser(null);
+      onClose();
+    }
+    else {
+      setRankUser({
+        bronzeUsers: selectedTypes.bronze,
+        silverUsers: selectedTypes.silver,
+        goldUsers: selectedTypes.gold,
+        diamondUsers: selectedTypes.diamond,
+      });
+      onClose();
+    }
 
-  }
+  };
   return (
     <Modal
       animationType="fade"

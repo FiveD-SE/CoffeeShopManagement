@@ -144,7 +144,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     justifyContent: "center",
-    paddingVertical: "5%"
+    paddingVertical: "5%",
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: "#D8D8D8"
   },
   description: {
     color: "#3A3A3A",
