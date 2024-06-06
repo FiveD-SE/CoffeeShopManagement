@@ -1,10 +1,13 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, Platform, ScrollView } from 'react-native'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Entypo'
 import SelectBranchModal from '../../components/Admin/Modal/SelectBranchModal'
 import { Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
+import RNDateTimePicker from '@react-native-community/datetimepicker'
+import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore'
+import { db } from '../../services/firebaseService'
 
 const TextBox = ({ text, value, setValue }) => {
     return (
@@ -15,7 +18,7 @@ const TextBox = ({ text, value, setValue }) => {
             onChangeText={setValue} />
     )
 }
-const TextBox2 = ({ text, iconName, marginRate, value, setValue }) => {
+const TextBox2 = ({ text, iconName, marginRate, value, setValue, onPress }) => {
     return (
         <View style={[styles.textBox, { flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginEnd: marginRate }]}>
             <TextInput
@@ -23,7 +26,8 @@ const TextBox2 = ({ text, iconName, marginRate, value, setValue }) => {
                 value={value}
                 onChangeText={setValue}
             />
-            <TouchableOpacity>
+            <TouchableOpacity
+                onPress={onPress}>
                 <Icon name={iconName} size={28} />
             </TouchableOpacity>
         </View>
@@ -46,33 +50,45 @@ const ButtonBox = ({ text, placeholder, onPress }) => {
     )
 }
 
-export default function AddStaffScreen({ route }) {
-    console.log(route.params.onAddNewStaff);
-    onAddNewStaff = route.params.onAddNewStaff;
+export default function AddStaffScreen() {
+
     const navigation = useNavigation();
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [birthday, setBirthday] = useState('');
+    const [date, setDate] = useState(new Date());
     const [gender, setGender] = useState('');
     const [idCard, setIdCard] = useState('');
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
+    const [isShowDateTimePicker, setIsShowDateTimePicker] = useState(false);
 
-    const handleConfirm = () => {
-        const newStaff = {
-            // Tạo dữ liệu cho nhân viên mới
-            id: Math.random().toString(36).substr(2, 9),
-            name: name,
-            SDT: phoneNumber,
-            birth: birthday,
-            sex: gender,
-            cccd: idCard,
+    const [isOpen, setIsOpen] = useState(false);
+    const chooseDateSnapPoints = useMemo(() => ["60%"], []);
+    const chooseDateBottomSheetRef = useRef(null);
+
+    useEffect(() => {
+        console.log("birthday in modal", birthday);
+    }, [birthday])
+
+    const handleConfirm = async () => {
+        const cashierDoc = await addDoc(collection(db, "cashier"), {
+            fullName: name,
+            phoneNumber: phoneNumber,
+            birthday: new Date(birthday),
+            password: password,
+            idCard: idCard,
             email: email,
-            role: 'Nhân viên',
-        };
-        onAddNewStaff(newStaff);
-        navigation.goBack(); // Gọi hàm callback để thêm nhân viên mới vào DATA của ManageStaff
-    };
+        });
+
+        const cashierId = cashierDoc.id;
+        await updateDoc(doc(db, "cashier", cashierId), {
+            cashierId: cashierId,
+        });
+        navigation.goBack();
+    }
+    // Gọi hàm callback để thêm nhân viên mới vào DATA của ManageStaff
 
     const showSelectBranchModal = () => {
         setModalSelectBranchVisible(true);
@@ -81,8 +97,32 @@ export default function AddStaffScreen({ route }) {
     const hideSelectBranchModal = () => {
         setModalSelectBranchVisible(false);
     };
+
+    const toggleDatePicker = () => {
+        setIsShowDateTimePicker(!isShowDateTimePicker);
+    }
+
+    const onChange = ({ type }, selectedDate) => {
+        if (type === 'set') {
+            const currentDate = selectedDate;
+            setDate(currentDate);
+
+            if (Platform.OS === 'android') {
+                toggleDatePicker();
+                setBirthday(currentDate.toDateString());
+            }
+        } else {
+            toggleDatePicker();
+        }
+    }
+
+    const confirmIOSDate = () => {
+        setBirthday(date.toDateString());
+        toggleDatePicker();
+    }
+
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.imageContainer}>
                 <TouchableOpacity
                     style={styles.imageButton}>
@@ -97,11 +137,32 @@ export default function AddStaffScreen({ route }) {
                 <TextBox text={'Họ và tên'} value={name} setValue={setName} />
                 <TextBox text={'Số điện thoại'} value={phoneNumber} setValue={setPhoneNumber} />
                 <View style={styles.rowContainerTextBox}>
-                    <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'5%'} value={birthday} setValue={setBirthday} />
+                    <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'5%'} value={birthday} setValue={setBirthday} onPress={() => toggleDatePicker()} />
                     <TextBox2 text={'Giới tính'} iconName={'chevron-right'} value={gender} setValue={setGender} />
                 </View>
+                {isShowDateTimePicker &&
+                    <View>
+                        <RNDateTimePicker
+                            value={date}
+                            mode='date'
+                            display='spinner'
+                            onChange={onChange} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '20%' }}>
+                            <TouchableOpacity
+                                style={{ marginBottom: '5%', backgroundColor: 'white', padding: '5%', borderRadius: 10 }}
+                                onPress={toggleDatePicker}>
+                                <Text>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ marginBottom: '5%', backgroundColor: '#006c5e', padding: '5%', borderRadius: 10 }}
+                                onPress={confirmIOSDate}>
+                                <Text style={{ color: 'white' }}>Confirm</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>}
                 <TextBox text={'Số CMND/CCCD'} value={idCard} setValue={setIdCard} />
                 <TextBox text={'Email'} value={email} setValue={setEmail} />
+                <TextBox text={'Password'} value={password} setValue={setPassword} />
             </View>
             <View>
                 <Text style={styles.topText}>Thông tin công việc</Text>
@@ -109,14 +170,14 @@ export default function AddStaffScreen({ route }) {
                 <ButtonBox text={'Chi nhánh làm việc'} placeholder={'Tên chi nhánh'} onPress={showSelectBranchModal} />
                 <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} />
             </View>
-            <View>
-                <Pressable
+            <View style={{ marginBottom: '10%' }}>
+                {<Pressable
                     onPress={handleConfirm}
                     style={styles.acceptButton}>
                     <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>Xác nhận</Text>
-                </Pressable>
+                </Pressable>}
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
