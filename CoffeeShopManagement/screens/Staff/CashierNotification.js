@@ -58,7 +58,8 @@ export default function CashierNotification() {
                             key={index}
                             style={[
                                 styles.filterDetail,
-                                selectedButtonIndex === index && styles.filterDetailSelected,
+                                selectedButtonIndex === index &&
+                                    styles.filterDetailSelected,
                             ]}
                             onPress={() => setSelectedButtonIndex(index)}
                         >
@@ -66,7 +67,7 @@ export default function CashierNotification() {
                                 style={[
                                     styles.filterDetailText,
                                     selectedButtonIndex === index &&
-                                    styles.filterDetailTextSelected,
+                                        styles.filterDetailTextSelected,
                                 ]}
                             >
                                 {buttonTitle}

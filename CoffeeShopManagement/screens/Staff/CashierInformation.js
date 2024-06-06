@@ -21,10 +21,9 @@ import { db, uploadImageToFirebase } from "../../services/firebaseService";
 import { doc, updateDoc } from "firebase/firestore";
 
 const CashierInformation = ({ userData, saveUserData }) => {
-
-
     const handleImagePicker = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status } =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== "granted") {
             alert("Sorry, we need camera roll permissions to make this work!");
             return;
@@ -55,17 +54,22 @@ const CashierInformation = ({ userData, saveUserData }) => {
             <View style={styles.inforWrapper}>
                 <TouchableOpacity
                     style={styles.imageWrapper}
-                    onPress={() => handleImagePicker()}>
-                    <Image source={{ uri: userData.userImage }} resizeMode="stretch" style={styles.userImage} />
+                    onPress={() => handleImagePicker()}
+                >
+                    <Image
+                        source={{ uri: userData.userImage }}
+                        resizeMode="stretch"
+                        style={styles.userImage}
+                    />
                 </TouchableOpacity>
                 <View style={styles.inforTextWrapper}>
                     <Text style={styles.shopNameText}>TaiCoffeeShop</Text>
                     <Text style={{ color: "#fff", fontSize: 14 }}>
-                        <Text>
-                            {userData.name}
-                        </Text>
+                        <Text>{userData.name}</Text>
                         <Text> | </Text>
-                        <Text style={{ fontWeight: "600" }}>{userData.role}</Text>
+                        <Text style={{ fontWeight: "600" }}>
+                            {userData.role}
+                        </Text>
                     </Text>
                 </View>
             </View>
@@ -111,11 +115,11 @@ const CashierInformation = ({ userData, saveUserData }) => {
             </View>
         </ScrollView>
     );
-}
+};
 
 const mapStateToProps = (state) => ({
     userData: state.auth.userData,
-})
+});
 
 const mapDispatchToProps = {
     saveUserData,
@@ -214,5 +218,5 @@ const styles = StyleSheet.create({
         height: "80%",
         borderRadius: 100,
         aspectRatio: 1,
-    }
+    },
 });
