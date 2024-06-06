@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
 	StyleSheet,
 	View,
@@ -38,6 +38,7 @@ import {
 	updateDoc,
 } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
+import Toast from "react-native-toast-message";
 
 const cardHeight = Dimensions.get("window").height / 3;
 
@@ -112,6 +113,10 @@ const ItemDetailBottomSheet = ({
 		}
 	};
 
+	const handleClose = () => {
+		onClose();
+	};
+
 	const formatCurrency = (amount) => {
 		return new Intl.NumberFormat("vi-VN", {
 			style: "currency",
@@ -127,7 +132,7 @@ const ItemDetailBottomSheet = ({
 		totalPrice += selectedToppings.reduce((accumulator, currentTopping) => {
 			return accumulator + currentTopping.price;
 		}, 0);
-		return totalPrice;
+		return totalPrice * quantity;
 	};
 
 	const toggleFavorite = async () => {
@@ -166,6 +171,20 @@ const ItemDetailBottomSheet = ({
 
 	const handleSizePress = (index) => setSelectedSizeIndex(index);
 
+	const handleIncreaseQuantity = useCallback(() => {
+		setQuantity(quantity + 1);
+	}, [quantity]);
+
+	const handleDecreaseQuantity = useCallback(() => {
+		if (quantity > 1) {
+			setQuantity(quantity - 1);
+		}
+	}, [quantity]);
+
+	const handleToppingsSelected = (toppings) => {
+		setSelectedToppings(toppings);
+	};
+
 	const renderSizeItemList = () =>
 		sizeItemList.map(({ size, price }, index) => (
 			<SizeItem
@@ -173,7 +192,7 @@ const ItemDetailBottomSheet = ({
 				index={index}
 				size={size}
 				price={
-					index === 0
+					size === "S"
 						? formatCurrency(selectedItem?.productPrice)
 						: formatCurrency(price)
 				}
@@ -206,24 +225,6 @@ const ItemDetailBottomSheet = ({
 			/>
 		));
 
-	const handleClose = () => {
-		onClose();
-	};
-
-	const handleIncreaseQuantity = () => {
-		setQuantity(quantity + 1);
-	};
-
-	const handleDecreaseQuantity = () => {
-		if (quantity > 1) {
-			setQuantity(quantity - 1);
-		}
-	};
-
-	const handleToppingsSelected = (toppings) => {
-		setSelectedToppings(toppings);
-	};
-
 	const renderToppingButton = () => {
 		if (selectedItem && selectedItem.type !== "COFFEE") {
 			return (
@@ -246,42 +247,79 @@ const ItemDetailBottomSheet = ({
 		return null;
 	};
 
-	const handleAddToCart = () => {
+	const handleAddToCart = async () => {
 		if (selectedItem && selectedSizeIndex !== null) {
-			const isAlreadyInCart = cartList.some(
-				(item) => item._id === selectedItem._id
-			);
+			const itemToAdd = {
+				...selectedItem,
+				size: sizeItemList[selectedSizeIndex].size,
+				quantity: quantity,
+				options: [selectedSugarOption, selectedMilkOption, selectedIceOption],
+				totalPrice: calculateTotalPrice(),
+				cartItemId:
+					selectedItem.productId +
+					sizeItemList[selectedSizeIndex].size +
+					"-" +
+					selectedSugarOption +
+					"-" +
+					selectedMilkOption +
+					"-" +
+					selectedIceOption,
+			};
 
-			if (isAlreadyInCart) {
-				Alert.alert(
-					"Đã được thêm vào giỏ hàng",
-					"Kiểm tra giỏ hàng bạn ngay bạn nhé !",
-					[
-						{
-							text: "Cancel",
-							style: "destructive",
-						},
-						{
-							text: "OK",
-							onPress: () => goToCartScreen(),
-							style: "default",
-						},
-					]
-				);
-			} else {
-				const itemToAdd = {
-					...selectedItem,
-					size: sizeItemList[selectedSizeIndex].size,
-					quantity: 1,
-					options: [selectedSugarOption, selectedMilkOption, selectedIceOption],
-					totalPrice: calculateTotalPrice(),
-				};
-				addToCart(itemToAdd);
+			try {
+				const cartRef = doc(db, "carts", userData.id);
+				const cartDoc = await getDoc(cartRef);
+
+				if (cartDoc.exists()) {
+					const existingItems = cartDoc.data().items;
+					const existingItemIndex = existingItems.findIndex((item) => {
+						// Compare options
+						return (
+							item.cartItemId === itemToAdd.cartItemId &&
+							item.options.every(
+								(option, index) => option === itemToAdd.options[index]
+							)
+						);
+					});
+
+					if (existingItemIndex !== -1) {
+						// If item exists, update its quantity
+						existingItems[existingItemIndex].quantity += itemToAdd.quantity;
+						await updateDoc(cartRef, {
+							items: existingItems,
+						});
+					} else {
+						// If item doesn't exist, add it to the cart
+						await updateDoc(cartRef, {
+							items: arrayUnion(itemToAdd),
+						});
+					}
+				} else {
+					await setDoc(cartRef, {
+						items: [itemToAdd],
+					});
+				}
+				Toast.show({
+					type: "success",
+					text1: "Thành công",
+					text2: "Sản phẩm đã được thêm vào giỏ hàng",
+					text1Style: {
+						fontSize: 16,
+						fontFamily: "lato-bold",
+					},
+					text2Style: {
+						fontSize: 12,
+						fontFamily: "lato-bold",
+						color: colors.grey_100,
+					},
+					visibilityTime: 2000,
+					autoHide: true,
+				});
+			} catch (error) {
+				console.error("Error adding item to cart: ", error);
 			}
 		}
 	};
-
-	const goToCartScreen = () => navigation.navigate("UserCartScreen");
 
 	useEffect(() => {
 		setSelectedSizeIndex(sizeItemList.length > 0 ? 0 : null);
@@ -289,6 +327,14 @@ const ItemDetailBottomSheet = ({
 			setSelectedToppings([]);
 		};
 	}, [selectedItem]);
+
+	useEffect(() => {
+		if (isVisible) {
+			bottomSheetRef.current?.present();
+		} else {
+			bottomSheetRef.current?.dismiss();
+		}
+	}, [isVisible, bottomSheetRef]);
 
 	useEffect(() => {
 		console.log("CHECK FAVORITES");
@@ -435,7 +481,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		padding: "2%",
 		backgroundColor: colors.grey_10,
-		borderRadius: 5,
+		borderRadius: 6,
 		borderColor: colors.grey_50,
 		borderWidth: 1,
 	},
@@ -450,7 +496,7 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		flex: 1,
-		padding: "5%",
+		padding: "4%",
 	},
 	header: {
 		flexDirection: "row",
@@ -549,7 +595,7 @@ const styles = StyleSheet.create({
 		color: colors.grey_100,
 	},
 	addToCartText: {
-		color: colors.grey_100,
+		color: colors.black_100,
 		fontSize: 16,
 		fontFamily: "lato-bold",
 		marginLeft: "4%",

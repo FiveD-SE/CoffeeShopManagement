@@ -29,7 +29,11 @@ const BestSellerItem = ({
 			]}
 		>
 			<View style={styles.imageContainer}>
-				<Image style={styles.image} source={imageSource} resizeMode="stretch" />
+				<Image
+					style={styles.image}
+					source={{ uri: imageSource }}
+					resizeMode="stretch"
+				/>
 			</View>
 			<View style={styles.main}>
 				<Text style={styles.name} numberOfLines={2} ellipsizeMode="tail">
