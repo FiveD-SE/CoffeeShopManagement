@@ -8,7 +8,7 @@ const ProductCardHorizontal = ({ id, name, price, imageSource, onPress }) => {
 				<Image
 					style={styles.image}
 					source={{ uri: imageSource }}
-					resizeMode="cover"
+					resizeMode="contain"
 				/>
 			</View>
 			<View style={styles.main}>

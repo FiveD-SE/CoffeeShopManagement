@@ -1,3 +1,4 @@
+import React from "react";
 import {
 	Dimensions,
 	Image,
@@ -6,15 +7,15 @@ import {
 	Text,
 	View,
 } from "react-native";
-import React from "react";
+
 import { colors } from "../../../assets/colors/colors";
+
 const cardWidth = (Dimensions.get("window").width - 10) / 2 - 10;
+
 const BestSellerItem = ({
-	id,
 	name,
 	price,
 	imageSource,
-	description,
 	onPress,
 	vertical,
 	horizontal,
@@ -24,7 +25,7 @@ const BestSellerItem = ({
 			style={[
 				styles.container,
 				{ marginTop: vertical ? "5%" : "0%" },
-				{ marginRight: horizontal ? "2%" : "0%" },
+				{ marginRight: horizontal ? "1%" : "0%" },
 				{ padding: vertical ? "2%" : "0%" },
 			]}
 		>
@@ -32,7 +33,7 @@ const BestSellerItem = ({
 				<Image
 					style={styles.image}
 					source={{ uri: imageSource }}
-					resizeMode="stretch"
+					resizeMode="contain"
 				/>
 			</View>
 			<View style={styles.main}>
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
 	price: {
 		marginTop: "5%",
 		color: colors.grey_100,
-		fontSize: 14,
+		fontSize: 16,
 		lineHeight: 20,
 		fontFamily: "lato-bold",
 	},

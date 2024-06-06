@@ -35,10 +35,10 @@ const UserHomeScreenHeader = ({
 					<Text style={styles.iconText}>{totalPoint}</Text>
 				</Pressable>
 				<Pressable style={styles.iconContainer} onPress={onPressNotify}>
-					<Ionicons name="notifications" size={20} />
+					<Ionicons name="notifications-outline" size={20} />
 				</Pressable>
 				<Pressable style={styles.iconContainer} onPress={onPressFavorite}>
-					<Ionicons name="heart" size={20} />
+					<Ionicons name="heart-outline" size={20} />
 				</Pressable>
 			</View>
 		</View>
