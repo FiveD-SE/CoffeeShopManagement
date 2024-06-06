@@ -5,17 +5,26 @@ import SquareWithBorder from '../SquarewithBorder'
 import ColorButton from '../Button/ColorButton'
 import { colors } from '../../../assets/colors/colors'
 
-const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
+const VoucherTypeModal = ({ visible, onClose, onSelect, setVoucherType }) => {
   const [type, setType] = useState(null);
-  const [selectedType, setSelectedType] = useState("exchange");
-  const [selectedDiscount, setSelectedDiscount] = useState("discount");
+  const [selectedType, setSelectedType] = useState();
+  const [selectedDiscount, setSelectedDiscount] = useState();
   const handleSelectType = (selectedType) => {
     setType(selectedType);
     onSelect(selectedType);
   };
   const handleSave = () => {
-
-  }
+    if (!selectedType && !selectedDiscount) {
+      setVoucherType(null);
+      onClose();
+    } else {
+      setVoucherType({
+        voucherType: selectedType,
+        discountType: selectedDiscount,
+      });
+      onClose();
+    }
+  };
   return (
     <Modal
       animationType="fade"
@@ -56,9 +65,9 @@ const VoucherTypeModal = ({ visible, onClose, onSelect }) => {
               <TouchableOpacity
                 style={[
                   styles.buttonContainer,
-                  { marginRight: "1%", backgroundColor: selectedDiscount === "discount" ? colors.green_20 : "#ffffff" }
+                  { marginRight: "1%", backgroundColor: selectedDiscount === "productDiscount" ? colors.green_20 : "#ffffff" }
                 ]}
-                onPress={() => setSelectedDiscount("discount")}
+                onPress={() => setSelectedDiscount("productDiscount")}
               >
                 <Image
                   source={require("../../../assets/discountIcon.png")} />
