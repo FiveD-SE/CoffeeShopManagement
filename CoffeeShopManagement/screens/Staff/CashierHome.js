@@ -10,25 +10,38 @@ import { useNavigation } from "@react-navigation/native";
 import OrderCard1 from "../../components/Staff/OrderCard1";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import { useState, useEffect } from "react";
-import { collection, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import {
+    collection,
+    getDocs,
+    onSnapshot,
+    orderBy,
+    query,
+    where,
+} from "firebase/firestore";
 import { db } from "../../services/firebaseService";
 import { connect } from "react-redux";
 
 const CashierHome = ({ userData }) => {
-    console.log(userData)
+    console.log(userData);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [orderData, setOrderData] = useState([]);
 
     useEffect(() => {
-        const unsub = onSnapshot(query(collection(db, 'orders'), where('orderState', '==', 'Chờ xác nhận')), (snapshot) => {
-            setOrderData(snapshot.docs.map(doc => doc.data()));
-        });
+        const unsub = onSnapshot(
+            query(
+                collection(db, "orders"),
+                where("orderState", "==", "Chờ xác nhận")
+            ),
+            (snapshot) => {
+                setOrderData(snapshot.docs.map((doc) => doc.data()));
+            }
+        );
     }, []);
 
     useEffect(() => {
         console.log(orderData);
         console.log(userData);
-    }, [orderData])
+    }, [orderData]);
 
     const navigation = useNavigation();
     const handleNotification = () => {
@@ -46,13 +59,21 @@ const CashierHome = ({ userData }) => {
     };
 
     const renderListOrder = () => {
-
         if (orderData.length === 0) {
             return (
-                <View style={{ justifyContent: 'center', flex: 1 }}>
-                    <Text style={{ fontFamily: 'lato-regular', justifyContent: 'center', alignSelf: 'center', fontSize: 16 }}>Không có đơn hàng nào</Text>
+                <View style={{ justifyContent: "center", flex: 1 }}>
+                    <Text
+                        style={{
+                            fontFamily: "lato-regular",
+                            justifyContent: "center",
+                            alignSelf: "center",
+                            fontSize: 16,
+                        }}
+                    >
+                        Không có đơn hàng nào
+                    </Text>
                 </View>
-            )
+            );
         } else {
             return (
                 <FlatList
@@ -68,33 +89,30 @@ const CashierHome = ({ userData }) => {
                             orderOwnerPhone={item.orderOwnerPhone}
                             orderState={item.orderState}
                             orderPaymentState={item.orderPaymentState}
-                            handleDetailOrder={() =>
-                                handleDetailOrder(item)
-                            }
+                            handleDetailOrder={() => handleDetailOrder(item)}
                         />
                     )}
                 />
-            )
+            );
         }
-    }
+    };
 
     return (
         <View style={styles.container}>
             <View style={styles.cashierInforWrapper}>
                 <View style={{ flexDirection: "row" }}>
-                    <TouchableOpacity onPress={handleCashierInfor} style={styles.imageWrapper}>
+                    <TouchableOpacity
+                        onPress={handleCashierInfor}
+                        style={styles.imageWrapper}
+                    >
                         <Image
                             source={{ uri: userData.userImage }}
                             style={styles.userImage}
                         />
                     </TouchableOpacity>
                     <View style={styles.inforTextWrapper}>
-                        <Text style={styles.nameText}>
-                            {userData.name}
-                        </Text>
-                        <Text style={styles.emailText}>
-                            {userData.email}
-                        </Text>
+                        <Text style={styles.nameText}>{userData.name}</Text>
+                        <Text style={styles.emailText}>{userData.email}</Text>
                         <Text style={styles.roleText}>{userData.role}</Text>
                     </View>
                 </View>
@@ -109,11 +127,11 @@ const CashierHome = ({ userData }) => {
             {renderListOrder()}
         </View>
     );
-}
+};
 
 const mapStateToProps = (state) => ({
     userData: state.auth.userData,
-})
+});
 
 export default connect(mapStateToProps)(CashierHome);
 
@@ -138,15 +156,15 @@ const styles = StyleSheet.create({
     },
     nameText: {
         fontSize: 16,
-        fontFamily: 'lato-bold'
+        fontFamily: "lato-bold",
     },
     emailText: {
-        fontFamily: 'lato-regular',
+        fontFamily: "lato-regular",
         fontSize: 14,
     },
     roleText: {
         fontSize: 14,
-        fontStyle: 'italic',
+        fontStyle: "italic",
     },
     notiButton: {
         justifyContent: "center",
@@ -173,5 +191,5 @@ const styles = StyleSheet.create({
         height: "80%",
         borderRadius: 100,
         aspectRatio: 1,
-    }
+    },
 });
