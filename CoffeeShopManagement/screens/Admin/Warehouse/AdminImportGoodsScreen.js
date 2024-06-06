@@ -14,9 +14,11 @@ const AdminImportGoodsScreen = () => {
   const navigation = useNavigation();
   const [goodsList, setGoodsList] = useState([]);
   const [selectedGoods, setSelectedGoods] = useState({});
+  const [importGoodsList, setImportGoodsList] = useState([]);
+  const [totalImportGoods, setTotalImportGoods] = useState(0);
 
   const goToListImport = () => {
-    navigation.navigate("AdminListImport");
+    navigation.navigate("AdminListImport", { importGoodsList: importGoodsList });
   };
 
   const [addNewModalVisible, setAddNewModalVisible] = useState(false);
@@ -55,6 +57,15 @@ const AdminImportGoodsScreen = () => {
     return number.toLocaleString('vi-VN');
   }
 
+  const handleAddImportGoods = (importGoods) => {
+    if (!importGoodsList) {
+      setImportGoodsList([importGoods]);
+    } else {
+      setImportGoodsList([...importGoodsList, importGoods]);
+    }
+    setTotalImportGoods(Number(totalImportGoods) + Number(importGoods.goodsQuantity));
+  }
+
   const rendergoodsList = () => {
     return goodsList.map((item, index) => (
       <ProductCardwithPlus
@@ -69,6 +80,7 @@ const AdminImportGoodsScreen = () => {
       />
     ));
   };
+
   return (
     <View style={styles.container}>
       <AddGoodButton title="Thêm mặt hàng mới" />
@@ -82,13 +94,13 @@ const AdminImportGoodsScreen = () => {
       <View style={styles.buttonContainer}>
         <View style={{ flexDirection: "column" }}>
           <Text style={styles.importName}>Số mặt hàng nhập mới:</Text>
-          <Text style={styles.importNumber}>1000</Text>
+          <Text style={styles.importNumber}>{totalImportGoods}</Text>
         </View>
         <TouchableOpacity style={styles.colorButton} onPress={goToListImport}>
           <Text style={styles.nameText}>Nhập hàng</Text>
         </TouchableOpacity>
       </View>
-      <AddGoodModal visible={addNewModalVisible} onClose={hideAddNewModal} selectedGoods={selectedGoods} />
+      <AddGoodModal visible={addNewModalVisible} onClose={hideAddNewModal} selectedGoods={selectedGoods} onAdd={handleAddImportGoods} />
       <EditGoodInfoModal visible={editModalVisible} onClose={hideEditGoodInfoModal} selectedGoods={selectedGoods} />
     </View>
   )
