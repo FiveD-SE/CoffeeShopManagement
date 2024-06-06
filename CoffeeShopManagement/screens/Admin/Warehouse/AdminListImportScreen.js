@@ -1,80 +1,111 @@
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native'
-import React from 'react'
-import BranchSelectBar from '../../../components/Admin/BranchSelectBar'
-import ColorButton from '../../../components/Admin/Button/ColorButton'
-import ProductCardwithPrice from '../../../components/Admin/Card/ProductCardwithPrice'
+import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import BranchSelectBar from '../../../components/Admin/BranchSelectBar';
+import ProductCardwithPrice from '../../../components/Admin/Card/ProductCardwithPrice';
+import { collection, doc, setDoc, getDocs, query, where, updateDoc } from 'firebase/firestore';
+import { db } from '../../../services/firebaseService';
+import { useNavigation } from '@react-navigation/native';
 
-const AdminListImportScreen = () => {
-  const productList = [
-    {
-      name: "Tên hàng hóa",
-      unit: "Túi",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      name: "Tên hàng hóa1",
-      unit: "Túi",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      name: "Tên hàng hóa2",
-      unit: "Túi",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      name: "Tên hàng hóa3",
-      unit: "Túi",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      name: "Tên hàng hóa4",
-      unit: "Túi",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      name: "Tên hàng hóa5",
-      unit: "Túi",
-      price: "100.000",
-      quantity: "100",
-    },
-  ];
+const AdminListImportScreen = ({ route }) => {
+  const { importGoodsList } = route.params;
+  const navigation = useNavigation();
+  const [mergedGoodsList, setMergedGoodsList] = useState([]);
+  const [totalImportGoods, setTotalImportGoods] = useState(0);
 
-  const renderproductList = () => {
-    return productList.map((item, index) => (
+  useEffect(() => {
+    const mergeGoodsList = () => {
+      const goodsMap = {};
+      importGoodsList.forEach(item => {
+        if (goodsMap[item.goodsId]) {
+          goodsMap[item.goodsId].goodsQuantity += Number(item.goodsQuantity);
+        } else {
+          goodsMap[item.goodsId] = { ...item, goodsQuantity: Number(item.goodsQuantity) };
+        }
+      });
+      const mergedList = Object.values(goodsMap);
+      setMergedGoodsList(mergedList);
+
+      const total = mergedList.reduce((acc, cur) => acc + cur.goodsPrice * cur.goodsQuantity, 0);
+      setTotalImportGoods(total);
+    };
+
+    mergeGoodsList();
+  }, [importGoodsList]);
+
+  function formatVND(number) {
+    return number.toLocaleString('vi-VN');
+  }
+
+  const renderImportGoodsList = () => {
+    return mergedGoodsList.map((item, index) => (
       <ProductCardwithPrice
         key={index}
-        name={item.name}
-        unit={item.unit}
-        quantity={item.quantity}
-        price={item.price}
+        name={item.goodsName}
+        unit={item.goodsUnit}
+        quantity={item.goodsQuantity}
+        price={item.goodsPrice}
+        imageSource={item.goodsImage}
       />
     ));
   };
 
+  const handlePostImportGoods = async () => {
+    try {
+      await Promise.all(mergedGoodsList.map(async item => {
+        const goodsQuery = query(collection(db, 'warehouse'), where('goodsId', '==', item.goodsId));
+        const querySnapshot = await getDocs(goodsQuery);
+        if (!querySnapshot.empty) {
+          const existingDoc = querySnapshot.docs[0];
+          const existingData = existingDoc.data();
+          const newQuantity = existingData.goodsQuantity + item.goodsQuantity;
+          await updateDoc(existingDoc.ref, {
+            goodsQuantity: newQuantity
+          });
+        } else {
+          const warehouseDocRef = doc(collection(db, 'warehouse'));
+          const newWarehouseId = warehouseDocRef.id;
+          await setDoc(warehouseDocRef, {
+            warehouseItemId: newWarehouseId,
+            goodsId: item.goodsId,
+            goodsName: item.goodsName,
+            goodsUnit: item.goodsUnit,
+            goodsQuantity: item.goodsQuantity,
+            goodsPrice: item.goodsPrice,
+            goodsImage: item.goodsImage,
+          });
+        }
+      }));
+      Alert.alert("Nhập hàng thành công", "Mặt hàng đã được nhập vào kho");
+      setMergedGoodsList([]);
+      setTotalImportGoods(0);
+      navigation.navigate("AdminWareHouse");
+    } catch (error) {
+      console.error("Error adding document: ", error);
+      Alert.alert("Nhập hàng thất bại", "Vui lòng thử lại sau");
+    }
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.bar}>
-        <BranchSelectBar branchName="ThanhTai1" />
+        <BranchSelectBar branchName="Branch 1" />
       </View>
       <Text style={styles.name}>Danh sách nhập hàng</Text>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
-        {renderproductList()}
+        {renderImportGoodsList()}
       </ScrollView>
       <View style={styles.costContaner}>
         <Text style={styles.costname}>Tổng cộng</Text>
-        <Text style={styles.cost}>118.000 VNĐ</Text>
+        <Text style={styles.cost}>{formatVND(totalImportGoods)} VNĐ</Text>
       </View>
-      <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" />
+      <TouchableOpacity style={styles.colorButton} onPress={handlePostImportGoods}>
+        <Text style={styles.title}>Nhập hàng</Text>
+      </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
-export default AdminListImportScreen
+export default AdminListImportScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -98,17 +129,32 @@ const styles = StyleSheet.create({
   },
   costContaner: {
     marginVertical: "3%",
+    marginHorizontal: "3%",
     flexDirection: "row",
     justifyContent: "space-between"
   },
   costname: {
     color: "#3a3a3a",
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: "600",
   },
   cost: {
     color: "#F61A3D",
-    fontSize: 18,
+    fontSize: 25,
     fontWeight: "700",
+  },
+  colorButton: {
+    borderRadius: 15,
+    margin: "2%",
+    paddingVertical: "5%",
+    paddingHorizontal: "10%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#00A188",
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#ffffff"
   }
-})
+});

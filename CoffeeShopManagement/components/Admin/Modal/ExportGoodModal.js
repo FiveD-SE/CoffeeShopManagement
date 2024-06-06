@@ -1,10 +1,43 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
-import React from 'react'
+import { View, Text, Modal, StyleSheet, TextInput, Image, Alert } from 'react-native'
+import React, { useState } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
-import SquareWithBorder from '../SquarewithBorder'
 import ColorButton from '../Button/ColorButton'
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { db } from '../../../services/firebaseService'
 
-const ExportGoodModal = ({ visible, onClose }) => {
+const ExportGoodModal = ({ visible, onClose, selectedGoods, onMinus }) => {
+	const [selectedQuantity, setSelectedQuantity] = useState(0);
+
+	const handleMinus = async () => {
+		if (selectedQuantity === 0 || selectedQuantity > selectedGoods?.goodsQuantity) {
+			Alert.alert("Cảnh báo", "Số lượng không hợp lệ. Hãy chọn số lượng nhỏ hơn hoặc bằng số lượng hàng hóa trong kho.");
+			return;
+		}
+		try {
+			const warehouseDoc = doc(db, 'warehouse', selectedGoods?.warehouseItemId);
+			if (selectedQuantity === selectedGoods?.goodsQuantity) {
+				await deleteDoc(warehouseDoc);
+			} else {
+				await updateDoc(warehouseDoc, {
+					goodsQuantity: selectedGoods?.goodsQuantity - selectedQuantity,
+				});
+			}
+			const exportGoodsLabel = {
+				warehouseItemId: selectedGoods?.warehouseItemId,
+				goodsId: selectedGoods?.goodsId,
+				goodsName: selectedGoods?.goodsName,
+				goodsPrice: selectedGoods?.goodsPrice,
+				goodsUnit: selectedGoods?.goodsUnit,
+				goodsQuantity: selectedQuantity,
+				goodsImage: selectedGoods?.goodsImage,
+			};
+			onMinus(exportGoodsLabel);
+			setSelectedQuantity(0);
+			onClose();
+		} catch (error) {
+			console.error("Error updating document: ", error);
+		}
+	}
 
 	return (
 		<Modal
@@ -19,21 +52,30 @@ const ExportGoodModal = ({ visible, onClose }) => {
 					<View style={styles.main}>
 						<View style={{ flexDirection: "column", alignItems: "center" }}>
 							<View style={styles.imageContainer}>
-								<SquareWithBorder text="Ảnh mặt hàng" />
+								<Image style={styles.image} source={{ uri: selectedGoods?.goodsImage }} />							
 							</View>
-							<Text style={styles.title}>Tên mặt hàng</Text>
+							<Text style={styles.title}>{selectedGoods?.goodsName}</Text>
 						</View>
-						<Text style={styles.header}>Số lượng mặt hàng trong kho (100)</Text>
+						<Text style={styles.header}>Số lượng mặt hàng trong kho ({selectedGoods?.goodsQuantity})</Text>
 						<View style={styles.inputContainer}>
 							<View style={styles.inputBox}>
 								<TextInput
 									keyboardType="phone-pad"
 									style={styles.input}
 									placeholder="Số lượng"
+									value={selectedQuantity}
+									onChangeText={(newText) => {
+										const quantity = Number(newText);
+										if (quantity <= selectedGoods?.goodsQuantity && quantity >= 0) {
+											setSelectedQuantity(quantity);
+										} else {
+											Alert.alert("Cảnh báo", "Số lượng không hợp lệ. Hãy chọn số lượng nhỏ hơn hoặc bằng số lượng hàng hóa trong kho.");
+										}
+									}}
 								/>
 							</View>
 						</View>
-						<ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" />
+						<ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" onPress={handleMinus} />
 					</View>
 				</View>
 			</View>
@@ -62,13 +104,15 @@ const styles = StyleSheet.create({
 		justifyContent: "center"
 	},
 	main: {
+		height: "auto",
+		borderRadius: 20,
+		paddingBottom: "5%",
 		paddingHorizontal: "5%",
-		marginBottom: "10%",
 		backgroundColor: "#F8F7FA",
 	},
 	header: {
 		color: "#3a3a3a",
-		fontSize: 16,
+		fontSize: 18,
 		fontWeight: "600",
 		marginVertical: "4%"
 	},
@@ -95,7 +139,19 @@ const styles = StyleSheet.create({
 	title: {
 		marginTop: "2%",
 		color: "#3a3a3a",
-		fontSize: 15,
+		fontSize: 20,
 		fontWeight: "500",
+	},
+	image: {
+		width: 150,
+		height: 150,
+		resizeMode: "cover",
+		borderRadius: 20,
+	},
+	text: {
+		color: "#3a3a3a",
+		fontSize: 15,
+		lineHeight: 25,
+		fontWeight: "400",
 	},
 });

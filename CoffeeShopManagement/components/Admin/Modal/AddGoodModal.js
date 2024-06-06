@@ -8,7 +8,6 @@ import { db } from '../../../services/firebaseService'
 
 const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
 	const [selectedQuantity, setSelectedQuantity] = useState(0);
-	const [importGoods, setImportGoods] = useState({});
 	const handleAdd = async () => {
 		if (selectedQuantity === 0) {
 			Alert.alert("Cảnh báo", "Hãy chọn số lượng hàng hóa.");
@@ -23,11 +22,12 @@ const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
 				goodsId: selectedGoods?.goodsId,
 				goodsName: selectedGoods?.goodsName,
 				goodsPrice: selectedGoods?.goodsPrice,
+				goodsUnit: selectedGoods?.goodsUnit,
 				goodsQuantity: selectedQuantity,
 				goodsImage: selectedGoods?.goodsImage,
 			};
-			setImportGoods(importGoodsLabel);
-			onAdd(importGoods);
+			onAdd(importGoodsLabel);
+			setSelectedQuantity(0);
 			onClose();
 		} catch (error) {
 			console.error("Error updating document: ", error);
@@ -70,7 +70,7 @@ const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
 								<Text style={styles.text}>{formatVND(Number(selectedGoods?.goodsPrice))} VNĐ</Text>
 							</View>
 						</View>
-						<ColorButton color="#00A188" text="Thêm" textColor="#ffffff" OnPress={handleAdd}/>
+						<ColorButton color="#00A188" text="Thêm" textColor="#ffffff" OnPress={handleAdd} />
 					</ScrollView>
 				</View>
 			</View>

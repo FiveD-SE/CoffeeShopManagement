@@ -1,22 +1,13 @@
 import { View, Text, StyleSheet, Image, Pressable, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
-import { MaterialIcons } from '@expo/vector-icons';
-import EditGoodInfoModal from '../Modal/EditGoodInfoModal';
+import React from 'react'
 const ProductCard = ({
-  name, quantity, price, imageSource, unit, OnPress
+  name, quantity, price, imageSource, unit
 }) => {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const showEditGoodInfoModal = () => {
-    setModalVisible(true);
-  };
-
-  const hideEditGoodInfoModal = () => {
-    setModalVisible(false);
-  };
+  function formatVND(number) {
+    return number.toLocaleString('vi-VN');
+  }
   return (
-    <View>
-      <TouchableOpacity style={styles.container} onPress={showEditGoodInfoModal}>
+    <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Image style={styles.image} source={imageSource} resizeMode="cover" />
         </View>
@@ -28,7 +19,7 @@ const ProductCard = ({
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.label}>{quantity}</Text>
-              <Text style={styles.label}>/{unit}</Text>
+              <Text style={styles.label}> {unit}</Text>
             </View>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -36,14 +27,11 @@ const ProductCard = ({
               <Text style={styles.label}>Giá nhập:</Text>
             </View>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.label}>{price} VND</Text>
+              <Text style={styles.label}>{formatVND(Number(price))} VND</Text>
               <Text style={styles.label}>/{unit}</Text>
             </View>
           </View>
         </View>
-        <MaterialIcons name="keyboard-arrow-right" size={30} color="rgba(58,58,58,0.5)" />
-      </TouchableOpacity>
-      <EditGoodInfoModal visible={modalVisible} onClose={hideEditGoodInfoModal} />
     </View>
   )
 }
@@ -80,14 +68,14 @@ const styles = StyleSheet.create({
   name: {
     width: "100%",
     color: "#3a3a3a",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "500",
     lineHeight: 20,
     marginBottom: "10%",
   },
   label: {
     color: "rgba(58,58,58,0.5)",
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: "500",
   },
 });

@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Modal } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native'
+import React, { useState, useCallback } from 'react'
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import SearchBar from "../../../components/Client/SearchBar";
 import ColorButton from '../../../components/Admin/Button/ColorButton';
@@ -23,16 +23,18 @@ const AdminWareHouseScreen = () => {
         navigation.navigate("AdminExportGoods");
     };
 
-    useEffect(() => {
-        const fetchGoods = async () => {
-            const goodsCollection = collection(db, 'goods');
-            const goodsSnapshot = await getDocs(goodsCollection);
-            const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
-            setGoodsList(goodsListData);
-        };
+    const fetchGoods = async () => {
+        const goodsCollection = collection(db, 'warehouse');
+        const goodsSnapshot = await getDocs(goodsCollection);
+        const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
+        setGoodsList(goodsListData);
+    };
 
-        fetchGoods();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            fetchGoods();
+        }, [])
+    );
 
     const rendergoodsList = () => {
         return goodsList.map((item, index) => (
