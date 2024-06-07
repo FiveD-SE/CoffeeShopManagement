@@ -1,19 +1,22 @@
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native'
-import React, { useState, useCallback } from 'react'
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import SearchBar from "../../../components/Client/SearchBar";
 import ColorButton from '../../../components/Admin/Button/ColorButton';
-import { ScrollView } from 'react-native-gesture-handler';
 import ProductCard from '../../../components/Admin/Card/ProductCard';
 import { db } from '../../../services/firebaseService';
 import { collection, getDocs } from 'firebase/firestore';
 
-
 const AdminWareHouseScreen = () => {
     const navigation = useNavigation();
     const [goodsList, setGoodsList] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredGoodsList, setFilteredGoodsList] = useState([]);
+    const [goodsCount, setGoodsCount] = useState(0);
+    const [totalGoods, setTotalGoods] = useState(0);
+    const [isSortedAscending, setIsSortedAscending] = useState(true);
 
     const goToImportGoodsScreen = () => {
         navigation.navigate("AdminImportGoods");
@@ -28,6 +31,10 @@ const AdminWareHouseScreen = () => {
         const goodsSnapshot = await getDocs(goodsCollection);
         const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
         setGoodsList(goodsListData);
+        setFilteredGoodsList(goodsListData);
+        setGoodsCount(goodsListData.length);
+        const totalGoods = goodsListData.reduce((acc, item) => acc + item.goodsQuantity, 0);
+        setTotalGoods(totalGoods);
     };
 
     useFocusEffect(
@@ -36,11 +43,23 @@ const AdminWareHouseScreen = () => {
         }, [])
     );
 
-    const rendergoodsList = () => {
-        return goodsList.map((item, index) => (
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        if (query) {
+            const filteredList = goodsList.filter(item => 
+                item.goodsName.toLowerCase().includes(query.toLowerCase())
+            );
+            setFilteredGoodsList(filteredList);
+        } else {
+            setFilteredGoodsList(goodsList);
+        }
+    };
+
+    const renderGoodsList = () => {
+        return filteredGoodsList.map((item, index) => (
             <ProductCard
                 key={index}
-                imageSource={{uri: item.goodsImage }}
+                imageSource={{ uri: item.goodsImage }}
                 name={item.goodsName}
                 unit={item.goodsUnit}
                 quantity={item.goodsQuantity}
@@ -48,25 +67,38 @@ const AdminWareHouseScreen = () => {
             />
         ));
     };
+    const handleFilter = () => {
+        const sortedList = [...filteredGoodsList].sort((a, b) => {
+            if (isSortedAscending) {
+                return a.goodsQuantity - b.goodsQuantity;
+            } else {
+                return b.goodsQuantity - a.goodsQuantity;
+            }
+        });
+    
+        setFilteredGoodsList(sortedList);
+        setIsSortedAscending(!isSortedAscending);
+    };
+    
 
     return (
         <View style={styles.container}>
             <View style={styles.branchSelectContainer}>
                 <TouchableOpacity style={styles.subnameContainer}>
                     <FontAwesome5 name="map-marker-alt" size={20} color="#00A188" />
-                    <Text style={[styles.normalText, { marginLeft: "3%" }]}>Chi nhánh trung tâm</Text>
+                    <Text style={[styles.normalText, { marginLeft: "3%" }]}> Chi nhánh trung tâm</Text>
                 </TouchableOpacity>
                 <View style={styles.subnameContainer}>
-                    <Text style={styles.greenText}>5</Text>
+                    <Text style={styles.greenText}>{goodsCount}</Text>
                     <Text style={styles.normalText}>Mặt hàng - Số lượng trong kho:</Text>
-                    <Text style={styles.greenText}>100</Text>
+                    <Text style={styles.greenText}>{totalGoods}</Text>
                 </View>
             </View>
 
-            <View style={styles.sreachBar}>
-                <SearchBar />
-                <TouchableOpacity style={styles.filterButton}>
-                    <Ionicons name="filter" size={24} color="black" />
+            <View style={styles.searchBar}>
+                <SearchBar onChangeText={handleSearch} />
+                <TouchableOpacity style={styles.filterButton} onPress={handleFilter}>
+                    <MaterialCommunityIcons name={isSortedAscending ? "filter-variant-minus" : "filter-variant-plus"} size={24} color="black" />
                 </TouchableOpacity>
             </View>
 
@@ -76,13 +108,13 @@ const AdminWareHouseScreen = () => {
             </View>
 
             <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
-                {rendergoodsList()}
+                {renderGoodsList()}
             </ScrollView>
         </View>
-    )
-}
+    );
+};
 
-export default AdminWareHouseScreen
+export default AdminWareHouseScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -91,7 +123,7 @@ const styles = StyleSheet.create({
         paddingTop: "10%"
     },
 
-    sreachBar: {
+    searchBar: {
         justifyContent: "space-between",
         flexDirection: "row",
         marginVertical: "3%",
@@ -144,4 +176,4 @@ const styles = StyleSheet.create({
     goodListContainer: {
         flex: 1,
     }
-})
+});

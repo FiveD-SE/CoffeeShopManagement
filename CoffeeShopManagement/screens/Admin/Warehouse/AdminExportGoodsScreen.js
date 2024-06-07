@@ -1,15 +1,18 @@
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from "@react-navigation/native";
-import SearchBar from '../../../components/Client/SearchBar'
+import SearchBar from '../../../components/Client/SearchBar';
 import ProductCardwithMinus from '../../../components/Admin/Card/ProductCardwithMinus';
-import BranchSelectBar from '../../../components/Admin/BranchSelectBar'
+import BranchSelectBar from '../../../components/Admin/BranchSelectBar';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../services/firebaseService';
 import ExportGoodModal from '../../../components/Admin/Modal/ExportGoodModal';
+
 const AdminExportGoodsScreen = () => {
   const navigation = useNavigation();
-  const [GoodsList, setGoodsList] = useState([]);
+  const [goodsList, setGoodsList] = useState([]);
+  const [filteredGoodsList, setFilteredGoodsList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedGoods, setSelectedGoods] = useState({});
   const [exportGoodsList, setExportGoodsList] = useState([]);
   const [totalExportGoods, setTotalExportGoods] = useState(0);
@@ -31,27 +34,26 @@ const AdminExportGoodsScreen = () => {
   
   useEffect(() => {
     const fetchGoods = async () => {
-        const goodsCollection = collection(db, 'warehouse');
-        const goodsSnapshot = await getDocs(goodsCollection);
-        const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
-        setGoodsList(goodsListData);
+      const goodsCollection = collection(db, 'warehouse');
+      const goodsSnapshot = await getDocs(goodsCollection);
+      const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
+      setGoodsList(goodsListData);
+      setFilteredGoodsList(goodsListData);
     };
 
     fetchGoods();
   }, [modalVisible]);
 
-  const renderGoodsList = () => {
-    return GoodsList.map((item, index) => (
-      <ProductCardwithMinus
-        key={index}
-        imageSource={{uri: item.goodsImage }}
-        title={item.goodsName}
-        unit={item.goodsUnit}
-        quantity={item.goodsQuantity}
-        price={item.goodsPrice}
-        onPress={() => showExportGoodModal(item)}
-      />
-    ));
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (query) {
+      const filteredList = goodsList.filter(item => 
+        item.goodsName.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredGoodsList(filteredList);
+    } else {
+      setFilteredGoodsList(goodsList);
+    }
   };
 
   const handleExportGoods = (exportGoods) => {
@@ -60,20 +62,35 @@ const AdminExportGoodsScreen = () => {
     } else {
       setExportGoodsList([...exportGoodsList, exportGoods]);
     }
-    setTotalExportGoods(Number(totalExportGoods) + Number(exportGoods?.goodsQuantity));
+    setTotalExportGoods(Number(totalExportGoods) + Number(exportGoods.goodsQuantity));
   }
 
   function formatVND(number) {
     return number.toLocaleString('vi-VN');
   }
+
+  const renderGoodsList = () => {
+    return filteredGoodsList.map((item, index) => (
+      <ProductCardwithMinus
+        key={index}
+        imageSource={{ uri: item.goodsImage }}
+        title={item.goodsName}
+        unit={item.goodsUnit}
+        quantity={item.goodsQuantity}
+        price={formatVND(Number(item.goodsPrice))}
+        onPress={() => showExportGoodModal(item)}
+      />
+    ));
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.bar}>
         <BranchSelectBar branchName="ThanhTai1" />
       </View>
       <Text style={styles.title}>Các mặt hàng sẵn có</Text>
-      <View style={styles.sreachBar}>
-        <SearchBar />
+      <View style={styles.searchBar}>
+        <SearchBar onChangeText={handleSearch} />
       </View>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
         {renderGoodsList()}
@@ -82,17 +99,17 @@ const AdminExportGoodsScreen = () => {
       <View style={styles.buttonContainer}>
         <View style={{ flexDirection: "column" }}>
           <Text style={styles.importName}>Số mặt hàng xuất kho:</Text>
-          <Text style={styles.importNumber}>{formatVND(Number(totalExportGoods))}</Text>
+          <Text style={styles.importNumber}>{totalExportGoods}</Text>
         </View>
-        <TouchableOpacity style={styles.colorButton}  onPress={goToListExport}>
-            <Text style={styles.titleText}>Xuất hàng</Text>
+        <TouchableOpacity style={styles.colorButton} onPress={goToListExport}>
+          <Text style={styles.titleText}>Xuất hàng</Text>
         </TouchableOpacity>      
       </View>
     </View>
   )
 }
 
-export default AdminExportGoodsScreen
+export default AdminExportGoodsScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -110,7 +127,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginTop: "2%",
   },
-  sreachBar: {
+  searchBar: {
     flexDirection: "row",
     marginTop: "3%",
   },
@@ -145,8 +162,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titleText: {
-      fontSize: 16,
-      fontWeight: "700",
-      color: "#ffffff"
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#ffffff"
   }
-})
+});
