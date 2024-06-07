@@ -61,7 +61,7 @@ const AdminListExportScreen = ({ route }) => {
         <Text style={styles.cost}>{formatVND(totalExportGoods)} VNĐ</Text>
       </View>
       <TouchableOpacity style={styles.colorButton} onPress={handleExportConfirm}>
-        <Text style={styles.title}>Nhập hàng</Text>
+        <Text style={styles.textButton}>Nhập hàng</Text>
       </TouchableOpacity>
     </View>
   )
@@ -114,9 +114,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#00A188",
   },
-  title: {
+  textButton: {
     fontSize: 16,
     fontWeight: "700",
     color: "#ffffff"
-  }
+  },
+  title: {
+    color: "#3a3a3a",
+    fontSize: 18,
+    fontWeight: "600",
+    marginTop: "3%",
+    marginStart: "2%"
+  },
 })

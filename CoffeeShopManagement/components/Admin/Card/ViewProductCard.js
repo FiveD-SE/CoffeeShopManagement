@@ -3,6 +3,9 @@ import React from 'react'
 const ViewProductCard = ({
   title, quantity, price, imageSource, unit
 }) => {
+  function formatVND(number) {
+    return number.toLocaleString('vi-VN');
+  }
   return (
       <SafeAreaView style={styles.container}>
         <View style={styles.imageContainer}>
@@ -12,7 +15,7 @@ const ViewProductCard = ({
           <Text style={styles.title}>{title}</Text>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <View>
-              <Text style={styles.label}>Số lượng:</Text>
+              <Text style={styles.label}>Số lượng: </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.label}>{quantity}</Text>
@@ -21,10 +24,10 @@ const ViewProductCard = ({
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <View>
-              <Text style={styles.label}>Giá nhập:</Text>
+              <Text style={styles.label}>Giá nhập: </Text>
             </View>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.label}>{price} VND</Text>
+              <Text style={styles.label}>{formatVND(Number(price))} VND</Text>
               <Text style={styles.label}>/{unit}</Text>
             </View>
           </View>
@@ -72,7 +75,8 @@ const styles = StyleSheet.create({
   },
   label: {
     color: "rgba(58,58,58,0.5)",
-    fontSize: 18,
+    fontSize: 16,
+    lineHeight: 18,
     fontWeight: "500",
   },
 });
