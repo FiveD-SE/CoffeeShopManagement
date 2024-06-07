@@ -115,7 +115,7 @@ export default function ManageStaffScreen({ route }) {
 					<ScrollView style={styles.listStaff}>
 						<View>
 
-							{cashiers.map((item) => (
+							{cashiers.map((item, index) => (
 								<StaffCard
 									key={item.cashierId}
 									cashierName={item.fullName}
