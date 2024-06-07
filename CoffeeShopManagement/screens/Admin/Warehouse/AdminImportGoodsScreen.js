@@ -13,6 +13,8 @@ import EditGoodInfoModal from '../../../components/Admin/Modal/EditGoodInfoModal
 const AdminImportGoodsScreen = () => {
   const navigation = useNavigation();
   const [goodsList, setGoodsList] = useState([]);
+  const [filteredGoodsList, setFilteredGoodsList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedGoods, setSelectedGoods] = useState({});
   const [importGoodsList, setImportGoodsList] = useState([]);
   const [totalImportGoods, setTotalImportGoods] = useState(0);
@@ -48,10 +50,23 @@ const AdminImportGoodsScreen = () => {
       const goodsSnapshot = await getDocs(goodsCollection);
       const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
       setGoodsList(goodsListData);
+      setFilteredGoodsList(goodsListData);
     };
 
     fetchGoods();
   }, [editModalVisible, addNewModalVisible]);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    if (query) {
+      const filteredList = goodsList.filter(item => 
+        item.goodsName.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredGoodsList(filteredList);
+    } else {
+      setFilteredGoodsList(goodsList);
+    }
+  };
 
   function formatVND(number) {
     return number.toLocaleString('vi-VN');
@@ -66,8 +81,8 @@ const AdminImportGoodsScreen = () => {
     setTotalImportGoods(Number(totalImportGoods) + Number(importGoods.goodsQuantity));
   }
 
-  const rendergoodsList = () => {
-    return goodsList.map((item, index) => (
+  const renderGoodsList = () => {
+    return filteredGoodsList.map((item, index) => (
       <ProductCardwithPlus
         key={index}
         imageSource={{ uri: item.goodsImage }}
@@ -85,11 +100,11 @@ const AdminImportGoodsScreen = () => {
     <View style={styles.container}>
       <AddGoodButton title="Thêm mặt hàng mới" />
       <Text style={styles.name}>Các mặt hàng sẵn có</Text>
-      <View style={styles.sreachBar}>
-        <SearchBar />
+      <View style={styles.searchBar}>
+        <SearchBar onChangeText={handleSearch} />
       </View>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
-        {rendergoodsList()}
+        {renderGoodsList()}
       </ScrollView>
       <View style={styles.buttonContainer}>
         <View style={{ flexDirection: "column" }}>
@@ -120,7 +135,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginTop: "3%"
   },
-  sreachBar: {
+  searchBar: {
     flexDirection: "row",
     marginTop: "3%",
   },

@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, Image, SafeAreaView } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 const ViewProductCard = ({
-  title, quantity, price, imageSource, unit, OnPress
+  title, quantity, price, imageSource, unit
 }) => {
   return (
       <SafeAreaView style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={imageSource} resizeMode="center" />
+          <Image style={styles.image} source={{ uri: imageSource }} resizeMode="cover" />
         </View>
         <View style={styles.main}>
           <Text style={styles.title}>{title}</Text>
@@ -16,7 +16,7 @@ const ViewProductCard = ({
             </View>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.label}>{quantity}</Text>
-              <Text style={styles.label}>/{unit}</Text>
+              <Text style={styles.label}> {unit}</Text>
             </View>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
@@ -65,14 +65,14 @@ const styles = StyleSheet.create({
   title: {
     width: "100%",
     color: "#3a3a3a",
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "500",
     lineHeight: 20,
     marginBottom: "10%",
   },
   label: {
     color: "rgba(58,58,58,0.5)",
-    fontSize: 13,
+    fontSize: 18,
     fontWeight: "500",
   },
 });

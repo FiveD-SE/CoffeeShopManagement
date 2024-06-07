@@ -22,6 +22,7 @@ const ExportGoodModal = ({ visible, onClose, selectedGoods, onMinus }) => {
 					goodsQuantity: selectedGoods?.goodsQuantity - selectedQuantity,
 				});
 			}
+
 			const exportGoodsLabel = {
 				warehouseItemId: selectedGoods?.warehouseItemId,
 				goodsId: selectedGoods?.goodsId,
@@ -75,7 +76,7 @@ const ExportGoodModal = ({ visible, onClose, selectedGoods, onMinus }) => {
 								/>
 							</View>
 						</View>
-						<ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" onPress={handleMinus} />
+						<ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" OnPress={handleMinus} />
 					</View>
 				</View>
 			</View>

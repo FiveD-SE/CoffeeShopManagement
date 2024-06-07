@@ -1,67 +1,68 @@
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native'
-import React from 'react'
-import ColorButton from '../../../components/Admin/Button/ColorButton'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import ViewProductCard from '../../../components/Admin/Card/ViewProductCard'
+import { useNavigation } from '@react-navigation/native'
 
-const AdminListExportScreen = () => {
-  const productList = [
-    {
-      title: "Tên hàng hóa",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa1",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa2",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa3",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa4",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-    {
-      title: "Tên hàng hóa5",
-      unit: "Bịch",
-      price: "100.000",
-      quantity: "100",
-    },
-  ];
+const AdminListExportScreen = ({ route }) => {
+  const navigation = useNavigation();
+  const { exportGoodsList } = route.params;
+  const [mergedGoodsList, setMergedGoodsList] = useState([]);
+  const [totalExportGoods, setTotalExportGoods] = useState(0);
 
-  const renderproductList = () => {
-    return productList.map((item, index) => (
+  useEffect(() => {
+    const mergeGoodsList = () => {
+      const goodsMap = {};
+      exportGoodsList.forEach(item => {
+        if (goodsMap[item.goodsId]) {
+          goodsMap[item.goodsId].goodsQuantity += Number(item.goodsQuantity);
+        } else {
+          goodsMap[item.goodsId] = { ...item, goodsQuantity: Number(item.goodsQuantity) };
+        }
+      });
+      const mergedList = Object.values(goodsMap);
+      setMergedGoodsList(mergedList);
+
+      const total = mergedList.reduce((acc, cur) => acc + cur.goodsPrice * cur.goodsQuantity, 0);
+      setTotalExportGoods(total);
+    };
+
+    mergeGoodsList();
+  }, [exportGoodsList]);
+
+  function formatVND(number) {
+    return number.toLocaleString('vi-VN');
+  }
+
+  const renderExportGoodsList = () => {
+    return mergedGoodsList.map((item, index) => (
       <ViewProductCard
         key={index}
-        title={item.title}
-        unit={item.unit}
-        quantity={item.quantity}
-        price={item.price}
+        title={item.goodsName}
+        unit={item.goodsUnit}
+        quantity={item.goodsQuantity}
+        price={item.goodsPrice}
+        imageSource={item.goodsImage}
       />
     ));
+  };
+
+  const handleExportConfirm = () => {
+    navigation.navigate("AdminWareHouse");
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Danh sách xuất hàng hàng</Text>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
-        {renderproductList()}
+        {renderExportGoodsList()}
       </ScrollView>
-      <ColorButton color="#00A188" text="Xác nhận" textColor="#ffffff" />
+      <View style={styles.costContaner}>
+        <Text style={styles.costname}>Tổng cộng</Text>
+        <Text style={styles.cost}>{formatVND(totalExportGoods)} VNĐ</Text>
+      </View>
+      <TouchableOpacity style={styles.colorButton} onPress={handleExportConfirm}>
+        <Text style={styles.title}>Nhập hàng</Text>
+      </TouchableOpacity>
     </View>
   )
 }
@@ -88,4 +89,34 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: "2%",
   },
+  costContaner: {
+    marginVertical: "3%",
+    marginHorizontal: "3%",
+    flexDirection: "row",
+    justifyContent: "space-between"
+  },
+  costname: {
+    color: "#3a3a3a",
+    fontSize: 25,
+    fontWeight: "600",
+  },
+  cost: {
+    color: "#F61A3D",
+    fontSize: 25,
+    fontWeight: "700",
+  },
+  colorButton: {
+    borderRadius: 15,
+    margin: "2%",
+    paddingVertical: "5%",
+    paddingHorizontal: "10%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#00A188",
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#ffffff"
+  }
 })
