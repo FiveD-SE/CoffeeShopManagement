@@ -111,7 +111,7 @@ export default function AddStaffScreen() {
 
         const userId = user.uid;
         await updateDoc(doc(db, "cashier", userId), {
-            cashierID: userId,
+            cashierId: userId,
         });
 
         const newNotificationRef = doc(collection(db, "notifications"));

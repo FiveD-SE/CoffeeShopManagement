@@ -60,17 +60,14 @@ export default function ManageStaffScreen({ route }) {
 	//     });
 	// }, [updatedData]);
 
-	const addNewStaff = (newStaff) => {
-		setDATA([...DATA, newStaff]); // Thêm nhân viên mới vào DATA
-	};
 	const handleback = () => {
 		navigation.goBack();
 	};
 	const goToAddStaff = () => {
 		navigation.navigate("AddStaff");
 	};
-	const goToEditStaff = (item, setValue) => {
-		navigation.navigate("EditStaff", { staffItem: item, setValue: setValue });
+	const goToEditStaff = (cashiers) => {
+		navigation.navigate("EditStaff", { cashiers: cashiers });
 	};
 	return (
 		<>
@@ -121,6 +118,7 @@ export default function ManageStaffScreen({ route }) {
 									cashierName={item.fullName}
 									cashierPhone={item.phoneNumber}
 									cashierImage={item.cashierImage}
+									onPress={() => goToEditStaff(item)}
 								/>
 							))}
 						</View>
