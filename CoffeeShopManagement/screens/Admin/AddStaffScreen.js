@@ -11,6 +11,7 @@ import { auth, createUserWithEmailAndPassword, db, storage, uploadImageToFirebas
 import RNPickerSelect from 'react-native-picker-select'
 import { getDownloadURL, ref } from 'firebase/storage'
 import * as ImagePicker from "expo-image-picker";
+import { sendEmailVerification } from 'firebase/auth'
 
 const TextBox = ({ text, value, setValue }) => {
     return (
@@ -65,7 +66,7 @@ export default function AddStaffScreen() {
     const [idCard, setIdCard] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [cashierImage, setCashierImage] = useState("https://firebasestorage.googleapis.com/v0/b/fived-project-cf.appspot.com/o/avatars%2Fdefault.png?alt=media&token=0fffed45-23f0-4456-a939-cc3f437a7c2f");
+    const [cashierImage, setCashierImage] = useState("");
     const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
     const [isShowDateTimePicker, setIsShowDateTimePicker] = useState(false);
 
@@ -90,6 +91,11 @@ export default function AddStaffScreen() {
         if (cashierImage == '') {
             const image = await getDownloadURL(storageRef);
             setCashierImage(image);
+        } else {
+            const userImage = await uploadImageToFirebase(
+                cashierImage,
+                "cashier_" + Math.random().toString(36).substring(7)
+            );
         }
 
         await setDoc(doc(collection(db, "cashier"), user.uid), {
@@ -107,6 +113,23 @@ export default function AddStaffScreen() {
         await updateDoc(doc(db, "cashier", userId), {
             cashierID: userId,
         });
+
+        const newNotificationRef = doc(collection(db, "notifications"));
+        const notificationId = newNotificationRef.id;
+
+        const notification = {
+            notificationId,
+            notificationContent: "Tạo tài khoản thành công!",
+            notificationTitle: "Chào mừng bạn đến với Enigma",
+            notificationCreatedDate: new Date(),
+            notificationStatus: false,
+            notificationType: 1,
+            productOrder: [],
+            userId: user.uid,
+        };
+
+        await setDoc(newNotificationRef, notification);
+        await sendEmailVerification(user);
         navigation.goBack();
     }
     // Gọi hàm callback để thêm nhân viên mới vào DATA của ManageStaff
@@ -142,17 +165,35 @@ export default function AddStaffScreen() {
         toggleDatePicker();
     }
 
+    const handleImagePicker = async () => {
+        const { status } =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+            alert("Sorry, we need camera roll permissions to make this work!");
+            return;
+        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setCashierImage(result.assets[0].uri);
+        }
+    };
+
     return (
         <ScrollView style={styles.container}>
             <View style={styles.imageContainer}>
-                <View
+                <TouchableOpacity
                     style={styles.imageButton}
                     onPress={() => handleImagePicker()}>
                     <Image
-                        source={{ uri: cashierImage }}
+                        source={{ uri: cashierImage === "" ? "https://firebasestorage.googleapis.com/v0/b/fived-project-cf.appspot.com/o/avatars%2Fdefault.png?alt=media&token=0fffed45-23f0-4456-a939-cc3f437a7c2f" : cashierImage }}
                         style={{ marginBottom: '3%', width: 100, height: 100, borderRadius: 50 }} />
-
-                </View>
+                    <Text style={styles.imageText}>Thêm ảnh đại diện</Text>
+                </TouchableOpacity>
             </View>
             <View style={styles.informationWrapper}>
                 <Text style={styles.topText}>Thông tin cá nhân</Text>
