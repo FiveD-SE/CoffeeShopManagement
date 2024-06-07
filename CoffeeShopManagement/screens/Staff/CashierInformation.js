@@ -20,6 +20,7 @@ import { saveUserData } from "../../redux/actions/userActions";
 import { db, uploadImageToFirebase } from "../../services/firebaseService";
 import { doc, updateDoc } from "firebase/firestore";
 
+
 const CashierInformation = ({ userData, saveUserData }) => {
     const handleImagePicker = async () => {
         const { status } =
