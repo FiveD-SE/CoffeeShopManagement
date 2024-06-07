@@ -33,10 +33,11 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: "#D8D8D8",
 		padding: "2%",
+		backgroundColor:"#FFFFFF",
 	},
 	imageContainer: {
 		borderWidth: 1,
-		borderColor: "rgba(58,58,58,0.05)",
+		borderColor: "#D8D8D8",
 		borderRadius: 10,
 		overflow: "hidden",
 	},

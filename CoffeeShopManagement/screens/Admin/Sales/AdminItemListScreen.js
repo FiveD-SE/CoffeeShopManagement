@@ -22,37 +22,38 @@ import {
 } from "firebase/firestore";
 import { db } from '../../../services/firebaseService';
 import Toast from "react-native-toast-message";
-
+const ItemCardList = [
+  {
+    title: "Smoothie Xoài Nhiệt Đới Granola",
+    price: 65000,
+    imageSource: PRODUCT_IMAGE_SOURCE,
+  },
+];
 
 const AdminItemListScreen = ({ userData }) => {
-  const ItemCardList = [
-    {
-      title: "Smoothie Xoài Nhiệt Đới Granola",
-      price: 65000,
-      imageSource: PRODUCT_IMAGE_SOURCE,
-    },
-  ];
-
   const [products, setProducts] = useState(ItemCardList);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [categoryTitle, setCategoryTitle] = useState("Tất cả sản phẩm");
+
   useEffect(() => {
     const loadProduct = async () => {
       try {
-        const q = query(
-          collection(db, "products"),
-        );
+        const q = query(collection(db, "products"));
         const querySnapshot = await getDocs(q);
         const loadedProducts = [];
         querySnapshot.forEach((doc) => {
           loadedProducts.push(doc.data());
         });
         setProducts(loadedProducts);
+        setFilteredProducts(loadedProducts);
       } catch (error) {
         console.log("Error loading products:", error);
       }
     };
 
     loadProduct();
-  });
+  }, []);
 
   const formatPrice = (price) => {
 
@@ -64,16 +65,14 @@ const AdminItemListScreen = ({ userData }) => {
   };
 
   const renderItemList = () => {
-
-    return products.map((item, index) => (
+    return filteredProducts.map((item, index) => (
       <ItemCard
         key={index}
         title={item.productName}
         price={formatPrice(item.productPrice)}
         imageSource={{ uri: item.productImage }}
       />
-    )
-    );
+    ));
   };
 
   const categoriesData = [
@@ -83,85 +82,103 @@ const AdminItemListScreen = ({ userData }) => {
     { type: "Đá xay", iconSource: ICE_BLENDED_ICON },
   ];
 
-  const renderCategoryItemList = () => {
+  const handleCategorySelect = (category) => {
+    if (selectedCategory === category) {
+      setFilteredProducts(products);
+      setCategoryTitle("Tất cả sản phẩm");
+      setSelectedCategory(null);
+    } else {
+      const filtered = products.filter(product => product.productType === category);
+      setFilteredProducts(filtered);
+      setCategoryTitle(category);
+      setSelectedCategory(category);
+    }
+  }
+
+    const renderCategoryItemList = () => {
+      return (
+        <View style={styles.categoryList}>
+          {categoriesData.map((category, index) => (
+            <CategoryIcon
+              key={index}
+              iconSource={category.iconSource}
+              size={64}
+              name={category.type}
+              OnPress={() => handleCategorySelect(category.type)}
+            />
+          ))}
+        </View>
+      );
+    };
+
     return (
-      <View style={styles.categoryList}>
-        {categoriesData.map((category, index) => (
-          <CategoryIcon
-            key={index}
-            iconSource={category.iconSource}
-            size={64}
-            name={category.type}
-          />
-        ))}
-      </View>
-    );
+      <SafeAreaView style={styles.container}>
+        <View>
+          {renderCategoryItemList()}
+        </View>
+        <Text style={styles.header}>{categoryTitle}</Text>
+        <View style={styles.sreachBar}>
+          <SearchBar />
+        </View>
+
+        <ScrollView style={styles.itemListContainer} showsVerticalScrollIndicator={false}>
+          {renderItemList()}
+        </ScrollView>
+      </SafeAreaView>
+    )
+  }
+
+  const mapStateToProps = (state) => {
+    return {
+      userData: state.auth.userData,
+    };
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View>
-        {renderCategoryItemList()}
-      </View>
-      <View style={styles.sreachBar}>
-        <SearchBar />
-      </View>
-      <ScrollView style={styles.itemListContainer} showsVerticalScrollIndicator={false}>
-        {renderItemList()}
-      </ScrollView>
-    </SafeAreaView>
-  )
-}
+  export default connect(mapStateToProps)(AdminItemListScreen);
 
-const mapStateToProps = (state) => {
-  return {
-    userData: state.auth.userData,
-  };
-};
-
-export default connect(mapStateToProps)(AdminItemListScreen);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: "3%",
-    marginHorizontal: "3%"
-  },
-  itemListContainer: {
-    marginTop: "3%"
-  },
-  sreachBar: {
-    flexDirection: "row",
-    marginTop: "3%"
-  },
-  typeRoundButtonContainer: {
-
-  },
-  categoryList: {
-    flexDirection: "row",
-    borderColor: colors.grey_50,
-    backgroundColor: colors.white_100,
-    justifyContent: "space-between",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: "5%",
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: "#D8D8D8"
-  },
-  description: {
-    color: "#3A3A3A",
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: "400",
-    marginTop: "5%",
-  },
-  listContent: {
-    paddingHorizontal: "5%",
-    paddingVertical: "3%",
-  },
-  columnWrapper: {
-    justifyContent: "space-between",
-    paddingVertical: "2%"
-  },
-})
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      marginTop: "3%",
+      marginHorizontal: "3%"
+    },
+    itemListContainer: {
+      marginTop: "3%"
+    },
+    sreachBar: {
+      flexDirection: "row",
+    },
+    header: {
+      color: "#3a3a3a",
+      fontSize: 18,
+      fontWeight: "600",
+      marginVertical: "3%",
+    },
+    categoryList: {
+      flexDirection: "row",
+      borderColor: colors.grey_50,
+      backgroundColor: colors.white_100,
+      justifyContent: "space-between",
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: "5%",
+      borderWidth: 1,
+      borderRadius: 10,
+      borderColor: "#D8D8D8"
+    },
+    description: {
+      color: "#3A3A3A",
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: "400",
+      marginTop: "5%",
+    },
+    listContent: {
+      paddingHorizontal: "5%",
+      paddingVertical: "3%",
+    },
+    columnWrapper: {
+      justifyContent: "space-between",
+      paddingVertical: "2%"
+    },
+  })
