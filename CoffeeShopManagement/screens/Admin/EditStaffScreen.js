@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, ScrollView, Platform } from 'react-native'
 import React, { useState } from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Entypo'
@@ -6,6 +6,13 @@ import Icon1 from 'react-native-vector-icons/Feather'
 import DeleteStaffModal from '../../components/Admin/DeletaStaffModal'
 import SelectBranchModal from '../../components/Admin/Modal/SelectBranchModal'
 import { useNavigation } from '@react-navigation/native'
+import RNDateTimePicker from '@react-native-community/datetimepicker'
+import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore'
+import { auth, createUserWithEmailAndPassword, db, storage, uploadImageToFirebase } from '../../services/firebaseService'
+import RNPickerSelect from 'react-native-picker-select'
+import { getDownloadURL, ref } from 'firebase/storage'
+import * as ImagePicker from "expo-image-picker";
+import { sendEmailVerification } from 'firebase/auth'
 
 const TextBox = ({ text, value, setValue }) => {
     return (
@@ -17,7 +24,7 @@ const TextBox = ({ text, value, setValue }) => {
     )
 }
 
-const TextBox2 = ({ text, iconName, marginRate, value, setValue }) => {
+const TextBox2 = ({ text, iconName, marginRate, value, setValue, onPress }) => {
     return (
         <View style={[styles.textBox, { flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginEnd: marginRate }]}>
             <TextInput
@@ -25,7 +32,9 @@ const TextBox2 = ({ text, iconName, marginRate, value, setValue }) => {
                 value={value}
                 onChangeText={setValue}
             />
-            <TouchableOpacity>
+            <TouchableOpacity
+                style={{ alignSelf: 'center' }}
+                onPress={onPress}>
                 <Icon name={iconName} size={28} />
             </TouchableOpacity>
         </View>
@@ -48,19 +57,25 @@ const ButtonBox = ({ text, placeholder, onPress }) => {
 }
 
 export default function EditStaffScreen({ route }) {
-    console.log(route.params);
-    const { setValue } = route.params.setValue;
 
-    const [name, setName] = useState(route.params.staffItem.name);
-    const [sdt, setSdt] = useState(route.params.staffItem.SDT);
-    const [birth, setBirth] = useState(route.params.staffItem.birth);
-    const [sex, setSex] = useState(route.params.staffItem.sex);
-    const [cccd, setCccd] = useState(route.params.staffItem.cccd);
-    const [email, setEmail] = useState(route.params.staffItem.email);
+    console.log(route.params.cashiers)
+
+    const [cashierImage, setCashierImage] = useState(route.params.cashiers.cashierImage);
+    const [name, setName] = useState(route.params.cashiers.fullName);
+    const [sdt, setSdt] = useState(route.params.cashiers.phoneNumber);
+    const [birthday, setBirthday] = useState(route.params.cashiers.birthday);
+    const [gender, setGender] = useState(route.params.cashiers.gender);
+    const [cccd, setCccd] = useState(route.params.cashiers.idCard);
+    const [email, setEmail] = useState(route.params.cashiers.email);
+    const [date, setDate] = useState(new Date());
+
+    const [isShowDateTimePicker, setIsShowDateTimePicker] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
 
     const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
+
+
     const showSelectBranchModal = () => {
         setModalSelectBranchVisible(true);
     };
@@ -77,30 +92,68 @@ export default function EditStaffScreen({ route }) {
         setModalVisible(false);
     };
 
-    const navigation = useNavigation();
-    const goBack = () => {
-        const updatedData = {
-            id: route.params.staffItem.id,
-            name: name,
-            SDT: sdt,
-            birth: birth,
-            role: route.params.staffItem.role,
-            sex: sex,
-            cccd: cccd,
-            email: email,
-        };
+    const toggleDatePicker = () => {
+        setIsShowDateTimePicker(!isShowDateTimePicker);
+    }
 
+    const onChange = ({ type }, selectedDate) => {
+        if (type === 'set') {
+            const currentDate = selectedDate;
+            setBirthday(currentDate);
+
+            if (Platform.OS === 'android') {
+                toggleDatePicker();
+                setBirthday(currentDate.toDateString());
+            }
+        } else {
+            toggleDatePicker();
+        }
+    }
+
+    const confirmIOSDate = () => {
+        setBirthday(date.toDateString());
+        toggleDatePicker();
+    }
+
+    const handleImagePicker = async () => {
+        const { status } =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+            alert("Sorry, we need camera roll permissions to make this work!");
+            return;
+        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setCashierImage(result.assets[0].uri);
+        }
+    };
+
+    const navigation = useNavigation();
+    const handleSaveInfor = async () => {
+        await updateDoc(doc(db, "cashier", route.params.cashiers.cashierId), {
+            fullName: name,
+            phoneNumber: sdt,
+            birthday: birthday,
+            idCard: cccd,
+            gender: gender,
+            email: email,
+        });
         navigation.goBack();
     };
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.topApp}>
                 <View style={styles.imageContainer}>
                     <TouchableOpacity
                         style={styles.imageButton}>
                         <Image
-                            source={require('../../assets/account_image.png')}
-                            style={{ marginBottom: '3%' }} />
+                            source={{ uri: cashierImage }}
+                            style={{ marginBottom: '3%', width: 80, height: 80, borderRadius: 50 }} />
                     </TouchableOpacity>
                 </View>
                 <View>
@@ -117,9 +170,54 @@ export default function EditStaffScreen({ route }) {
                 <TextBox text={'Họ và tên'} value={name} setValue={setName} />
                 <TextBox text={'Số điện thoại'} value={sdt} setValue={setSdt} />
                 <View style={styles.rowContainerTextBox}>
-                    <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'5%'} value={birth} setValue={setBirth} />
-                    <TextBox2 text={'Giới tính'} iconName={'chevron-right'} value={sex} setValue={setSex} />
+                    <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'10%'} value={birthday.toDate().toDateString()} setValue={setBirthday} onPress={() => toggleDatePicker()} />
+                    <View style={{
+                        flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', backgroundColor: '#fff',
+                        borderRadius: 10,
+                        borderWidth: 1,
+                        borderColor: '#ebebeb',
+                        marginBottom: '3%',
+                    }}>
+                        <RNPickerSelect
+                            value={gender}
+                            placeholder={{ label: 'Giới tính', value: null }}
+                            style={pickerSelectStyles}
+                            onValueChange={(value) => setGender(value)}
+                            items={[
+                                { label: 'Nam', value: 'Nam' },
+                                { label: 'Nữ', value: 'Nữ' },
+                            ]} />
+                    </View>
                 </View>
+                {isShowDateTimePicker && Platform.OS === 'ios' &&
+                    <View>
+                        <RNDateTimePicker
+
+                            value={birthday.toDate()}
+                            mode='date'
+                            display='spinner'
+                            onChange={onChange} />
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '20%' }}>
+                            <TouchableOpacity
+                                style={{ marginBottom: '5%', backgroundColor: 'white', padding: '5%', borderRadius: 10 }}
+                                onPress={toggleDatePicker}>
+                                <Text>Cancel</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{ marginBottom: '5%', backgroundColor: '#006c5e', padding: '5%', borderRadius: 10 }}
+                                onPress={confirmIOSDate}>
+                                <Text style={{ color: 'white' }}>Confirm</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>}
+                {isShowDateTimePicker && Platform.OS === 'android' &&
+                    <View>
+                        <RNDateTimePicker
+                            value={birthday.toDate()}
+                            mode='date'
+                            display='spinner'
+                            onChange={onChange} />
+                    </View>}
                 <TextBox text={'Số CMND/CCCD'} value={cccd} setValue={setCccd} />
                 <TextBox text={'Email'} value={email} setValue={setEmail} />
             </View>
@@ -131,12 +229,12 @@ export default function EditStaffScreen({ route }) {
             </View>
             <View>
                 <Pressable
-                    onPress={goBack}
+                    onPress={() => handleSaveInfor()}
                     style={styles.acceptButton}>
                     <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>Lưu</Text>
                 </Pressable>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -203,3 +301,16 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     }
 })
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        justifyContent: 'center',
+        paddingVertical: "6%",
+        color: 'black',
+        width: 120,
+    },
+    inputAndroid: {
+        color: 'black',
+        width: 145,
+    },
+});
