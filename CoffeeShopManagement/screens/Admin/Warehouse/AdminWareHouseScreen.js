@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import React, { useState, useCallback } from 'react';
-import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import SearchBar from "../../../components/Client/SearchBar";
@@ -14,6 +14,9 @@ const AdminWareHouseScreen = () => {
     const [goodsList, setGoodsList] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredGoodsList, setFilteredGoodsList] = useState([]);
+    const [goodsCount, setGoodsCount] = useState(0);
+    const [totalGoods, setTotalGoods] = useState(0);
+    const [isSortedAscending, setIsSortedAscending] = useState(true);
 
     const goToImportGoodsScreen = () => {
         navigation.navigate("AdminImportGoods");
@@ -29,6 +32,9 @@ const AdminWareHouseScreen = () => {
         const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
         setGoodsList(goodsListData);
         setFilteredGoodsList(goodsListData);
+        setGoodsCount(goodsListData.length);
+        const totalGoods = goodsListData.reduce((acc, item) => acc + item.goodsQuantity, 0);
+        setTotalGoods(totalGoods);
     };
 
     useFocusEffect(
@@ -61,25 +67,38 @@ const AdminWareHouseScreen = () => {
             />
         ));
     };
+    const handleFilter = () => {
+        const sortedList = [...filteredGoodsList].sort((a, b) => {
+            if (isSortedAscending) {
+                return a.goodsQuantity - b.goodsQuantity;
+            } else {
+                return b.goodsQuantity - a.goodsQuantity;
+            }
+        });
+    
+        setFilteredGoodsList(sortedList);
+        setIsSortedAscending(!isSortedAscending);
+    };
+    
 
     return (
         <View style={styles.container}>
             <View style={styles.branchSelectContainer}>
                 <TouchableOpacity style={styles.subnameContainer}>
                     <FontAwesome5 name="map-marker-alt" size={20} color="#00A188" />
-                    <Text style={[styles.normalText, { marginLeft: "3%" }]}>Chi nhánh trung tâm</Text>
+                    <Text style={[styles.normalText, { marginLeft: "3%" }]}> Chi nhánh trung tâm</Text>
                 </TouchableOpacity>
                 <View style={styles.subnameContainer}>
-                    <Text style={styles.greenText}>5</Text>
+                    <Text style={styles.greenText}>{goodsCount}</Text>
                     <Text style={styles.normalText}>Mặt hàng - Số lượng trong kho:</Text>
-                    <Text style={styles.greenText}>100</Text>
+                    <Text style={styles.greenText}>{totalGoods}</Text>
                 </View>
             </View>
 
             <View style={styles.searchBar}>
                 <SearchBar onChangeText={handleSearch} />
-                <TouchableOpacity style={styles.filterButton}>
-                    <Ionicons name="filter" size={24} color="black" />
+                <TouchableOpacity style={styles.filterButton} onPress={handleFilter}>
+                    <MaterialCommunityIcons name={isSortedAscending ? "filter-variant-minus" : "filter-variant-plus"} size={24} color="black" />
                 </TouchableOpacity>
             </View>
 
