@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet, TextInput, Switch, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import SquareWithBorder from '../../../components/Admin/SquarewithBorder'
 import CustomChooseButton from '../../../components/Admin/Button/CustomChooseButton'
@@ -9,9 +9,9 @@ import VoucherTypeModal from '../../../components/Admin/Modal/VoucherTypeModal';
 import ServiceTypeModal from '../../../components/Admin/Modal/ServiceTypeModal';
 import RankUserModal from '../../../components/Admin/Modal/RankUserModal';
 import DaySelectModal from '../../../components/Admin/Modal/DaySelectModal';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const AdminEditVoucherScreen = () => {
-  const [voucherType, setVoucherType] = useState(null);
   const [rankUserModalVisible, setRankUserModalVisible] = useState(false);
   const [voucherTypeModalVisible, setVoucherTypeModalVisible] = useState(false);
   const [daySelectModalVisible, setDaySelectModalVisible] = useState(false);
@@ -96,7 +96,7 @@ const AdminEditVoucherScreen = () => {
           <DaySelectModal visible={daySelectModalVisible} onClose={hideDaySelectModal} />
         </View>
       </View>
-      <View style={[styles.inputBox, { marginTop: "0%", marginBottom:"3%" }]}>
+      <View style={[styles.inputBox, { marginTop: "0%", marginBottom: "3%" }]}>
         <TextInput
           style={[styles.input, { flex: 1, textAlignVertical: "top" }]}
           placeholder="Mô tả khuyến mãi"

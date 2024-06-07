@@ -3,13 +3,9 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import { MaterialIcons } from "@expo/vector-icons";
-const ItemCard = ({ title, price, imageSource, onPress }) => {
-	const navigation = useNavigation();
-	const goToEditItemScreen = () => {
-		navigation.navigate("AdminEditItem");
-	};
+const ItemCard = ({ title, price, imageSource, OnPress }) => {
 	return (
-		<TouchableOpacity style={styles.container} onPress={goToEditItemScreen}>
+		<TouchableOpacity style={styles.container} onPress={OnPress}>
 			<View style={styles.imageContainer}>
 				<Image style={styles.image} source={imageSource} resizeMode="cover" />
 			</View>
@@ -33,7 +29,7 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderColor: "#D8D8D8",
 		padding: "2%",
-		backgroundColor:"#FFFFFF",
+		backgroundColor: "#FFFFFF",
 	},
 	imageContainer: {
 		borderWidth: 1,
