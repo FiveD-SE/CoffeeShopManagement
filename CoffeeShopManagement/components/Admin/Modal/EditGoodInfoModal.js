@@ -1,41 +1,42 @@
-import { View, Text, Modal, StyleSheet, TouchableOpacity, TextInput, Alert } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import ModalHeader from '../../Client/Header/ModalHeader'
-import SquareWithBorder from '../SquarewithBorder'
-import ColorButton from '../Button/ColorButton'
-import DeleteButton from '../Button/DeleteButton'
-import { db } from '../../../services/firebaseService'
-import { collection, doc, updateDoc, deleteDoc } from "firebase/firestore"; 
+import { View, Text, Modal, StyleSheet, TextInput, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import ModalHeader from '../../Client/Header/ModalHeader';
+import SquareWithBorder from '../SquarewithBorder';
+import ColorButton from '../Button/ColorButton';
+import DeleteButton from '../Button/DeleteButton';
+import { db } from '../../../services/firebaseService';
+import { doc, updateDoc, deleteDoc } from "firebase/firestore"; 
 
 const EditGoodInfoModal = ({ visible, onClose, selectedGoods }) => {
     const [image, setImage] = useState(selectedGoods?.goodsImage);
     const [name, setName] = useState(selectedGoods?.goodsName);
     const [unit, setUnit] = useState(selectedGoods?.goodsUnit);
-    const [price, setPrice] = useState(selectedGoods?.goodsPrice);
+    const [price, setPrice] = useState('');
+    const [formattedPrice, setFormattedPrice] = useState('');
 
     useEffect(() => {
         setImage(selectedGoods?.goodsImage);
         setName(selectedGoods?.goodsName);
         setUnit(selectedGoods?.goodsUnit);
-        setPrice((selectedGoods?.goodsPrice || 0).toString());
-    }
-    , [selectedGoods]);
+        const priceString = (selectedGoods?.goodsPrice || 0).toString();
+        setPrice(priceString);
+        formatPrice(priceString);
+    }, [selectedGoods]);
 
-    useEffect(() => {
-        setImage(selectedGoods?.goodsImage);
-        setName(selectedGoods?.goodsName);
-        setUnit(selectedGoods?.goodsUnit);
-        setPrice((selectedGoods?.goodsPrice || 0).toString());
-    }
-    , [selectedGoods]);
-
+    const formatPrice = (value) => {
+        const cleanedValue = value.replace(/[^0-9]/g, '');
+        const formattedValue = cleanedValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        setFormattedPrice(formattedValue ? `${formattedValue}` : '');
+        setPrice(cleanedValue);
+    };
 
     const handleSave = async () => {
-        if (!image || !name || !unit || !price) {
+        const priceValue = parseFloat(price);
+        if (!image || !name || !unit || !priceValue) {
             Alert.alert("Cảnh báo", "Hãy điền đầy đủ thông tin.");
             return;
         }
-        if (image === selectedGoods?.goodsImage && name === selectedGoods?.goodsName && unit === selectedGoods?.goodsUnit && price === selectedGoods?.goodsPrice) {
+        if (image === selectedGoods?.goodsImage && name === selectedGoods?.goodsName && unit === selectedGoods?.goodsUnit && priceValue === selectedGoods?.goodsPrice) {
             onClose();
         }
         try {
@@ -44,13 +45,13 @@ const EditGoodInfoModal = ({ visible, onClose, selectedGoods }) => {
                 goodsImage: image,
                 goodsName: name,
                 goodsUnit: unit,
-                goodsPrice: price,
+                goodsPrice: priceValue,
             });
             onClose();
         } catch (error) {
             console.error("Error updating document: ", error);
         }
-    }
+    };
 
     const handleDelete = async () => {
         Alert.alert(
@@ -72,7 +73,7 @@ const EditGoodInfoModal = ({ visible, onClose, selectedGoods }) => {
                 }
             ]
         );
-    }
+    };
 
     return (
         <Modal
@@ -94,7 +95,7 @@ const EditGoodInfoModal = ({ visible, onClose, selectedGoods }) => {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Tên mặt hàng"
-                                    onChangeText={(newText) => setName(newText)}
+                                    onChangeText={setName}
                                     value={name}
                                 />
                             </View>
@@ -102,7 +103,7 @@ const EditGoodInfoModal = ({ visible, onClose, selectedGoods }) => {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Đơn vị"
-                                    onChangeText={(newText) => setUnit(newText)}
+                                    onChangeText={setUnit}
                                     value={unit}
                                 />
                             </View>
@@ -111,9 +112,10 @@ const EditGoodInfoModal = ({ visible, onClose, selectedGoods }) => {
                                     keyboardType="phone-pad"
                                     style={styles.input}
                                     placeholder="Giá nhập mới"
-                                    onChangeText={(newText) => setPrice(newText)}
-                                    value={price}
+                                    value={formattedPrice}
+                                    onChangeText={formatPrice}
                                 />
+                                <Text style={{ color: "#9D9D9D", fontSize: 15, fontWeight: "400", marginLeft: "auto" }}>VND</Text>
                             </View>
                         </View>
                         <DeleteButton OnPress={handleDelete}/>
@@ -122,10 +124,10 @@ const EditGoodInfoModal = ({ visible, onClose, selectedGoods }) => {
                 </View>
             </View>
         </Modal>
-    )
-}
+    );
+};
 
-export default EditGoodInfoModal
+export default EditGoodInfoModal;
 
 const styles = StyleSheet.create({
     modalContainer: {
@@ -146,9 +148,9 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     main: {
-		paddingHorizontal: "5%",
-		paddingVertical: "5%",
-		borderRadius: 20,
+        paddingHorizontal: "5%",
+        paddingVertical: "5%",
+        borderRadius: 20,
     },
     header: {
         color: "#3a3a3a",

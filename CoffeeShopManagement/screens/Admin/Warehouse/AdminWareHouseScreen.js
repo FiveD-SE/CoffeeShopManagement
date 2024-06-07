@@ -156,12 +156,14 @@ const styles = StyleSheet.create({
     },
 
     greenText: {
+        fontFamily: "lato-regular",
         color: "#00A188",
         fontSize: 12,
         fontWeight: "700",
     },
 
     normalText: {
+        fontFamily: "lato-regular",
         margin: "2%",
         color: "#3A3A3A",
         fontSize: 12,
