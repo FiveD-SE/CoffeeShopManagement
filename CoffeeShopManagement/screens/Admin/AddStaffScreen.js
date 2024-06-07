@@ -7,7 +7,10 @@ import { Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore'
-import { db } from '../../services/firebaseService'
+import { auth, createUserWithEmailAndPassword, db, storage, uploadImageToFirebase } from '../../services/firebaseService'
+import RNPickerSelect from 'react-native-picker-select'
+import { getDownloadURL, ref } from 'firebase/storage'
+import * as ImagePicker from "expo-image-picker";
 
 const TextBox = ({ text, value, setValue }) => {
     return (
@@ -61,6 +64,7 @@ export default function AddStaffScreen() {
     const [idCard, setIdCard] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [cashierImage, setCashierImage] = useState("https://firebasestorage.googleapis.com/v0/b/fived-project-cf.appspot.com/o/avatars%2Fdefault.png?alt=media&token=0fffed45-23f0-4456-a939-cc3f437a7c2f");
     const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
     const [isShowDateTimePicker, setIsShowDateTimePicker] = useState(false);
 
@@ -68,23 +72,39 @@ export default function AddStaffScreen() {
     const chooseDateSnapPoints = useMemo(() => ["60%"], []);
     const chooseDateBottomSheetRef = useRef(null);
 
-    useEffect(() => {
-        console.log("birthday in modal", birthday);
-    }, [birthday])
-
     const handleConfirm = async () => {
-        const cashierDoc = await addDoc(collection(db, "cashier"), {
+
+        console.log("Gender: ", gender);
+        console.log("password: ", password);
+        console.log("email: ", email);
+
+        const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        const user = userCredential.user;
+        const storageRef = ref(storage, "avatars/default.png");
+        if (cashierImage == '') {
+            const image = await getDownloadURL(storageRef);
+            setCashierImage(image);
+        }
+
+        await setDoc(doc(collection(db, "cashier"), user.uid), {
             fullName: name,
             phoneNumber: phoneNumber,
             birthday: new Date(birthday),
             password: password,
             idCard: idCard,
             email: email,
+            gender: gender,
+            cashierImage: cashierImage,
         });
 
-        const cashierId = cashierDoc.id;
-        await updateDoc(doc(db, "cashier", cashierId), {
-            cashierId: cashierId,
+        const userId = user.uid;
+        await updateDoc(doc(db, "cashier", userId), {
+            cashierID: userId,
         });
         navigation.goBack();
     }
@@ -124,21 +144,31 @@ export default function AddStaffScreen() {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.imageContainer}>
-                <TouchableOpacity
-                    style={styles.imageButton}>
+                <View
+                    style={styles.imageButton}
+                    onPress={() => handleImagePicker()}>
                     <Image
-                        source={require('../../assets/account_image.png')}
-                        style={{ marginBottom: '3%' }} />
-                    <Text style={styles.imageText}>Thêm ảnh đại diện</Text>
-                </TouchableOpacity>
+                        source={{ uri: cashierImage }}
+                        style={{ marginBottom: '3%', width: 100, height: 100, borderRadius: 50 }} />
+
+                </View>
             </View>
             <View style={styles.informationWrapper}>
                 <Text style={styles.topText}>Thông tin cá nhân</Text>
                 <TextBox text={'Họ và tên'} value={name} setValue={setName} />
                 <TextBox text={'Số điện thoại'} value={phoneNumber} setValue={setPhoneNumber} />
                 <View style={styles.rowContainerTextBox}>
-                    <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'5%'} value={birthday} setValue={setBirthday} onPress={() => toggleDatePicker()} />
-                    <TextBox2 text={'Giới tính'} iconName={'chevron-right'} value={gender} setValue={setGender} />
+                    <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'10%'} value={birthday} setValue={setBirthday} onPress={() => toggleDatePicker()} />
+                    <View style={[styles.textBox, { flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center' }]}>
+                        <RNPickerSelect
+                            placeholder={{ label: 'Giới tính', value: null }}
+                            style={pickerSelectStyles}
+                            onValueChange={(value) => setGender(value)}
+                            items={[
+                                { label: 'Nam', value: 'Nam' },
+                                { label: 'Nữ', value: 'Nữ' },
+                            ]} />
+                    </View>
                 </View>
                 {isShowDateTimePicker &&
                     <View>
@@ -220,7 +250,7 @@ const styles = StyleSheet.create({
     rowContainerTextBox: {
         flexDirection: 'row',
         width: '100%',
-        justifyContent: 'space-between',
+
     },
     acceptButton: {
         backgroundColor: '#006c5e',
@@ -230,3 +260,18 @@ const styles = StyleSheet.create({
         borderRadius: 20
     }
 })
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        justifyContent: 'center',
+        paddingVertical: "6%",
+        color: 'black',
+        width: 120,
+    },
+    inputAndroid: {
+        justifyContent: 'center',
+        paddingVertical: "6%",
+        color: 'black',
+        width: 120,
+    },
+});
