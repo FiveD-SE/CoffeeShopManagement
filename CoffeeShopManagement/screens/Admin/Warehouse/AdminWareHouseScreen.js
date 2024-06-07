@@ -1,19 +1,19 @@
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native'
-import React, { useState, useCallback } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useCallback } from 'react';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import SearchBar from "../../../components/Client/SearchBar";
 import ColorButton from '../../../components/Admin/Button/ColorButton';
-import { ScrollView } from 'react-native-gesture-handler';
 import ProductCard from '../../../components/Admin/Card/ProductCard';
 import { db } from '../../../services/firebaseService';
 import { collection, getDocs } from 'firebase/firestore';
 
-
 const AdminWareHouseScreen = () => {
     const navigation = useNavigation();
     const [goodsList, setGoodsList] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredGoodsList, setFilteredGoodsList] = useState([]);
 
     const goToImportGoodsScreen = () => {
         navigation.navigate("AdminImportGoods");
@@ -28,6 +28,7 @@ const AdminWareHouseScreen = () => {
         const goodsSnapshot = await getDocs(goodsCollection);
         const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
         setGoodsList(goodsListData);
+        setFilteredGoodsList(goodsListData);
     };
 
     useFocusEffect(
@@ -36,11 +37,23 @@ const AdminWareHouseScreen = () => {
         }, [])
     );
 
-    const rendergoodsList = () => {
-        return goodsList.map((item, index) => (
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        if (query) {
+            const filteredList = goodsList.filter(item => 
+                item.goodsName.toLowerCase().includes(query.toLowerCase())
+            );
+            setFilteredGoodsList(filteredList);
+        } else {
+            setFilteredGoodsList(goodsList);
+        }
+    };
+
+    const renderGoodsList = () => {
+        return filteredGoodsList.map((item, index) => (
             <ProductCard
                 key={index}
-                imageSource={{uri: item.goodsImage }}
+                imageSource={{ uri: item.goodsImage }}
                 name={item.goodsName}
                 unit={item.goodsUnit}
                 quantity={item.goodsQuantity}
@@ -63,8 +76,8 @@ const AdminWareHouseScreen = () => {
                 </View>
             </View>
 
-            <View style={styles.sreachBar}>
-                <SearchBar />
+            <View style={styles.searchBar}>
+                <SearchBar onChangeText={handleSearch} />
                 <TouchableOpacity style={styles.filterButton}>
                     <Ionicons name="filter" size={24} color="black" />
                 </TouchableOpacity>
@@ -76,13 +89,13 @@ const AdminWareHouseScreen = () => {
             </View>
 
             <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
-                {rendergoodsList()}
+                {renderGoodsList()}
             </ScrollView>
         </View>
-    )
-}
+    );
+};
 
-export default AdminWareHouseScreen
+export default AdminWareHouseScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -91,7 +104,7 @@ const styles = StyleSheet.create({
         paddingTop: "10%"
     },
 
-    sreachBar: {
+    searchBar: {
         justifyContent: "space-between",
         flexDirection: "row",
         marginVertical: "3%",
@@ -144,4 +157,4 @@ const styles = StyleSheet.create({
     goodListContainer: {
         flex: 1,
     }
-})
+});
