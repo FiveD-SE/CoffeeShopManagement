@@ -30,6 +30,7 @@ const TextBox2 = ({ text, iconName, marginRate, value, setValue, onPress }) => {
                 onChangeText={setValue}
             />
             <TouchableOpacity
+                style={{ alignSelf: 'center' }}
                 onPress={onPress}>
                 <Icon name={iconName} size={28} />
             </TouchableOpacity>
@@ -159,7 +160,13 @@ export default function AddStaffScreen() {
                 <TextBox text={'Số điện thoại'} value={phoneNumber} setValue={setPhoneNumber} />
                 <View style={styles.rowContainerTextBox}>
                     <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'10%'} value={birthday} setValue={setBirthday} onPress={() => toggleDatePicker()} />
-                    <View style={[styles.textBox, { flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center' }]}>
+                    <View style={{
+                        flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', backgroundColor: '#fff',
+                        borderRadius: 10,
+                        borderWidth: 1,
+                        borderColor: '#ebebeb',
+                        marginBottom: '3%',
+                    }}>
                         <RNPickerSelect
                             placeholder={{ label: 'Giới tính', value: null }}
                             style={pickerSelectStyles}
@@ -170,7 +177,7 @@ export default function AddStaffScreen() {
                             ]} />
                     </View>
                 </View>
-                {isShowDateTimePicker &&
+                {isShowDateTimePicker && Platform.OS === 'ios' &&
                     <View>
                         <RNDateTimePicker
                             value={date}
@@ -189,6 +196,14 @@ export default function AddStaffScreen() {
                                 <Text style={{ color: 'white' }}>Confirm</Text>
                             </TouchableOpacity>
                         </View>
+                    </View>}
+                {isShowDateTimePicker && Platform.OS === 'android' &&
+                    <View>
+                        <RNDateTimePicker
+                            value={date}
+                            mode='date'
+                            display='spinner'
+                            onChange={onChange} />
                     </View>}
                 <TextBox text={'Số CMND/CCCD'} value={idCard} setValue={setIdCard} />
                 <TextBox text={'Email'} value={email} setValue={setEmail} />
@@ -269,9 +284,7 @@ const pickerSelectStyles = StyleSheet.create({
         width: 120,
     },
     inputAndroid: {
-        justifyContent: 'center',
-        paddingVertical: "6%",
         color: 'black',
-        width: 120,
+        width: 145,
     },
 });
