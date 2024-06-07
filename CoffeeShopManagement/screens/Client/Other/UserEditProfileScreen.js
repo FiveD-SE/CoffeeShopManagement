@@ -12,10 +12,11 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
-import { db, auth } from "../../../services/firebaseService";
+import { db, auth, uploadImageToFirebase } from "../../../services/firebaseService";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { saveUserData } from "../../../redux/actions/userActions";
 import SwitchToggle from "toggle-switch-react-native";
+import * as ImagePicker from "expo-image-picker";
 
 const EditProfileDetails = ({ userData, saveUserData }) => {
     const navigation = useNavigation();
@@ -66,6 +67,33 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
         }
     };
 
+    const handleImagePicker = async () => {
+        const { status } =
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+            alert("Sorry, we need camera roll permissions to make this work!");
+            return;
+        }
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            const userImage = await uploadImageToFirebase(
+                result.assets[0].uri,
+                "user_" + userData.id
+            );
+            const updatedUserData = { ...userData, userImage: userImage };
+            saveUserData(updatedUserData);
+            const userDocRef = doc(db, "users", userData.id);
+            await updateDoc(userDocRef, {
+                userImage: userImage,
+            });
+        }
+    };
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
@@ -80,7 +108,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                             },
                         ]}
                     >
-                        <TouchableOpacity onPress={navigateToProfileDetails}>
+                        <TouchableOpacity onPress={() => handleImagePicker()}>
                             <Image
                                 alt="avatar"
                                 source={{ uri: userData?.userImage }}
