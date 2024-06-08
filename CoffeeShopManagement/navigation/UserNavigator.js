@@ -47,6 +47,7 @@ import StorePolicyScreen from "../screens/Client/Other/StorePolicyScreen";
 
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { colors } from "../assets/colors/colors";
+import UserCouponScreen from "../screens/Client/Coupons/UserCouponScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -393,7 +394,7 @@ const CouponsStack = ({ navigation, route }) => {
 		<Stack.Navigator>
 			<Stack.Screen
 				name="Promotions"
-				component={Promotions}
+				component={UserCouponScreen}
 				options={{ headerShown: false }}
 			/>
 			<Stack.Screen

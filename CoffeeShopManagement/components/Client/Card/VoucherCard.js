@@ -6,7 +6,11 @@ const VoucherCard = ({ title, point, imageSource, onPress }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.imageContainer}>
-				<Image style={styles.image} source={imageSource} resizeMode="contain" />
+				<Image
+					style={styles.image}
+					source={{ uri: imageSource }}
+					resizeMode="contain"
+				/>
 			</View>
 			<View style={styles.main}>
 				<Text style={styles.title}>{title}</Text>
@@ -78,10 +82,10 @@ const styles = StyleSheet.create({
 		fontWeight: "500",
 	},
 	exchangeButton: {
-		minHeight: 48,
+		minHeight: 36,
 		justifyContent: "center",
 		alignItems: "center",
-		paddingHorizontal: "10%",
+		paddingHorizontal: "8%",
 		borderWidth: 1,
 		borderColor: colors.grey_50,
 		backgroundColor: colors.green_100,
