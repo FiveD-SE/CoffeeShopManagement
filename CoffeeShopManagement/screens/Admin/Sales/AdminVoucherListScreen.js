@@ -3,59 +3,77 @@ import React, { useState, useEffect } from 'react'
 import SearchBar from '../../../components/Client/SearchBar'
 import ItemCard from '../../../components/Admin/Card/ItemCard';
 import VoucherCard from '../../../components/Admin/Card/VoucherCard';
+import { connect } from "react-redux";
+import {
+  doc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  writeBatch,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from '../../../services/firebaseService';
+import Toast from "react-native-toast-message";
+import { useNavigation } from '@react-navigation/native';
 const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
 
-const AdminVoucherListScreen = ({ navigation }) => {
+const AdminVoucherListScreen = () => {
+  const navigation = useNavigation();
+  const [vouchers, setVouchers] = useState([]);
+  const [selectedOption, setSelectedOption] = useState('productDiscount');
 
-  const VoucherList = [
-    { id: 1, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Mã giảm giá', status: true, image: require('../../../assets/voucher.jpeg') },
-    { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-01-01', option: 'Ưu đãi vận chuyển', status: false, image: require('../../../assets/voucher.jpeg') },
-    { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-06-02', option: 'Ưu đãi vận chuyển', status: false, image: require('../../../assets/voucher.jpeg') },
-    { id: 4, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-06-01', option: 'Mã giảm giá', status: true, image: require('../../../assets/voucher.jpeg') },
-    { id: 5, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Ưu đãi vận chuyển', status: false, image: require('../../../assets/voucher.jpeg') },
-    { id: 6, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-06-01', option: 'Ưu đãi vận chuyển', status: true, image: require('../../../assets/voucher.jpeg') },
-    { id: 7, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Mã giảm giá', status: false, image: require('../../../assets/voucher.jpeg') },
-    { id: 8, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-06-01', option: 'Ưu đãi vận chuyển', status: true, image: require('../../../assets/voucher.jpeg') },
-  ];
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      loadVoucher();
+      loadVouchers();
     });
 
     return unsubscribe;
   }, [navigation]);
 
-  const loadVoucher = async () => {
+  const loadVouchers = async () => {
     try {
       const q = query(collection(db, 'vouchers'));
       const querySnapshot = await getDocs(q);
-      const loadedProducts = [];
+      const loadedVouchers = [];
       querySnapshot.forEach((doc) => {
-        loadedProducts.push(doc.data());
+        const data = doc.data();
+        const expirationDate = data.expirationDate.toDate();
+        const status = expirationDate > new Date();
+        loadedVouchers.push({
+          ...data,
+          expirationDate,
+          status
+        });
       });
-      setProducts(loadedProducts);
-      setFilteredProducts(loadedProducts);
+      setVouchers(loadedVouchers);
     } catch (error) {
-      console.log('Error loading products:', error);
+      console.log('Error loading vouchers:', error);
     }
   };
 
-  const [selectedOption, setSelectedOption] = useState('Mã giảm giá');
-
   const renderSortedVouchers = () => {
-    const sortedVouchers = VoucherList.filter(voucher =>
-      voucher.option === selectedOption
+    const sortedVouchers = vouchers.filter(voucher =>
+      voucher.voucherType.discountType === selectedOption
     );
 
-    sortedVouchers.sort((a, b) => new Date(b.expiryDate) - new Date(a.expiryDate));
+    sortedVouchers.sort((a, b) => b.expirationDate - a.expirationDate);
 
     return sortedVouchers.map((item, index) => (
       <VoucherCard
         key={index}
-        itemName={item.name}
-        imageSource={item.image}
-        expiryDate={item.expiryDate}
+        itemName={item.voucherName}
+        imageSource={{ uri: item.voucherImage }}
+        expiryDate={formatDate(item.expirationDate)}
         status={item.status}
       />
     ));
@@ -64,11 +82,11 @@ const AdminVoucherListScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.voucherTypeContainer}>
-        <Pressable onPress={() => setSelectedOption('Mã giảm giá')} style={[styles.component, selectedOption === 'Mã giảm giá' && styles.selectedItem]}>
-          <Text style={[styles.headingText, selectedOption === 'Mã giảm giá' && styles.selectedText]}>Mã giảm giá</Text>
+        <Pressable onPress={() => setSelectedOption('productDiscount')} style={[styles.component, selectedOption === 'productDiscount' && styles.selectedItem]}>
+          <Text style={[styles.headingText, selectedOption === 'productDiscount' && styles.selectedText]}>Mã giảm giá</Text>
         </Pressable>
-        <Pressable onPress={() => setSelectedOption('Ưu đãi vận chuyển')} style={[styles.component, selectedOption === 'Ưu đãi vận chuyển' && styles.selectedItem]}>
-          <Text style={[styles.headingText, selectedOption === 'Ưu đãi vận chuyển' && styles.selectedText]}>Ưu đãi vận chuyển</Text>
+        <Pressable onPress={() => setSelectedOption('shipDiscount')} style={[styles.component, selectedOption === 'shipDiscount' && styles.selectedItem]}>
+          <Text style={[styles.headingText, selectedOption === 'shipDiscount' && styles.selectedText]}>Ưu đãi vận chuyển</Text>
         </Pressable>
       </View>
       <View style={styles.mainContainer}>

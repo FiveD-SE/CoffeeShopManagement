@@ -3,10 +3,7 @@ import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import OptionModal from '../Modal/OptionModal';
 const VoucherCard = ({ itemName, imageSource, status, expiryDate }) => {
-    const navigation = useNavigation();
-    const goToEditVoucherScreen = () => {
-        navigation.navigate("AdminEditVoucher");
-    };
+
     const statusColor = status ? "#00A188" : "#F61A3D";
     const [optionModalVisible, setOptionModalVisible] = useState(false);
     const showOptionModal = () => {
@@ -18,7 +15,7 @@ const VoucherCard = ({ itemName, imageSource, status, expiryDate }) => {
     };
     return (
         <View>
-            <TouchableOpacity style={styles.container} onLongPress={showOptionModal} onPress={goToEditVoucherScreen}>
+            <View style={styles.container} onLongPress={showOptionModal}>
                 <View style={styles.imageContainer}>
                     <Image style={styles.image} source={imageSource} />
                 </View>
@@ -33,8 +30,8 @@ const VoucherCard = ({ itemName, imageSource, status, expiryDate }) => {
                         <Text style={styles.label}>{expiryDate}</Text>
                     </View>
                 </View>
-            </TouchableOpacity>
-            <OptionModal visible={optionModalVisible} onClose={hideOptionModal}/>
+            </View>
+            <OptionModal visible={optionModalVisible} onClose={hideOptionModal} />
         </View>
     )
 }
