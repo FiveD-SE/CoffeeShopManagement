@@ -197,7 +197,7 @@ const AdminAddItemScreen = () => {
 				</View>
 				<View style={styles.inputBox}>
 					<TextInput
-						keyboardType="phone-pad"
+						keyboardType="numeric"
 						style={[styles.input, { flex: 1 }]}
 						value={getDisplayPrice() === "" ? null : getDisplayPrice()}
 						placeholder="Giá tiền sản phẩm"

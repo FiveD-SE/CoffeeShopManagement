@@ -4,7 +4,7 @@ import ModalHeader from '../../Client/Header/ModalHeader'
 import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-toast-message';
 
-const DaySelectModal = ({ visible, onClose, setSelectDay }) => {
+const ExpirationDaySelectModal = ({ visible, onClose, setSelectDay }) => {
   const [circle, setCircle] = useState(null);
   const [isCircleFocus, setIsCircleFocus] = useState(false);
   const [quantity, setQuantity] = useState(null);
@@ -78,7 +78,7 @@ const DaySelectModal = ({ visible, onClose, setSelectDay }) => {
   )
 }
 
-export default DaySelectModal
+export default ExpirationDaySelectModal
 
 const styles = StyleSheet.create({
   modalContainer: {

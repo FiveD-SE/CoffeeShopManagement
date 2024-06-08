@@ -8,7 +8,6 @@ import DeleteButton from '../../../components/Admin/Button/DeleteButton';
 import VoucherTypeModal from '../../../components/Admin/Modal/VoucherTypeModal';
 import ServiceTypeModal from '../../../components/Admin/Modal/ServiceTypeModal';
 import RankUserModal from '../../../components/Admin/Modal/RankUserModal';
-import DaySelectModal from '../../../components/Admin/Modal/DaySelectModal';
 
 const AdminEditVoucherScreen = () => {
   const [voucherType, setVoucherType] = useState(null);
@@ -93,10 +92,10 @@ const AdminEditVoucherScreen = () => {
             </View>
             <MaterialIcons name="keyboard-arrow-right" size={30} color="#CCCCCC" />
           </TouchableOpacity>
-          <DaySelectModal visible={daySelectModalVisible} onClose={hideDaySelectModal} />
+          {/* <DaySelectModal visible={daySelectModalVisible} onClose={hideDaySelectModal} /> */}
         </View>
       </View>
-      <View style={[styles.inputBox, { marginTop: "0%", marginBottom:"3%" }]}>
+      <View style={[styles.inputBox, { marginTop: "0%", marginBottom: "3%" }]}>
         <TextInput
           style={[styles.input, { flex: 1, textAlignVertical: "top" }]}
           placeholder="Mô tả khuyến mãi"
