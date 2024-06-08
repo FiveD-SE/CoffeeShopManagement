@@ -370,7 +370,7 @@ const AdminEditItemScreen = ({ route }) => {
           />
         </View>
       </View>
-      <DeleteButton OnPress={handleDeleteProduct}/>
+      <DeleteButton OnPress={handleDeleteProduct} />
       <ColorButton
         OnPress={handleSaveProductToFirebase}
         color="#00A188"

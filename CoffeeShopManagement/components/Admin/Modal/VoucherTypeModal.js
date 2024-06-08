@@ -4,6 +4,7 @@ import ModalHeader from '../../Client/Header/ModalHeader'
 import SquareWithBorder from '../SquarewithBorder'
 import ColorButton from '../Button/ColorButton'
 import { colors } from '../../../assets/colors/colors'
+import Toast from 'react-native-toast-message'
 
 const VoucherTypeModal = ({ visible, onClose, onSelect, setVoucherType }) => {
   const [type, setType] = useState(null);
@@ -14,9 +15,13 @@ const VoucherTypeModal = ({ visible, onClose, onSelect, setVoucherType }) => {
     onSelect(selectedType);
   };
   const handleSave = () => {
-    if (!selectedType && !selectedDiscount) {
+    if (!selectedType || !selectedDiscount) {
+      Toast.show({
+        type: "error",
+        text1: "Lỗi",
+        text2: "Vui lòng nhập đầy đủ thông tin",
+      });
       setVoucherType(null);
-      onClose();
     } else {
       setVoucherType({
         voucherType: selectedType,

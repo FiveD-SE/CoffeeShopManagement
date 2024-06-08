@@ -61,7 +61,7 @@ export default function SignUpScreen() {
                 const userCredential = await createUserWithEmailAndPassword(
                     auth,
                     email,
-                    password
+                    password 
                 );
                 const user = userCredential.user;
                 const storageRef = ref(storage, "avatars/default.png");
