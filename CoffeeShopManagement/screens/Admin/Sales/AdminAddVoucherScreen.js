@@ -218,7 +218,7 @@ const AdminAddVoucherScreen = () => {
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               {voucherType && voucherType.voucherType && (
-                <Text style={styles.selectedText}>{voucherType.type === "exchange" ? "Quy đổi" : "Miễn phí"}</Text>
+                <Text style={styles.selectedText}>{voucherType.voucherType === "exchange" ? "Quy đổi" : "Miễn phí"}</Text>
               )}
               {voucherType && (voucherType.voucherType && voucherType.discountType) && (
                 <Text style={styles.selectedText}>, </Text>
