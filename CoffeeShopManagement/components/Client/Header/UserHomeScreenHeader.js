@@ -19,7 +19,6 @@ const UserHomeScreenHeader = ({
 	totalPoint,
 	onPressBean,
 	onPressNotify,
-	onPressFavorite,
 }) => {
 	return (
 		<View style={styles.header}>
@@ -30,15 +29,15 @@ const UserHomeScreenHeader = ({
 				</View>
 			</View>
 			<View style={styles.headerRight}>
-				<Pressable style={styles.iconContainer} onPress={onPressBean}>
+				<Pressable
+					style={[styles.iconContainer, { paddingHorizontal: "10%" }]}
+					onPress={onPressBean}
+				>
 					<Image source={COFFEE_BEAN_ICONS} style={styles.icon} />
 					<Text style={styles.iconText}>{totalPoint}</Text>
 				</Pressable>
 				<Pressable style={styles.iconContainer} onPress={onPressNotify}>
 					<Ionicons name="notifications-outline" size={20} />
-				</Pressable>
-				<Pressable style={styles.iconContainer} onPress={onPressFavorite}>
-					<Ionicons name="heart-outline" size={20} />
 				</Pressable>
 			</View>
 		</View>
@@ -107,7 +106,8 @@ const styles = StyleSheet.create({
 	},
 	iconText: {
 		color: colors.black_100,
-		fontSize: 14,
-		fontWeight: "600",
+		fontSize: 16,
+		fontFamily: "lato-regular",
+		marginLeft: "10%",
 	},
 });

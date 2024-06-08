@@ -45,8 +45,6 @@ const UserHomeScreen = ({ userData }) => {
 	const goToExchangeVoucher = () => navigation.navigate("ExchangeVoucher");
 	const goToSearchScreen = () => navigation.navigate("SearchScreen");
 	const goToBestSellerScreen = () => navigation.navigate("BestSeller");
-	const goToFavoriteItemScreen = () =>
-		navigation.navigate("UserFavoriteItemScreen");
 	const goToNotificationScreen = () =>
 		navigation.navigate("CashierNotification");
 
@@ -140,7 +138,6 @@ const UserHomeScreen = ({ userData }) => {
 					userImageSource={USER_IMAGE_SOURCE}
 					totalPoint={currentCredit}
 					onPressBean={goToExchangeVoucher}
-					onPressFavorite={goToFavoriteItemScreen}
 					onPressNotify={goToNotificationScreen}
 				/>
 				<View style={styles.searchBarContainer}>
