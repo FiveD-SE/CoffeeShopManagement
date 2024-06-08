@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { colors } from "../../../assets/colors/colors";
 
 const SelectedProductList = ({ orderList }) => {
 	const renderOptionList = (item) => {
@@ -11,25 +12,33 @@ const SelectedProductList = ({ orderList }) => {
 			.join(",  ");
 	};
 
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
+	};
+
 	const renderSelectedProductItem = () => {
 		return orderList.map((item, index) => (
 			<View style={styles.itemContainer} key={index}>
 				<View style={styles.itemContent}>
 					<View>
-						<Text style={styles.title}>{item.name}</Text>
+						<Text style={styles.title}>{item.productName}</Text>
 					</View>
-					<Text style={styles.subtitle} numberOfLines={1} ellipsizeMode="tail">
+					<Text style={styles.subtitle} numberOfLines={2} ellipsizeMode="tail">
 						{renderOptionList(item.options)}
 					</Text>
-					<Text style={styles.subtitle} numberOfLines={1} ellipsizeMode="tail">
+					<Text
+						style={[styles.subtitle, { color: colors.black_100 }]}
+						numberOfLines={1}
+						ellipsizeMode="tail"
+					>
 						Số lượng: {item.quantity}
 					</Text>
 				</View>
 				<Text style={styles.price}>
-					{item.price.toLocaleString("vi-VN", {
-						style: "currency",
-						currency: "VND",
-					})}
+					{formatCurrency(item.totalPrice * item.quantity)}
 				</Text>
 			</View>
 		));
@@ -42,7 +51,9 @@ export default SelectedProductList;
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "rgba(221, 235, 233, 0.20)",
+		backgroundColor: colors.green_10,
+		borderWidth: 1,
+		borderColor: colors.grey_50,
 		padding: "5%",
 		borderRadius: 10,
 	},
@@ -55,23 +66,24 @@ const styles = StyleSheet.create({
 	itemContent: {
 		flexDirection: "column",
 		flex: 1,
-		marginRight: "10%",
+		marginRight: "4%",
 	},
 	title: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 16,
-		fontWeight: "600",
+		fontFamily: "lato-bold",
 		lineHeight: 20,
 	},
 	subtitle: {
-		color: "rgba(58, 58, 58, 0.50)",
-		fontSize: 12,
-		fontWeight: "400",
+		color: colors.grey_100,
+		fontSize: 14,
+		lineHeight: 20,
+		fontFamily: "lato-regular",
 		marginTop: "2%",
 	},
 	price: {
-		color: "#3a3a3a",
-		fontSize: 14,
-		fontWeight: "600",
+		color: colors.black_100,
+		fontSize: 16,
+		fontFamily: "lato-bold",
 	},
 });

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import BottomSheet from "./BottomSheet";
 import Section from "../Section";
 import SelectCouponCard from "../Card/SelectCouponCard";
+import { colors } from "../../../assets/colors/colors";
 
 const COUPON_IMAGE = require("../../../assets/coupon-image.png");
 
@@ -10,7 +11,8 @@ const ChooseCouponBottomSheet = ({
 	bottomSheetRef,
 	snapPoints,
 	setIsOpen,
-	onSelectCoupon,
+	onSelectDeliveryCoupon,
+	onSelectDiscountCoupon,
 }) => {
 	const [selectedDeliveryCoupon, setSelectedDeliveryCoupon] = useState(null);
 	const [selectedDiscountCoupon, setSelectedDiscountCoupon] = useState(null);
@@ -53,24 +55,24 @@ const ChooseCouponBottomSheet = ({
 	};
 
 	const handleSelectedDeliveryCouponChange = (index) => {
-		setSelectedDeliveryCoupon({
-			index: index,
-			coupon: couponList.deliveryFee[index],
-		});
+		setSelectedDeliveryCoupon((prev) =>
+			prev && prev.index === index
+				? null
+				: { index: index, coupon: couponList.deliveryFee[index] }
+		);
 	};
 
 	const handleSelectedDiscountCouponChange = (index) => {
-		setSelectedDiscountCoupon({
-			index: index,
-			coupon: couponList.discount[index],
-		});
+		setSelectedDiscountCoupon((prev) =>
+			prev && prev.index === index
+				? null
+				: { index: index, coupon: couponList.discount[index] }
+		);
 	};
 
 	const handleApplyCoupon = () => {
-		onSelectCoupon(
-			selectedDeliveryCoupon.coupon,
-			selectedDiscountCoupon.coupon
-		);
+		onSelectDeliveryCoupon(selectedDeliveryCoupon?.coupon);
+		onSelectDiscountCoupon(selectedDiscountCoupon?.coupon);
 	};
 
 	const renderDeliveryFee = () => {
@@ -139,20 +141,20 @@ export default ChooseCouponBottomSheet;
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#F8F7FA",
+		backgroundColor: colors.grey_20,
 		padding: "5%",
 	},
 	applyButton: {
-		backgroundColor: "#00A188",
+		backgroundColor: colors.green_100,
 		justifyContent: "center",
 		alignItems: "center",
 		padding: "5%",
-		borderRadius: 20,
+		borderRadius: 12,
 		marginTop: "5%",
 	},
 	applyButtonText: {
-		color: "#FFFFFF",
+		color: colors.white_100,
 		fontSize: 16,
-		fontWeight: "600",
+		fontFamily: "lato-bold",
 	},
 });

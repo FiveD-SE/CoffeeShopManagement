@@ -26,7 +26,6 @@ import {
 	addToFavorites,
 	removeFromFavorites,
 } from "../../../redux/actions/userActions";
-import store from "../../../redux/store/store";
 import { colors } from "../../../assets/colors/colors";
 import { Ionicons } from "@expo/vector-icons";
 import {
@@ -48,11 +47,9 @@ const ItemDetailBottomSheet = ({
 	selectedItem,
 	isVisible,
 	onClose,
-	addToCart,
-	cartList,
 	userData,
 }) => {
-	console.log(selectedItem);
+	console.log("selectedItem: ", selectedItem);
 
 	const { setIsOpen } = useIsOpen();
 
@@ -247,6 +244,28 @@ const ItemDetailBottomSheet = ({
 		return null;
 	};
 
+	const handleBuyItem = () => {
+		const products = {
+			...selectedItem,
+			size: sizeItemList[selectedSizeIndex].size,
+			quantity: quantity,
+			options: [selectedSugarOption, selectedMilkOption, selectedIceOption],
+			totalPrice: calculateTotalPrice(),
+			cartItemId:
+				selectedItem.productId +
+				sizeItemList[selectedSizeIndex].size +
+				"-" +
+				selectedSugarOption +
+				"-" +
+				selectedMilkOption +
+				"-" +
+				selectedIceOption,
+		};
+		navigation.navigate("UserOrderConfirmationScreen", {
+			productOrders: [products],
+		});
+	};
+
 	const handleAddToCart = async () => {
 		if (selectedItem && selectedSizeIndex !== null) {
 			const itemToAdd = {
@@ -273,7 +292,6 @@ const ItemDetailBottomSheet = ({
 				if (cartDoc.exists()) {
 					const existingItems = cartDoc.data().items;
 					const existingItemIndex = existingItems.findIndex((item) => {
-						// Compare options
 						return (
 							item.cartItemId === itemToAdd.cartItemId &&
 							item.options.every(
@@ -283,13 +301,11 @@ const ItemDetailBottomSheet = ({
 					});
 
 					if (existingItemIndex !== -1) {
-						// If item exists, update its quantity
 						existingItems[existingItemIndex].quantity += itemToAdd.quantity;
 						await updateDoc(cartRef, {
 							items: existingItems,
 						});
 					} else {
-						// If item doesn't exist, add it to the cart
 						await updateDoc(cartRef, {
 							items: arrayUnion(itemToAdd),
 						});
@@ -337,7 +353,6 @@ const ItemDetailBottomSheet = ({
 	}, [isVisible, bottomSheetRef]);
 
 	useEffect(() => {
-		console.log("CHECK FAVORITES");
 		if (userData && selectedItem) {
 			const checkFavorites = async () => {
 				const favoritesRef = doc(db, "favorites", userData.id);
@@ -345,10 +360,8 @@ const ItemDetailBottomSheet = ({
 
 				if (favoritesDoc.exists()) {
 					if (favoritesDoc.data().productIds.includes(selectedItem.id)) {
-						console.log("IS FAVORITE");
 						setLocalIsFavorite(true);
 					} else {
-						console.log("IS NOT FAVORITE");
 						setLocalIsFavorite(false);
 					}
 				}
@@ -418,7 +431,7 @@ const ItemDetailBottomSheet = ({
 							marginRight: "4%",
 						}}
 					>
-						<Pressable style={styles.buyButton}>
+						<Pressable style={styles.buyButton} onPress={handleBuyItem}>
 							<Text style={styles.buyButtonText}>Mua hàng</Text>
 							<Icon name="ellipsis-vertical" color="#FFFFFF" size={16} />
 							<Text style={styles.buyButtonText}>
@@ -528,7 +541,7 @@ const styles = StyleSheet.create({
 		color: colors.black_100,
 		fontSize: 16,
 		lineHeight: 28,
-		fontFamily: "lato-thin",
+		fontFamily: "lato-light",
 		marginTop: "5%",
 	},
 	sizeContainer: {

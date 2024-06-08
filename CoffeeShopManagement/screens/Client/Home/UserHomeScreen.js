@@ -28,7 +28,6 @@ const cardWidth = Dimensions.get("window").width;
 const UserHomeScreen = ({ userData }) => {
 	const navigation = useNavigation();
 	const itemDetailBottomSheetRef = useRef(null);
-	const [selectedIndex, setSelectedIndex] = useState(null);
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 	const [productList, setProductList] = useState([]);
@@ -37,7 +36,6 @@ const UserHomeScreen = ({ userData }) => {
 	const [currentCredit, setCurrentCredit] = useState(0);
 	const [username, setUsername] = useState("");
 
-	const handleCategoryPress = (index) => setSelectedIndex(index);
 	const handleOpenItemDetail = (item) => {
 		setSelectedItem(item);
 		setIsItemDetailVisible(true);
@@ -52,24 +50,12 @@ const UserHomeScreen = ({ userData }) => {
 	const goToNotificationScreen = () =>
 		navigation.navigate("CashierNotification");
 
-	const categoriesList = [
-		{
-			backgroundColor: "210, 124, 44",
-			icon: COFFEE_BEANS_ICONS,
-			title: "Cà phê",
-		},
-		{
-			backgroundColor: "255, 156, 178",
-			icon: MILK_TEA_ICONS,
-			title: "Trà sữa",
-		},
-		{
-			backgroundColor: "78, 203, 113",
-			icon: FRUITS_ICONS,
-			title: "Trà",
-		},
-		{ backgroundColor: "203, 203, 212", title: "Khác" },
-	];
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
+	};
 
 	const renderBestSellerItemList = () =>
 		productList.map((item, index) => {
@@ -78,10 +64,7 @@ const UserHomeScreen = ({ userData }) => {
 					key={index}
 					id={item.productId}
 					name={item.productName}
-					price={item.productPrice.toLocaleString("vi-VN", {
-						style: "currency",
-						currency: "VND",
-					})}
+					price={formatCurrency(item.productPrice)}
 					imageSource={item.productImage}
 					onPress={() => handleOpenItemDetail(item)}
 					horizontal={true}
@@ -112,14 +95,16 @@ const UserHomeScreen = ({ userData }) => {
 
 	useEffect(() => {
 		const fetchProductList = async () => {
+			const productList = [];
+
 			try {
-				const productsCollectionRef = collection(db, "products");
-				const querySnapshot = await getDocs(productsCollectionRef);
-				const fetchedProducts = querySnapshot.docs.map((doc) => ({
-					...doc.data(),
-					productId: doc.id,
-				}));
-				setProductList(fetchedProducts);
+				const querySnapshot = await getDocs(collection(db, "products"));
+				querySnapshot.forEach((doc) => {
+					const data = doc.data();
+					productList.push({ ...data, id: doc.id });
+				});
+
+				setProductList(productList);
 			} catch (error) {
 				console.error("Error fetching product list:", error);
 			}
