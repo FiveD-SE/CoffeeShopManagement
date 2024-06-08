@@ -5,8 +5,8 @@ import ItemCard from '../../../components/Admin/Card/ItemCard';
 import VoucherCard from '../../../components/Admin/Card/VoucherCard';
 const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
 
-const AdminVoucherListScreen = ({navigation }) => {
-  
+const AdminVoucherListScreen = ({ navigation }) => {
+
   const VoucherList = [
     { id: 1, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Mã giảm giá', status: true, image: require('../../../assets/voucher.jpeg') },
     { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-01-01', option: 'Ưu đãi vận chuyển', status: false, image: require('../../../assets/voucher.jpeg') },
@@ -18,15 +18,38 @@ const AdminVoucherListScreen = ({navigation }) => {
     { id: 8, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-06-01', option: 'Ưu đãi vận chuyển', status: true, image: require('../../../assets/voucher.jpeg') },
   ];
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      loadVoucher();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  const loadVoucher = async () => {
+    try {
+      const q = query(collection(db, 'vouchers'));
+      const querySnapshot = await getDocs(q);
+      const loadedProducts = [];
+      querySnapshot.forEach((doc) => {
+        loadedProducts.push(doc.data());
+      });
+      setProducts(loadedProducts);
+      setFilteredProducts(loadedProducts);
+    } catch (error) {
+      console.log('Error loading products:', error);
+    }
+  };
+
   const [selectedOption, setSelectedOption] = useState('Mã giảm giá');
 
   const renderSortedVouchers = () => {
-    const sortedVouchers = VoucherList.filter(voucher => 
+    const sortedVouchers = VoucherList.filter(voucher =>
       voucher.option === selectedOption
     );
-  
+
     sortedVouchers.sort((a, b) => new Date(b.expiryDate) - new Date(a.expiryDate));
-    
+
     return sortedVouchers.map((item, index) => (
       <VoucherCard
         key={index}
@@ -67,11 +90,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   mainContainer: {
-    flex:1,
+    flex: 1,
     margin: "3%",
   },
   itemListContainer: {
-    flex:1,
+    flex: 1,
     marginTop: "2%",
   },
   sreachBar: {
@@ -93,7 +116,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   headingText: {
-    fontFamily: 'Lato-Regular',
     color: '#3a3a3a',
     textAlign: 'center',
     fontSize: 15,
