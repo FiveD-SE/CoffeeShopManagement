@@ -9,8 +9,10 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../services/firebaseService';
 import AddGoodModal from '../../../components/Admin/Modal/AddGoodModal';
 import EditGoodInfoModal from '../../../components/Admin/Modal/EditGoodInfoModal';
+import { goodsListSave, goodsListRenderSave } from '../../../redux/actions/adminActions';
+import { connect } from 'react-redux';
 
-const AdminImportGoodsScreen = () => {
+const AdminImportGoodsScreen = ({ goodsListSave, goodsListRender, goodsListRenderSave }) => {
   const navigation = useNavigation();
   const [goodsList, setGoodsList] = useState([]);
   const [filteredGoodsList, setFilteredGoodsList] = useState([]);
@@ -20,14 +22,20 @@ const AdminImportGoodsScreen = () => {
   const [totalImportGoods, setTotalImportGoods] = useState(0);
 
   const goToListImport = () => {
-    navigation.navigate("AdminListImport", { importGoodsList: importGoodsList });
+    navigation.navigate("AdminListImport", {
+      importGoodsList: importGoodsList 
+    });
   };
 
   const [addNewModalVisible, setAddNewModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
 
-  const showAddNewModal = (item) => {
-    setSelectedGoods(item);
+  const showAddNewModal = (goods) => {
+    goodsListRender.map(item => {
+      if (item.goodsId === goods.goodsId) {
+        setSelectedGoods(item);
+      }
+    })
     setAddNewModalVisible(true);
   };
 
@@ -51,10 +59,11 @@ const AdminImportGoodsScreen = () => {
       const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
       setGoodsList(goodsListData);
       setFilteredGoodsList(goodsListData);
+      goodsListRenderSave(goodsListData)
     };
 
     fetchGoods();
-  }, [editModalVisible, addNewModalVisible]);
+  }, []);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -68,17 +77,28 @@ const AdminImportGoodsScreen = () => {
     }
   };
 
-  function formatVND(number) {
-    return number.toLocaleString('vi-VN');
-  }
-
   const handleAddImportGoods = (importGoods) => {
-    if (!importGoodsList) {
+    if (!importGoodsList.length) {
       setImportGoodsList([importGoods]);
     } else {
       setImportGoodsList([...importGoodsList, importGoods]);
     }
+    const updatedGoodsList = filteredGoodsList.map(item => {
+      if (item.goodsId === importGoods.goodsId) {
+        return {
+          ...item,
+          goodsQuantity: item.goodsQuantity - importGoods.goodsQuantity
+        };
+      }
+      return item;
+    });
+    setFilteredGoodsList(updatedGoodsList);
+    goodsListSave(importGoodsList);
     setTotalImportGoods(Number(totalImportGoods) + Number(importGoods.goodsQuantity));
+  }
+
+  function formatVND(number) {
+    return number.toLocaleString('vi-VN');
   }
 
   const renderGoodsList = () => {
@@ -121,7 +141,18 @@ const AdminImportGoodsScreen = () => {
   )
 }
 
-export default AdminImportGoodsScreen;
+const mapStateToProps = (state) => {
+  return {
+    goodsListRender: state.admin.goodsListRender,
+  };
+}
+
+const mapDispatchToProps = {
+  goodsListSave,
+  goodsListRenderSave
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminImportGoodsScreen);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,11 +1,11 @@
 import { View, Text, Modal, StyleSheet, TextInput, Image, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import ColorButton from '../Button/ColorButton'
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
-import { db } from '../../../services/firebaseService'
+import { connect } from 'react-redux'
+import { warehouseItemUpdate } from '../../../redux/actions/adminActions'
 
-const ExportGoodModal = ({ visible, onClose, selectedGoods, onMinus }) => {
+const ExportGoodModal = ({ visible, onClose, selectedGoods, onMinus, warehouseItemUpdate }) => {
 	const [selectedQuantity, setSelectedQuantity] = useState(0);
 
 	const handleMinus = async () => {
@@ -14,15 +14,6 @@ const ExportGoodModal = ({ visible, onClose, selectedGoods, onMinus }) => {
 			return;
 		}
 		try {
-			const warehouseDoc = doc(db, 'warehouse', selectedGoods?.warehouseItemId);
-			if (selectedQuantity === selectedGoods?.goodsQuantity) {
-				await deleteDoc(warehouseDoc);
-			} else {
-				await updateDoc(warehouseDoc, {
-					goodsQuantity: selectedGoods?.goodsQuantity - selectedQuantity,
-				});
-			}
-
 			const exportGoodsLabel = {
 				warehouseItemId: selectedGoods?.warehouseItemId,
 				goodsId: selectedGoods?.goodsId,
@@ -32,6 +23,9 @@ const ExportGoodModal = ({ visible, onClose, selectedGoods, onMinus }) => {
 				goodsQuantity: selectedQuantity,
 				goodsImage: selectedGoods?.goodsImage,
 			};
+
+			const newQuantity = selectedGoods.goodsQuantity - selectedQuantity;
+			warehouseItemUpdate({...selectedGoods, goodsQuantity: newQuantity});
 			onMinus(exportGoodsLabel);
 			setSelectedQuantity(0);
 			onClose();
@@ -84,7 +78,11 @@ const ExportGoodModal = ({ visible, onClose, selectedGoods, onMinus }) => {
 	)
 }
 
-export default ExportGoodModal
+const mapDispatchToProps = {
+	warehouseItemUpdate
+}
+
+export default connect(null, mapDispatchToProps)(ExportGoodModal);
 
 const styles = StyleSheet.create({
 	modalContainer: {

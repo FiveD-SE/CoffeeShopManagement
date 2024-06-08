@@ -2,8 +2,11 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import React, { useState, useEffect } from 'react'
 import ViewProductCard from '../../../components/Admin/Card/ViewProductCard'
 import { useNavigation } from '@react-navigation/native'
+import { connect } from 'react-redux'
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../../services/firebaseService';
 
-const AdminListExportScreen = ({ route }) => {
+const AdminListExportScreen = ({ route, warehouseItemList }) => {
   const navigation = useNavigation();
   const { exportGoodsList } = route.params;
   const [mergedGoodsList, setMergedGoodsList] = useState([]);
@@ -46,7 +49,19 @@ const AdminListExportScreen = ({ route }) => {
     ));
   };
 
-  const handleExportConfirm = () => {
+  const handleExportConfirm = async () => {
+    await Promise.all(warehouseItemList.map(async item => {
+      const warehouseItemRef = doc(db, 'warehouse', item.warehouseItemId);
+      if (item.goodsQuantity === 0) {
+        await deleteDoc(warehouseItemRef);
+      } else {
+        await updateDoc(warehouseItemRef, {
+          goodsQuantity: item.goodsQuantity,
+        });
+      }
+    })).catch((error) => {
+      console.error("Error updating documents: ", error);
+    });
     navigation.navigate("AdminWareHouse");
   };
 
@@ -61,13 +76,19 @@ const AdminListExportScreen = ({ route }) => {
         <Text style={styles.cost}>{formatVND(totalExportGoods)} VNĐ</Text>
       </View>
       <TouchableOpacity style={styles.colorButton} onPress={handleExportConfirm}>
-        <Text style={styles.textButton}>Nhập hàng</Text>
+        <Text style={styles.textButton}>Xuất hàng</Text>
       </TouchableOpacity>
     </View>
   )
 }
 
-export default AdminListExportScreen
+const mapStateToProps = (state) => {
+	return {
+    warehouseItemList: state.admin.warehouseItemList,
+	};
+};
+
+export default connect(mapStateToProps)(AdminListExportScreen);
 
 const styles = StyleSheet.create({
   container: {

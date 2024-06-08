@@ -5,10 +5,10 @@ import ProductCardwithPrice from '../../../components/Admin/Card/ProductCardwith
 import { collection, doc, setDoc, getDocs, query, where, updateDoc } from 'firebase/firestore';
 import { db } from '../../../services/firebaseService';
 import { useNavigation } from '@react-navigation/native';
-
-const AdminListImportScreen = ({ route }) => {
-  const { importGoodsList } = route.params;
+import { connect } from 'react-redux';
+const AdminListImportScreen = ({ route, goodsList }) => {
   const navigation = useNavigation();
+  const { importGoodsList } = route.params;
   const [mergedGoodsList, setMergedGoodsList] = useState([]);
   const [totalImportGoods, setTotalImportGoods] = useState(0);
 
@@ -74,7 +74,21 @@ const AdminListImportScreen = ({ route }) => {
             goodsImage: item.goodsImage,
           });
         }
+      }));    
+
+      await Promise.all(importGoodsList.map(async item => {
+        const goodsQuery = query(collection(db, 'goods'), where('goodsId', '==', item.goodsId));
+        const querySnapshot = await getDocs(goodsQuery);
+        if (!querySnapshot.empty) {
+          const existingDoc = querySnapshot.docs[0];
+          const existingData = existingDoc.data();
+          const newQuantity = existingData.goodsQuantity - item.goodsQuantity;
+          await updateDoc(existingDoc.ref, {
+            goodsQuantity: newQuantity
+          });
+        }
       }));
+
       Alert.alert("Nhập hàng thành công", "Mặt hàng đã được nhập vào kho");
       setMergedGoodsList([]);
       setTotalImportGoods(0);
@@ -105,7 +119,13 @@ const AdminListImportScreen = ({ route }) => {
   );
 };
 
-export default AdminListImportScreen;
+const mapStateToProps = (state) => {
+	return {
+		goodsList: state.admin.goodsList,
+	};
+};
+
+export default connect(mapStateToProps)(AdminListImportScreen);
 
 const styles = StyleSheet.create({
   container: {
