@@ -1,17 +1,18 @@
 import { View, Text, ScrollView, StyleSheet, TextInput, Switch, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
-import SquareWithBorder from '../../../components/Admin/SquarewithBorder'
-import CustomChooseButton from '../../../components/Admin/Button/CustomChooseButton'
 import ColorButton from '../../../components/Admin/Button/ColorButton'
 import VoucherTypeModal from '../../../components/Admin/Modal/VoucherTypeModal';
 import RankUserModal from '../../../components/Admin/Modal/RankUserModal';
 import DaySelectModal from '../../../components/Admin/Modal/DaySelectModal';
 import Toast from 'react-native-toast-message';
 import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
-import { db, uploadImageToFirebase } from '../../../services/firebaseService';
+import { db, storage, uploadImageToFirebase } from '../../../services/firebaseService';
+import { useNavigation } from '@react-navigation/native';
+import { getDownloadURL, ref } from 'firebase/storage';
 
 const AdminAddVoucherScreen = () => {
+  const navigation = useNavigation();
   const [voucherName, setVoucherName] = useState("");
   const [voucherPrice, setVoucherPrice] = useState("");
   const [isFocused, setIsFocused] = useState(false);
@@ -61,8 +62,12 @@ const AdminAddVoucherScreen = () => {
     setDaySelectModalVisible(false);
   };
 
+  const handleDaySelect = (selectedDay) => {
+    setDaySelect(selectedDay);
+  };
+
   const handleSaveVoucherToFirebase = async () => {
-    if (voucherName === "" || voucherPrice === "" || voucherDescription === "" || rankUser === null || voucherType === null) {
+    if (voucherName === "" || voucherPrice === "" || voucherDescription === "" || rankUser === null || voucherType === null || daySelect === null) {
       Toast.show({
         type: "error",
         text1: "Lỗi",
@@ -70,14 +75,42 @@ const AdminAddVoucherScreen = () => {
       });
     } else {
       try {
+        let expirationDate = new Date();
+
+        switch (daySelect.circle) {
+          case "Day":
+            expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount));
+            break;
+          case "Week":
+            expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount) * 7);
+            break;
+          case "Month":
+            expirationDate.setMonth(expirationDate.getMonth() + parseInt(daySelect.amount));
+            break;
+          case "Year":
+            expirationDate.setFullYear(expirationDate.getFullYear() + parseInt(daySelect.amount));
+            break;
+          default:
+            break;
+        }
+
+        let downloadURL = null;
+        if (voucherType.discountType === "productDiscount") {
+          const storageRef = ref(storage, "images/productDiscount");
+          downloadURL = await getDownloadURL(storageRef);
+        }
+        else {
+          const storageRef = ref(storage, "images/shipDiscount");
+          downloadURL = await getDownloadURL(storageRef);
+        }
         const docRef = await addDoc(collection(db, "vouchers"), {
           voucherName: voucherName,
           voucherPrice: parseInt(voucherPrice),
           voucherDescription: voucherDescription,
           voucherType: voucherType,
           userRank: rankUser,
-          voucherImage: "",
-          expirationDate: new Date(),
+          voucherImage: downloadURL,
+          expirationDate: expirationDate,
           dateCreated: new Date()
         });
         const voucherId = docRef.id;
@@ -91,6 +124,7 @@ const AdminAddVoucherScreen = () => {
           text1: "Thành công",
           text2: "Khuyến mãi đã được thêm mới",
         });
+        navigation.goBack();
       } catch (error) {
         console.log(error);
         Toast.show({
@@ -101,10 +135,6 @@ const AdminAddVoucherScreen = () => {
       }
     }
   };
-
-  useEffect(() => {
-    console.log(voucherType);
-  })
 
   const formatPrice = (price) => {
     const formatter = new Intl.NumberFormat('vi-VN', {
@@ -122,6 +152,10 @@ const AdminAddVoucherScreen = () => {
   const getDisplayPrice = () => {
     return isFocused || voucherPrice === "" ? voucherPrice : formatPrice(voucherPrice);
   };
+
+  useEffect(() => {
+    console.log(daySelect);
+  });
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -218,9 +252,17 @@ const AdminAddVoucherScreen = () => {
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.input}>Thời hạn sử dụng</Text>
             </View>
-            <MaterialIcons name="keyboard-arrow-right" size={30} color="#CCCCCC" />
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {daySelect && (
+                <Text style={styles.selectedText}>{daySelect.amount} {daySelect.circle === "Day" ? "Ngày" : daySelect.circle === "Week" ? "Tuần" : daySelect.circle === "Month" ? "Tháng" : "Năm"}</Text>
+              )}
+              <MaterialIcons name="keyboard-arrow-right" size={30} color="#CCCCCC" />
+            </View>
           </TouchableOpacity>
-          <DaySelectModal visible={daySelectModalVisible} onClose={hideDaySelectModal} />
+          <DaySelectModal
+            visible={daySelectModalVisible}
+            onClose={hideDaySelectModal}
+            setSelectDay={handleDaySelect} />
         </View>
       </View>
       <View style={[styles.inputBox, { marginTop: "0%", marginBottom: "3%" }]}>
