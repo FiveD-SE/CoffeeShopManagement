@@ -7,14 +7,22 @@ import {
 	SafeAreaView,
 	Image,
 } from "react-native";
-import React, { useState, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import VoucherCard from "../../../components/Client/Card/VoucherCard";
 import UserVoucherCard from "../../../components/Client/Card/UserVoucherCard";
 import { auth, db } from "../../../services/firebaseService";
-import { doc, getDoc } from "firebase/firestore";
+import {
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	query,
+	where,
+} from "firebase/firestore";
 import { colors } from "../../../assets/colors/colors";
 import Section from "../../../components/Client/Section";
+import { connect } from "react-redux";
 
 const COFFEE_BEAN_ICONS = require("../../../assets/coffee-bean.png");
 const coupon = require("../../../assets/coupon.png");
@@ -23,77 +31,64 @@ const bean = require("../../../assets/bean.png");
 const gift = require("../../../assets/gift.png");
 const rights = require("../../../assets/rights.png");
 
-const yourVoucherItemList = [
-	{
-		title: "Combo Cơm Nhà 89K + Freeship",
-		expiryDate: "2024-05-01",
-		option: "Giao hàng",
-		imageSource: require("../../../assets/voucher.jpeg"),
-	},
-	{
-		title: "Combo Cơm Nhà 89K + Freeship",
-		expiryDate: "2024-04-25",
-		option: "Tại chỗ",
-		imageSource: require("../../../assets/voucher.jpeg"),
-	},
-	{
-		title: "Combo Cơm Nhà 89K + Freeship",
-		expiryDate: "2024-05-04",
-		option: "Mang đi",
-		imageSource: require("../../../assets/voucher.jpeg"),
-	},
-];
-
-const voucherItemList = [
-	{
-		title: "Mua 1 tặng 1 + Freeship",
-		point: 300,
-		imageSource: require("../../../assets/voucher.jpeg"),
-	},
-	{
-		title: "Mua 1 tặng 1 + Freeship",
-		point: 300,
-		imageSource: require("../../../assets/voucher.jpeg"),
-	},
-	{
-		title: "Mua 1 tặng 1 + Freeship",
-		point: 300,
-		imageSource: require("../../../assets/voucher.jpeg"),
-	},
-];
-
-export default function Promotions() {
+function UserCouponScreen({ userData }) {
 	const navigation = useNavigation();
 
-	const [beanTotal, setbeanTotal] = useState(0);
+	const [beanTotal, setBeanTotal] = useState(0);
+	const [userVoucherItemList, setUserVoucherItemList] = useState([]);
+	const [voucherItemList, setVoucherItemList] = useState([]);
 	const [userRank, setUserRank] = useState("Chưa tích điểm");
 	const [beansToNextRank, setBeansToNextRank] = useState(0);
 
-	const goToVoucherDetails = () => {
-		navigation.navigate("VoucherDetails");
+	const goToVoucherDetails = (item, type) => {
+		navigation.navigate("VoucherDetails", { voucherDetails: item, type });
+	};
+
+	const convertTimestampToDate = (timestamp) => {
+		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+	};
+
+	const formatDate = (date) => {
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		return date.toLocaleDateString("vi-VN", options);
 	};
 
 	const renderYourVoucherItemList = () => {
-		return yourVoucherItemList.map((item, index) => (
+		return userVoucherItemList.map((item, index) => (
 			<UserVoucherCard
 				key={index}
-				title={item.title}
-				expiryDate={item.expiryDate}
-				option={item.option}
-				imageSource={item.imageSource}
-				onPress={goToVoucherDetails}
+				title={item.voucherName}
+				expiryDate={item.expirationDate}
+				quantity={item.quantity}
+				imageSource={item.voucherImage}
+				onPress={() => goToVoucherDetails(item, "")}
 			/>
 		));
 	};
 
 	const renderVoucherItem = () => {
+		if (voucherItemList.length === 0) {
+			return (
+				<View style={styles.emptyContainer}>
+					<Image
+						source={require("../../../assets/empty.png")}
+						resizeMode="contain"
+						style={{ width: 64, height: 64 }}
+					/>
+					<Text style={styles.emptyText}>
+						Không có voucher có sẵn để quy đổi
+					</Text>
+				</View>
+			);
+		}
+
 		return voucherItemList.map((item, index) => (
 			<VoucherCard
 				key={index}
-				title={item.title}
-				point={item.point}
-				imageSource={item.imageSource}
-				onPress={goToVoucherDetails}
+				title={item.voucherName}
+				point={item.voucherExchangePrice}
+				imageSource={item.voucherImage}
+				onPress={() => goToVoucherDetails(item, "isExchange")}
 			/>
 		));
 	};
@@ -104,7 +99,7 @@ export default function Promotions() {
 			const userDoc = await getDoc(userDocRef);
 
 			if (userDoc.exists()) {
-				setbeanTotal(userDoc.data().credit);
+				setBeanTotal(userDoc.data().credit);
 				let rank = "Mới";
 				const credit = userDoc.data().credit;
 				let beansToNextRank = 0;
@@ -130,7 +125,65 @@ export default function Promotions() {
 				console.log("User document does not exist.");
 			}
 		};
+		const fetchVoucherData = async () => {
+			const voucherList = [];
 
+			try {
+				const querySnapshot = await getDocs(collection(db, "vouchers"));
+				querySnapshot.forEach((doc) => {
+					const data = doc.data();
+					voucherList.push({ ...data, id: doc.id });
+				});
+				setVoucherItemList(voucherList);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		const fetchUserVoucherData = async () => {
+			const userVoucherList = [];
+			const userVoucherRefs = [];
+
+			try {
+				const userVouchersQuery = query(
+					collection(db, "userVouchers"),
+					where("userId", "==", userData.id)
+				);
+				const querySnapshot = await getDocs(userVouchersQuery);
+
+				querySnapshot.forEach((doc) => {
+					const data = doc.data();
+					const voucherIds = data.voucherId;
+
+					voucherIds.forEach((voucher) => {
+						userVoucherRefs.push({
+							id: voucher.id,
+							quantity: voucher.quantity,
+						});
+					});
+				});
+
+				for (const ref of userVoucherRefs) {
+					const voucherDoc = await getDoc(doc(db, "vouchers", ref.id));
+					const voucherData = voucherDoc.data();
+					const expirationDate = convertTimestampToDate(
+						voucherData.expirationDate
+					);
+
+					userVoucherList.push({
+						...voucherData,
+						quantity: ref.quantity,
+						expirationDate: formatDate(expirationDate),
+					});
+				}
+				setUserVoucherItemList(userVoucherList);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchUserVoucherData();
+		fetchVoucherData();
 		fetchUserData();
 	}, []);
 
@@ -147,7 +200,7 @@ export default function Promotions() {
 						}}
 					>
 						<View style={styles.beanContainer}>
-							<Text style={styles.beanText}>{beanTotal}</Text>
+							<Text style={styles.beanText}>{userData.credit}</Text>
 							<Image
 								source={COFFEE_BEAN_ICONS}
 								style={{
@@ -259,6 +312,12 @@ export default function Promotions() {
 		</SafeAreaView>
 	);
 }
+
+const mapStateToProps = (state) => ({
+	userData: state.auth.userData,
+});
+
+export default connect(mapStateToProps)(UserCouponScreen);
 
 const styles = StyleSheet.create({
 	container: {
@@ -375,5 +434,16 @@ const styles = StyleSheet.create({
 		lineHeight: 20,
 		fontSize: 15,
 		fontWeight: "600",
+	},
+	emptyContainer: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+	},
+	emptyText: {
+		color: colors.black_100,
+		fontSize: 16,
+		fontFamily: "lato-bold",
+		marginTop: "4%",
 	},
 });
