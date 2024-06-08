@@ -37,7 +37,6 @@ const userReducer = (state = initialState, action) => {
                 cartList: [...state.cartList, action.payload],
             };
         case types.UPDATE_CART_ITEM_QUANTITY:
-            console.log("UPDATE_CART_ITEM_QUANTITY", action.payload);
             const { itemId, newQuantity } = action.payload;
             const existingItemIndex = state.cartList.findIndex(
                 (item) => item._id === itemId

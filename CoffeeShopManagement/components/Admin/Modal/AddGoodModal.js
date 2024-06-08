@@ -1,23 +1,18 @@
-import { View, Text, Modal, StyleSheet, Image, TextInput } from 'react-native'
+import { View, Text, Modal, StyleSheet, Image, TextInput, ScrollView, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import ColorButton from '../Button/ColorButton'
-import { ScrollView } from 'react-native-gesture-handler'
-import { doc, updateDoc } from 'firebase/firestore'
-import { db } from '../../../services/firebaseService'
+import { goodsUpdate } from '../../../redux/actions/adminActions'
+import { connect } from 'react-redux'
 
-const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
+const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd, goodsUpdate }) => {
 	const [selectedQuantity, setSelectedQuantity] = useState(0);
 	const handleAdd = async () => {
-		if (selectedQuantity === 0) {
-			Alert.alert("Cảnh báo", "Hãy chọn số lượng hàng hóa.");
+		if (selectedQuantity === 0 || selectedQuantity > selectedGoods?.goodsQuantity) {
+			Alert.alert("Cảnh báo", "Số lượng không hợp lệ. Hãy chọn số lượng nhỏ hơn hoặc bằng số lượng hàng hóa trong kho.");
 			return;
 		}
 		try {
-			const goodsDoc = doc(db, 'goods', selectedGoods?.goodsId);
-			await updateDoc(goodsDoc, {
-				goodsQuantity: selectedGoods?.goodsQuantity - selectedQuantity,
-			});
 			const importGoodsLabel = {
 				goodsId: selectedGoods?.goodsId,
 				goodsName: selectedGoods?.goodsName,
@@ -26,6 +21,8 @@ const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
 				goodsQuantity: selectedQuantity,
 				goodsImage: selectedGoods?.goodsImage,
 			};
+			const newQuantity = selectedGoods.goodsQuantity - selectedQuantity;
+			goodsUpdate({...selectedGoods, goodsQuantity: newQuantity});
 			onAdd(importGoodsLabel);
 			setSelectedQuantity(0);
 			onClose();
@@ -55,7 +52,7 @@ const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
 							</View>
 							<Text style={styles.title}>{selectedGoods?.goodsName}</Text>
 						</View>
-						<Text style={styles.header}>Thông tin mặt hàng</Text>
+						<Text style={styles.header}>Thông tin mặt hàng ({selectedGoods?.goodsQuantity})</Text>
 						<View style={styles.inputContainer}>
 							<View style={styles.inputBox}>
 								<TextInput
@@ -78,7 +75,11 @@ const AddGoodModal = ({ visible, onClose, selectedGoods, onAdd }) => {
 	)
 }
 
-export default AddGoodModal
+const mapDispatchToProps = {
+	goodsUpdate
+}
+
+export default connect(null, mapDispatchToProps)(AddGoodModal);
 
 const styles = StyleSheet.create({
 	modalContainer: {

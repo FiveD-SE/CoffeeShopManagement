@@ -7,10 +7,11 @@ import BranchSelectBar from '../../../components/Admin/BranchSelectBar';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../../services/firebaseService';
 import ExportGoodModal from '../../../components/Admin/Modal/ExportGoodModal';
+import { connect } from 'react-redux';
+import { warehouseItemListSave } from '../../../redux/actions/adminActions';
 
-const AdminExportGoodsScreen = () => {
+const AdminExportGoodsScreen = ({ warehouseItemList, warehouseItemListSave }) => {
   const navigation = useNavigation();
-  const [goodsList, setGoodsList] = useState([]);
   const [filteredGoodsList, setFilteredGoodsList] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGoods, setSelectedGoods] = useState({});
@@ -18,13 +19,19 @@ const AdminExportGoodsScreen = () => {
   const [totalExportGoods, setTotalExportGoods] = useState(0);
 
   const goToListExport = () => {
-    navigation.navigate("AdminListExport", { exportGoodsList: exportGoodsList });
+    navigation.navigate("AdminListExport", {
+      exportGoodsList: exportGoodsList
+    });
   };
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const showExportGoodModal = (item) => {
-    setSelectedGoods(item);
+  const showExportGoodModal = (goods) => {
+    warehouseItemList.map(item => {
+      if (item.goodsId === goods.goodsId) {
+        setSelectedGoods(item);
+      }
+    })
     setModalVisible(true);
   };
 
@@ -37,32 +44,44 @@ const AdminExportGoodsScreen = () => {
       const goodsCollection = collection(db, 'warehouse');
       const goodsSnapshot = await getDocs(goodsCollection);
       const goodsListData = goodsSnapshot.docs.map(doc => doc.data());
-      setGoodsList(goodsListData);
+      warehouseItemListSave(goodsListData);
       setFilteredGoodsList(goodsListData);
     };
 
     fetchGoods();
-  }, [modalVisible]);
+  }, []);
+
 
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query) {
-      const filteredList = goodsList.filter(item => 
+      const filteredList = warehouseItemList.filter(item => 
         item.goodsName.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredGoodsList(filteredList);
     } else {
-      setFilteredGoodsList(goodsList);
+      setFilteredGoodsList(warehouseItemList);
     }
   };
 
   const handleExportGoods = (exportGoods) => {
-    if (!exportGoodsList) {
+    if (!exportGoodsList.length) {
       setExportGoodsList([exportGoods]);
     } else {
       setExportGoodsList([...exportGoodsList, exportGoods]);
     }
     setTotalExportGoods(Number(totalExportGoods) + Number(exportGoods.goodsQuantity));
+  
+    const updatedGoodsList = filteredGoodsList.map(item => {
+      if (item.goodsId === exportGoods.goodsId) {
+        return {
+          ...item,
+          goodsQuantity: item.goodsQuantity - exportGoods.goodsQuantity
+        };
+      }
+      return item;
+    });
+    setFilteredGoodsList(updatedGoodsList);
   }
 
   function formatVND(number) {
@@ -83,6 +102,8 @@ const AdminExportGoodsScreen = () => {
     ));
   };
 
+  
+  
   return (
     <View style={styles.container}>
       <View style={styles.bar}>
@@ -109,7 +130,15 @@ const AdminExportGoodsScreen = () => {
   )
 }
 
-export default AdminExportGoodsScreen;
+const mapStateToProps = (state) => ({
+  warehouseItemList: state.admin.warehouseItemList,
+});
+
+const mapDispatchToProps = {
+  warehouseItemListSave
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminExportGoodsScreen);
 
 const styles = StyleSheet.create({
   container: {
