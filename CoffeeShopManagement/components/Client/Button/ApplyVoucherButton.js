@@ -2,6 +2,7 @@ import { StyleSheet, Text, Image, Pressable } from "react-native";
 import React from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome6";
+import { colors } from "../../../assets/colors/colors";
 
 const COUPON_ICON = require("../../../assets/voucher.png");
 
@@ -19,13 +20,22 @@ export default ApplyVoucherButton;
 
 const styles = StyleSheet.create({
 	container: {
-		borderWidth: 1,
-		borderRadius: 20,
-		borderColor: "rgba(58, 58, 58, 0.2)",
-		justifyContent: "space-between",
 		flexDirection: "row",
-		padding: "5%",
+		backgroundColor: colors.white_100,
+		borderWidth: 1,
+		borderRadius: 12,
+		borderColor: colors.grey_50,
+		justifyContent: "space-between",
 		alignItems: "center",
+		padding: "6%",
+		shadowColor: colors.grey_100,
+		shadowOffset: {
+			width: 0,
+			height: 4,
+		},
+		shadowOpacity: 0.2,
+		shadowRadius: 2,
+		elevation: 4,
 	},
 	image: {
 		width: 24,

@@ -28,7 +28,6 @@ const UserFavoriteItemScreen = ({ userData }) => {
 	const renderFavoriteItemList = useCallback(
 		({ item }) => {
 			const productInfo = productList.find((product) => product.id === item);
-			console.log(productInfo);
 
 			if (productInfo) {
 				return (

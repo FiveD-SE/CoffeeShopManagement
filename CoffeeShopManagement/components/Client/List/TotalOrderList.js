@@ -1,9 +1,10 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { colors } from "../../../assets/colors/colors";
 
 const TotalOrderList = ({ orderInformation }) => {
 	const totalPrice = orderInformation.reduce((accumulator, currentItem) => {
-		return accumulator + currentItem.totalPrice;
+		return accumulator + currentItem.totalPrice * currentItem.quantity;
 	}, 0);
 
 	const selectedProductList = [
@@ -15,18 +16,24 @@ const TotalOrderList = ({ orderInformation }) => {
 			title: "Phí giao hàng:",
 			price: 0,
 		},
+		{
+			title: "Chiết khấu:",
+			price: 0,
+		},
 	];
+
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
+	};
 
 	const renderItem = () => {
 		return selectedProductList.map((item, index) => (
 			<View style={styles.itemContainer} key={index}>
 				<Text style={styles.title}>{item.title}</Text>
-				<Text style={styles.price}>
-					{item.price.toLocaleString("vi-VN", {
-						style: "currency",
-						currency: "VND",
-					})}
-				</Text>
+				<Text style={styles.price}>{formatCurrency(item.price)}</Text>
 			</View>
 		));
 	};
@@ -37,9 +44,11 @@ export default TotalOrderList;
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: "rgba(221, 235, 233, 0.20)",
-		padding: "5%",
-		borderRadius: 10,
+		backgroundColor: colors.green_10,
+		borderWidth: 1,
+		borderColor: colors.grey_50,
+		padding: "4%",
+		borderRadius: 8,
 	},
 	itemContainer: {
 		flexDirection: "row",
@@ -48,19 +57,19 @@ const styles = StyleSheet.create({
 		marginVertical: "2%",
 	},
 	itemContent: {
-		flexDirection: "column",
 		flex: 1,
+		flexDirection: "column",
 		marginRight: "10%",
 	},
 	title: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 14,
-		fontWeight: "400",
+		fontFamily: "lato-regular",
 		lineHeight: 20,
 	},
 	price: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 14,
-		fontWeight: "600",
+		fontFamily: "lato-regular",
 	},
 });

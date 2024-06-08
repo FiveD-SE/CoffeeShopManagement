@@ -5,8 +5,9 @@ import {
 	StyleSheet,
 	Text,
 	View,
+	Platform,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import Section from "../../../components/Client/Section";
@@ -20,15 +21,16 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
 import Toast from "react-native-toast-message";
 import { colors } from "../../../assets/colors/colors";
+import Checkbox from "expo-checkbox";
 
-const UserCartScreen = ({ userData, updateQuantity, confirmOrder }) => {
+const isIOS = Platform.OS === "ios";
+
+const UserCartScreen = ({ userData }) => {
 	const navigation = useNavigation();
-
-	const [cartList, setCartList] = useState([]);
-
 	const [totalPrice, setTotalPrice] = useState(0);
-
-	const [updateTrigger, setUpdateTrigger] = useState(false);
+	const [isChecked, setChecked] = useState(false);
+	const [cartItems, setCartItems] = useState([]);
+	const [selectedItems, setSelectedItems] = useState([]);
 
 	const formatCurrency = (amount) => {
 		return new Intl.NumberFormat("vi-VN", {
@@ -37,130 +39,27 @@ const UserCartScreen = ({ userData, updateQuantity, confirmOrder }) => {
 		}).format(amount);
 	};
 
-	const renderCartList = ({ item }) => (
+	const renderCartList = ({ item, index }) => (
 		<CartItemCard
 			id={item.cartItemId}
 			name={item.productName}
 			price={formatCurrency(item.totalPrice)}
 			imageSource={item.productImage}
 			quantity={item.quantity}
-			options={`${item.size}, ${item.options
-				.map((i) => i.toLowerCase())
-				.join(", ")}`}
-			onQuantityChange={(newQuantity) => {
-				handleQuantityChange(item.cartItemId, newQuantity);
-			}}
+			options={`${item.size}, ${
+				item.productOptions.sugarEnable ? "Có đường" : "Không đường"
+			}, ${item.productOptions.milkEnable ? "Có sữa" : "Không sữa"}, ${
+				item.productOptions.iceEnable ? "Có đá" : "Không đá"
+			}`}
+			isChecked={selectedItems[index]}
+			onChecked={() => handleItemChecked(index)}
+			handleDecrease={() => handleDecrease(item)}
+			handleIncrease={() => handleIncrease(item)}
 		/>
 	);
 
-	const handleQuantityChange = useCallback(
-		(cartItemId, newQuantity) => {
-			if (newQuantity < 1) {
-				Alert.alert(
-					"Xoá khỏi giỏ hàng",
-					"Bạn có chắn chắn muốn xoá sản phẩm này khỏi giỏ hàng",
-					[
-						{
-							text: "Cancel",
-							style: "cancel",
-						},
-						{
-							text: "Remove",
-							onPress: () => {
-								removeItemFromCart(cartItemId);
-							},
-						},
-					],
-					{ cancelable: false }
-				);
-				return;
-			}
-
-			let updatedCartList;
-			if (newQuantity === 0) {
-				updatedCartList = cartList.filter(
-					(item) => item.cartItemId !== cartItemId
-				);
-			} else {
-				updatedCartList = cartList.map((item) => {
-					if (item.cartItemId === cartItemId) {
-						return { ...item, quantity: newQuantity };
-					}
-					return item;
-				});
-			}
-			setCartList(updatedCartList);
-
-			let newTotalPrice = 0;
-			for (const item of updatedCartList) {
-				newTotalPrice += item.totalPrice * item.quantity;
-			}
-			setTotalPrice(newTotalPrice);
-
-			const cartRef = doc(db, "carts", userData.id);
-			updateDoc(cartRef, {
-				items: updatedCartList,
-			});
-		},
-		[cartList, userData.id]
-	);
-
-	const removeItemFromCart = (cartItemId) => {
-		const updatedCartList = cartList.filter(
-			(item) => item.cartItemId !== cartItemId
-		);
-		setCartList(updatedCartList);
-
-		let newTotalPrice = 0;
-		for (const item of updatedCartList) {
-			newTotalPrice += item.totalPrice * item.quantity;
-		}
-		setTotalPrice(newTotalPrice);
-
-		const cartRef = doc(db, "carts", userData.id);
-		updateDoc(cartRef, {
-			items: updatedCartList,
-		})
-			.then(() => {
-				Toast.show({
-					type: "success",
-					text1: "Thành công",
-					text2: "Sản phẩm đã được xoá khỏi giỏ hàng",
-					text1Style: {
-						fontSize: 16,
-						fontFamily: "lato-bold",
-					},
-					text2Style: {
-						fontSize: 12,
-						fontFamily: "lato-bold",
-						color: colors.grey_100,
-					},
-					visibilityTime: 2000,
-					autoHide: true,
-				});
-			})
-			.catch((error) => {
-				console.error("Error updating quantity on Firebase:", error);
-				setCartList(cartList);
-				setTotalPrice(totalPrice);
-			});
-	};
-
-	const handleConfirmOrdering = () => {
-		navigation.navigate("UserOrderConfirmationScreen");
-		confirmOrder(cartList);
-	};
-
 	useEffect(() => {
-		let newTotalPrice = 0;
-		for (const item of cartList) {
-			newTotalPrice += item.totalPrice * item.quantity;
-		}
-		setTotalPrice(newTotalPrice);
-	}, [cartList, updateTrigger]);
-
-	useEffect(() => {
-		const fetchCartList = async () => {
+		const fetchCartItems = async () => {
 			if (!userData.id) return;
 
 			const cartRef = doc(db, "carts", userData.id);
@@ -168,32 +67,207 @@ const UserCartScreen = ({ userData, updateQuantity, confirmOrder }) => {
 
 			if (cartDoc.exists()) {
 				const cartData = cartDoc.data();
-				setCartList(cartData.items || []);
+				setCartItems(cartData.items || []);
+				setSelectedItems(new Array((cartData.items || []).length).fill(false));
 			} else {
-				setCartList([]);
+				setCartItems([]);
+				setSelectedItems([]);
 			}
 		};
 
-		fetchCartList();
-	}, [userData.id, handleQuantityChange]);
+		fetchCartItems();
+	}, [userData]);
+
+	const handleChecked = () => {
+		const newChecked = !isChecked;
+		setChecked(newChecked);
+		const newSelectedItems = selectedItems.map(() => newChecked);
+		setSelectedItems(newSelectedItems);
+		calculateTotalPrice(cartItems, newSelectedItems);
+	};
+
+	const handleItemChecked = (index) => {
+		const updatedSelectedItems = [...selectedItems];
+		updatedSelectedItems[index] = !updatedSelectedItems[index];
+		setChecked(updatedSelectedItems.every((item) => item));
+		setSelectedItems(updatedSelectedItems);
+		calculateTotalPrice(cartItems, updatedSelectedItems);
+	};
+
+	const handleDecrease = async (item) => {
+		const updatedCartItems = [...cartItems];
+		const index = updatedCartItems.findIndex(
+			(cartItem) => cartItem.cartItemId === item.cartItemId
+		);
+
+		if (updatedCartItems[index].quantity === 1) {
+			Alert.alert(
+				"Xác nhận",
+				"Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?",
+				[
+					{ text: "Không", style: "cancel" },
+					{
+						text: "Có",
+						onPress: async () => {
+							await removeItemFromFirestore(item.cartItemId);
+							updatedCartItems.splice(index, 1);
+							setCartItems(updatedCartItems);
+							const newSelectedItems = selectedItems.filter(
+								(_, i) => i !== index
+							);
+							setSelectedItems(newSelectedItems);
+							calculateTotalPrice(updatedCartItems, newSelectedItems);
+						},
+					},
+				]
+			);
+		} else {
+			updatedCartItems[index].quantity -= 1;
+			setCartItems(updatedCartItems);
+			calculateTotalPrice(updatedCartItems, selectedItems);
+			await updateQuantityInFirestore(
+				item.cartItemId,
+				updatedCartItems[index].quantity
+			);
+		}
+	};
+
+	const handleIncrease = async (item) => {
+		const updatedCartItems = [...cartItems];
+		const index = updatedCartItems.findIndex(
+			(cartItem) => cartItem.cartItemId === item.cartItemId
+		);
+
+		updatedCartItems[index].quantity += 1;
+
+		setCartItems(updatedCartItems);
+
+		calculateTotalPrice(updatedCartItems, selectedItems);
+
+		await updateQuantityInFirestore(
+			item.cartItemId,
+			updatedCartItems[index].quantity
+		);
+	};
+
+	const calculateTotalPrice = (items, selectedItemsStatus = selectedItems) => {
+		const total = items.reduce(
+			(sum, item, index) =>
+				sum +
+				(selectedItemsStatus[index] ? item.totalPrice * item.quantity : 0),
+			0
+		);
+		setTotalPrice(total);
+	};
+
+	const updateQuantityInFirestore = async (cartItemId, newQuantity) => {
+		try {
+			const cartRef = doc(db, "carts", userData.id);
+			const cartDoc = await getDoc(cartRef);
+
+			if (cartDoc.exists()) {
+				const cartData = cartDoc.data();
+				let cartItems = cartData.items;
+				let itemToUpdate = cartItems.find(
+					(cartItem) => cartItem.cartItemId === cartItemId
+				);
+				if (itemToUpdate) {
+					itemToUpdate.quantity = newQuantity;
+					await updateDoc(cartRef, {
+						items: cartItems,
+					});
+				} else {
+					console.error("Item not found in Firestore.");
+				}
+			}
+		} catch (error) {
+			console.error("Error updating item quantity:", error);
+		}
+	};
+
+	const removeItemFromFirestore = async (cartItemId) => {
+		try {
+			const cartRef = doc(db, "carts", userData.id);
+			const cartDoc = await getDoc(cartRef);
+
+			if (cartDoc.exists()) {
+				const cartData = cartDoc.data();
+				let cartItems = cartData.items.filter(
+					(item) => item.cartItemId !== cartItemId
+				);
+				await updateDoc(cartRef, {
+					items: cartItems,
+				});
+			}
+		} catch (error) {
+			console.error("Error removing item from Firestore: ", error);
+		}
+	};
+
+	const handleConfirmOrdering = () => {
+		let checkedItems = cartItems.filter((_, index) => selectedItems[index]);
+
+		if (checkedItems.length > 0) {
+			navigation.navigate("UserOrderConfirmationScreen", {
+				productOrders: checkedItems,
+			});
+		} else {
+			Toast.show({
+				type: "error",
+				text1: "Vui lòng chọn sản phẩm",
+				text2: "Chọn ít nhất 1 sản phẩm trước khi tiếp tục",
+				text1Style: {
+					fontSize: 16,
+					fontFamily: "lato-bold",
+					color: colors.black_100,
+				},
+				text2Style: {
+					fontSize: 14,
+					fontFamily: "lato-regular",
+					color: colors.grey_100,
+					marginTop: "2%",
+				},
+				autoHide: true,
+				visibilityTime: 1800,
+			});
+		}
+	};
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.main}>
-				<View style={{ marginTop: "5%" }}>
+				<View
+					style={{
+						flexDirection: "row",
+						paddingVertical: "4%",
+						paddingHorizontal: "8%",
+					}}
+				>
+					<Checkbox
+						style={styles.checkbox}
+						value={isChecked}
+						color={isChecked ? colors.grey_100 : undefined}
+						onValueChange={handleChecked}
+					/>
+					<Text
+						style={{
+							textTransform: "uppercase",
+							color: colors.black_100,
+							fontFamily: "lato-bold",
+						}}
+					>
+						Chọn tất cả
+					</Text>
+				</View>
+				<View style={styles.cartListContainer}>
 					<Section title="Sản phẩm đã thêm">
-						<View style={styles.cartListContainer}>
-							<FlatList
-								data={cartList}
-								renderItem={renderCartList}
-								keyExtractor={(item) => item.id}
-								contentContainerStyle={{
-									width: "100%",
-									height: "100%",
-									padding: "2%",
-								}}
-							/>
-						</View>
+						<FlatList
+							showsVerticalScrollIndicator={false}
+							data={cartItems}
+							renderItem={renderCartList}
+							keyExtractor={(item) => item.cartItemId}
+							contentContainerStyle={{ paddingBottom: "10%" }}
+						/>
 					</Section>
 				</View>
 			</View>
@@ -216,15 +290,24 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		flex: 1,
-		paddingHorizontal: "6%",
 	},
 	cartListContainer: {
-		marginTop: "2%",
+		flex: 1,
+		backgroundColor: colors.white_100,
+		padding: "4%",
+		borderTopLeftRadius: 20,
+		borderTopRightRadius: 20,
+		borderTopWidth: 1,
+		borderLeftWidth: 1,
+		borderRightWidth: 1,
+		borderColor: colors.grey_50,
 	},
 	footer: {
 		backgroundColor: colors.white_100,
 		paddingHorizontal: "6%",
-		paddingVertical: "6%",
+		paddingVertical: isIOS ? "10%" : "6%",
+		borderTopWidth: 1,
+		borderTopColor: colors.grey_50,
 	},
 	totalPriceContainer: {
 		flexDirection: "row",
@@ -234,12 +317,12 @@ const styles = StyleSheet.create({
 	label: {
 		color: colors.black_100,
 		fontSize: 20,
-		fontWeight: "700",
+		fontFamily: "lato-bold",
 	},
 	price: {
 		color: colors.black_100,
 		fontSize: 20,
-		fontWeight: "700",
+		fontFamily: "lato-bold",
 	},
 	orderButton: {
 		backgroundColor: colors.green_100,
@@ -247,7 +330,7 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		paddingVertical: "4%",
 		borderRadius: 12,
-		marginTop: "6%",
+		marginTop: "4%",
 		shadowColor: colors.grey_100,
 		shadowOffset: {
 			width: 0,
@@ -262,15 +345,17 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontFamily: "lato-bold",
 	},
+	checkbox: {
+		borderColor: colors.black_100,
+		borderRadius: 4,
+		marginRight: "4%",
+	},
 });
 
 const mapStateToProps = (state) => ({
 	userData: state.auth.userData,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-	updateQuantity: (itemId, newQuantity) =>
-		dispatch(updateCartItemQuantity(itemId, newQuantity)),
-	confirmOrder: (cartList) => dispatch(confirmOrder(cartList)),
-});
+const mapDispatchToProps = { confirmOrder, updateCartItemQuantity };
+
 export default connect(mapStateToProps, mapDispatchToProps)(UserCartScreen);
