@@ -82,9 +82,9 @@ const VoucherTypeModal = ({ visible, onClose, onSelect, setVoucherType }) => {
               <TouchableOpacity
                 style={[
                   styles.buttonContainer,
-                  { marginLeft: "1%", backgroundColor: selectedDiscount === "ship" ? colors.green_20 : "#ffffff" }
+                  { marginLeft: "1%", backgroundColor: selectedDiscount === "shipDiscount" ? colors.green_20 : "#ffffff" }
                 ]}
-                onPress={() => setSelectedDiscount("ship")}
+                onPress={() => setSelectedDiscount("shipDiscount")}
               >
                 <Image
                   source={require("../../../assets/shipIcon.png")} />

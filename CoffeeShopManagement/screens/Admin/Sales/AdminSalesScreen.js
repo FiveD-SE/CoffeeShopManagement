@@ -7,8 +7,19 @@ import Section from '../../../components/Client/Section';
 import ItemCard from '../../../components/Admin/Card/ItemCard';
 import VoucherCard from '../../../components/Admin/Card/VoucherCard';
 import { useNavigation } from '@react-navigation/native';
-
-const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
+import {
+    doc,
+    updateDoc,
+    collection,
+    query,
+    where,
+    getDocs,
+    writeBatch,
+    deleteDoc,
+    orderBy,
+    limit,
+} from "firebase/firestore";
+import { db } from '../../../services/firebaseService';
 
 const AdminSalesScreen = () => {
     const navigation = useNavigation();
@@ -21,55 +32,99 @@ const AdminSalesScreen = () => {
         navigation.navigate("AdminVoucherList");
     };
 
-    const ItemCardList = [
-        {
-            title: "Smoothie Xoài Nhiệt Đới Granola",
-            price: 65000,
-            imageSource: PRODUCT_IMAGE_SOURCE,
-        },
-        {
-            title: "Smoothie Phúc Bồn Tử Granola",
-            price: 65000,
-            imageSource: PRODUCT_IMAGE_SOURCE,
-        },
-        {
-            title: "Oolong Tứ Quý Vải",
-            price: 65000,
-            imageSource: PRODUCT_IMAGE_SOURCE,
-        },
-    ];
+    const [vouchers, setVouchers] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [selectedOption, setSelectedOption] = useState('productDiscount');
 
-    const VoucherList = [
-        { id: 1, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-01', option: 'Mã giảm giá', status: true, image: require('../../../assets/voucher.jpeg') },
-        { id: 2, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-04-25', option: 'Ưu đãi vận chuyển', ststatusate: true, image: require('../../../assets/voucher.jpeg') },
-        { id: 3, name: 'Combo Cơm Nhà 89K + Freeship', expiryDate: '2024-05-04', option: 'Ưu đãi vận chuyển', status: false, image: require('../../../assets/voucher.jpeg') },
-    ];
-
-    const renderItemList = () => {
-        return ItemCardList.map((item, index) => (
-            <ItemCard
-                key={index}
-                title={item.title}
-                price={item.price.toLocaleString("vi-VN", {
-                    style: "currency",
-                    currency: "VND",
-                })}
-                imageSource={item.imageSource}
-            />
-        ));
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
     };
 
-    const renderVoucherList = () => {
-        return VoucherList.map((item, index) => (
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            loadVouchers();
+            loadProducts();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
+    const loadVouchers = async () => {
+        try {
+            const q = query(collection(db, 'vouchers'), orderBy('dateCreated', 'desc'), limit(3));
+            const querySnapshot = await getDocs(q);
+            const loadedVouchers = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                const expirationDate = data.expirationDate.toDate();
+                const status = expirationDate > new Date();
+                loadedVouchers.push({
+                    ...data,
+                    expirationDate,
+                    status
+                });
+            });
+            setVouchers(loadedVouchers);
+        } catch (error) {
+            console.log('Error loading vouchers:', error);
+        }
+    };
+
+    const loadProducts = async () => {
+        try {
+            const q = query(collection(db, 'products'), orderBy('dateCreated', 'desc'), limit(3));
+            const querySnapshot = await getDocs(q);
+            const loadedProducts = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                loadedProducts.push(data);
+            });
+            setProducts(loadedProducts);
+
+        } catch (error) {
+            console.log('Error loading products:', error);
+        }
+    };
+
+    const renderSortedVouchers = () => {
+
+        vouchers.sort((a, b) => b.expirationDate - a.expirationDate);
+
+        return vouchers.map((item, index) => (
             <VoucherCard
                 key={index}
-                itemName={item.name}
-                imageSource={item.image}
-                expiryDate={item.expiryDate}
+                itemName={item.voucherName}
+                imageSource={{ uri: item.voucherImage }}
+                expiryDate={formatDate(item.expirationDate)}
                 status={item.status}
             />
         ));
     };
+
+    const renderProducts = () => {
+        return products.map((product, index) => (
+            <ItemCard
+                key={index}
+                title={product.productName}
+                price={formatPrice(product.productPrice)}
+                imageSource={{ uri: product.productImage }}
+            />
+        ));
+    };
+
+    const formatPrice = (price) => {
+
+        const formatter = new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        });
+        return formatter.format(price);
+    };
+
     return (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             <View style={styles.sectionContainer}>
@@ -80,7 +135,7 @@ const AdminSalesScreen = () => {
                     onPressSubtitle={goToItemListScreen}
                 >
                     <View style={{ marginTop: "3%" }}>
-                        {renderItemList()}
+                        {renderProducts()}
                     </View>
                 </Section>
             </View>
@@ -93,7 +148,7 @@ const AdminSalesScreen = () => {
                     onPressSubtitle={goToVoucherListScreen}
                 >
                     <View style={{ marginTop: "3%" }}>
-                        {renderVoucherList()}
+                        {renderSortedVouchers()}
                     </View>
                 </Section>
             </View>

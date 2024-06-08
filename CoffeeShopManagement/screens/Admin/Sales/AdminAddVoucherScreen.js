@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, StyleSheet, TextInput, Switch, TouchableOpacity } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, TextInput, Switch, TouchableOpacity, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { MaterialIcons } from '@expo/vector-icons';
 import ColorButton from '../../../components/Admin/Button/ColorButton'
@@ -92,66 +92,86 @@ const AdminAddVoucherScreen = () => {
         });
       }
       else {
-        try {
-          let expirationDate = new Date();
+        Alert.alert(
+          "Xác nhận thêm khuyến mãi. ",
+          "Bạn sẽ không thể chỉnh sửa hoặc xóa khuyến mãi.",
+          [
+            {
+              text: "Hủy",
+              style: "cancel",
+            },
+            {
+              text: "Đồng ý",
+              style: "destructive",
+              onPress: async () => {
+                try {
+                  let expirationDate = new Date();
 
-          switch (daySelect.circle) {
-            case "Day":
-              expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount));
-              break;
-            case "Week":
-              expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount) * 7);
-              break;
-            case "Month":
-              expirationDate.setMonth(expirationDate.getMonth() + parseInt(daySelect.amount));
-              break;
-            case "Year":
-              expirationDate.setFullYear(expirationDate.getFullYear() + parseInt(daySelect.amount));
-              break;
-            default:
-              break;
-          }
+                  switch (daySelect.circle) {
+                    case "Day":
+                      expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount));
+                      break;
+                    case "Week":
+                      expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount) * 7);
+                      break;
+                    case "Month":
+                      expirationDate.setMonth(expirationDate.getMonth() + parseInt(daySelect.amount));
+                      break;
+                    case "Year":
+                      expirationDate.setFullYear(expirationDate.getFullYear() + parseInt(daySelect.amount));
+                      break;
+                    default:
+                      break;
+                  }
 
-          let downloadURL = null;
-          if (voucherType.discountType === "productDiscount") {
-            const storageRef = ref(storage, "images/productDiscount");
-            downloadURL = await getDownloadURL(storageRef);
-          }
-          else {
-            const storageRef = ref(storage, "images/shipDiscount");
-            downloadURL = await getDownloadURL(storageRef);
-          }
-          const docRef = await addDoc(collection(db, "vouchers"), {
-            voucherName: voucherName,
-            discountPercentage: discountPercentage,
-            voucherExchangePrice: voucherExchangePrice,
-            voucherDescription: voucherDescription,
-            voucherType: voucherType,
-            userRank: rankUser,
-            voucherImage: downloadURL,
-            expirationDate: expirationDate,
-            dateCreated: new Date()
-          });
-          const voucherId = docRef.id;
+                  let downloadURL = null;
+                  if (voucherType.discountType === "productDiscount") {
+                    const storageRef = ref(storage, "images/productDiscount");
+                    downloadURL = await getDownloadURL(storageRef);
+                  }
+                  else {
+                    const storageRef = ref(storage, "images/shipDiscount");
+                    downloadURL = await getDownloadURL(storageRef);
+                  }
+                  const docRef = await addDoc(collection(db, "vouchers"), {
+                    voucherName: voucherName,
+                    discountPercentage: discountPercentage,
+                    voucherExchangePrice
+                      : voucherExchangePrice,
+                    voucherDescription: voucherDescription,
+                    voucherType: voucherType,
+                    userRank: rankUser,
+                    voucherImage: downloadURL,
+                    expirationDate: expirationDate,
+                    dateCreated: new Date()
+                  });
+                  const voucherId = docRef.id;
 
-          await updateDoc(doc(collection(db, "vouchers"), voucherId), {
-            voucherId: voucherId,
-          });
+                  await updateDoc(doc(collection(db, "vouchers"), voucherId), {
+                    voucherId: voucherId,
+                  });
 
-          Toast.show({
-            type: "success",
-            text1: "Thành công",
-            text2: "Khuyến mãi đã được thêm mới",
-          });
-          navigation.goBack();
-        } catch (error) {
-          console.log(error);
-          Toast.show({
-            type: "error",
-            text1: "Lỗi",
-            text2: "Có lỗi xảy ra khi thêm khuyến mãi",
-          });
-        }
+                  Toast.show({
+                    type: "success",
+                    text1: "Thành công",
+                    text2: "Khuyến mãi đã được thêm mới",
+                  });
+                  navigation.goBack();
+                } catch (error) {
+                  console.log(error);
+                  Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Có lỗi xảy ra khi thêm khuyến mãi",
+                  });
+                }
+              }
+            },
+            ,
+          ],
+          { cancelable: false }
+        );
+
       }
     }
   };
