@@ -1,39 +1,29 @@
 import {
-	View,
-	Text,
-	StyleSheet,
-	TouchableOpacity,
-	ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import BottomSheet from "../../components/Client/BottomSheet/BottomSheet";
 import RoleCard from "../../components/Staff/RoleCard";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AddRoleModal from "../../components/Admin/AddRoleModal";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { collection, onSnapshot, query } from "firebase/firestore";
+import { db } from "../../services/firebaseService";
 
 
-export default function RoleListScreen({ bottomSheetRef, snapPoints, setIsOpen }) {
+export default function RoleListScreen({ bottomSheetRef, snapPoints, setIsOpen, listRoles }) {
 
-  const [DATA, setDATA] = useState([
-    {
-      idRole: '123',
-      roleName: 'Cashier',
-      salary: '2.000.000',
-    },
-    {
-      idRole: '124',
-      roleName: 'Cashier',
-      salary: '2.000.000',
-    },
-    {
-      idRole: '125',
-      roleName: 'Cashier',
-      salary: '2.000.000',
-    }
-  ])
+  const [roles, setRoles] = useState(listRoles)
 
-  const addNewRole = (newRole) => {
-    setDATA([...DATA, newRole]); // Thêm nhân viên mới vào DATA
+  useEffect(() => {
+    setRoles(listRoles);
+  }, [listRoles]);
+
+  const addNewRole = () => {
+
   };
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -56,7 +46,9 @@ export default function RoleListScreen({ bottomSheetRef, snapPoints, setIsOpen }
         </View>
         <View style={styles.bodyApp}>
           <ScrollView style={styles.listStaff}>
-            <RoleCard DATA={DATA} />
+            {roles.map((item, index) => (
+              <RoleCard key={index} roleName={item.roleName} salary={item.salary} />
+            ))}
             <>
               <TouchableOpacity
                 onPress={showAddRoleModal}

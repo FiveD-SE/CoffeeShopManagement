@@ -12,6 +12,8 @@ import RNPickerSelect from 'react-native-picker-select'
 import { getDownloadURL, ref } from 'firebase/storage'
 import * as ImagePicker from "expo-image-picker";
 import { sendEmailVerification } from 'firebase/auth'
+import { createdAt } from 'expo-updates'
+import Toast from 'react-native-toast-message'
 
 const TextBox = ({ text, value, setValue }) => {
     return (
@@ -76,61 +78,81 @@ export default function AddStaffScreen() {
 
     const handleConfirm = async () => {
 
-        console.log("Gender: ", gender);
-        console.log("password: ", password);
-        console.log("email: ", email);
-
-        const userCredential = await createUserWithEmailAndPassword(
-            auth,
-            email,
-            password
-        );
-
-        const user = userCredential.user;
-        const storageRef = ref(storage, "avatars/default.png");
-        if (cashierImage == '') {
-            const image = await getDownloadURL(storageRef);
-            setCashierImage(image);
+        if (name === '' || phoneNumber === '' || birthday === '' || gender === '' || idCard === '' || email === '' || password === '') {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Lỗi',
+                text2: 'Vui lòng nhập đầy đủ thông tin',
+                visibilityTime: 2000,
+                autoHide: true
+            });
         } else {
-            const userImage = await uploadImageToFirebase(
-                cashierImage,
-                "cashier_" + Math.random().toString(36).substring(7)
+            const userCredential = await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
             );
+
+            const user = userCredential.user;
+            const storageRef = ref(storage, "avatars/default.png");
+            let userImage = '';
+            if (cashierImage == '') {
+                const image = await getDownloadURL(storageRef);
+                setCashierImage(image);
+            } else {
+                userImage = await uploadImageToFirebase(
+                    cashierImage,
+                    "cashier_" + Math.random().toString(36).substring(7)
+                );
+                setCashierImage(userImage);
+            }
+
+            await setDoc(doc(collection(db, "cashier"), user.uid), {
+                fullName: name,
+                phoneNumber: phoneNumber,
+                birthday: new Date(birthday),
+                password: password,
+                idCard: idCard,
+                email: email,
+                gender: gender,
+                cashierImage: userImage,
+            });
+
+            await setDoc(doc(collection(db, "users"), user.uid), {
+                createdAt: new Date(),
+                credit: 0,
+                email: email,
+                fullName: name,
+                password: password,
+                role: 'cashier',
+                userId: user.uid,
+                userImage: cashierImage,
+            });
+
+            const userId = user.uid;
+            await updateDoc(doc(db, "cashier", userId), {
+                cashierId: userId,
+            });
+
+            const newNotificationRef = doc(collection(db, "notifications"));
+            const notificationId = newNotificationRef.id;
+
+            const notification = {
+                notificationId,
+                notificationContent: "Tạo tài khoản thành công!",
+                notificationTitle: "Chào mừng bạn đến với Enigma",
+                notificationCreatedDate: new Date(),
+                notificationStatus: false,
+                notificationType: 1,
+                productOrder: [],
+                userId: user.uid,
+            };
+
+            await setDoc(newNotificationRef, notification);
+            await sendEmailVerification(user);
+            navigation.goBack();
         }
-
-        await setDoc(doc(collection(db, "cashier"), user.uid), {
-            fullName: name,
-            phoneNumber: phoneNumber,
-            birthday: new Date(birthday),
-            password: password,
-            idCard: idCard,
-            email: email,
-            gender: gender,
-            cashierImage: cashierImage,
-        });
-
-        const userId = user.uid;
-        await updateDoc(doc(db, "cashier", userId), {
-            cashierId: userId,
-        });
-
-        const newNotificationRef = doc(collection(db, "notifications"));
-        const notificationId = newNotificationRef.id;
-
-        const notification = {
-            notificationId,
-            notificationContent: "Tạo tài khoản thành công!",
-            notificationTitle: "Chào mừng bạn đến với Enigma",
-            notificationCreatedDate: new Date(),
-            notificationStatus: false,
-            notificationType: 1,
-            productOrder: [],
-            userId: user.uid,
-        };
-
-        await setDoc(newNotificationRef, notification);
-        await sendEmailVerification(user);
-        navigation.goBack();
     }
     // Gọi hàm callback để thêm nhân viên mới vào DATA của ManageStaff
 

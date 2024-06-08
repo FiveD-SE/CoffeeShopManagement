@@ -2,37 +2,39 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Entypo'
 import SettingSalaryModal from '../Admin/SettingSalaryModal';
-export default function RoleCard({DATA}) {
+export default function RoleCard({ roleName, salary }) {
     const [modalVisible, setModalVisible] = useState(false);
 
     const showSettingSalaryModal = () => {
         setModalVisible(true);
     };
 
+    const formatSalary = (salary) => {
+        const formattedSalary = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(salary);
+        return formattedSalary;
+    };
+
     const hideSettingSalaryModal = () => {
         setModalVisible(false);
     };
-  return (
-    <>
+    return (
         <View>
-            {DATA.map((item) => (
-            <TouchableOpacity 
-                key={item.idRole}
+            <TouchableOpacity
                 onPress={showSettingSalaryModal}
                 style={styles.cardWrapper}>
                 <View>
-                    <Text style={styles.roleName}>{item.roleName}</Text>
-                    <Text style={styles.salary}>Lương: {item.salary} / giờ</Text>
+                    <Text style={styles.roleName}>{roleName}</Text>
+                    <Text style={styles.salary}>Lương: {formatSalary(salary)} / giờ</Text>
+
                 </View>
                 <View>
-                    <Icon name='chevron-right' size={28} color={'#a6a6aa'}/>
+                    <Icon name='chevron-right' size={28} color={'#a6a6aa'} />
                 </View>
-                <SettingSalaryModal visible={modalVisible} onClose={hideSettingSalaryModal} roleName={item.roleName}/>
+                <SettingSalaryModal visible={modalVisible} onClose={hideSettingSalaryModal} roleName={roleName} />
             </TouchableOpacity>
-            ))}
+
         </View>
-    </>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
