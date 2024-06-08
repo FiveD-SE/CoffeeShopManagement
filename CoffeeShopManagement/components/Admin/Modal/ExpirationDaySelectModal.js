@@ -3,11 +3,14 @@ import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import { Dropdown } from 'react-native-element-dropdown';
 import Toast from 'react-native-toast-message';
+import { colors } from '../../../assets/colors/colors';
 
 const ExpirationDaySelectModal = ({ visible, onClose, setSelectDay }) => {
   const [circle, setCircle] = useState(null);
+  const [circleLabel, setCircleLabel] = useState(null);
   const [isCircleFocus, setIsCircleFocus] = useState(false);
   const [quantity, setQuantity] = useState(null);
+  const [headerText, setHeaderText] = useState("");
   const circleSelect = [
     { label: "Ngày", value: "Day" },
     { label: "Tuần", value: "Week" },
@@ -30,6 +33,40 @@ const ExpirationDaySelectModal = ({ visible, onClose, setSelectDay }) => {
       onClose();
     }
   }
+  useEffect(() => {
+    if (circle && quantity) {
+      let expirationDate = new Date();
+
+      switch (circle) {
+        case "Day":
+          expirationDate.setDate(expirationDate.getDate() + parseInt(quantity));
+          break;
+        case "Week":
+          expirationDate.setDate(expirationDate.getDate() + parseInt(quantity) * 7);
+          break;
+        case "Month":
+          expirationDate.setMonth(expirationDate.getMonth() + parseInt(quantity));
+          break;
+        case "Year":
+          expirationDate.setFullYear(expirationDate.getFullYear() + parseInt(quantity));
+          break;
+        default:
+          break;
+      }
+      const today = new Date();
+      setHeaderText(` (${formatDate(today)} - ${formatDate(expirationDate)})`);
+    } else {
+      setHeaderText("");
+    }
+  }, [circle, quantity]);
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <Modal
@@ -42,11 +79,14 @@ const ExpirationDaySelectModal = ({ visible, onClose, setSelectDay }) => {
         <View style={styles.modalContent}>
           <ModalHeader title="Chọn thời hạn sử dụng" onClose={onClose} />
           <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
-            <Text style={styles.header}>Chu kỳ sử dụng</Text>
+            <View style={{ flexDirection: "row", alignItems: "center", marginVertical: "4%" }}>
+              <Text style={styles.header}>Thời hạn sử dụng</Text>
+              <Text style={styles.headerDate}>{headerText}</Text>
+            </View>
             <View style={styles.inputContainer}>
               <View style={styles.inputBox}>
                 <TextInput
-                  keyboardType="phone-pad"
+                  keyboardType="numeric"
                   style={styles.input}
                   placeholder="Số lượng"
                   value={quantity}
@@ -66,6 +106,7 @@ const ExpirationDaySelectModal = ({ visible, onClose, setSelectDay }) => {
                 onChange={item => {
                   setCircle(item.value);
                   setIsCircleFocus(false);
+                  setCircleLabel(item.label);
                 }} />
             </View>
             <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
@@ -91,7 +132,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F7FA",
     borderRadius: 20,
     width: "90%",
-    height: "43%",
+    height: "46%",
   },
   imageContainer: {
     marginTop: "5%",
@@ -106,7 +147,12 @@ const styles = StyleSheet.create({
     color: "#3a3a3a",
     fontSize: 16,
     fontWeight: "600",
-    marginVertical: "4%"
+
+  },
+  headerDate: {
+    color: colors.green_100,
+    fontSize: 14,
+    fontWeight: "600",
   },
   title: {
     marginTop: "3%",
