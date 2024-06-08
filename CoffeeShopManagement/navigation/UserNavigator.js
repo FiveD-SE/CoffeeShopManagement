@@ -62,10 +62,6 @@ const HomeStack = ({ navigation, route }) => {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
-		} else if (routeName === "UserFavoriteItemScreen") {
-			navigation.setOptions({
-				tabBarStyle: { display: "none" },
-			});
 		} else if (routeName === "BestSeller") {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
@@ -176,17 +172,6 @@ const HomeStack = ({ navigation, route }) => {
 				component={UserVoucherDetailsScreen}
 				options={{
 					headerTitle: "Chi tiết quy đổi",
-					headerLeftContainerStyle: {
-						paddingLeft: "5%",
-					},
-					headerLeft: () => <HeaderBackButton />,
-				}}
-			/>
-			<Stack.Screen
-				name="UserFavoriteItemScreen"
-				component={UserFavoriteItemScreen}
-				options={{
-					headerTitle: "Sản phẩm yêu thích",
 					headerLeftContainerStyle: {
 						paddingLeft: "5%",
 					},
@@ -354,6 +339,124 @@ const OrderStack = ({ navigation, route }) => {
 				component={UserOrderInformationScreen}
 				options={{
 					headerTitle: "Đơn hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+		</Stack.Navigator>
+	);
+};
+
+const CouponsStack = ({ navigation, route }) => {
+	useLayoutEffect(() => {
+		const routeName = getFocusedRouteNameFromRoute(route);
+		if (routeName === "Rank") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "YourVoucher") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "History") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "Benefit") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "Exchange") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "VoucherDetails") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else {
+			navigation.setOptions({
+				tabBarStyle: {
+					backgroundColor: colors.white_100,
+					borderTopColor: colors.grey_20,
+					borderTopWidth: 1,
+					borderOpacity: 0.5,
+					height: isIOS ? 100 : 80,
+				},
+			});
+		}
+	}, [navigation, route]);
+
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="Promotions"
+				component={Promotions}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="Rank"
+				component={MembershipTier}
+				options={{
+					headerTitle: "Hạng thành viên",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+
+			<Stack.Screen
+				name="YourVoucher"
+				component={YourVoucher}
+				options={{
+					headerTitle: "Voucher của bạn",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="History"
+				component={History}
+				options={{
+					headerTitle: "Lịch sử đổi thưởng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="Benefit"
+				component={Benefit}
+				options={{
+					headerTitle: "Quyền lợi của bạn",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="Exchange"
+				component={UserExchangeVoucherScreen}
+				options={{
+					headerTitle: "Đổi thưởng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="VoucherDetails"
+				component={UserVoucherDetailsScreen}
+				options={{
+					headerTitle: "Chi tiết quy đổi",
 					headerLeftContainerStyle: {
 						paddingLeft: "5%",
 					},
@@ -532,83 +635,6 @@ const OtherStack = () => (
 			component={StorePolicyScreen}
 			options={{
 				headerTitle: "Chính sách",
-				headerLeftContainerStyle: {
-					paddingLeft: "5%",
-				},
-				headerLeft: () => <HeaderBackButton />,
-			}}
-		/>
-	</Stack.Navigator>
-);
-
-const CouponsStack = () => (
-	<Stack.Navigator>
-		<Stack.Screen
-			name="Promotions"
-			component={Promotions}
-			options={{ headerShown: false }}
-		/>
-		<Stack.Screen
-			name="Rank"
-			component={MembershipTier}
-			options={{
-				headerTitle: "Hạng thành viên",
-				headerLeftContainerStyle: {
-					paddingLeft: "5%",
-				},
-				headerLeft: () => <HeaderBackButton />,
-			}}
-		/>
-
-		<Stack.Screen
-			name="YourVoucher"
-			component={YourVoucher}
-			options={{
-				headerTitle: "Voucher của bạn",
-				headerLeftContainerStyle: {
-					paddingLeft: "5%",
-				},
-				headerLeft: () => <HeaderBackButton />,
-			}}
-		/>
-		<Stack.Screen
-			name="History"
-			component={History}
-			options={{
-				headerTitle: "Lịch sử đổi thưởng",
-				headerLeftContainerStyle: {
-					paddingLeft: "5%",
-				},
-				headerLeft: () => <HeaderBackButton />,
-			}}
-		/>
-		<Stack.Screen
-			name="Benefit"
-			component={Benefit}
-			options={{
-				headerTitle: "Quyền lợi của bạn",
-				headerLeftContainerStyle: {
-					paddingLeft: "5%",
-				},
-				headerLeft: () => <HeaderBackButton />,
-			}}
-		/>
-		<Stack.Screen
-			name="Exchange"
-			component={UserExchangeVoucherScreen}
-			options={{
-				headerTitle: "Đổi thưởng",
-				headerLeftContainerStyle: {
-					paddingLeft: "5%",
-				},
-				headerLeft: () => <HeaderBackButton />,
-			}}
-		/>
-		<Stack.Screen
-			name="VoucherDetails"
-			component={UserVoucherDetailsScreen}
-			options={{
-				headerTitle: "Chi tiết quy đổi",
 				headerLeftContainerStyle: {
 					paddingLeft: "5%",
 				},
