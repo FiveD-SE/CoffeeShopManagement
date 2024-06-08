@@ -20,6 +20,7 @@ import { db } from "../../services/firebaseService";
 
 export default function ManageStaffScreen({ route }) {
 	const [cashiers, setCashiers] = useState([]);
+	const [roles, setRoles] = useState([]);
 
 	useEffect(() => {
 		const unsub = onSnapshot(
@@ -30,6 +31,18 @@ export default function ManageStaffScreen({ route }) {
 				setCashiers(snapshot.docs.map((doc) => doc.data()));
 			}
 		);
+	}, []);
+
+	useEffect(() => {
+		const unsub = onSnapshot(
+			query(
+				collection(db, "staffRole"),
+			),
+			(snapshot) => {
+				setRoles(snapshot.docs.map((doc) => doc.data()));
+			}
+		);
+		return () => unsub();
 	}, []);
 
 
@@ -114,7 +127,7 @@ export default function ManageStaffScreen({ route }) {
 
 							{cashiers.map((item, index) => (
 								<StaffCard
-									key={item.cashierId}
+									key={index}
 									cashierName={item.fullName}
 									cashierPhone={item.phoneNumber}
 									cashierImage={item.cashierImage}
@@ -144,6 +157,7 @@ export default function ManageStaffScreen({ route }) {
 				bottomSheetRef={chooseRoleListBottomSheetRef}
 				snapPoints={chooseRoleListSnapPoints}
 				setIsOpen={setIsOpen}
+				listRoles={roles}
 			/>
 		</>
 	);
