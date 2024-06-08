@@ -11,7 +11,8 @@ const SelectCouponCard = ({
 	onPress,
 }) => {
 	return (
-		<View
+		<Pressable
+			onPress={onPress}
 			style={[
 				styles.container,
 				{ backgroundColor: isChecked ? "rgba(0, 108, 94, 0.05)" : "#FFFFFF" },
@@ -26,14 +27,14 @@ const SelectCouponCard = ({
 					<Text style={styles.expireDate}>Hết hạn: {expireDate}</Text>
 				</View>
 			</View>
-			<Pressable onPress={onPress}>
+			<View>
 				<MaterialIcons
 					name={isChecked ? "radio-button-checked" : "radio-button-unchecked"}
 					size={24}
 					color={isChecked ? "#006C5E" : "#3a3a3a"}
 				/>
-			</Pressable>
-		</View>
+			</View>
+		</Pressable>
 	);
 };
 
