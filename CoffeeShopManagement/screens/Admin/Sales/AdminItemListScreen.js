@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, ScrollView, StyleSheet, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import SearchBar from '../../../components/Client/SearchBar'
 import ItemCard from '../../../components/Admin/Card/ItemCard';
 import CategoryIcon from '../../../components/Client/Button/CategoryIcon';
@@ -22,7 +22,7 @@ import {
 } from "firebase/firestore";
 import { db } from '../../../services/firebaseService';
 import Toast from "react-native-toast-message";
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 const ItemCardList = [
   {
@@ -37,6 +37,7 @@ const AdminItemListScreen = ({ userData }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryTitle, setCategoryTitle] = useState("Tất cả sản phẩm");
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -55,14 +56,13 @@ const AdminItemListScreen = ({ userData }) => {
         loadedProducts.push(doc.data());
       });
       setProducts(loadedProducts);
-      setFilteredProducts(loadedProducts);
+      setFilteredProducts(loadedProducts); // Lưu trữ danh sách sản phẩm gốc
     } catch (error) {
       console.log('Error loading products:', error);
     }
   };
 
   const formatPrice = (price) => {
-
     const formatter = new Intl.NumberFormat('vi-VN', {
       style: 'currency',
       currency: 'VND',
@@ -97,7 +97,7 @@ const AdminItemListScreen = ({ userData }) => {
 
   const handleCategorySelect = (category) => {
     if (selectedCategory === category) {
-      setFilteredProducts(products);
+      setFilteredProducts(products); // Sử dụng danh sách sản phẩm gốc
       setCategoryTitle("Tất cả sản phẩm");
       setSelectedCategory(null);
     } else {
@@ -107,6 +107,34 @@ const AdminItemListScreen = ({ userData }) => {
       setSelectedCategory(category);
     }
   }
+
+  const handleSearch = (query) => {
+    setSearchKeyword(query);
+    if (query) {
+      let filteredList = products;
+      if (selectedCategory) {
+        const productList = products.filter(product => product.productType === selectedCategory);
+        filteredList = productList.filter(item =>
+          item.productName.toLowerCase().includes(query.toLowerCase())
+        );
+      } else {
+        filteredList = products.filter(item =>
+          item.productName.toLowerCase().includes(query.toLowerCase())
+        );
+      }
+      setFilteredProducts(filteredList);
+    } else {
+
+      if (selectedCategory) {
+        const filteredList = products.filter(product => product.productType === selectedCategory);
+        setFilteredProducts(filteredList);
+      } else {
+        setFilteredProducts(products);
+      }
+    }
+  };
+
+
 
   const renderCategoryItemList = () => {
     return (
@@ -131,7 +159,7 @@ const AdminItemListScreen = ({ userData }) => {
       </View>
       <Text style={styles.header}>{categoryTitle}</Text>
       <View style={styles.sreachBar}>
-        <SearchBar />
+        <SearchBar onChangeText={handleSearch} />
       </View>
 
       <ScrollView style={styles.itemListContainer} showsVerticalScrollIndicator={false}>

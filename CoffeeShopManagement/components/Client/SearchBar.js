@@ -5,6 +5,11 @@ const SearchBar = ({ onFocus, onChangeText }) => {
 	const handleTextChange = (text) => {
 		onChangeText(text);
 	};
+	const handleBlur = () => {
+		if (typeof onBlur === 'function') {
+			onBlur();
+		}
+	};
 	return (
 		<View style={styles.inputContainer}>
 			<TextInput
@@ -12,6 +17,7 @@ const SearchBar = ({ onFocus, onChangeText }) => {
 				placeholder="Tìm kiếm"
 				onChangeText={handleTextChange}
 				onFocus={onFocus}
+				onBlur={handleBlur}
 			/>
 		</View>
 	);

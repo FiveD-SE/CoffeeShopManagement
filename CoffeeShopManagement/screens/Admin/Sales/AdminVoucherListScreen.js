@@ -17,12 +17,13 @@ import {
 import { db } from '../../../services/firebaseService';
 import Toast from "react-native-toast-message";
 import { useNavigation } from '@react-navigation/native';
-const PRODUCT_IMAGE_SOURCE = require("../../../assets/starbucks.jpeg");
 
 const AdminVoucherListScreen = () => {
   const navigation = useNavigation();
   const [vouchers, setVouchers] = useState([]);
   const [selectedOption, setSelectedOption] = useState('productDiscount');
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [sortedVouchers, setSortedVouchers] = useState([]);
 
   const formatDate = (date) => {
     const d = new Date(date);
@@ -61,12 +62,15 @@ const AdminVoucherListScreen = () => {
     }
   };
 
-  const renderSortedVouchers = () => {
+  useEffect(() => {
     const sortedVouchers = vouchers.filter(voucher =>
       voucher.voucherType.discountType === selectedOption
     );
-
     sortedVouchers.sort((a, b) => b.expirationDate - a.expirationDate);
+    setSortedVouchers(sortedVouchers);
+  }, [vouchers, selectedOption]);
+
+  const renderSortedVouchers = () => {
 
     return sortedVouchers.map((item, index) => (
       <VoucherCard
@@ -78,6 +82,24 @@ const AdminVoucherListScreen = () => {
       />
     ));
   };
+
+  const handleSearch = (query) => {
+    setSearchKeyword(query);
+    if (query) {
+      const filteredList = sortedVouchers.filter(item =>
+        item.voucherName.toLowerCase().includes(query.toLowerCase())
+      );
+      setSortedVouchers(filteredList);
+    } else {
+      const sortedVouchers = vouchers.filter(voucher =>
+        voucher.voucherType.discountType === selectedOption
+      );
+      sortedVouchers.sort((a, b) => b.expirationDate - a.expirationDate);
+      setSortedVouchers(sortedVouchers);
+    }
+  };
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -91,7 +113,7 @@ const AdminVoucherListScreen = () => {
       </View>
       <View style={styles.mainContainer}>
         <View style={styles.sreachBar}>
-          <SearchBar />
+          <SearchBar onChangeText={handleSearch} />
         </View>
         <ScrollView style={styles.itemListContainer} showsVerticalScrollIndicator={false}>
           {renderSortedVouchers()}
@@ -100,6 +122,7 @@ const AdminVoucherListScreen = () => {
     </SafeAreaView>
   )
 }
+
 
 export default AdminVoucherListScreen
 

@@ -48,12 +48,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: "3%",
         borderRadius: 15,
         borderWidth: 1,
-        borderColor: "rgba(58,58,58,0.05)",
+        borderColor: "#D8D8D8",
+    
     },
     imageContainer: {
-        borderWidth: 1,
-        borderColor: "rgba(58,58,58,0.05)",
-        borderRadius: 10,
     },
     image: {
         width: "100%",
