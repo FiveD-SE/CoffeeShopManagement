@@ -169,13 +169,11 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 10,
         color: "#3A3A3A",
-        fontFamily: "Lato-Bold",
     },
     rowText: {
         fontSize: 16,
         color: "#000",
         lineHeight: 18,
-        fontFamily: "Lato-Regular",
     },
     row: {
         flexDirection: "row",
@@ -199,7 +197,6 @@ const styles = StyleSheet.create({
     },
     kindText: {
         color: "#3A3A3A",
-        fontFamily: "Lato-Regular",
     },
     selectedKindText: {
         color: "#FFF",
@@ -226,7 +223,6 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: "#FFFFFF",
-        fontFamily: "Lato-Bold",
         fontSize: 18,
     },
     divider: {
@@ -260,7 +256,6 @@ const styles = StyleSheet.create({
     },
     deleteButtonText: {
         color: "#F61A3D",
-        fontFamily: "Lato-Bold",
         fontSize: 18,
         marginLeft: 10,
     },
