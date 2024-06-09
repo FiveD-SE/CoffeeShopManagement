@@ -1,64 +1,49 @@
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	query,
+	where,
+} from "firebase/firestore";
+import Toast from "react-native-toast-message";
+
 import BottomSheet from "./BottomSheet";
 import Section from "../Section";
 import SelectCouponCard from "../Card/SelectCouponCard";
-import { colors } from "../../../assets/colors/colors";
 
-const COUPON_IMAGE = require("../../../assets/coupon-image.png");
+import { colors } from "../../../assets/colors/colors";
+import { db } from "../../../services/firebaseService";
 
 const ChooseCouponBottomSheet = ({
+	userData,
 	bottomSheetRef,
 	snapPoints,
 	setIsOpen,
 	onSelectDeliveryCoupon,
 	onSelectDiscountCoupon,
 }) => {
+	const [productVoucherList, setProductVoucherList] = useState([]);
+	const [shipVoucherList, setShipVoucherList] = useState([]);
 	const [selectedDeliveryCoupon, setSelectedDeliveryCoupon] = useState(null);
 	const [selectedDiscountCoupon, setSelectedDiscountCoupon] = useState(null);
 
-	const couponList = {
-		deliveryFee: [
-			{
-				title: "Combo Cơm Nhà 89K",
-				expireDate: "31/03/2034",
-				imageSource: COUPON_IMAGE,
-			},
-			{
-				title: "Combo Cơm Nhà 89K + Freeship",
-				expireDate: "31/03/2034",
-				imageSource: COUPON_IMAGE,
-			},
-			{
-				title: "Combo Cơm Nhà 89K + Freeship",
-				expireDate: "31/03/2034",
-				imageSource: COUPON_IMAGE,
-			},
-		],
-		discount: [
-			{
-				title: "Combo Cơm Nhà 89K + Freeship",
-				expireDate: "31/03/2034",
-				imageSource: COUPON_IMAGE,
-			},
-			{
-				title: "Combo Cơm Nhà 89K + Freeship",
-				expireDate: "31/03/2034",
-				imageSource: COUPON_IMAGE,
-			},
-			{
-				title: "Combo Cơm Nhà 89K + Freeship",
-				expireDate: "31/03/2034",
-				imageSource: COUPON_IMAGE,
-			},
-		],
+	const convertTimestampToDate = (timestamp) => {
+		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+	};
+
+	const formatDate = (date) => {
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		return date.toLocaleDateString("vi-VN", options);
 	};
 
 	const handleSelectedDeliveryCouponChange = (index) => {
 		setSelectedDeliveryCoupon((prev) =>
 			prev && prev.index === index
 				? null
-				: { index: index, coupon: couponList.deliveryFee[index] }
+				: { index: index, coupon: shipVoucherList[index] }
 		);
 	};
 
@@ -66,26 +51,52 @@ const ChooseCouponBottomSheet = ({
 		setSelectedDiscountCoupon((prev) =>
 			prev && prev.index === index
 				? null
-				: { index: index, coupon: couponList.discount[index] }
+				: { index: index, coupon: productVoucherList[index] }
 		);
 	};
 
 	const handleApplyCoupon = () => {
-		onSelectDeliveryCoupon(selectedDeliveryCoupon?.coupon);
-		onSelectDiscountCoupon(selectedDiscountCoupon?.coupon);
+		if (selectedDiscountCoupon === null && selectedDeliveryCoupon === null) {
+			Toast.show({
+				type: "error",
+				text1: "Vui lòng chọn mã",
+				text2: "Chọn ít nhất 1 mã giảm giá để áp dụng",
+				text1Style: {
+					color: colors.black_100,
+					fontSize: 16,
+					fontFamily: "lato-bold",
+				},
+				text2Style: {
+					color: colors.grey_100,
+					fontSize: 14,
+					fontFamily: "lato-bold",
+				},
+				visibilityTime: 2500,
+				autoHide: true,
+			});
+			return;
+		}
+
+		onSelectDiscountCoupon(
+			selectedDiscountCoupon ? selectedDiscountCoupon.coupon : null
+		);
+		onSelectDeliveryCoupon(
+			selectedDeliveryCoupon ? selectedDeliveryCoupon.coupon : null
+		);
 	};
 
 	const renderDeliveryFee = () => {
-		const delivery = couponList.deliveryFee;
+		const delivery = shipVoucherList;
 		return delivery.map((item, index) => {
 			const isChecked =
 				selectedDeliveryCoupon && selectedDeliveryCoupon.index === index;
 			return (
 				<SelectCouponCard
 					key={index}
-					title={item.title}
-					expireDate={item.expireDate}
-					imageSource={item.imageSource}
+					title={item.voucherName}
+					quantity={item.quantity}
+					expireDate={item.expirationDate}
+					imageSource={item.voucherImage}
 					isChecked={isChecked}
 					onPress={() => handleSelectedDeliveryCouponChange(index)}
 				/>
@@ -94,22 +105,81 @@ const ChooseCouponBottomSheet = ({
 	};
 
 	const renderDiscount = () => {
-		const discount = couponList.discount;
+		const discount = productVoucherList;
 		return discount.map((item, index) => {
 			const isChecked =
 				selectedDiscountCoupon && selectedDiscountCoupon.index === index;
 			return (
 				<SelectCouponCard
 					key={index}
-					title={item.title}
-					expireDate={item.expireDate}
-					imageSource={item.imageSource}
+					title={item.voucherName}
+					quantity={item.quantity}
+					expireDate={item.expirationDate}
+					imageSource={item.voucherImage}
 					isChecked={isChecked}
 					onPress={() => handleSelectedDiscountCouponChange(index)}
 				/>
 			);
 		});
 	};
+
+	useEffect(() => {
+		const fetchUserVoucherData = async () => {
+			const userVoucherRefs = [];
+			const productVoucherList = [];
+			const shipVoucherList = [];
+
+			try {
+				const userVouchersQuery = query(
+					collection(db, "userVouchers"),
+					where("userId", "==", userData.id)
+				);
+				const querySnapshot = await getDocs(userVouchersQuery);
+
+				querySnapshot.forEach((doc) => {
+					const data = doc.data();
+					const voucherIds = data.voucherId;
+
+					voucherIds.forEach((voucher) => {
+						userVoucherRefs.push({
+							id: voucher.id,
+							quantity: voucher.quantity,
+						});
+					});
+				});
+
+				for (const ref of userVoucherRefs) {
+					const voucherDoc = await getDoc(doc(db, "vouchers", ref.id));
+					const voucherData = voucherDoc.data();
+					const expirationDate = convertTimestampToDate(
+						voucherData.expirationDate
+					);
+
+					const voucherType = voucherData.voucherType;
+
+					if (voucherType.discountType === "productDiscount") {
+						productVoucherList.push({
+							...voucherData,
+							quantity: ref.quantity,
+							expirationDate: formatDate(expirationDate),
+						});
+					} else if (voucherType.discountType === "shipDiscount") {
+						shipVoucherList.push({
+							...voucherData,
+							quantity: ref.quantity,
+							expirationDate: formatDate(expirationDate),
+						});
+					}
+				}
+				setProductVoucherList(productVoucherList);
+				setShipVoucherList(shipVoucherList);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchUserVoucherData();
+	}, [userData.id]);
 
 	return (
 		<BottomSheet
@@ -119,11 +189,11 @@ const ChooseCouponBottomSheet = ({
 		>
 			<View style={styles.container}>
 				<ScrollView showsVerticalScrollIndicator={false}>
-					<Section title="Ưu đãi phí vận chuyển">
+					<Section title="Ưu Đãi Vận Chuyển">
 						<View style={{ marginTop: "2%" }}>{renderDeliveryFee()}</View>
 					</Section>
 					<View style={{ marginTop: "5%" }}>
-						<Section title="Mã giảm giá">
+						<Section title="Ưu Đãi Sản Phẩm">
 							<View style={{ marginTop: "2%" }}>{renderDiscount()}</View>
 						</Section>
 					</View>
@@ -141,8 +211,8 @@ export default ChooseCouponBottomSheet;
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: colors.grey_20,
-		padding: "5%",
+		backgroundColor: colors.grey_10,
+		padding: "4%",
 	},
 	applyButton: {
 		backgroundColor: colors.green_100,
@@ -150,7 +220,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		padding: "5%",
 		borderRadius: 12,
-		marginTop: "5%",
+		marginTop: "4%",
+		marginBottom: "4%",
 	},
 	applyButtonText: {
 		color: colors.white_100,
