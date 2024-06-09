@@ -1,150 +1,134 @@
 import React, { useState, useEffect } from "react";
+import { StyleSheet } from "react-native";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import DiscountCouponTab from "./Tabs/DiscountCouponTab";
+import DeliveryCouponTab from "./Tabs/DeliveryCouponTab";
+import { colors } from "../../../assets/colors/colors";
 import {
-	View,
-	Text,
-	StyleSheet,
-	Pressable,
-	SafeAreaView,
-	ScrollView,
-} from "react-native";
-import UserVoucherCard from "../../../components/Client/Card/UserVoucherCard";
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	query,
+	where,
+} from "firebase/firestore";
+import { db } from "../../../services/firebaseService";
+import { connect } from "react-redux";
 
-export default function YourVoucher() {
-	const vouchers = [
-		{
-			title: "Combo Cơm Nhà 89K + Freeship",
-			expiryDate: "2024-05-01",
-			option: "Giao hàng",
-			image: require("../../../assets/voucher.jpeg"),
-		},
-		{
-			title: "Combo Cơm Nhà 89K + Freeship",
-			expiryDate: "2024-04-25",
-			option: "Tại chỗ",
-			image: require("../../../assets/voucher.jpeg"),
-		},
-		{
-			title: "Combo Cơm Nhà 89K + Freeship",
-			expiryDate: "2024-05-04",
-			option: "Mang đi",
-			image: require("../../../assets/voucher.jpeg"),
-		},
-		{
-			title: "Combo Cơm Nhà 89K + Freeship",
-			expiryDate: "2024-06-01",
-			option: "Giao hàng",
-			image: require("../../../assets/voucher.jpeg"),
-		},
-	];
+const Tab = createMaterialTopTabNavigator();
 
-	const [selectedTab, setSelectedTab] = useState("Giao hàng");
-	const [filteredVouchers, setFilteredVouchers] = useState(vouchers);
+const UserVoucherScreen = ({ userData }) => {
+	const [productVoucherList, setProductVoucherList] = useState([]);
+	const [shipVoucherList, setShipVoucherList] = useState([]);
 
-	const handleTabPress = (tab) => {
-		setSelectedTab(tab);
-		if (tab === "Giao hàng") {
-			setFilteredVouchers(vouchers);
-		} else {
-			setFilteredVouchers(vouchers.filter((item) => item.option === tab));
-		}
+	const convertTimestampToDate = (timestamp) => {
+		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+	};
+
+	const formatDate = (date) => {
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		return date.toLocaleDateString("vi-VN", options);
 	};
 
 	useEffect(() => {
-		setFilteredVouchers(
-			vouchers.filter((voucher) => voucher.option === selectedTab)
-		);
-	}, [selectedTab]);
+		const fetchUserVoucherData = async () => {
+			const userVoucherRefs = [];
+			const productVoucherList = [];
+			const shipVoucherList = [];
+
+			try {
+				const userVouchersQuery = query(
+					collection(db, "userVouchers"),
+					where("userId", "==", userData.id)
+				);
+				const querySnapshot = await getDocs(userVouchersQuery);
+
+				querySnapshot.forEach((doc) => {
+					const data = doc.data();
+					const voucherIds = data.voucherId;
+
+					voucherIds.forEach((voucher) => {
+						userVoucherRefs.push({
+							id: voucher.id,
+							quantity: voucher.quantity,
+						});
+					});
+				});
+
+				for (const ref of userVoucherRefs) {
+					const voucherDoc = await getDoc(doc(db, "vouchers", ref.id));
+					const voucherData = voucherDoc.data();
+					const expirationDate = convertTimestampToDate(
+						voucherData.expirationDate
+					);
+
+					const voucherType = voucherData.voucherType;
+
+					if (voucherType.discountType === "productDiscount") {
+						productVoucherList.push({
+							...voucherData,
+							quantity: ref.quantity,
+							expirationDate: formatDate(expirationDate),
+						});
+					} else if (voucherType.discountType === "shipDiscount") {
+						shipVoucherList.push({
+							...voucherData,
+							quantity: ref.quantity,
+							expirationDate: formatDate(expirationDate),
+						});
+					}
+				}
+				setProductVoucherList(productVoucherList);
+				setShipVoucherList(shipVoucherList);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+
+		fetchUserVoucherData();
+	}, [userData.id]);
 
 	return (
-		<SafeAreaView style={styles.container}>
-			<View style={styles.heading}>
-				<Pressable
-					style={[
-						styles.headingLabel,
-						selectedTab === "Giao hàng" && styles.selectedLabel,
-					]}
-					onPress={() => handleTabPress("Giao hàng")}
-				>
-					<Text
-						style={[
-							styles.headingText,
-							selectedTab === "Giao hàng" && styles.selectedText,
-						]}
-					>
-						Giao hàng
-					</Text>
-				</Pressable>
-				<Pressable
-					style={[
-						styles.headingLabel,
-						selectedTab === "Tại chỗ" && styles.selectedLabel,
-					]}
-					onPress={() => handleTabPress("Tại chỗ")}
-				>
-					<Text
-						style={[
-							styles.headingText,
-							selectedTab === "Tại chỗ" && styles.selectedText,
-						]}
-					>
-						Tại chỗ
-					</Text>
-				</Pressable>
-				<Pressable
-					style={[
-						styles.headingLabel,
-						selectedTab === "Mang đi" && styles.selectedLabel,
-					]}
-					onPress={() => handleTabPress("Mang đi")}
-				>
-					<Text
-						style={[
-							styles.headingText,
-							selectedTab === "Mang đi" && styles.selectedText,
-						]}
-					>
-						Mang đi
-					</Text>
-				</Pressable>
-			</View>
-			<ScrollView>
-				<View style={styles.section}>
-					<Text style={[styles.sectionText, { marginTop: 20 }]}>
-						Sắp hết hạn
-					</Text>
-					{filteredVouchers
-						.filter((voucher) => {
-							const expiryDate = new Date(voucher.expiryDate);
-							const differenceInDays = Math.ceil(
-								(expiryDate - new Date()) / (1000 * 60 * 60 * 24)
-							);
-							return differenceInDays <= 5;
-						})
-						.map((item, index) => (
-							<UserVoucherCard
-								key={index}
-								title={item.title}
-								expiryDate={item.expiryDate}
-								imageSource={item.image}
-							/>
-						))}
-				</View>
-
-				<View style={styles.section}>
-					<Text style={styles.sectionText}>Sẵn sàng sử dụng</Text>
-					{filteredVouchers.map((item, index) => (
-						<UserVoucherCard
-							key={index}
-							title={item.title}
-							expiryDate={item.expiryDate}
-							imageSource={item.image}
-						/>
-					))}
-				</View>
-			</ScrollView>
-		</SafeAreaView>
+		<Tab.Navigator
+			screenOptions={{
+				tabBarLabelStyle: {
+					textTransform: "capitalize",
+					fontFamily: "lato-bold",
+				},
+				tabBarIndicatorStyle: {
+					height: 2,
+					borderRadius: 10,
+					backgroundColor: colors.green_100,
+				},
+				tabBarActiveTintColor: colors.green_100,
+				tabBarInactiveTintColor: colors.grey_100,
+				tabBarStyle: {
+					borderTopWidth: 1,
+					borderTopColor: colors.grey_50,
+				},
+				tabBarPressColor: "transparent",
+				tabBarPressOpacity: 1,
+			}}
+		>
+			<Tab.Screen
+				name="Giảm giá sản phẩm"
+				children={() => (
+					<DiscountCouponTab productVoucherList={productVoucherList} />
+				)}
+			/>
+			<Tab.Screen
+				name="Giảm giá vận chuyển"
+				children={() => <DeliveryCouponTab shipVoucherList={shipVoucherList} />}
+			/>
+		</Tab.Navigator>
 	);
-}
+};
+
+const mapStateToProps = (state) => ({
+	userData: state.auth.userData,
+});
+
+export default connect(mapStateToProps)(UserVoucherScreen);
 
 const styles = StyleSheet.create({
 	container: {

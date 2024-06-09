@@ -34,11 +34,9 @@ import SignInScreen from "../screens/Client/SignInScreen";
 import UserOrderConfirmationScreen from "../screens/Client/PlaceOrder/UserOrderConfirmationScreen";
 import UserMapScreen from "../screens/Client/Other/UserMapScreen";
 
-import Promotions from "../screens/Client/Coupons/UserCouponScreen";
 import MembershipTier from "../screens/Client/Coupons/UserMembershipTierScreen";
 import History from "../screens/Client/Coupons/UserExchangeHistoryScreen";
 import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
-import YourVoucher from "../screens/Client/Coupons/UserVoucherScreen";
 import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
 import CashierNotification from "../screens/Staff/CashierNotification";
 import UserChooseAddressScreen from "../screens/Client/PlaceOrder/UserChooseAddressScreen";
@@ -48,6 +46,7 @@ import StorePolicyScreen from "../screens/Client/Other/StorePolicyScreen";
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { colors } from "../assets/colors/colors";
 import UserCouponScreen from "../screens/Client/Coupons/UserCouponScreen";
+import UserVoucherScreen from "../screens/Client/Coupons/UserVoucherScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -357,7 +356,7 @@ const CouponsStack = ({ navigation, route }) => {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
-		} else if (routeName === "YourVoucher") {
+		} else if (routeName === "UserVoucherScreen") {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
@@ -410,8 +409,8 @@ const CouponsStack = ({ navigation, route }) => {
 			/>
 
 			<Stack.Screen
-				name="YourVoucher"
-				component={YourVoucher}
+				name="UserVoucherScreen"
+				component={UserVoucherScreen}
 				options={{
 					headerTitle: "Voucher của bạn",
 					headerLeftContainerStyle: {
