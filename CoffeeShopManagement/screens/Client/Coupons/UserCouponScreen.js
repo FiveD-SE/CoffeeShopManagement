@@ -44,6 +44,10 @@ function UserCouponScreen({ userData }) {
 		navigation.navigate("VoucherDetails", { voucherDetails: item, type });
 	};
 
+	const goToUserVoucherScreen = () => {
+		navigation.navigate("UserVoucherScreen");
+	};
+
 	const convertTimestampToDate = (timestamp) => {
 		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
 	};
@@ -129,7 +133,12 @@ function UserCouponScreen({ userData }) {
 			const voucherList = [];
 
 			try {
-				const querySnapshot = await getDocs(collection(db, "vouchers"));
+				const voucherQuery = query(
+					collection(db, "vouchers"),
+					where("voucherExchangePrice", "<=", userData.credit)
+				);
+
+				const querySnapshot = await getDocs(voucherQuery);
 				querySnapshot.forEach((doc) => {
 					const data = doc.data();
 					voucherList.push({ ...data, id: doc.id });
@@ -176,6 +185,7 @@ function UserCouponScreen({ userData }) {
 						expirationDate: formatDate(expirationDate),
 					});
 				}
+
 				setUserVoucherItemList(userVoucherList);
 			} catch (error) {
 				console.error(error);
@@ -185,13 +195,12 @@ function UserCouponScreen({ userData }) {
 		fetchUserVoucherData();
 		fetchVoucherData();
 		fetchUserData();
-	}, []);
+	}, [userData.credit]);
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={styles.header}>
-					<Text style={styles.headerTitle}>Ưu đãi của bạn</Text>
 					<View
 						style={{
 							flexDirection: "row",
@@ -199,6 +208,7 @@ function UserCouponScreen({ userData }) {
 							alignItems: "center",
 						}}
 					>
+						<Text style={styles.headerTitle}>Ưu đãi của bạn</Text>
 						<View style={styles.beanContainer}>
 							<Text style={styles.beanText}>{userData.credit}</Text>
 							<Image
@@ -210,9 +220,9 @@ function UserCouponScreen({ userData }) {
 								}}
 							/>
 						</View>
-						<Pressable
+						{/* <Pressable
 							style={styles.voucherButton}
-							onPress={() => navigation.navigate("YourVoucher")}
+							onPress={() => navigation.navigate("UserVoucherScreen")}
 						>
 							<Image
 								style={{
@@ -224,7 +234,7 @@ function UserCouponScreen({ userData }) {
 								resizeMode="contain"
 							/>
 							<Text style={styles.voucherText}>Voucher của tôi</Text>
-						</Pressable>
+						</Pressable> */}
 					</View>
 
 					<View style={styles.rankContainer}>
@@ -294,17 +304,14 @@ function UserCouponScreen({ userData }) {
 						title={"Voucher của bạn"}
 						showSubtitle={true}
 						subtitle={"Xem tất cả"}
+						onPressSubtitle={goToUserVoucherScreen}
 					>
 						<View style={{ marginTop: "4%" }}>
 							{renderYourVoucherItemList()}
 						</View>
 					</Section>
 
-					<Section
-						title={"Đổi voucher"}
-						showSubtitle={true}
-						subtitle={"Xem tất cả"}
-					>
+					<Section title={"Đổi voucher"}>
 						<View style={{ marginTop: "4%" }}>{renderVoucherItem()}</View>
 					</Section>
 				</View>
