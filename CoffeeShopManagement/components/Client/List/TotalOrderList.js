@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { colors } from "../../../assets/colors/colors";
 
-const TotalOrderList = ({ orderInformation }) => {
+const TotalOrderList = ({ orderInformation, totalDiscount }) => {
 	const totalPrice = orderInformation.reduce((accumulator, currentItem) => {
 		return accumulator + currentItem.totalPrice * currentItem.quantity;
 	}, 0);
@@ -18,7 +18,7 @@ const TotalOrderList = ({ orderInformation }) => {
 		},
 		{
 			title: "Chiết khấu:",
-			price: 0,
+			price: totalDiscount,
 		},
 	];
 
