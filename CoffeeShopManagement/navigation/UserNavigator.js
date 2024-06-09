@@ -15,7 +15,7 @@ import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScr
 import EditProfileDetail from "../screens/Client/Other/UserEditProfileScreen";
 import ProfileDetails from "../screens/Client/Other/UserProfileDetailScreen";
 import EditAddress from "../screens/Client/Other/UserEditAddressScreen";
-import AddNewAddress from "../screens/Client/Other/UserAddNewAddressScreen";
+import UserAddNewAddressScreen from "../screens/Client/Other/UserAddNewAddressScreen";
 import Other from "../screens/Client/Other/UserOtherScreen";
 
 import TabBarIcon from "./components/TabBarIcon";
@@ -575,7 +575,7 @@ const OtherStack = () => (
 		/>
 		<Stack.Screen
 			name="AddNewAddress"
-			component={AddNewAddress}
+			component={UserAddNewAddressScreen}
 			options={{
 				headerTitle: "Thêm địa chỉ mới",
 				headerLeftContainerStyle: {
