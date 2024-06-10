@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
 	View,
 	Text,
@@ -6,103 +7,105 @@ import {
 	SafeAreaView,
 	Pressable,
 	Image,
+	Dimensions,
+	TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
 import { colors } from "../../../assets/colors/colors";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../services/firebaseService";
+import Section from "../../../components/Client/Section";
+import { useNavigation } from "@react-navigation/native";
 
 export default function UserSelectBranchScreen({ route }) {
-	const [nearbyBranch, setNearbyBranch] = useState([
-		{
-			id: "1",
-			nameBranch: "THE COFFEE HOUSE",
-			addressBranch: "HCM Đường D1",
-			distanceBranch: "Cách đây 3.3 km",
-		},
-		{
-			id: "2",
-			nameBranch: "THE COFFEE HOUSE",
-			addressBranch: "HCM Đường D1",
-			distanceBranch: "Cách đây 3.3 km",
-		},
-		{
-			id: "3",
-			nameBranch: "THE COFFEE HOUSE",
-			addressBranch: "HCM Đường D1",
-			distanceBranch: "Cách đây 3.3 km",
-		},
-		{
-			id: "4",
-			nameBranch: "THE COFFEE HOUSE",
-			addressBranch: "HCM Đường D1",
-			distanceBranch: "Cách đây 3.3 km",
-		},
-	]);
+	const { productOrders, addresses } = route.params;
 
-	const [ortherBranch, setOrtherBranch] = useState([
-		{
-			id: "1",
-			nameBranch: "THE COFFEE HOUSE",
-			addressBranch: "HCM Đường D1",
-			distanceBranch: "Cách đây 3.3 km",
-		},
-		{
-			id: "2",
-			nameBranch: "THE COFFEE HOUSE",
-			addressBranch: "HCM Đường D1",
-			distanceBranch: "Cách đây 3.3 km",
-		},
-		{
-			id: "3",
-			nameBranch: "THE COFFEE HOUSE",
-			addressBranch: "HCM Đường D1",
-			distanceBranch: "Cách đây 3.3 km",
-		},
-		{
-			id: "4",
-			nameBranch: "THE COFFEE HOUSE",
-			addressBranch: "HCM Đường D1",
-			distanceBranch: "Cách đây 3.3 km",
-		},
-	]);
+	const navigation = useNavigation();
+	const [nearbyBranch, setNearbyBranch] = useState([]);
+	const [otherBranch, setOtherBranch] = useState([]);
 
-	const renderNearbyBranchItem = (item) => (
-		<Pressable style={styles.addressItem}>
-			<Image style={styles.image} />
-			<View style={styles.vertical}>
-				<View>
-					<Text style={styles.nameBranchText}>{item.nameBranch}</Text>
-					<Text style={styles.addressBranchText}>{item.addressBranch}</Text>
-				</View>
-				<Text style={styles.distanceBranchText}>{item.distanceBranch}</Text>
+	const formatHour = (timestamp) => {
+		if (!timestamp || !timestamp.seconds) return null;
+		const date = new Date(timestamp.seconds * 1000);
+		const hours = date.getHours();
+		const minutes = date.getMinutes();
+		const strMinutes = minutes < 10 ? "0" + minutes : minutes;
+		return hours + ":" + strMinutes;
+	};
+
+	const handleSelectBranch = (item) => {
+		navigation.navigate("UserOrderConfirmationScreen", {
+			productOrders,
+			selectedBranch: item,
+		});
+	};
+
+	const renderBranchItem = (item) => (
+		<TouchableOpacity
+			style={styles.addressItem}
+			key={item.id}
+			activeOpacity={0.8}
+			onPress={() => handleSelectBranch(item)}
+		>
+			<View style={styles.imageContainer}>
+				<Image
+					style={styles.image}
+					source={{ uri: item.imageDownloadUrl }}
+					resizeMode="stretch"
+				/>
 			</View>
-		</Pressable>
+			<View style={styles.vertical}>
+				<Text style={styles.nameBranchText}>{item.branchName}</Text>
+				<Text style={styles.addressBranchText}>
+					{item.street}, {item.wardName}, {item.districtName},{" "}
+					{item.provinceName}
+				</Text>
+				<Text style={styles.operationTime}>
+					Giờ hoạt động: {formatHour(item.openingHour)} -{" "}
+					{formatHour(item.closingHour)}
+				</Text>
+			</View>
+		</TouchableOpacity>
 	);
 
-	const renderOrtherBranchItem = (item) => (
-		<Pressable style={styles.addressItem}>
-			<Image style={styles.image} />
-			<View style={styles.vertical}>
-				<View>
-					<Text style={styles.nameBranchText}>{item.nameBranch}</Text>
-					<Text style={styles.addressBranchText}>{item.addressBranch}</Text>
-				</View>
-				<Text style={styles.distanceBranchText}>{item.distanceBranch}</Text>
-			</View>
-		</Pressable>
-	);
+	useEffect(() => {
+		const fetchBranches = async () => {
+			let nearbyBranch = [];
+			let otherBranch = [];
+			const q = query(
+				collection(db, "branches"),
+				where("provinceId", "==", addresses.provinceId)
+			);
+
+			const querySnapshot = await getDocs(q);
+			querySnapshot.forEach((doc) => {
+				const branchData = doc.data();
+				const branch = { id: doc.id, ...branchData };
+				if (
+					branch.districtId === addresses.districtId &&
+					branch.wardId === addresses.wardId
+				) {
+					nearbyBranch.push(branch);
+				} else {
+					otherBranch.push(branch);
+				}
+			});
+
+			setNearbyBranch(nearbyBranch);
+			setOtherBranch(otherBranch);
+		};
+		fetchBranches();
+	}, [addresses]);
 
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView contentContainerStyle={styles.scrollViewContent}>
-				<View style={styles.section}>
-					<Text style={styles.sectionHeading}>Chi nhánh gần đây</Text>
-					{nearbyBranch.map((item) => renderNearbyBranchItem(item))}
-				</View>
+				<Section title={"Chi nhánh gần đây"}>
+					{nearbyBranch.map(renderBranchItem)}
+				</Section>
 
-				<View style={styles.section}>
-					<Text style={styles.sectionHeading}>Các chi nhánh khác</Text>
-					{ortherBranch.map((item) => renderOrtherBranchItem(item))}
-				</View>
+				<Section title={"Các chi nhánh khác"}>
+					{otherBranch.map(renderBranchItem)}
+				</Section>
 			</ScrollView>
 		</SafeAreaView>
 	);
@@ -113,61 +116,51 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	scrollViewContent: {
-		paddingHorizontal: 20,
-		paddingVertical: 20,
-	},
-	section: {
-		marginBottom: 20,
-	},
-	sectionHeading: {
-		fontSize: 18,
-		fontWeight: "bold",
-		marginBottom: 20,
+		padding: "4%",
 	},
 	addressItem: {
 		backgroundColor: colors.white_100,
 		flexDirection: "row",
-		alignItems: "center",
-		marginBottom: "4%",
+		marginVertical: "4%",
 		borderRadius: 12,
 		borderWidth: 1,
 		borderColor: colors.grey_50,
-		padding: "4%",
-	},
-	icon: {
-		marginRight: 15,
-	},
-	editIcon: {
-		marginLeft: "auto",
-		color: "#FFA730",
+		padding: "2%",
+		elevation: 2,
 	},
 	nameBranchText: {
 		flex: 1,
 		fontFamily: "lato-regular",
 		fontSize: 16,
-		color: "#9C9C9C",
+		color: colors.black_100,
 	},
 	addressBranchText: {
 		flex: 1,
 		fontFamily: "lato-regular",
-		fontSize: 16,
-		color: "#000",
+		fontSize: 14,
+		lineHeight: 20,
+		color: colors.grey_100,
 	},
-	distanceBranchText: {
+	operationTime: {
 		flex: 1,
+		color: colors.black_100,
+		fontSize: 14,
 		fontFamily: "lato-regular",
-		fontSize: 16,
-		color: "#9C9C9C",
+		lineHeight: 30,
+	},
+	imageContainer: {
+		flex: 0.4,
 	},
 	image: {
-		width: 80,
-		height: 80,
+		width: "100%",
+		height: 100,
 		borderRadius: 5,
 		backgroundColor: "#CBCBD4",
-		marginRight: 16,
+		marginRight: "4%",
 	},
 	vertical: {
+		flex: 1,
 		flexDirection: "column",
-		gap: 25,
+		marginLeft: "4%",
 	},
 });

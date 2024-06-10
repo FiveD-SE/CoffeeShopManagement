@@ -21,7 +21,7 @@ import ChooseCouponBottomSheet from "../../../components/Client/BottomSheet/Choo
 import SelectTimeBottomSheet from "../../../components/Client/BottomSheet/SelectTimeBottomSheet";
 
 import { colors } from "../../../assets/colors/colors";
-import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
 
 const CASH_ICON = require("../../../assets/cash.png");
@@ -30,7 +30,7 @@ const MOMO_ICON = require("../../../assets/momo.png");
 const isIOS = Platform.OS === "ios";
 
 const UserOrderConfirmationScreen = ({ route, userData }) => {
-	const { productOrders, selectedAddress } = route.params;
+	const { productOrders, selectedAddress, selectedBranch } = route.params;
 
 	// console.log("productOrders: ", productOrders);
 
@@ -79,7 +79,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 		delivery: {
 			branch: {
 				title: "Chi nhánh",
-				details: "66E Hoàng Diệu 2, Quận Thủ Đức, Hồ Chí Minh, Việt Nam",
+				details: selectedBranch && `${selectedBranch.branchName}`,
 			},
 			address: {
 				title: "Thông tin đặt hàng",
@@ -200,7 +200,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	};
 
 	const goToSelectBranch = () => {
-		navigation.navigate("SelectBranchScreen");
+		navigation.navigate("SelectBranchScreen", { productOrders, addresses });
 	};
 
 	const handleSelectTime = () => {
@@ -274,7 +274,6 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 		<>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={styles.container} showsVerticalScrollIndicator={false}>
-					<Text style={styles.headerTitle}>Giao hàng tận nơi</Text>
 					{renderDeliveryList()}
 					<View style={{ marginTop: "5%" }}>
 						<Section title="Sản phẩm đã chọn">
