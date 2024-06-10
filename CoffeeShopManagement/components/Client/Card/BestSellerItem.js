@@ -12,6 +12,8 @@ import { colors } from "../../../assets/colors/colors";
 
 const cardWidth = (Dimensions.get("window").width - 10) / 2 - 10;
 
+const cardHeight = Dimensions.get("window").height / 5;
+
 const BestSellerItem = ({
     name,
     price,

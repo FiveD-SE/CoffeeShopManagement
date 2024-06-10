@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     },
     scrollViewContent: {
         paddingHorizontal: "4%",
-        paddingVertical: "3%",
+        paddingTop: "3%",
     },
     section: {
         marginBottom: "3%",

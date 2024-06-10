@@ -388,7 +388,7 @@ const ItemDetailBottomSheet = ({
 						<Image
 							style={styles.image}
 							source={{ uri: selectedItem.productImage }}
-							resizeMode="contain"
+							resizeMode="stretch"
 						/>
 					</View>
 					<View style={styles.main}>
