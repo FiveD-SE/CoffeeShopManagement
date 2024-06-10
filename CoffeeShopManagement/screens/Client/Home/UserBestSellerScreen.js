@@ -6,98 +6,101 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
 
 const UserBestSellerScreen = () => {
-	const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItem, setSelectedItem] = useState(null);
 
-	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
+    const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 
-	const itemDetailSnapPoints = useMemo(() => ["85%"]);
+    const itemDetailSnapPoints = useMemo(() => ["85%"]);
 
-	const itemDetailBottomSheetRef = useRef(null);
+    const itemDetailBottomSheetRef = useRef(null);
 
-	const [productList, setProductList] = useState([]);
+    const [productList, setProductList] = useState([]);
 
-	const formatCurrency = (amount) => {
-		return new Intl.NumberFormat("vi-VN", {
-			style: "currency",
-			currency: "VND",
-		}).format(amount);
-	};
+    const formatCurrency = (amount) => {
+        return new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        }).format(amount);
+    };
 
-	const renderBestSellerItemList = ({ item }) => (
-		<BestSellerItem
-			id={item._id}
-			name={item.productName}
-			price={item.productPrice ? formatCurrency(item.productPrice) : "N/A"}
-			imageSource={item.productImage}
-			vertical={true}
-			onPress={() => handleOpenItemDetail(item)}
-		/>
-	);
+    const renderBestSellerItemList = ({ item }) => (
+        <BestSellerItem
+            id={item._id}
+            name={item.productName}
+            price={
+                item.productPrice ? formatCurrency(item.productPrice) : "N/A"
+            }
+            imageSource={item.productImage}
+            vertical={true}
+            onPress={() => handleOpenItemDetail(item)}
+        />
+    );
 
-	const handleOpenItemDetail = (item) => {
-		setSelectedItem(item);
-		setIsItemDetailVisible(true);
-	};
+    const handleOpenItemDetail = (item) => {
+        setSelectedItem(item);
+        setIsItemDetailVisible(true);
+    };
 
-	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
+    const handleCloseItemDetail = () => setIsItemDetailVisible(false);
 
-	useEffect(() => {
-		if (isItemDetailVisible) {
-			itemDetailBottomSheetRef.current?.present();
-		}
-	}, [isItemDetailVisible]);
+    useEffect(() => {
+        if (isItemDetailVisible) {
+            itemDetailBottomSheetRef.current?.present();
+        }
+    }, [isItemDetailVisible]);
 
-	useEffect(() => {
-		const fetchProductList = async () => {
-			try {
-				const productsCollectionRef = collection(db, "products");
-				const querySnapshot = await getDocs(productsCollectionRef);
-				const fetchedProducts = querySnapshot.docs.map((doc) => ({
-					...doc.data(),
-					productId: doc.id,
-				}));
-				setProductList(fetchedProducts);
-			} catch (error) {
-				console.error("Error fetching product list:", error);
-			}
-		};
+    useEffect(() => {
+        const fetchProductList = async () => {
+            try {
+                const productsCollectionRef = collection(db, "products");
+                const querySnapshot = await getDocs(productsCollectionRef);
+                const fetchedProducts = querySnapshot.docs.map((doc) => ({
+                    ...doc.data(),
+                    productId: doc.id,
+                }));
+                setProductList(fetchedProducts);
+            } catch (error) {
+                console.error("Error fetching product list:", error);
+            }
+        };
 
-		fetchProductList();
-	}, []);
+        fetchProductList();
+    }, []);
 
-	return (
-		<View style={styles.container}>
-			<View style={styles.bestSellerItemListContainer}>
-				<FlatList
-					data={productList}
-					renderItem={renderBestSellerItemList}
-					numColumns={2}
-					showsVerticalScrollIndicator={false}
-					contentContainerStyle={styles.bestSellerItemListContainer}
-				/>
-			</View>
-			{isItemDetailVisible && (
-				<ItemDetailBottomSheet
-					bottomSheetRef={itemDetailBottomSheetRef}
-					snapPoints={itemDetailSnapPoints}
-					selectedItem={selectedItem}
-					isVisible={isItemDetailVisible}
-					onClose={handleCloseItemDetail}
-				/>
-			)}
-		</View>
-	);
+    return (
+        <View style={styles.container}>
+            <View style={styles.bestSellerItemListContainer}>
+                <FlatList
+                    data={productList}
+                    renderItem={renderBestSellerItemList}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={styles.bestSellerItemListContainer}
+                />
+            </View>
+            {isItemDetailVisible && (
+                <ItemDetailBottomSheet
+                    bottomSheetRef={itemDetailBottomSheetRef}
+                    snapPoints={itemDetailSnapPoints}
+                    selectedItem={selectedItem}
+                    isVisible={isItemDetailVisible}
+                    onClose={handleCloseItemDetail}
+                />
+            )}
+        </View>
+    );
 };
 
 export default UserBestSellerScreen;
 
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#FFFFFF",
-	},
-	bestSellerItemListContainer: {
-		marginTop: "2%",
-		paddingHorizontal: "2%",
-	},
+    container: {
+        flex: 1,
+        backgroundColor: "#FFFFFF",
+    },
+    bestSellerItemListContainer: {
+        marginTop: "2%",
+        paddingHorizontal: "2%",
+        paddingBottom: "5%",
+    },
 });
