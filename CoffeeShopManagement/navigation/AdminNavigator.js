@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useLayoutEffect, useState } from "react";
 import { Text, StyleSheet, Dimensions, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import TabBarIcon from "./components/TabBarIcon";
+import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
+import { colors } from "../assets/colors/colors";
 
 import AdminHomeScreen from "../screens/Admin/Home/AdminHomeScreen";
 import AdminNotification from "../screens/Admin/Home/AdminNotification";
@@ -78,184 +80,215 @@ const BillingStack = () => (
     </Stack.Navigator>
 );
 
-const OtherStack = () => (
-    <Stack.Navigator>
-        <Stack.Screen
-            name="Other"
-            component={AdminOtherScreen}
-            options={{ headerShown: false }}
-        />
-        <Stack.Screen
-            name="AdminProfileDetail"
-            component={AdminProfileDetail}
-            options={{
-                headerTitle: "Thông tin cá nhân",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="AdminEditProfile"
-            component={AdminEditProfile}
-            options={{
-                headerTitle: "Chỉnh sửa thông tin cá nhân",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="BranchManagement"
-            component={AdminBranchManagement}
-            options={{
-                headerTitle: "Quản lý chi nhánh",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddBranchButton />,
-            }}
-        />
-        <Stack.Screen
-            name="AdminBranchEditScreen"
-            component={AdminEditBranchScreen}
-            options={{
-                headerTitle: "Chỉnh sửa chi nhánh",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="AdminAddBranchScreen"
-            component={AdminAddBranchScreen}
-            options={{
-                headerTitle: "Thêm chi nhánh",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
+const OtherStack = ({ navigation, route }) => {
+    useLayoutEffect(() => {
+        const routeName = getFocusedRouteNameFromRoute(route);
+        if (routeName === "AdminAddBranchScreen") {
+            navigation.setOptions({
+                tabBarStyle: { display: "none" },
+            });
+        } 
+        // else if (routeName === "AddNewAddress") {
+        //     navigation.setOptions({
+        //         tabBarStyle: { display: "none" },
+        //     });
+        // } else if (routeName === "EditAddress") {
+        //     navigation.setOptions({
+        //         tabBarStyle: { display: "none" },
+        //     });
+        // }
 
-        <Stack.Screen
-            name="AdminPayrollScreen"
-            component={AdminPayrollScreen}
-            options={{
-                headerTitle: "Bảng tính lương",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
+        else {
+            navigation.setOptions({
+                tabBarStyle: {
+                    backgroundColor: colors.white_100,
+                    borderTopColor: colors.grey_20,
+                    borderTopWidth: 1,
+                    borderOpacity: 0.5,
+                    height: isIOS ? 100 : 80,
                 },
-                headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddPayrollButton />,
-            }}
-        />
+            });
+        }
+    }, [navigation, route]);
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Other"
+                component={AdminOtherScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="AdminProfileDetail"
+                component={AdminProfileDetail}
+                options={{
+                    headerTitle: "Thông tin cá nhân",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="AdminEditProfile"
+                component={AdminEditProfile}
+                options={{
+                    headerTitle: "Chỉnh sửa thông tin cá nhân",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="BranchManagement"
+                component={AdminBranchManagement}
+                options={{
+                    headerTitle: "Quản lý chi nhánh",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                    headerRight: () => <AddBranchButton />,
+                }}
+            />
+            <Stack.Screen
+                name="AdminBranchEditScreen"
+                component={AdminEditBranchScreen}
+                options={{
+                    headerTitle: "Chỉnh sửa chi nhánh",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="AdminAddBranchScreen"
+                component={AdminAddBranchScreen}
+                options={{
+                    headerTitle: "Thêm chi nhánh",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
 
-        <Stack.Screen
-            name="AdminPayrollDetailsScreen"
-            component={AdminPayrollDetailsScreen}
-            options={{
-                headerTitle: "Chi tiết bảng lương",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="AdminAddPayrollScreen"
-            component={AdminAddPayrollScreen}
-            options={{
-                headerTitle: "Thêm bảng lương",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="StaffHome"
-            component={ManageStaffScreen}
-            options={{
-                headerShown: false,
-            }}
-        />
-        <Stack.Screen
-            name="RoleList"
-            component={RoleListScreen}
-            options={{
-                headerShown: false,
-            }}
-        />
-        <Stack.Screen
-            name="AddStaff"
-            component={AddStaffScreen}
-            options={{
-                headerTitle: "Tạo mới nhân viên",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="EditStaff"
-            component={EditStaffScreen}
-            options={{
-                headerTitle: "Chỉnh sửa thông tin",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-            }}
-        />
-        <Stack.Screen
-            name="Schedule"
-            component={ScheduleScreen}
-            options={{
-                headerTitle: "Lịch biểu",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddShiftButton />,
-            }}
-        />
-        <Stack.Screen
-            name="AddShift"
-            component={AddShiftScreen}
-            options={{
-                headerTitle: "Thêm ca làm việc",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddShiftButton2 />,
-            }}
-        />
-        <Stack.Screen
-            name="DetailShift"
-            component={DetailShiftScreen}
-            options={{
-                headerTitle: "Tên ca",
-                headerLeftContainerStyle: {
-                    paddingLeft: "5%",
-                },
-                headerLeft: () => <HeaderBackButton />,
-                headerRight: () => <AddStaffButton />,
-            }}
-        />
-        <Stack.Screen
-            name="SignInScreen"
-            component={SignInScreen}
-            options={{ headerShown: false }}
-        />
-    </Stack.Navigator>
-);
+            <Stack.Screen
+                name="AdminPayrollScreen"
+                component={AdminPayrollScreen}
+                options={{
+                    headerTitle: "Bảng tính lương",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                    headerRight: () => <AddPayrollButton />,
+                }}
+            />
+
+            <Stack.Screen
+                name="AdminPayrollDetailsScreen"
+                component={AdminPayrollDetailsScreen}
+                options={{
+                    headerTitle: "Chi tiết bảng lương",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="AdminAddPayrollScreen"
+                component={AdminAddPayrollScreen}
+                options={{
+                    headerTitle: "Thêm bảng lương",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="StaffHome"
+                component={ManageStaffScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name="RoleList"
+                component={RoleListScreen}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name="AddStaff"
+                component={AddStaffScreen}
+                options={{
+                    headerTitle: "Tạo mới nhân viên",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="EditStaff"
+                component={EditStaffScreen}
+                options={{
+                    headerTitle: "Chỉnh sửa thông tin",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="Schedule"
+                component={ScheduleScreen}
+                options={{
+                    headerTitle: "Lịch biểu",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                    headerRight: () => <AddShiftButton />,
+                }}
+            />
+            <Stack.Screen
+                name="AddShift"
+                component={AddShiftScreen}
+                options={{
+                    headerTitle: "Thêm ca làm việc",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                    headerRight: () => <AddShiftButton2 />,
+                }}
+            />
+            <Stack.Screen
+                name="DetailShift"
+                component={DetailShiftScreen}
+                options={{
+                    headerTitle: "Tên ca",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                    headerRight: () => <AddStaffButton />,
+                }}
+            />
+            <Stack.Screen
+                name="SignInScreen"
+                component={SignInScreen}
+                options={{ headerShown: false }}
+            />
+        </Stack.Navigator>
+    );
+};
 
 const HomeStack = () => (
     <Stack.Navigator>
@@ -482,12 +515,21 @@ const WarehouseStack = () => (
 );
 
 function AdminNavigator() {
+    const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
+
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
                 tabBarActiveTintColor: "#006C5E",
                 tabBarInactiveTintColor: "#CBCBD4",
-                tabBarStyle: styles.bottomTabBar,
+                tabBarStyle: {
+                    backgroundColor: "white",
+                    borderTopColor: "#CBCBD4",
+                    borderTopWidth: 1,
+                    borderOpacity: 0.5,
+                    height: 83,
+                    display: bottomSheetOpen ? "none" : "flex",
+                },
                 tabBarShowLabel: true,
                 headerShown: false,
                 tabBarHideOnKeyboard: true,

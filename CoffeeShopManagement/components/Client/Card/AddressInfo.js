@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: "4%",
         alignItems: "center",
-        
+
     },
     defaultText: {
         color: colors.white_100,
