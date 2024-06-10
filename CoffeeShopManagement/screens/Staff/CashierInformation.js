@@ -19,7 +19,8 @@ import * as ImagePicker from "expo-image-picker";
 import { saveUserData } from "../../redux/actions/userActions";
 import { db, uploadImageToFirebase } from "../../services/firebaseService";
 import { doc, updateDoc } from "firebase/firestore";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Update from "expo-updates";
 
 const CashierInformation = ({ userData, saveUserData }) => {
     const handleImagePicker = async () => {
@@ -105,8 +106,10 @@ const CashierInformation = ({ userData, saveUserData }) => {
                 <View style={styles.buttonWrapper}>
                     <TouchableOpacity
                         onPress={() => {
-                            removeToken();
-                            navigation.navigate("SignInScreen");
+                            AsyncStorage.removeItem("isRemembered");
+                            AsyncStorage.removeItem("email");
+                            AsyncStorage.removeItem("password");
+                            Update.reloadAsync();
                         }}
                         style={styles.button}
                     >
