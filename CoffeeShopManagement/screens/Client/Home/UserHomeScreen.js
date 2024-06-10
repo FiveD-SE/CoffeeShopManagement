@@ -70,11 +70,8 @@ const UserHomeScreen = ({ userData }) => {
 			<RecentlyViewedItem
 				key={index}
 				id={item.productId}
-				title={item.productName}
-				price={item.productPrice.toLocaleString("vi-VN", {
-					style: "currency",
-					currency: "VND",
-				})}
+				name={item.productName}
+				price={formatCurrency(item.productPrice)}
 				imageSource={item.productImage}
 				onPress={() => handleOpenItemDetail(item)}
 			/>
@@ -179,7 +176,7 @@ const styles = StyleSheet.create({
 		marginTop: "5%",
 	},
 	itemList: {
-		width: cardWidth * 4,
+		width: cardWidth * 5,
 		flexDirection: "row",
 		marginTop: "5%",
 	},
