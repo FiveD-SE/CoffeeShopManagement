@@ -23,6 +23,7 @@ const UserVoucherDetailsScreen = ({ route, userData, updateUserCredit }) => {
 	const navigation = useNavigation();
 
 	const { voucherDetails, type } = route.params;
+	console.log("voucherDetails", voucherDetails);
 
 	const handleExchangeVoucher = async () => {
 		try {
@@ -77,9 +78,7 @@ const UserVoucherDetailsScreen = ({ route, userData, updateUserCredit }) => {
 				autoHide: true,
 			});
 
-			setTimeout(() => {
-				navigation.goBack();
-			}, 1000);
+			navigation.goBack();
 		} catch (error) {
 			console.error("Error exchanging voucher: ", error);
 			Alert.alert("Error", "Failed to exchange voucher. Please try again.");

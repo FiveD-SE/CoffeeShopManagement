@@ -48,6 +48,10 @@ function UserCouponScreen({ userData }) {
 		navigation.navigate("UserVoucherScreen");
 	};
 
+	const goToExchangeVoucherScreen = () => {
+		navigation.navigate("Exchange");
+	};
+
 	const convertTimestampToDate = (timestamp) => {
 		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
 	};
@@ -263,19 +267,6 @@ function UserCouponScreen({ userData }) {
 						</Pressable>
 						<Pressable
 							style={styles.component}
-							onPress={() => navigation.navigate("Exchange")}
-						>
-							<Image
-								style={{ height: 24, width: 24 }}
-								source={gift}
-								resizeMode="contain"
-							/>
-							<Text style={styles.componentText}>Đổi Bean</Text>
-						</Pressable>
-					</View>
-					<View style={[styles.row, { marginTop: 20 }]}>
-						<Pressable
-							style={styles.component}
 							onPress={() => navigation.navigate("History")}
 						>
 							<Image
@@ -283,18 +274,7 @@ function UserCouponScreen({ userData }) {
 								source={bean}
 								resizeMode="contain"
 							/>
-							<Text style={styles.componentText}>Lịch sử BEAN</Text>
-						</Pressable>
-						<Pressable
-							style={styles.component}
-							onPress={() => navigation.navigate("Benefit")}
-						>
-							<Image
-								style={{ height: 24, width: 24 }}
-								source={rights}
-								resizeMode="contain"
-							/>
-							<Text style={styles.componentText}>Quyền lợi của bạn</Text>
+							<Text style={styles.componentText}>Lịch sử đổi voucher</Text>
 						</Pressable>
 					</View>
 				</View>
@@ -311,7 +291,12 @@ function UserCouponScreen({ userData }) {
 						</View>
 					</Section>
 
-					<Section title={"Đổi voucher"}>
+					<Section
+						title={"Đổi voucher"}
+						showSubtitle={true}
+						subtitle={"Xem tất cả"}
+						onPressSubtitle={goToExchangeVoucherScreen}
+					>
 						<View style={{ marginTop: "4%" }}>{renderVoucherItem()}</View>
 					</Section>
 				</View>
@@ -439,8 +424,8 @@ const styles = StyleSheet.create({
 		fontFamily: "lato-regular",
 		textAlign: "center",
 		lineHeight: 20,
-		fontSize: 15,
-		fontWeight: "600",
+		fontSize: 14,
+		fontFamily: "lato-bold",
 	},
 	emptyContainer: {
 		flex: 1,
