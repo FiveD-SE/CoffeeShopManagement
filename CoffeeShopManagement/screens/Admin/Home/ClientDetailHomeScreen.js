@@ -1,128 +1,75 @@
-import React, { useState } from "react";
-import { StyleSheet, View, ScrollView, Text, Pressable, Image } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import React from "react";
+import { StyleSheet, View, ScrollView, Text, Image } from "react-native";
 
-const ClientDetailHomeScreen = () => {
+const ClientDetailHomeScreen = ({ route }) => {
+    const { selectedUser } = route.params;
+
     const DATA = [
         {
-            id: '#123456',
+            id: 'FIVED-0001',
             state: 'Hoàn thành',
             date: '01/01/2024',
             price: '236.000'
         },
         {
-            id: '#123457',
+            id: 'FIVED-0002',
             state: 'Hoàn thành',
             date: '01/01/2024',
             price: '236.000'
         },
         {
-            id: '#123458',
+            id: 'FIVED-0003',
             state: 'Hoàn thành',
             date: '01/01/2024',
             price: '236.000'
         },
     ]
 
-    const [firstName] = useState("Nguyễn Quốc");
-    const [lastName] = useState("Thắng");
-    const [gender] = useState("Nam");
-    const [birthday] = useState("13/03/2004");
-    const [phone] = useState("346129897");
-    const [email] = useState("22521337@gm.uit.edu.vn");
+    const renderOrdersList = () => (
+        DATA.map((item) => (
+            <View style={styles.labelItem}>
+                <View style={styles.row}>
+                    <Text style={styles.itemId}>{item.id}</Text>
+                    <Text style={styles.itemDate}>{item.date}</Text>
+                </View>
 
-    const avatar = require("../../../assets/vietnam.png");
-    const flag = require("../../../assets/vietnam.png");
-
-    const renderItem = ({item}) => (
-      <View style={styles.labelItem}>
-        <Text style={styles.itemId}>{item.id}</Text>
-        <View style={styles.row}>
-            <View style={styles.labelStatus}>
-                <Text style={styles.itemStatus}>{item.state}</Text>
+                <View style={styles.row}>
+                    <View style={styles.labelStatus}>
+                        <Text style={styles.itemStatus}>{item.state}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={styles.itemPrice}>{item.price}</Text>
+                        <Text style={styles.currency}> VNĐ</Text>
+                    </View>
+                </View>
             </View>
-            <Text style={styles.itemDate}>{item.date}</Text>
-            <View style={{ flexDirection: 'row' }}>
-                <Text style={styles.itemPrice}>{item.price}</Text>
-                <Text style={{
-                    color: "#CBCBD4",
-                    fontFamily: "Lato-Bold",
-                    fontSize: 16,
-                    fontWeight: "bold",
-                    lineHeight: 20,
-                }}> VNĐ</Text>
-            </View>
-        </View>
-      </View>
+        ))
     )
-    
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
-                <View style={{ paddingVertical: 10, alignItems: 'center' }}>
-                    <Image alt="avatar" source={avatar} style={styles.profileAvatar} />
-                </View>
+                <View style={styles.profile}>
+                    <Image
+                        alt="avatar"
+                        source={{ uri: selectedUser?.userImage }}
+                        style={styles.profileAvatar}
+                    />
 
-                <View style={styles.section}>
-                    <View style={styles.row_space_between}>
-                        <Text style={styles.sectionTitle}>Thông tin chung</Text>
-                    </View>
-                    <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "48%" }]}>
-                            <Text style={styles.text}>{firstName}</Text>
-                        </View>
-                        <View style={[styles.rowLabelText, { width: "48%" }]}>
-                            <Text style={styles.text}>{lastName}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <Text style={styles.label}>Giới tính</Text>
-                            <View style={styles.row_space_between}>
-                                <Text style={styles.text}>{gender}</Text>
-                                <Pressable>
-                                    <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
-                                </Pressable>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <Text style={styles.label}>Ngày sinh</Text>
-                            <View style={styles.row_space_between}>
-                                <Text style={styles.text}>{birthday}</Text>
-                                <Pressable>
-                                    <FontAwesome name="angle-right" size={32} style={{ marginLeft: 15 }} />
-                                </Pressable>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.section}>
-                    <View style={styles.row_space_between}>
-                        <Text style={styles.sectionTitle}>Số điện thoại</Text>
-                    </View>
-                    <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "100%", justifyContent: "flex-start" }]}>
-                            <Image style={{ height: 32, width: 32, marginRight: 10 }} source={flag} resizeMode="contain" />
-                            <Text style={styles.text}>+84 {phone}</Text>
-                        </View>
-                    </View>
-                </View>
-                <View style={styles.section}>
-                    <View style={styles.row_space_between}>
-                        <Text style={styles.sectionTitle}>Email</Text>
-                    </View>
-                    <View style={styles.row_space_between}>
-                        <View style={[styles.rowLabelText, { width: "100%" }]}>
-                            <Text style={styles.text}>{email}</Text>
-                        </View>
+                    <View style={styles.profileBody}>
+                        <Text style={styles.profileName}>
+                            {selectedUser?.fullName}
+                        </Text>
+
+                        <Text style={styles.profileHandle}>
+                            {selectedUser?.email}
+                        </Text>
                     </View>
                 </View>
 
                 <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Lịch sử giao dịch</Text>
-                  {DATA.map(item => renderItem({ item }))}
+                    <Text style={styles.sectionTitle}>Lịch sử giao dịch</Text>
+                    {renderOrdersList()}
                 </View>
             </ScrollView>
         </View>
@@ -142,66 +89,47 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         color: "#000",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         fontWeight: "bold",
-        marginBottom: 15,
-    },
-    editButton: {
-        color: "#006C5E",
-        fontFamily: "Lato-Bold",
-        fontSize: 16,
-        fontWeight: "bold",
-        lineHeight: 20,
         marginBottom: 15,
     },
     profile: {
+        marginTop: 15,
         backgroundColor: "#fff",
         borderRadius: 12,
+        padding: 10,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
     },
     profileAvatar: {
-        width: 100,
-        height: 100,
+        width: 60,
+        height: 60,
         borderRadius: 5,
+        marginRight: 12,
     },
-    rowLabelText: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        backgroundColor: "#fff",
-        borderWidth: 2,
-        borderColor: "#EBEBEB",
-        borderRadius: 10,
-        marginBottom: 10,
+    profileBody: {
+        marginRight: "auto",
     },
-    row_space_between: {
-        flexDirection: "row",
-        justifyContent: "space-between",
+    profileName: {
+        fontSize: 18,
+        fontWeight: "600",
+        color: "#292929",
+        fontFamily: "lato-bold",
     },
-    iconContainer: {
-        marginRight: 10,
-    },
-    text: {
-        color: "#000",
-        fontFamily: "Lato-Regular",
+    profileHandle: {
+        marginTop: 2,
         fontSize: 16,
         fontWeight: "400",
-        lineHeight: 30
-    },
-    label: {
-        color: "black",
-        fontWeight: "900",
+        color: "#858585",
+        fontFamily: "lato-regular",
     },
     labelItem: {
         flexDirection: "column",
         alignItems: "flex-start",
         justifyContent: "space-between",
-        paddingVertical: 15,
+        paddingVertical: 10,
         paddingHorizontal: 15,
         backgroundColor: "#fff",
         borderWidth: 1,
@@ -210,24 +138,16 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         gap: 20,
     },
-    itemTitle: {
-        color: "#000",
-        fontFamily: "Lato-Bold",
-        fontSize: 16,
-        fontWeight: "bold",
-        marginBottom: 15,
-    },
     row: {
         flexDirection: "row",
         width: '100%',
-        alignItems: "center",
         justifyContent: "space-between"
     },
     itemStatus: {
         color: "#4ECB71",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
+        alignSelf: "center",
         fontSize: 16,
-        lineHeight: 20,
     },
     labelStatus: {
         paddingHorizontal: 10,
@@ -240,21 +160,29 @@ const styles = StyleSheet.create({
     },
     itemId: {
         color: "#000000",
-        fontFamily: "Lato-Bold",
-        fontSize: 25,
-        lineHeight: 27,
+        fontFamily: "lato-bold",
+        fontSize: 20,
+        lineHeight: 22,
     },
     itemDate: {
         color: "#CBCBD4",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
         fontSize: 16,
         lineHeight: 20,
     },
     itemPrice: {
         color: "#000000",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 25,
-        lineHeight: 27,
+        lineHeight: 25,
+        textAlignVertical: "bottom",
+    },
+    currency: {
+        color: "#CBCBD4",
+        fontFamily: "lato-bold",
+        fontSize: 16,
+        lineHeight: 18,
+        textAlignVertical: "bottom",
     },
 });
 
