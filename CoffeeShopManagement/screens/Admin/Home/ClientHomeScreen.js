@@ -27,13 +27,13 @@ export default function AdminClientScreen() {
 
   const renderClientItem = ({ item }) => (
     <Pressable style={styles.item} onPress={() => { navigation.navigate("ClientDetailHome")}}>
-      <View style={{ width: '25%' }}>
+      <View style={{ width: '35%',  }}>
         <Text style={styles.text}>{item.id}</Text>
       </View>
       <View style={{ width: '35%' }}>
         <Text style={styles.text}>{item.name}</Text>
       </View>
-      <View style={{ width: '40%' }}>
+      <View style={{ width: '30%' }}>
         <Text style={styles.text}>{item.total}</Text>
       </View>
     </Pressable>
@@ -62,7 +62,7 @@ export default function AdminClientScreen() {
           </View>
           <View style={styles.row}>
             <Text style={styles.amount}>69</Text>
-            <Text style={styles.clientKind}>Tổng số khách hàng</Text>
+            <Text style={styles.clientKind}>Tổng số{'\n'}khách hàng</Text>
           </View>
         </View>
         <View style={styles.label}>
@@ -74,14 +74,14 @@ export default function AdminClientScreen() {
           </View>
           <View style={styles.row}>
             <Text style={styles.amount}>69</Text>
-            <Text style={styles.clientKind}>Khách hàng mới</Text>
+            <Text style={styles.clientKind}>Khách hàng{'\n'}mới</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.clientList}>
         <View style={styles.item}>
-          <View style={{ width: '25%' }}>
+          <View style={{ width: '35%' }}>
             <Text style={styles.text}>Thứ hạng</Text>
           </View>
           <View style={{ width: '35%' }}>
@@ -92,8 +92,9 @@ export default function AdminClientScreen() {
           </View>
         </View>
         <FlatList
-        data={clientList}
-        renderItem={renderClientItem}
+          data={clientList}
+          renderItem={renderClientItem}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </SafeAreaView>
@@ -160,8 +161,8 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: "#DDD",
-    paddingHorizontal: 10,
     paddingVertical: 10,
+    paddingHorizontal: 10,
     marginBottom: 10,
   },
   item: {
@@ -182,19 +183,19 @@ const styles = StyleSheet.create({
     fontSize: 30,
   },
   amount: {
-    fontFamily: 'Lato-Bold',
+    fontFamily: 'lato-bold',
     fontSize: 25,
     color: '#000000',
     lineHeight: 30,
   },
   clientKind: {
-    fontFamily: 'Lato-Regular',
-    fontSize: 13,
+    fontFamily: 'lato-regular',
+    fontSize: 16,
     color: '#A3A3A3',
-    lineHeight: 15,
+    lineHeight: 21,
   },
   text: {
-    fontFamily: 'Lato-Regular',
+    fontFamily: 'lato-regular',
     fontSize: 16,
     color: '#A3A3A3',
     lineHeight: 18,
