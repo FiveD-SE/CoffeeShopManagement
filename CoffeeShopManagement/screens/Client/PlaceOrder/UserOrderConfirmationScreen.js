@@ -31,6 +31,8 @@ const isIOS = Platform.OS === "ios";
 const UserOrderConfirmationScreen = ({ route, userData }) => {
 	const { productOrders } = route.params;
 
+	console.log("productOrders: ", productOrders);
+
 	const navigation = useNavigation();
 
 	const selectTimeBottomSheetRef = useRef();

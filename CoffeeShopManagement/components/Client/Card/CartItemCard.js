@@ -12,6 +12,7 @@ const CartItemCard = ({
 	price,
 	imageSource,
 	quantity,
+	toppings,
 	options,
 	handleIncrease,
 	handleDecrease,
@@ -36,6 +37,11 @@ const CartItemCard = ({
 			<View style={styles.main}>
 				<Text style={styles.name}>{name}</Text>
 				<Text style={[styles.subtitle, { fontSize: 16 }]}>{price}</Text>
+				{toppings.length > 0 && (
+					<Text style={styles.subtitle} numberOfLines={2}>
+						{toppings}
+					</Text>
+				)}
 				<Text style={styles.subtitle}>{options}</Text>
 			</View>
 			<View style={styles.adjustButtonContainer}>
@@ -74,11 +80,11 @@ const styles = StyleSheet.create({
 		elevation: 2,
 	},
 	imageContainer: {
-		flex: 0.5,
+		flex: 0.2,
 	},
 	image: {
 		width: "100%",
-		height: 80,
+		height: 50,
 		borderRadius: 10,
 	},
 	main: {
@@ -100,7 +106,7 @@ const styles = StyleSheet.create({
 		fontFamily: "lato-regular",
 	},
 	adjustButtonContainer: {
-		flex: 0.7,
+		flex: 0.5,
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
