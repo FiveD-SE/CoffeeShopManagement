@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    backgroundColor: '#000000',
   },
   section:{
     flexDirection: 'row',
