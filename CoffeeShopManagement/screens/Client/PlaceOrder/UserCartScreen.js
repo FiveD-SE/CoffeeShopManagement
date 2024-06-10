@@ -39,6 +39,16 @@ const UserCartScreen = ({ userData }) => {
 		}).format(amount);
 	};
 
+	const renderToppingsList = (toppings) => {
+		return toppings
+			.map(
+				(topping) =>
+					topping.title.charAt(0).toUpperCase() +
+					topping.title.slice(1).toLowerCase()
+			)
+			.join(", ");
+	};
+
 	const renderCartList = ({ item, index }) => (
 		<CartItemCard
 			id={item.cartItemId}
@@ -46,6 +56,7 @@ const UserCartScreen = ({ userData }) => {
 			price={formatCurrency(item.totalPrice)}
 			imageSource={item.productImage}
 			quantity={item.quantity}
+			toppings={renderToppingsList(item.toppings)}
 			options={`${item.size}, ${
 				item.productOptions.sugarEnable ? "Có đường" : "Không đường"
 			}, ${item.productOptions.milkEnable ? "Có sữa" : "Không sữa"}, ${

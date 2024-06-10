@@ -4,12 +4,25 @@ import { colors } from "../../../assets/colors/colors";
 
 const SelectedProductList = ({ orderList }) => {
 	const renderOptionList = (item) => {
+		const optionLabels = ["Đường", "Sữa", "Đá"];
 		return item
 			.map(
-				(option) =>
-					option.charAt(0).toUpperCase() + option.slice(1).toLowerCase()
+				(option, index) =>
+					`${optionLabels[index]}: ${
+						option.charAt(0).toLowerCase() + option.slice(1).toLowerCase()
+					}`
 			)
-			.join(",  ");
+			.join(", ");
+	};
+
+	const renderToppingsList = (toppings) => {
+		return toppings
+			.map(
+				(topping) =>
+					topping.title.charAt(0).toUpperCase() +
+					topping.title.slice(1).toLowerCase()
+			)
+			.join(", ");
 	};
 
 	const formatCurrency = (amount) => {
@@ -26,11 +39,18 @@ const SelectedProductList = ({ orderList }) => {
 					<View>
 						<Text style={styles.title}>{item.productName}</Text>
 					</View>
-					<Text style={styles.subtitle} numberOfLines={2} ellipsizeMode="tail">
-						{renderOptionList(item.options)}
-					</Text>
+					{item.toppings && item.toppings.length > 0 && (
+						<Text style={styles.subtitle} numberOfLines={2}>
+							{renderToppingsList(item.toppings)}
+						</Text>
+					)}
+					{item.options && item.options.length > 0 && (
+						<Text style={styles.subtitle} numberOfLines={2}>
+							{renderOptionList(item.options)}
+						</Text>
+					)}
 					<Text
-						style={[styles.subtitle, { color: colors.black_100 }]}
+						style={[styles.subtitle, { color: colors.black_100, fontSize: 14 }]}
 						numberOfLines={1}
 						ellipsizeMode="tail"
 					>
@@ -79,7 +99,7 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		lineHeight: 20,
 		fontFamily: "lato-regular",
-		marginTop: "2%",
+		marginTop: "1%",
 	},
 	price: {
 		color: colors.black_100,
