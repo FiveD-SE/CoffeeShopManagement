@@ -15,13 +15,14 @@ import SelectedProductList from "../../../components/Client/List/SelectedProduct
 import ApplyVoucherButton from "../../../components/Client/Button/ApplyVoucherButton";
 import TotalOrderList from "../../../components/Client/List/TotalOrderList";
 import PaymentMethodButton from "../../../components/Client/Button/PaymentMethodButton";
-import ChooseDeliveryButton from "../../../components/Client/Button/ChooseDeliveryButton";
 import ChooseDeliveryBottomSheet from "../../../components/Client/BottomSheet/ChooseDeliveryBottomSheet";
 import DeliveryInformationButton from "../../../components/Client/Button/DeliveryInformationButton";
 import ChooseCouponBottomSheet from "../../../components/Client/BottomSheet/ChooseCouponBottomSheet";
 import SelectTimeBottomSheet from "../../../components/Client/BottomSheet/SelectTimeBottomSheet";
 
 import { colors } from "../../../assets/colors/colors";
+import { collection, getDoc, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../services/firebaseService";
 
 const CASH_ICON = require("../../../assets/cash.png");
 const MOMO_ICON = require("../../../assets/momo.png");
@@ -29,9 +30,11 @@ const MOMO_ICON = require("../../../assets/momo.png");
 const isIOS = Platform.OS === "ios";
 
 const UserOrderConfirmationScreen = ({ route, userData }) => {
-	const { productOrders } = route.params;
+	const { productOrders, selectedAddress } = route.params;
 
-	console.log("productOrders: ", productOrders);
+	// console.log("productOrders: ", productOrders);
+
+	console.log("selectedAddress: ", selectedAddress);
 
 	const navigation = useNavigation();
 
@@ -55,6 +58,8 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 
 	const [selectedDiscountCoupon, setSelectedDiscountCoupon] = useState(null);
 
+	const [addresses, setAddresses] = useState(null);
+
 	const [selectedDate, setSelectedDate] = useState("");
 
 	const [selectedTime, setSelectedTime] = useState("");
@@ -71,28 +76,16 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	};
 
 	const deliveryMethod = {
-		takeaway: {
+		delivery: {
 			branch: {
 				title: "Chi nhánh",
 				details: "66E Hoàng Diệu 2, Quận Thủ Đức, Hồ Chí Minh, Việt Nam",
 			},
-			receiver: {
-				title: "Thông tin người nhận",
-				details: "Tánh Chần (0352085655)",
-			},
-			deliveryTime: {
-				title: "Thời gian nhận hàng",
-				details: `${selectedDate} (${selectedTime})`,
-			},
-		},
-		delivery: {
 			address: {
-				title: "Địa chỉ giao hàng",
-				details: "KTX khu B, Đông Hoà, Dĩ An, Bình Dương",
-			},
-			receiver: {
-				title: "Thông tin người nhận",
-				details: "Tánh Chần (0352085655)",
+				title: "Thông tin đặt hàng",
+				details:
+					addresses &&
+					`${addresses.street}, ${addresses.districtName}, ${addresses.provinceName}`,
 			},
 			deliveryTime: {
 				title: "Thời gian nhận hàng",
@@ -102,13 +95,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 		},
 	};
 
-	const handleChooseDeliveryMethod = () => {
-		chooseDeliveryBottomSheetRef.current?.present();
-		setIsOpen(true);
-	};
-
 	const handleSelectDeliveryCoupon = (deliveryCoupon) => {
-		console.log(deliveryCoupon);
 		if (deliveryCoupon) {
 			setSelectedDeliveryCoupon({
 				deliveryCoupon: deliveryCoupon,
@@ -119,7 +106,6 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	};
 
 	const handleSelectDiscountCoupon = (discountCoupon) => {
-		console.log(discountCoupon);
 		if (discountCoupon) {
 			setSelectedDiscountCoupon({
 				discountCoupon: discountCoupon,
@@ -143,10 +129,8 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	};
 
 	const handleDeliveryInfoPress = (title) => {
-		if (title === "Địa chỉ giao hàng") {
+		if (title === "Thông tin đặt hàng") {
 			goToSelectAddress();
-		} else if (title === "Thông tin người nhận") {
-			goToSelectReceiver();
 		} else if (title === "Thời gian nhận hàng") {
 			handleSelectTime();
 		} else if (title === "Chi nhánh") {
@@ -155,32 +139,20 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	};
 
 	const renderDeliveryList = () => {
-		if (deliveryOption === "delivery") {
-			const delivery = deliveryMethod.delivery;
+		const delivery = deliveryMethod.delivery;
 
-			return Object.keys(delivery).map((index) => {
-				const { title, details } = delivery[index];
-				return (
-					<View key={index} style={{ marginTop: "5%" }}>
-						<DeliveryInformationButton
-							title={title}
-							details={details}
-							onPress={() => handleDeliveryInfoPress(title)}
-						/>
-					</View>
-				);
-			});
-		}
-		return null;
-	};
-
-	const setChooseDeliveryButtonTitle = () => {
-		if (deliveryOption === "takeaway") {
-			return "Tự đến lấy hàng";
-		} else if (deliveryOption === "delivery") {
-			return "Giao hàng tận nơi";
-		}
-		return "Chọn phương thức đặt hàng";
+		return Object.keys(delivery).map((index) => {
+			const { title, details } = delivery[index];
+			return (
+				<View key={index} style={{ marginTop: "5%" }}>
+					<DeliveryInformationButton
+						title={title}
+						details={details}
+						onPress={() => handleDeliveryInfoPress(title)}
+					/>
+				</View>
+			);
+		});
 	};
 
 	const formatCurrency = (amount) => {
@@ -224,14 +196,11 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	};
 
 	const goToSelectAddress = () => {
-		navigation.navigate("UserChooseAddressScreen");
+		navigation.navigate("SelectAddress", { productOrders, isOrdered: true });
 	};
 
-	const goToSelectReceiver = () => {
-		alert("INFORMATION");
-	};
 	const goToSelectBranch = () => {
-		alert("BRANCH");
+		navigation.navigate("SelectBranchScreen");
 	};
 
 	const handleSelectTime = () => {
@@ -255,29 +224,41 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 		});
 	};
 
-	const renderTakeawayList = () => {
-		if (deliveryOption === "takeaway") {
-			const takeaway = deliveryMethod.takeaway;
-
-			return Object.keys(takeaway).map((index) => {
-				const { title, details } = takeaway[index];
-				return (
-					<View key={index} style={{ marginTop: "5%" }}>
-						<DeliveryInformationButton
-							title={title}
-							details={details}
-							onPress={() => handleDeliveryInfoPress(title)}
-						/>
-					</View>
-				);
-			});
-		}
-		return null;
-	};
-
 	useEffect(() => {
 		calculateTotalPrice();
 	});
+
+	useEffect(() => {
+		const loadAddresses = async () => {
+			try {
+				const q = query(
+					collection(db, "addresses"),
+					where("userId", "==", userData.id),
+					where("isDefault", "==", true)
+				);
+
+				const querySnapshot = await getDocs(q);
+				const loadedAddresses = [];
+				querySnapshot.forEach((doc) => {
+					loadedAddresses.push(doc.data());
+				});
+
+				if (loadedAddresses.length > 0) {
+					setAddresses(loadedAddresses[0]);
+				}
+
+				console.log("loadedAddresses: ", loadedAddresses);
+			} catch (error) {
+				console.error("Error loading addresses:", error);
+			}
+		};
+
+		loadAddresses();
+	}, [userData.id]);
+
+	useEffect(() => {
+		setAddresses(selectedAddress);
+	}, [selectedAddress]);
 
 	useEffect(() => {
 		chooseDeliveryBottomSheetRef.current.close();
@@ -293,11 +274,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 		<>
 			<ScrollView showsVerticalScrollIndicator={false}>
 				<View style={styles.container} showsVerticalScrollIndicator={false}>
-					<ChooseDeliveryButton
-						title={setChooseDeliveryButtonTitle()}
-						onPress={handleChooseDeliveryMethod}
-					/>
-					{renderTakeawayList()}
+					<Text style={styles.headerTitle}>Giao hàng tận nơi</Text>
 					{renderDeliveryList()}
 					<View style={{ marginTop: "5%" }}>
 						<Section title="Sản phẩm đã chọn">
@@ -374,6 +351,11 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
+	},
+	headerTitle: {
+		color: colors.black_100,
+		fontSize: 20,
+		fontFamily: "lato-bold",
 	},
 	title: {
 		color: colors.black_100,
