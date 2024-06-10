@@ -1,109 +1,151 @@
 import { View, Text, StyleSheet, SafeAreaView, Pressable, FlatList } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../../services/firebaseService';
+import { ScrollView } from 'react-native-gesture-handler';
+import SearchBar from '../../../components/Client/SearchBar';
 
-export default function AdminClientScreen() {
+const AdminClientScreen = () => {
   const navigation = useNavigation();
+  const [usersData, setUsersData] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalNewUsers, setTotalNewUsers] = useState(0);
+  const [filteredUsersData, setFilteredUsersData] = useState([]);
+  const [totalNewUsersPercentage, setTotalNewUsersPercentage] = useState(0);
+
+  const date30DaysAgo = new Date();
+  date30DaysAgo.setDate(date30DaysAgo.getDate() - 30);
+  const handleNavigateToClientDetail = (item) => {
+    console.log(item)
+    navigation.navigate("ClientDetailHome", {
+      selectedUser: item,
+    });
+  };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const usersCollection = collection(db, 'users');
+      const userQuery = query(usersCollection, where('role', '==', 'user'));
+      const usersSnapshot = await getDocs(userQuery);
+      let usersListData = usersSnapshot.docs.map(doc => doc.data());
+    
+      usersListData = usersListData.sort((a, b) => b.credit - a.credit);
+      
+      const date30DaysAgo = new Date();
+      date30DaysAgo.setDate(date30DaysAgo.getDate() - 30);
+      const date60DaysAgo = new Date();
+      date60DaysAgo.setDate(date60DaysAgo.getDate() - 60);
+    
+      const newUserThisMonth = usersListData.filter(user => {
+        const userCreatedDate = new Date(user.createdAt.seconds * 1000);
+        return userCreatedDate >= date30DaysAgo;
+      });
+
+      const newUserLastMonth = usersListData.filter(user => {
+        const userCreatedDate = new Date(user.createdAt.seconds * 1000);
+        return userCreatedDate >= date60DaysAgo && userCreatedDate < date30DaysAgo;
+      });
+
+      let totalNewUsersTrending = 0;
+      if (newUserLastMonth.length === 0) {
+        totalNewUsersTrending = newUserThisMonth.length * 100;
+      } else {
+        totalNewUsersTrending = ((newUserThisMonth.length - newUserLastMonth.length) / newUserLastMonth.length) * 100;
+      }
+      
+      setUsersData(usersListData);
+      setFilteredUsersData(usersListData);
+      setTotalUsers(usersListData.length);
+      setTotalNewUsersPercentage(totalNewUsersTrending);
+      setTotalNewUsers(newUserThisMonth.length);
+    };
+    
+    fetchUsers();
+
+  }, []);
+
+  const splitName = (name) => {
+    return name.split(" ").pop();
+  }
+
+  const handleSearch = (query) => {
+    const filteredList = usersData.filter(item => 
+      item.fullName.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredUsersData(filteredList);
+  };
+
+  const RenderUserList = () => {
+    return (
+      filteredUsersData.map((item, index) => (
+        <Pressable key={index} style={styles.item} onPress={() => handleNavigateToClientDetail(item)}>
+          <View style={{ width: '25%', alignItems: 'center' }}>
+            <Text style={styles.text}>{index + 1}</Text>
+          </View>
+          <View style={{ width: '45%', alignItems: 'center' }}>
+            <Text style={styles.text}>{splitName(item.fullName)}</Text>
+          </View>
+          <View style={{ width: '30%', alignItems: 'center' }}>
+            <Text style={styles.text}>{item.credit}</Text>
+          </View>
+        </Pressable>
+    )))
+  };
   
-  const clientList = [
-    {id: 1, name: 'Thắng', total: '10.000.000'},
-    {id: 2, name: 'Nam', total: '8.000.000'},
-    {id: 3, name: 'Linh', total: '5.000.000'},
-    {id: 4, name: 'Hải', total: '3.000.000'},
-    {id: 5, name: 'Trang', total: '2.000.000'},
-    {id: 6, name: 'Thắng', total: '10.000.000'},
-    {id: 7, name: 'Nam', total: '8.000.000'},
-    {id: 8, name: 'Linh', total: '5.000.000'},
-    {id: 9, name: 'Hải', total: '3.000.000'},
-    {id: 10, name: 'Trang', total: '2.000.000'},
-    {id: 11, name: 'Thắng', total: '10.000.000'},
-    {id: 12, name: 'Nam', total: '8.000.000'},
-    {id: 13, name: 'Linh', total: '5.000.000'},
-    {id: 14, name: 'Hải', total: '3.000.000'},
-    {id: 15, name: 'Trang', total: '2.000.000'},
-  ]
-
-  const renderClientItem = ({ item }) => (
-    <Pressable style={styles.item} onPress={() => { navigation.navigate("ClientDetailHome")}}>
-      <View style={{ width: '35%',  }}>
-        <Text style={styles.text}>{item.id}</Text>
-      </View>
-      <View style={{ width: '35%' }}>
-        <Text style={styles.text}>{item.name}</Text>
-      </View>
-      <View style={{ width: '30%' }}>
-        <Text style={styles.text}>{item.total}</Text>
-      </View>
-    </Pressable>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.section}>
-        <View style={styles.labelOptions}>
-          <Text style={styles.text}>Tất cả</Text>
-          <Ionicons name="chevron-down" size={20} color="#000" />
-        </View>
-        <View style={styles.labelSearch}>
-          <Text style={styles.text}>Tìm kiếm</Text>
-          <Ionicons name="search" size={20} color="#000" />
-        </View>
-      </View>
-
+      <SearchBar onChangeText={handleSearch}/>
       <View style={styles.section}>
         <View style={styles.label}>
           <View style={styles.row}>
-            <Ionicons name="people" size={30} color="#000" />
-            <Text style={styles.downtrendicon}>
-              <Ionicons name="trending-down" size={30} style={styles.downtrendicon}/> 20%
-            </Text>
+            <Ionicons name="people" size={35} color="#000" />
           </View>
           <View style={styles.row}>
-            <Text style={styles.amount}>69</Text>
-            <Text style={styles.clientKind}>Tổng số{'\n'}khách hàng</Text>
+          <Text style={styles.clientKind}>Tổng số khách{'\n'}hàng</Text>
+            <Text style={styles.amount}>{totalUsers}</Text>
           </View>
         </View>
         <View style={styles.label}>
           <View style={styles.row}>
-            <MaterialIcons name="fiber-new" size={30} color="#000" />
-            <Text style={styles.uptrendicon}>
-              <Ionicons name="trending-up" size={30} style={styles.uptrendicon} /> 20%
-            </Text>
+            <MaterialIcons name="fiber-new" size={35} color="#000" />
+              <Text style={totalNewUsersPercentage > 0 ? styles.uptrendicon : styles.downtrendicon}>
+                <Ionicons name={totalNewUsersPercentage > 0 ? "trending-up" : "trending-down"} size={30} style={totalNewUsersPercentage > 0 ? styles.uptrendicon : styles.downtrendicon}/> {Math.abs(Number(totalNewUsersPercentage.toFixed(1)))}%
+              </Text>
           </View>
           <View style={styles.row}>
-            <Text style={styles.amount}>69</Text>
-            <Text style={styles.clientKind}>Khách hàng{'\n'}mới</Text>
+          <Text style={styles.clientKind}>Khách hàng mới{'\n'}</Text>
+            <Text style={styles.amount}>{totalNewUsers}</Text>
           </View>
         </View>
       </View>
 
       <View style={styles.clientList}>
         <View style={styles.item}>
-          <View style={{ width: '35%' }}>
+          <View style={{ width: '25%', alignItems: 'center' }}>
             <Text style={styles.text}>Thứ hạng</Text>
           </View>
-          <View style={{ width: '35%' }}>
+          <View style={{ width: '45%', alignItems: 'center' }}>
             <Text style={styles.text}>Tên</Text>
           </View>
-          <View style={{ width: '40%' }}>
+          <View style={{ width: '30%', alignItems: 'center' }}>
             <Text style={styles.text}>Doanh số</Text>
           </View>
         </View>
-        <FlatList
-          data={clientList}
-          renderItem={renderClientItem}
-          showsVerticalScrollIndicator={false}
-        />
+        <ScrollView>
+          <RenderUserList />
+        </ScrollView>
       </View>
     </SafeAreaView>
   )
 }
 
+export default AdminClientScreen;
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
@@ -126,7 +168,7 @@ const styles = StyleSheet.create({
   },
   labelSearch: {
     flexDirection: "row",
-    width: '70%',
+    width: '100%',
     alignItems: "center",
     justifyContent: 'space-between',
     paddingHorizontal: 15,
@@ -156,7 +198,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
   },
   clientList: {
-    flex: 1,
+    height: '70%',
     backgroundColor: '#FFFFFF',
     borderRadius: 15,
     borderWidth: 1,
@@ -176,11 +218,11 @@ const styles = StyleSheet.create({
   },
   uptrendicon: {
     color: '#4ECB71',
-    fontSize: 30,
+    fontSize: 25,
   },
   downtrendicon: {
     color: '#F61A3D',
-    fontSize: 30,
+    fontSize: 25,
   },
   amount: {
     fontFamily: 'lato-bold',
@@ -190,9 +232,9 @@ const styles = StyleSheet.create({
   },
   clientKind: {
     fontFamily: 'lato-regular',
-    fontSize: 16,
+    fontSize: 13,
     color: '#A3A3A3',
-    lineHeight: 21,
+    lineHeight: 15,
   },
   text: {
     fontFamily: 'lato-regular',

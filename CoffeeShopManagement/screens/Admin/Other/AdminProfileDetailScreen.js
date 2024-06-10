@@ -34,7 +34,7 @@ const ProfileDetails = ({ userData }) => {
                                 paddingTop: 60,
                                 paddingBottom: 50,
                                 alignContent: "center",
-                                alignItems: "center", // Add alignItems: 'center'
+                                alignItems: "center",
                             },
                         ]}
                     >
