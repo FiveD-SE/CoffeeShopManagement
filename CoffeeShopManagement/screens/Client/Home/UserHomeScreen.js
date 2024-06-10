@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
-	ScrollView,
     View,
     ScrollView,
     SafeAreaView,
