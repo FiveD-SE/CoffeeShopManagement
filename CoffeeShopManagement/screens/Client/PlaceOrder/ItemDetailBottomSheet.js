@@ -69,6 +69,8 @@ const ItemDetailBottomSheet = ({
 
 	const [localIsFavorite, setLocalIsFavorite] = useState(null);
 
+	console.log("selectedToppings: ", selectedToppings);
+
 	const sizeItemList = [
 		{
 			size: "S",
@@ -249,6 +251,7 @@ const ItemDetailBottomSheet = ({
 			...selectedItem,
 			size: sizeItemList[selectedSizeIndex].size,
 			quantity: quantity,
+			toppings: selectedToppings,
 			options: [selectedSugarOption, selectedMilkOption, selectedIceOption],
 			totalPrice: calculateTotalPrice(),
 			cartItemId:
@@ -272,6 +275,7 @@ const ItemDetailBottomSheet = ({
 				...selectedItem,
 				size: sizeItemList[selectedSizeIndex].size,
 				quantity: quantity,
+				toppings: selectedToppings,
 				options: [selectedSugarOption, selectedMilkOption, selectedIceOption],
 				totalPrice: calculateTotalPrice(),
 				cartItemId:
@@ -384,7 +388,7 @@ const ItemDetailBottomSheet = ({
 						<Image
 							style={styles.image}
 							source={{ uri: selectedItem.productImage }}
-							resizeMode="contain"
+							resizeMode="stretch"
 						/>
 					</View>
 					<View style={styles.main}>
@@ -418,7 +422,7 @@ const ItemDetailBottomSheet = ({
 								</View>
 							</Section>
 						</View>
-						{renderToppingButton()}
+						{selectedItem.productType !== "Cà phê" && renderToppingButton()}
 						{renderToppingItemList()}
 					</View>
 				</View>

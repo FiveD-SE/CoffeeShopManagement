@@ -12,6 +12,8 @@ import { colors } from "../../../assets/colors/colors";
 
 const cardWidth = (Dimensions.get("window").width - 10) / 2 - 10;
 
+const cardHeight = Dimensions.get("window").height / 5;
+
 const BestSellerItem = ({
 	name,
 	price,
@@ -33,7 +35,7 @@ const BestSellerItem = ({
 				<Image
 					style={styles.image}
 					source={{ uri: imageSource }}
-					resizeMode="contain"
+					resizeMode="cover"
 				/>
 			</View>
 			<View style={styles.main}>
@@ -60,7 +62,7 @@ const styles = StyleSheet.create({
 	imageContainer: {
 		borderRadius: 10,
 		overflow: "hidden",
-		maxHeight: 120,
+		maxHeight: cardHeight,
 	},
 	image: {
 		width: "100%",
@@ -76,14 +78,14 @@ const styles = StyleSheet.create({
 		color: colors.black_100,
 		fontSize: 16,
 		fontFamily: "lato-bold",
-		lineHeight: 30,
+		lineHeight: 24,
 	},
 	price: {
 		marginTop: "5%",
 		color: colors.grey_100,
 		fontSize: 16,
 		lineHeight: 20,
-		fontFamily: "lato-bold",
+		fontFamily: "lato-regular",
 	},
 	addButton: {
 		justifyContent: "center",

@@ -14,8 +14,8 @@ import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScr
 
 import EditProfileDetail from "../screens/Client/Other/UserEditProfileScreen";
 import ProfileDetails from "../screens/Client/Other/UserProfileDetailScreen";
-import EditAddress from "../screens/Client/Other/UserEditAddressScreen";
-import AddNewAddress from "../screens/Client/Other/UserAddNewAddressScreen";
+import UserEditAddressScreen from "../screens/Client/Other/UserEditAddressScreen";
+import UserAddNewAddressScreen from "../screens/Client/Other/UserAddNewAddressScreen";
 import Other from "../screens/Client/Other/UserOtherScreen";
 
 import TabBarIcon from "./components/TabBarIcon";
@@ -26,7 +26,7 @@ import SearchBar from "./components/SearchBar";
 import UserOrderScreen from "../screens/Client/PlaceOrder/UserOrderScreen";
 import OrderHistory from "../screens/Client/Other/UserOrderHistoryScreen";
 import Setting from "../screens/Client/Other/UserSettingScreen";
-import SelectAdress from "../screens/Client/Other/UserAddressScreen";
+import UserAddressScreen from "../screens/Client/Other/UserAddressScreen";
 import SelectBranch from "../screens/Client/Other/UserSelectBranchScreen";
 import FeedbackAndHelp from "../screens/Client/Other/UserFeedbackAndHelpScreen";
 import ChangePassword from "../screens/Client/ChangePassword";
@@ -34,11 +34,9 @@ import SignInScreen from "../screens/Client/SignInScreen";
 import UserOrderConfirmationScreen from "../screens/Client/PlaceOrder/UserOrderConfirmationScreen";
 import UserMapScreen from "../screens/Client/Other/UserMapScreen";
 
-import Promotions from "../screens/Client/Coupons/UserCouponScreen";
 import MembershipTier from "../screens/Client/Coupons/UserMembershipTierScreen";
 import History from "../screens/Client/Coupons/UserExchangeHistoryScreen";
 import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
-import YourVoucher from "../screens/Client/Coupons/UserVoucherScreen";
 import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
 import CashierNotification from "../screens/Staff/CashierNotification";
 import UserChooseAddressScreen from "../screens/Client/PlaceOrder/UserChooseAddressScreen";
@@ -47,6 +45,8 @@ import StorePolicyScreen from "../screens/Client/Other/StorePolicyScreen";
 
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { colors } from "../assets/colors/colors";
+import UserCouponScreen from "../screens/Client/Coupons/UserCouponScreen";
+import UserVoucherScreen from "../screens/Client/Coupons/UserVoucherScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -356,7 +356,7 @@ const CouponsStack = ({ navigation, route }) => {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
-		} else if (routeName === "YourVoucher") {
+		} else if (routeName === "UserVoucherScreen") {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
@@ -393,7 +393,7 @@ const CouponsStack = ({ navigation, route }) => {
 		<Stack.Navigator>
 			<Stack.Screen
 				name="Promotions"
-				component={Promotions}
+				component={UserCouponScreen}
 				options={{ headerShown: false }}
 			/>
 			<Stack.Screen
@@ -409,8 +409,8 @@ const CouponsStack = ({ navigation, route }) => {
 			/>
 
 			<Stack.Screen
-				name="YourVoucher"
-				component={YourVoucher}
+				name="UserVoucherScreen"
+				component={UserVoucherScreen}
 				options={{
 					headerTitle: "Voucher của bạn",
 					headerLeftContainerStyle: {
@@ -467,8 +467,36 @@ const CouponsStack = ({ navigation, route }) => {
 	);
 };
 
-const OtherStack = () => (
-	<Stack.Navigator>
+const OtherStack = ({ navigation, route }) => {
+	useLayoutEffect(() => {
+		const routeName = getFocusedRouteNameFromRoute(route);
+		if (routeName === "SelectAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "AddNewAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "EditAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		}
+		
+		else {
+			navigation.setOptions({
+				tabBarStyle: {
+					backgroundColor: colors.white_100,
+					borderTopColor: colors.grey_20,
+					borderTopWidth: 1,
+					borderOpacity: 0.5,
+					height: isIOS ? 100 : 80,
+				},
+			});
+		}
+	}, [navigation, route]);
+	return (<Stack.Navigator>
 		<Stack.Screen
 			name="Other"
 			component={Other}
@@ -520,14 +548,13 @@ const OtherStack = () => (
 		/>
 		<Stack.Screen
 			name="SelectAddress"
-			component={SelectAdress}
+			component={UserAddressScreen}
 			options={{
-				headerTitle: () => <SearchBar />,
+				headerTitle: "Địa chỉ của bạn",
 				headerLeftContainerStyle: {
 					paddingLeft: "5%",
 				},
 				headerLeft: () => <HeaderBackButton />,
-				headerRight: () => <SelectPositionButton />,
 			}}
 		/>
 		<Stack.Screen
@@ -564,7 +591,7 @@ const OtherStack = () => (
 		/>
 		<Stack.Screen
 			name="EditAddress"
-			component={EditAddress}
+			component={UserEditAddressScreen}
 			options={{
 				headerTitle: "Sửa địa chỉ",
 				headerLeftContainerStyle: {
@@ -575,7 +602,7 @@ const OtherStack = () => (
 		/>
 		<Stack.Screen
 			name="AddNewAddress"
-			component={AddNewAddress}
+			component={UserAddNewAddressScreen}
 			options={{
 				headerTitle: "Thêm địa chỉ mới",
 				headerLeftContainerStyle: {
@@ -642,7 +669,8 @@ const OtherStack = () => (
 			}}
 		/>
 	</Stack.Navigator>
-);
+	);
+};
 
 function UserNavigator() {
 	const [bottomSheetOpen, setBottomSheetOpen] = useState(false);

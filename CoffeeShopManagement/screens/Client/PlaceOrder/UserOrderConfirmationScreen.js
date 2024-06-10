@@ -1,3 +1,4 @@
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
 	StyleSheet,
 	Text,
@@ -6,7 +7,9 @@ import {
 	ScrollView,
 	Platform,
 } from "react-native";
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { connect } from "react-redux";
+
 import Section from "../../../components/Client/Section";
 import SelectedProductList from "../../../components/Client/List/SelectedProductList";
 import ApplyVoucherButton from "../../../components/Client/Button/ApplyVoucherButton";
@@ -16,8 +19,8 @@ import ChooseDeliveryButton from "../../../components/Client/Button/ChooseDelive
 import ChooseDeliveryBottomSheet from "../../../components/Client/BottomSheet/ChooseDeliveryBottomSheet";
 import DeliveryInformationButton from "../../../components/Client/Button/DeliveryInformationButton";
 import ChooseCouponBottomSheet from "../../../components/Client/BottomSheet/ChooseCouponBottomSheet";
-import { useNavigation } from "@react-navigation/native";
 import SelectTimeBottomSheet from "../../../components/Client/BottomSheet/SelectTimeBottomSheet";
+
 import { colors } from "../../../assets/colors/colors";
 
 const CASH_ICON = require("../../../assets/cash.png");
@@ -25,13 +28,24 @@ const MOMO_ICON = require("../../../assets/momo.png");
 
 const isIOS = Platform.OS === "ios";
 
-const UserOrderConfirmationScreen = ({ route }) => {
+const UserOrderConfirmationScreen = ({ route, userData }) => {
 	const { productOrders } = route.params;
+
+	console.log("productOrders: ", productOrders);
 
 	const navigation = useNavigation();
 
 	const selectTimeBottomSheetRef = useRef();
+
+	const chooseDeliveryBottomSheetRef = useRef(null);
+
+	const chooseCouponBottomSheetRef = useRef(null);
+
 	const selectTimeSnapPoints = useMemo(() => [isIOS ? "50%" : "40%"], []);
+
+	const chooseDeliverySnapPoints = useMemo(() => ["30%"], []);
+
+	const chooseCouponSnapPoints = useMemo(() => ["85%"], []);
 
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
@@ -45,15 +59,11 @@ const UserOrderConfirmationScreen = ({ route }) => {
 
 	const [selectedTime, setSelectedTime] = useState("");
 
+	const [totalPrice, setTotalPrice] = useState(0);
+
+	const [totalDiscount, setTotalDiscount] = useState(0);
+
 	const [isOpen, setIsOpen] = useState(false);
-
-	const chooseDeliverySnapPoints = useMemo(() => ["30%"], []);
-
-	const chooseDeliveryBottomSheetRef = useRef(null);
-
-	const chooseCouponSnapPoints = useMemo(() => ["85%"], []);
-
-	const chooseCouponBottomSheetRef = useRef(null);
 
 	const paymentMethods = {
 		cash: { title: "Tiền mặt", imageSource: CASH_ICON },
@@ -92,13 +102,31 @@ const UserOrderConfirmationScreen = ({ route }) => {
 		},
 	};
 
-	const handlePaymentMethodChange = (method) => {
-		setSelectedPaymentMethod(method);
-	};
-
 	const handleChooseDeliveryMethod = () => {
 		chooseDeliveryBottomSheetRef.current?.present();
 		setIsOpen(true);
+	};
+
+	const handleSelectDeliveryCoupon = (deliveryCoupon) => {
+		console.log(deliveryCoupon);
+		if (deliveryCoupon) {
+			setSelectedDeliveryCoupon({
+				deliveryCoupon: deliveryCoupon,
+			});
+		} else {
+			setSelectedDeliveryCoupon(null);
+		}
+	};
+
+	const handleSelectDiscountCoupon = (discountCoupon) => {
+		console.log(discountCoupon);
+		if (discountCoupon) {
+			setSelectedDiscountCoupon({
+				discountCoupon: discountCoupon,
+			});
+		} else {
+			setSelectedDiscountCoupon(null);
+		}
 	};
 
 	const handleChooseCoupon = () => {
@@ -106,20 +134,108 @@ const UserOrderConfirmationScreen = ({ route }) => {
 		setIsOpen(true);
 	};
 
+	const handlePaymentMethodChange = (method) => {
+		setSelectedPaymentMethod(method);
+	};
+
 	const handleConfirmOrder = () => {
 		navigation.navigate("UserOrderInformationScreen");
 	};
 
-	const handleSelectDeliveryCoupon = (deliveryCouponIndex) => {
-		setSelectedDeliveryCoupon({
-			deliveryCouponIndex: deliveryCouponIndex,
-		});
+	const handleDeliveryInfoPress = (title) => {
+		if (title === "Địa chỉ giao hàng") {
+			goToSelectAddress();
+		} else if (title === "Thông tin người nhận") {
+			goToSelectReceiver();
+		} else if (title === "Thời gian nhận hàng") {
+			handleSelectTime();
+		} else if (title === "Chi nhánh") {
+			goToSelectBranch();
+		}
 	};
 
-	const handleSelectDiscountCoupon = (discountCouponIndex) => {
-		setSelectedDiscountCoupon({
-			discountCouponIndex: discountCouponIndex,
+	const renderDeliveryList = () => {
+		if (deliveryOption === "delivery") {
+			const delivery = deliveryMethod.delivery;
+
+			return Object.keys(delivery).map((index) => {
+				const { title, details } = delivery[index];
+				return (
+					<View key={index} style={{ marginTop: "5%" }}>
+						<DeliveryInformationButton
+							title={title}
+							details={details}
+							onPress={() => handleDeliveryInfoPress(title)}
+						/>
+					</View>
+				);
+			});
+		}
+		return null;
+	};
+
+	const setChooseDeliveryButtonTitle = () => {
+		if (deliveryOption === "takeaway") {
+			return "Tự đến lấy hàng";
+		} else if (deliveryOption === "delivery") {
+			return "Giao hàng tận nơi";
+		}
+		return "Chọn phương thức đặt hàng";
+	};
+
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
+	};
+
+	const calculateTotalPrice = () => {
+		let total = 0;
+		let totalDiscount = 0;
+		productOrders.forEach((product) => {
+			total += product.totalPrice * product.quantity;
 		});
+
+		if (selectedDeliveryCoupon && selectedDeliveryCoupon.deliveryCoupon) {
+			total -=
+				total *
+				(selectedDeliveryCoupon.deliveryCoupon.discountPercentage / 100);
+			totalDiscount +=
+				total *
+				(selectedDeliveryCoupon.deliveryCoupon.discountPercentage / 100);
+		}
+
+		if (selectedDiscountCoupon && selectedDiscountCoupon.discountCoupon) {
+			total -=
+				total *
+				(selectedDiscountCoupon.discountCoupon.discountPercentage / 100);
+			totalDiscount +=
+				total *
+				(selectedDiscountCoupon.discountCoupon.discountPercentage / 100);
+		}
+
+		setTotalDiscount(totalDiscount);
+		setTotalPrice(total);
+	};
+
+	const handleDeliveryTypeSelect = (deliveryType) => {
+		setDeliveryOption(deliveryType);
+	};
+
+	const goToSelectAddress = () => {
+		navigation.navigate("UserChooseAddressScreen");
+	};
+
+	const goToSelectReceiver = () => {
+		alert("INFORMATION");
+	};
+	const goToSelectBranch = () => {
+		alert("BRANCH");
+	};
+
+	const handleSelectTime = () => {
+		selectTimeBottomSheetRef.current.present();
 	};
 
 	const renderPaymentMethods = () => {
@@ -158,88 +274,19 @@ const UserOrderConfirmationScreen = ({ route }) => {
 		}
 		return null;
 	};
-	const handleDeliveryInfoPress = (title) => {
-		if (title === "Địa chỉ giao hàng") {
-			goToSelectAddress();
-		} else if (title === "Thông tin người nhận") {
-			goToSelectReceiver();
-		} else if (title === "Thời gian nhận hàng") {
-			handleSelectTime();
-		} else if (title === "Chi nhánh") {
-			goToSelectBranch();
-		}
-	};
 
-	const renderDeliveryList = () => {
-		if (deliveryOption === "delivery") {
-			const delivery = deliveryMethod.delivery;
-
-			return Object.keys(delivery).map((index) => {
-				const { title, details } = delivery[index];
-				return (
-					<View key={index} style={{ marginTop: "5%" }}>
-						<DeliveryInformationButton
-							title={title}
-							details={details}
-							onPress={() => handleDeliveryInfoPress(title)}
-						/>
-					</View>
-				);
-			});
-		}
-		return null;
-	};
-
-	const formatCurrency = (amount) => {
-		return new Intl.NumberFormat("vi-VN", {
-			style: "currency",
-			currency: "VND",
-		}).format(amount);
-	};
-
-	const calculateTotalPrice = () => {
-		let total = 0;
-		productOrders.forEach((product) => {
-			total += product.totalPrice * product.quantity;
-		});
-		if (selectedDeliveryCoupon || selectedDiscountCoupon) {
-			total = total * 0.5;
-		}
-		return total;
-	};
-
-	const setChooseDeliveryButtonTitle = () => {
-		if (deliveryOption === "takeaway") {
-			return "Tự đến lấy hàng";
-		} else if (deliveryOption === "delivery") {
-			return "Giao hàng tận nơi";
-		}
-		return "Chọn phương thức đặt hàng";
-	};
-
-	const handleDeliveryTypeSelect = (deliveryType) => {
-		setDeliveryOption(deliveryType);
-	};
-
-	const goToSelectAddress = () => {
-		navigation.navigate("UserChooseAddressScreen");
-	};
-	const goToSelectReceiver = () => {
-		alert("INFORMATION");
-	};
-	const handleSelectTime = () => {
-		selectTimeBottomSheetRef.current.present();
-	};
-	const goToSelectBranch = () => {
-		alert("BRANCH");
-	};
+	useEffect(() => {
+		calculateTotalPrice();
+	});
 
 	useEffect(() => {
 		chooseDeliveryBottomSheetRef.current.close();
 	}, [deliveryOption]);
 
 	useEffect(() => {
-		chooseCouponBottomSheetRef.current.close();
+		if (selectedDeliveryCoupon || selectedDiscountCoupon) {
+			chooseCouponBottomSheetRef.current.close();
+		}
 	}, [selectedDeliveryCoupon, selectedDiscountCoupon]);
 
 	return (
@@ -265,7 +312,10 @@ const UserOrderConfirmationScreen = ({ route }) => {
 					<View style={{ marginTop: "5%" }}>
 						<Section title="Tổng cộng">
 							<View style={{ marginTop: "2%" }}>
-								<TotalOrderList orderInformation={productOrders} />
+								<TotalOrderList
+									orderInformation={productOrders}
+									totalDiscount={totalDiscount}
+								/>
 							</View>
 						</Section>
 					</View>
@@ -279,9 +329,7 @@ const UserOrderConfirmationScreen = ({ route }) => {
 			<View style={styles.footer}>
 				<View style={styles.totalPriceContainer}>
 					<Text style={styles.label}>Tổng cộng:</Text>
-					<Text style={styles.price}>
-						{formatCurrency(calculateTotalPrice())}
-					</Text>
+					<Text style={styles.price}>{formatCurrency(totalPrice)}</Text>
 				</View>
 				<Pressable style={styles.orderButton} onPress={handleConfirmOrder}>
 					<Text style={styles.orderButtonText}>Đặt hàng</Text>
@@ -293,6 +341,7 @@ const UserOrderConfirmationScreen = ({ route }) => {
 				onDeliveryTypeSelect={handleDeliveryTypeSelect}
 			/>
 			<ChooseCouponBottomSheet
+				userData={userData}
 				bottomSheetRef={chooseCouponBottomSheetRef}
 				snapPoints={chooseCouponSnapPoints}
 				onSelectDeliveryCoupon={handleSelectDeliveryCoupon}
@@ -308,14 +357,18 @@ const UserOrderConfirmationScreen = ({ route }) => {
 	);
 };
 
-export default UserOrderConfirmationScreen;
+const mapStateToProps = (state) => ({
+	userData: state.auth.userData,
+});
+
+export default connect(mapStateToProps)(UserOrderConfirmationScreen);
 
 const styles = StyleSheet.create({
 	container: {
 		borderTopWidth: 1,
-		borderTopColor: "rgba(58,58,58,0.1)",
-		backgroundColor: "#FFFFFF",
-		padding: "5%",
+		borderTopColor: colors.grey_50,
+		backgroundColor: colors.white_100,
+		padding: "4%",
 	},
 	headerContainer: {
 		flexDirection: "row",
@@ -323,12 +376,12 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	title: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 18,
 		fontWeight: "600",
 	},
 	buttonContainer: {
-		backgroundColor: "rgba(0, 161, 136, 0.1)",
+		backgroundColor: colors.green_10,
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
@@ -338,24 +391,13 @@ const styles = StyleSheet.create({
 	},
 	buttonText: {
 		marginRight: "5%",
-		color: "#00A188",
+		color: colors.green_100,
 		fontSize: 14,
-		fontWeight: "700",
-	},
-	modalContainer: {
-		flex: 1,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: "rgba(0, 0, 0, 0.5)",
-	},
-	modalContent: {
-		backgroundColor: "#fff",
-		padding: 20,
-		borderRadius: 5,
+		fontFamily: "lato-regular",
 	},
 	footer: {
-		backgroundColor: "#FFFFFF",
-		paddingHorizontal: "5%",
+		backgroundColor: colors.white_100,
+		paddingHorizontal: "4%",
 		paddingVertical: isIOS ? "10%" : "6%",
 		borderTopWidth: 1,
 		borderTopColor: colors.grey_50,
@@ -366,14 +408,14 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	label: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 16,
-		fontWeight: "700",
+		fontFamily: "lato-bold",
 	},
 	price: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 20,
-		fontWeight: "700",
+		fontFamily: "lato-bold",
 	},
 	orderButton: {
 		backgroundColor: colors.green_100,
@@ -392,8 +434,8 @@ const styles = StyleSheet.create({
 		elevation: 4,
 	},
 	orderButtonText: {
-		color: "#FFFFFF",
+		color: colors.white_100,
 		fontSize: 16,
-		fontWeight: "600",
+		fontFamily: "lato-bold",
 	},
 });

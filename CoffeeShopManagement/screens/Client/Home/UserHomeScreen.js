@@ -18,11 +18,6 @@ import { db, auth } from "../../../services/firebaseService";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { connect } from "react-redux";
 
-const USER_IMAGE_SOURCE = require("../../../assets/google.png");
-const COFFEE_BEANS_ICONS = require("../../../assets/coffee-beans.png");
-const MILK_TEA_ICONS = require("../../../assets/milktea.png");
-const FRUITS_ICONS = require("../../../assets/fruits.png");
-
 const cardWidth = Dimensions.get("window").width;
 
 const UserHomeScreen = ({ userData }) => {
@@ -75,11 +70,8 @@ const UserHomeScreen = ({ userData }) => {
 			<RecentlyViewedItem
 				key={index}
 				id={item.productId}
-				title={item.productName}
-				price={item.productPrice.toLocaleString("vi-VN", {
-					style: "currency",
-					currency: "VND",
-				})}
+				name={item.productName}
+				price={formatCurrency(item.productPrice)}
 				imageSource={item.productImage}
 				onPress={() => handleOpenItemDetail(item)}
 			/>
@@ -111,22 +103,6 @@ const UserHomeScreen = ({ userData }) => {
 		fetchProductList();
 	}, []);
 
-	useEffect(() => {
-		const fetchUserData = async () => {
-			const userDocRef = doc(db, "users", auth.currentUser.uid);
-			const userDoc = await getDoc(userDocRef);
-
-			if (userDoc.exists()) {
-				setCurrentCredit(userDoc.data().credit);
-				setUsername(userDoc.data().fullName);
-			} else {
-				console.log("User document does not exist.");
-			}
-		};
-
-		fetchUserData();
-	}, []);
-
 	return (
 		<SafeAreaView style={styles.container}>
 			<ScrollView
@@ -134,9 +110,8 @@ const UserHomeScreen = ({ userData }) => {
 				contentContainerStyle={styles.contentContainer}
 			>
 				<UserHomeScreenHeader
-					username={username}
-					userImageSource={USER_IMAGE_SOURCE}
-					totalPoint={currentCredit}
+					username={userData.name}
+					totalPoint={userData.credit}
 					onPressBean={goToExchangeVoucher}
 					onPressNotify={goToNotificationScreen}
 				/>
@@ -201,16 +176,14 @@ const styles = StyleSheet.create({
 		marginTop: "5%",
 	},
 	itemList: {
-		width: cardWidth * 4,
+		width: cardWidth * 5,
 		flexDirection: "row",
 		marginTop: "5%",
 	},
 });
 
-const mapStateToProps = (state) => {
-	return {
-		userData: state.auth.userData,
-	};
-};
+const mapStateToProps = (state) => ({
+	userData: state.auth.userData,
+});
 
 export default connect(mapStateToProps)(UserHomeScreen);
