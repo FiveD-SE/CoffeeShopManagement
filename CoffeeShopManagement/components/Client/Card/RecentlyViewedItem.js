@@ -10,13 +10,15 @@ import React from "react";
 import { colors } from "../../../assets/colors/colors";
 
 const cardWidth = (Dimensions.get("window").width - 10) / 2 - 10;
+
+const cardHeight = Dimensions.get("window").height / 6;
 const RecentlyViewedItem = ({ id, name, price, imageSource, onPress }) => {
 	return (
 		<Pressable style={styles.container} onPress={onPress}>
 			<View style={styles.imageContainer}>
 				<Image
 					style={styles.image}
-					source={require("../../../assets/starbucks.jpeg")}
+					source={{ uri: imageSource }}
 					resizeMode="stretch"
 				/>
 			</View>
@@ -49,7 +51,7 @@ const styles = StyleSheet.create({
 		borderTopRightRadius: 10,
 		borderTopLeftRadius: 10,
 		overflow: "hidden",
-		maxHeight: 120,
+		maxHeight: cardHeight,
 	},
 	image: {
 		width: "100%",
@@ -58,15 +60,15 @@ const styles = StyleSheet.create({
 	main: {
 		flex: 1,
 		flexDirection: "column",
-		padding: "5%",
+		padding: "6%",
 		justifyContent: "space-between",
 	},
 	title: {
 		width: "100%",
 		color: colors.black_100,
 		fontSize: 16,
-		fontWeight: "500",
-		lineHeight: 20,
+		fontFamily: "lato-bold",
+		lineHeight: 24,
 	},
 	priceContainer: {
 		backgroundColor: colors.green_20,
@@ -79,6 +81,6 @@ const styles = StyleSheet.create({
 	price: {
 		color: colors.green_100,
 		fontSize: 14,
-		fontWeight: "500",
+		fontFamily: "lato-regular",
 	},
 });

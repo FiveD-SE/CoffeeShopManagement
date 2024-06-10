@@ -1,6 +1,16 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import {
+	Image,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+	Dimensions,
+} from "react-native";
 import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome6";
+
+const cardHeight = Dimensions.get("window").height / 7;
+
 const ProductCardHorizontal = ({ id, name, price, imageSource, onPress }) => {
 	return (
 		<View style={styles.container}>
@@ -8,7 +18,7 @@ const ProductCardHorizontal = ({ id, name, price, imageSource, onPress }) => {
 				<Image
 					style={styles.image}
 					source={{ uri: imageSource }}
-					resizeMode="contain"
+					resizeMode="stretch"
 				/>
 			</View>
 			<View style={styles.main}>
@@ -16,7 +26,7 @@ const ProductCardHorizontal = ({ id, name, price, imageSource, onPress }) => {
 				<Text style={styles.price}>{price}</Text>
 			</View>
 			<Pressable style={styles.addButton} onPress={onPress}>
-				<Icon name="plus" color="#FFFFFF" />
+				<Icon name="plus" color="#FFFFFF" size={14} />
 			</Pressable>
 		</View>
 	);
@@ -35,7 +45,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: "100%",
-		height: 100,
+		height: cardHeight,
 		borderRadius: 10,
 	},
 	main: {
