@@ -470,11 +470,12 @@ const CouponsStack = ({ navigation, route }) => {
 const OtherStack = ({ navigation, route }) => {
 	useLayoutEffect(() => {
 		const routeName = getFocusedRouteNameFromRoute(route);
-		if (routeName === "SelectAddress") {
+		if (routeName === "AddNewAddress") {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
-		} else if (routeName === "AddNewAddress") {
+		}
+		 else if (routeName === "AddNewAddress") {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});

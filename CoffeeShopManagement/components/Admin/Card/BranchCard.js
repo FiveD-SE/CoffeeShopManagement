@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     storeName: {
         color: "#9c9c9c",
         textAlign: "center",
-        fontFamily: "Lato-Light",
+        fontFamily: "lato-light",
         fontSize: 10,
         fontStyle: "normal",
         fontWeight: "700",
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     branchName: {
         color: "#3A3A3A",
         textAlign: "center",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         fontStyle: "normal",
         fontWeight: "600",
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     distance: {
         color: "rgba(58, 58, 58, 0.501960813999176)",
         textAlign: "center",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
         fontSize: 12,
         fontStyle: "normal",
         fontWeight: "400",
