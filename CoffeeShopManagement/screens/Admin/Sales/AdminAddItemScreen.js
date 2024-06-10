@@ -133,6 +133,7 @@ const AdminAddItemScreen = () => {
 					size: size,
 					productImage: imageDownloadUrl,
 					dateCreated: new Date(),
+					buyCount: 0,
 				});
 				const productId = docRef.id;
 

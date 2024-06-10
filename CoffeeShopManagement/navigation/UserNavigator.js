@@ -14,7 +14,7 @@ import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScr
 
 import EditProfileDetail from "../screens/Client/Other/UserEditProfileScreen";
 import ProfileDetails from "../screens/Client/Other/UserProfileDetailScreen";
-import EditAddress from "../screens/Client/Other/UserEditAddressScreen";
+import UserEditAddressScreen from "../screens/Client/Other/UserEditAddressScreen";
 import UserAddNewAddressScreen from "../screens/Client/Other/UserAddNewAddressScreen";
 import Other from "../screens/Client/Other/UserOtherScreen";
 
@@ -26,7 +26,7 @@ import SearchBar from "./components/SearchBar";
 import UserOrderScreen from "../screens/Client/PlaceOrder/UserOrderScreen";
 import OrderHistory from "../screens/Client/Other/UserOrderHistoryScreen";
 import Setting from "../screens/Client/Other/UserSettingScreen";
-import SelectAdress from "../screens/Client/Other/UserAddressScreen";
+import UserAddressScreen from "../screens/Client/Other/UserAddressScreen";
 import SelectBranch from "../screens/Client/Other/UserSelectBranchScreen";
 import FeedbackAndHelp from "../screens/Client/Other/UserFeedbackAndHelpScreen";
 import ChangePassword from "../screens/Client/ChangePassword";
@@ -467,8 +467,36 @@ const CouponsStack = ({ navigation, route }) => {
 	);
 };
 
-const OtherStack = () => (
-	<Stack.Navigator>
+const OtherStack = ({ navigation, route }) => {
+	useLayoutEffect(() => {
+		const routeName = getFocusedRouteNameFromRoute(route);
+		if (routeName === "SelectAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "AddNewAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "EditAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		}
+		
+		else {
+			navigation.setOptions({
+				tabBarStyle: {
+					backgroundColor: colors.white_100,
+					borderTopColor: colors.grey_20,
+					borderTopWidth: 1,
+					borderOpacity: 0.5,
+					height: isIOS ? 100 : 80,
+				},
+			});
+		}
+	}, [navigation, route]);
+	return (<Stack.Navigator>
 		<Stack.Screen
 			name="Other"
 			component={Other}
@@ -520,14 +548,13 @@ const OtherStack = () => (
 		/>
 		<Stack.Screen
 			name="SelectAddress"
-			component={SelectAdress}
+			component={UserAddressScreen}
 			options={{
-				headerTitle: () => <SearchBar />,
+				headerTitle: "Địa chỉ của bạn",
 				headerLeftContainerStyle: {
 					paddingLeft: "5%",
 				},
 				headerLeft: () => <HeaderBackButton />,
-				headerRight: () => <SelectPositionButton />,
 			}}
 		/>
 		<Stack.Screen
@@ -564,7 +591,7 @@ const OtherStack = () => (
 		/>
 		<Stack.Screen
 			name="EditAddress"
-			component={EditAddress}
+			component={UserEditAddressScreen}
 			options={{
 				headerTitle: "Sửa địa chỉ",
 				headerLeftContainerStyle: {
@@ -642,7 +669,8 @@ const OtherStack = () => (
 			}}
 		/>
 	</Stack.Navigator>
-);
+	);
+};
 
 function UserNavigator() {
 	const [bottomSheetOpen, setBottomSheetOpen] = useState(false);

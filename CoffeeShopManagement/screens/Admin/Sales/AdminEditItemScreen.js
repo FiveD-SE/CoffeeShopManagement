@@ -11,7 +11,7 @@ import ItemSizeModal from '../../../components/Admin/Modal/ItemSizeModal';
 import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../services/firebaseService';
+import { db, uploadImageToFirebase } from '../../../services/firebaseService';
 const AdminEditItemScreen = ({ route }) => {
 
   const navigation = useNavigation();
@@ -86,6 +86,14 @@ const AdminEditItemScreen = ({ route }) => {
   const handleSaveProductToFirebase = async () => {
     if (hasChanges) {
       try {
+        let imageDownloadUrl = null;
+        if (selectedImage) {
+          const imagename = `productImage_${productName}_${new Date().getTime()}.jpg`;
+          imageDownloadUrl = await uploadImageToFirebase(
+            selectedImage,
+            imagename
+          );
+        }
 
         await updateDoc(doc(db, 'products', product.productId), {
           productName,
@@ -98,7 +106,7 @@ const AdminEditItemScreen = ({ route }) => {
           },
           productType: itemType,
           size,
-          productImage: selectedImage,
+          productImage: imageDownloadUrl,
         });
 
         Toast.show({
