@@ -12,7 +12,11 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
-import { db, auth, uploadImageToFirebase } from "../../../services/firebaseService";
+import {
+    db,
+    auth,
+    uploadImageToFirebase,
+} from "../../../services/firebaseService";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { saveUserData } from "../../../redux/actions/userActions";
 import SwitchToggle from "toggle-switch-react-native";

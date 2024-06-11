@@ -22,6 +22,12 @@ const UserHomeScreenHeader = ({
 }) => {
     return (
         <View style={styles.header}>
+            <View>
+                <Image
+                    source={require("../../../assets/fived.png")}
+                    style={[styles.imageContainer, { marginRight: "5%" }]}
+                />
+            </View>
             <View style={styles.headerLeft}>
                 <View>
                     <Text style={styles.welcomeText}>Xin chào,</Text>

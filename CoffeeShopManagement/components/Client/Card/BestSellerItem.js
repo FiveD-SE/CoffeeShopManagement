@@ -41,7 +41,7 @@ const BestSellerItem = ({
             <View style={styles.main}>
                 <Text
                     style={styles.name}
-                    numberOfLines={2}
+                    numberOfLines={1}
                     ellipsizeMode="tail"
                 >
                     {name}
