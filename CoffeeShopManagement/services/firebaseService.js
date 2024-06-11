@@ -43,6 +43,22 @@ const storage = getStorage(app);
 
 // db
 const db = getFirestore(app);
+
+//
+const uploadAvatarToFirebase = async (uri, imageName) => {
+    try {
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        const storageRef = ref(storage, `avatars/${imageName}`);
+        await uploadBytes(storageRef, blob);
+        const downloadURL = await getDownloadURL(storageRef);
+        console.log("downloadURL: ", downloadURL);
+        return downloadURL;
+    } catch (error) {
+        console.error("Error uploading image: ", error);
+        throw error;
+    }
+};
 //
 const uploadImageToFirebase = async (uri, imageName) => {
     try {
@@ -66,4 +82,5 @@ export {
     signInWithEmailAndPassword,
     uploadImageToFirebase,
     createUserWithEmailAndPassword,
+    uploadAvatarToFirebase
 };

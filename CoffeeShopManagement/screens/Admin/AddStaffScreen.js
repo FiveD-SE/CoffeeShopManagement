@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, Platform, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, Platform, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Entypo'
@@ -7,12 +7,12 @@ import { Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
 import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore'
-import { auth, createUserWithEmailAndPassword, db, storage, uploadImageToFirebase } from '../../services/firebaseService'
+import { auth, createUserWithEmailAndPassword, db, uploadAvatarToFirebase, uploadImageToFirebase } from '../../services/firebaseService'
 import RNPickerSelect from 'react-native-picker-select'
 import { getDownloadURL, ref } from 'firebase/storage'
 import * as ImagePicker from "expo-image-picker";
 import { sendEmailVerification } from 'firebase/auth'
-import { createdAt } from 'expo-updates'
+import { Dropdown } from "react-native-element-dropdown";
 import Toast from 'react-native-toast-message'
 
 const TextBox = ({ text, value, setValue }) => {
@@ -68,9 +68,10 @@ export default function AddStaffScreen() {
     const [idCard, setIdCard] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [cashierImage, setCashierImage] = useState("");
+    const [cashierImage, setCashierImage] = useState("https://firebasestorage.googleapis.com/v0/b/fived-project-cf.appspot.com/o/avatars%2Fdefault.png?alt=media&token=0fffed45-23f0-4456-a939-cc3f437a7c2f");
     const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
     const [isShowDateTimePicker, setIsShowDateTimePicker] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [isOpen, setIsOpen] = useState(false);
     const chooseDateSnapPoints = useMemo(() => ["60%"], []);
@@ -78,6 +79,7 @@ export default function AddStaffScreen() {
 
     const handleConfirm = async () => {
 
+        setIsLoading(true);
         if (name === '' || phoneNumber === '' || birthday === '' || gender === '' || idCard === '' || email === '' || password === '') {
             Toast.show({
                 type: 'error',
@@ -95,18 +97,12 @@ export default function AddStaffScreen() {
             );
 
             const user = userCredential.user;
-            const storageRef = ref(storage, "avatars/default.png");
-            let userImage = '';
-            if (cashierImage == '') {
-                const image = await getDownloadURL(storageRef);
-                setCashierImage(image);
-            } else {
-                userImage = await uploadImageToFirebase(
-                    cashierImage,
-                    "cashier_" + Math.random().toString(36).substring(7)
-                );
-                setCashierImage(userImage);
-            }
+
+            const userImage = await uploadAvatarToFirebase(
+                cashierImage,
+                "cashier_" + user.uid
+            );
+            setCashierImage(userImage);
 
             await setDoc(doc(collection(db, "cashier"), user.uid), {
                 fullName: name,
@@ -153,6 +149,7 @@ export default function AddStaffScreen() {
             await sendEmailVerification(user);
             navigation.goBack();
         }
+        setIsLoading(false);
     }
     // Gọi hàm callback để thêm nhân viên mới vào DATA của ManageStaff
 
@@ -206,86 +203,88 @@ export default function AddStaffScreen() {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.imageContainer}>
-                <TouchableOpacity
-                    style={styles.imageButton}
-                    onPress={() => handleImagePicker()}>
-                    <Image
-                        source={{ uri: cashierImage === "" ? "https://firebasestorage.googleapis.com/v0/b/fived-project-cf.appspot.com/o/avatars%2Fdefault.png?alt=media&token=0fffed45-23f0-4456-a939-cc3f437a7c2f" : cashierImage }}
-                        style={{ marginBottom: '3%', width: 100, height: 100, borderRadius: 50 }} />
-                    <Text style={styles.imageText}>Thêm ảnh đại diện</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.informationWrapper}>
-                <Text style={styles.topText}>Thông tin cá nhân</Text>
-                <TextBox text={'Họ và tên'} value={name} setValue={setName} />
-                <TextBox text={'Số điện thoại'} value={phoneNumber} setValue={setPhoneNumber} />
-                <View style={styles.rowContainerTextBox}>
-                    <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'10%'} value={birthday} setValue={setBirthday} onPress={() => toggleDatePicker()} />
-                    <View style={{
-                        flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignContent: 'center', backgroundColor: '#fff',
-                        borderRadius: 10,
-                        borderWidth: 1,
-                        borderColor: '#ebebeb',
-                        marginBottom: '3%',
-                    }}>
-                        <RNPickerSelect
-                            placeholder={{ label: 'Giới tính', value: null }}
-                            style={pickerSelectStyles}
-                            onValueChange={(value) => setGender(value)}
-                            items={[
-                                { label: 'Nam', value: 'Nam' },
-                                { label: 'Nữ', value: 'Nữ' },
-                            ]} />
-                    </View>
+        <View style={{ flex: 1 }}>
+            <ScrollView style={styles.container}>
+                <View style={styles.imageContainer}>
+                    <TouchableOpacity
+                        style={styles.imageButton}
+                        onPress={() => handleImagePicker()}>
+                        <Image
+                            source={{ uri: cashierImage }}
+                            style={{ marginBottom: '3%', width: 100, height: 100, borderRadius: 50 }} />
+                        <Text style={styles.imageText}>Thêm ảnh đại diện</Text>
+                    </TouchableOpacity>
                 </View>
-                {isShowDateTimePicker && Platform.OS === 'ios' &&
-                    <View>
-                        <RNDateTimePicker
-                            value={date}
-                            mode='date'
-                            display='spinner'
-                            onChange={onChange} />
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '20%' }}>
-                            <TouchableOpacity
-                                style={{ marginBottom: '5%', backgroundColor: 'white', padding: '5%', borderRadius: 10 }}
-                                onPress={toggleDatePicker}>
-                                <Text>Cancel</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={{ marginBottom: '5%', backgroundColor: '#006c5e', padding: '5%', borderRadius: 10 }}
-                                onPress={confirmIOSDate}>
-                                <Text style={{ color: 'white' }}>Confirm</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>}
-                {isShowDateTimePicker && Platform.OS === 'android' &&
-                    <View>
-                        <RNDateTimePicker
-                            value={date}
-                            mode='date'
-                            display='spinner'
-                            onChange={onChange} />
-                    </View>}
-                <TextBox text={'Số CMND/CCCD'} value={idCard} setValue={setIdCard} />
-                <TextBox text={'Email'} value={email} setValue={setEmail} />
-                <TextBox text={'Password'} value={password} setValue={setPassword} />
-            </View>
-            <View>
-                <Text style={styles.topText}>Thông tin công việc</Text>
-                <ButtonBox text={'Vai trò'} placeholder={'Tên vai trò'} />
-                <ButtonBox text={'Chi nhánh làm việc'} placeholder={'Tên chi nhánh'} onPress={showSelectBranchModal} />
-                <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} />
-            </View>
-            <View style={{ marginBottom: '10%' }}>
-                {<Pressable
-                    onPress={handleConfirm}
-                    style={styles.acceptButton}>
-                    <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>Xác nhận</Text>
-                </Pressable>}
-            </View>
-        </ScrollView>
+                <View style={styles.informationWrapper}>
+                    <Text style={styles.topText}>Thông tin cá nhân</Text>
+                    <TextBox text={'Họ và tên'} value={name} setValue={setName} />
+                    <TextBox text={'Số điện thoại'} value={phoneNumber} setValue={setPhoneNumber} />
+                    <View style={styles.rowContainerTextBox}>
+                        <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'10%'} value={birthday} setValue={setBirthday} onPress={() => toggleDatePicker()} />
+                        <Dropdown
+                            style={[styles.dropDown]}
+                            placeholder='Giới tính'
+                            placeholderStyle={{ color: "rgba(0, 0, 0, 0.2)" }}
+                            data={[{ label: "Nam", value: 'Nam' }, { label: "Nữ", value: 'Nữ' }, { label: "Khác", value: 'Khác' }]}
+                            labelField="label"
+                            valueField="value"
+                            value={gender}
+                            onChange={item => {
+                                setGender(item.value);
+                            }} />
+                    </View>
+                    {isShowDateTimePicker && Platform.OS === 'ios' &&
+                        <View>
+                            <RNDateTimePicker
+                                value={date}
+                                mode='date'
+                                display='spinner'
+                                onChange={onChange} />
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '20%' }}>
+                                <TouchableOpacity
+                                    style={{ marginBottom: '5%', backgroundColor: 'white', padding: '5%', borderRadius: 10 }}
+                                    onPress={toggleDatePicker}>
+                                    <Text>Cancel</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={{ marginBottom: '5%', backgroundColor: '#006c5e', padding: '5%', borderRadius: 10 }}
+                                    onPress={confirmIOSDate}>
+                                    <Text style={{ color: 'white' }}>Confirm</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>}
+                    {isShowDateTimePicker && Platform.OS === 'android' &&
+                        <View>
+                            <RNDateTimePicker
+                                value={date}
+                                mode='date'
+                                display='spinner'
+                                onChange={onChange} />
+                        </View>}
+                    <TextBox text={'Số CMND/CCCD'} value={idCard} setValue={setIdCard} />
+                    <TextBox text={'Email'} value={email} setValue={setEmail} />
+                    <TextBox text={'Password'} value={password} setValue={setPassword} />
+                </View>
+                <View>
+                    <Text style={styles.topText}>Thông tin công việc</Text>
+                    <ButtonBox text={'Vai trò'} placeholder={'Tên vai trò'} />
+                    <ButtonBox text={'Chi nhánh làm việc'} placeholder={'Tên chi nhánh'} onPress={showSelectBranchModal} />
+                    <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} />
+                </View>
+                <View style={{ marginBottom: '10%' }}>
+                    {<Pressable
+                        onPress={handleConfirm}
+                        style={styles.acceptButton}>
+                        <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>Xác nhận</Text>
+                    </Pressable>}
+                </View>
+            </ScrollView>
+            {isLoading && (
+                <View style={styles.loadingOverlay}>
+                    <ActivityIndicator size="large" color={'black'} />
+                </View>
+            )}
+        </View>
     )
 }
 
@@ -319,16 +318,15 @@ const styles = StyleSheet.create({
     },
     textBox: {
         backgroundColor: '#fff',
-        borderRadius: 10,
         borderWidth: 1,
-        borderColor: '#ebebeb',
+        borderRadius: 10,
+        borderColor: "#CCCCCC",
         marginBottom: '3%',
-        padding: '2%'
+        padding: '4%'
     },
     rowContainerTextBox: {
         flexDirection: 'row',
         width: '100%',
-
     },
     acceptButton: {
         backgroundColor: '#006c5e',
@@ -336,18 +334,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: '5%',
         borderRadius: 20
-    }
+    },
+    loadingOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    dropDown: {
+        marginBottom: "3%",
+        alignItems: "center",
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: "#CCCCCC",
+        paddingHorizontal: "3%",
+        paddingVertical: "2%",
+        backgroundColor: "#ffffff",
+        flex: 1
+    },
 })
-
-const pickerSelectStyles = StyleSheet.create({
-    inputIOS: {
-        justifyContent: 'center',
-        paddingVertical: "6%",
-        color: 'black',
-        width: 120,
-    },
-    inputAndroid: {
-        color: 'black',
-        width: 145,
-    },
-});
