@@ -1,9 +1,16 @@
-import { View, Text, Modal, StyleSheet, FlatList, ScrollView } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import CategoryIcon from '../../Client/Button/CategoryIcon';
-import ModalHeader from '../../Client/Header/ModalHeader'
-import CategoryItemList from '../../Client/List/CategoryItemList';
-import { colors } from '../../../assets/colors/colors';
+import {
+    View,
+    Text,
+    Modal,
+    StyleSheet,
+    FlatList,
+    ScrollView,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import CategoryIcon from "../../Client/Button/CategoryIcon";
+import ModalHeader from "../../Client/Header/ModalHeader";
+import CategoryItemList from "../../Client/List/CategoryItemList";
+import { colors } from "../../../assets/colors/colors";
 const COFFEE_ICON = require("../../../assets/images/coffee.png");
 const JUICE_ICON = require("../../../assets/images/juice.png");
 const MILKTEA_ICON = require("../../../assets/images/milktea.png");
@@ -16,7 +23,6 @@ const categoriesData = [
     { type: "Đá xay", iconSource: ICE_BLENDED_ICON },
 ];
 const ItemTypeModal = ({ visible, onClose, setItemType }) => {
-
     const handleSelectItemType = (itemType) => {
         setItemType(itemType);
         onClose();
@@ -30,7 +36,7 @@ const ItemTypeModal = ({ visible, onClose, setItemType }) => {
                         key={index}
                         iconSource={category.iconSource}
                         size={64}
-                        OnPress={() => handleSelectItemType(category.type)}
+                        onPress={() => handleSelectItemType(category.type)}
                         name={category.type}
                     />
                 ))}
@@ -48,16 +54,14 @@ const ItemTypeModal = ({ visible, onClose, setItemType }) => {
             <View style={styles.modalContainer}>
                 <View style={styles.modalContent}>
                     <ModalHeader title="Chọn loại sản phẩm" onClose={onClose} />
-                    <View style={styles.main}>
-                        {renderCategoryItemList()}
-                    </View>
+                    <View style={styles.main}>{renderCategoryItemList()}</View>
                 </View>
             </View>
-        </Modal >
-    )
-}
+        </Modal>
+    );
+};
 
-export default ItemTypeModal
+export default ItemTypeModal;
 
 const styles = StyleSheet.create({
     modalContainer: {
@@ -84,24 +88,23 @@ const styles = StyleSheet.create({
     imageContainer: {
         marginTop: "5%",
         flexDirection: "row",
-        justifyContent: "center"
+        justifyContent: "center",
     },
     main: {
-
         marginTop: "2%",
     },
     header: {
         color: "#3a3a3a",
         fontSize: 16,
         fontWeight: "600",
-        marginVertical: "4%"
+        marginVertical: "4%",
     },
     title: {
         marginTop: "3%",
         color: "#3a3a3a",
         fontSize: 14,
         fontWeight: "500",
-        textAlign: "center"
+        textAlign: "center",
     },
     buttonContainer: {
         flex: 1,
@@ -112,14 +115,14 @@ const styles = StyleSheet.create({
         backgroundColor: "#ffffff",
         borderWidth: 1,
         borderRadius: 10,
-        borderColor: "#ECECEC"
+        borderColor: "#ECECEC",
     },
     listContent: {
         paddingHorizontal: "5%",
-        paddingVertical: "1%"
+        paddingVertical: "1%",
     },
     columnWrapper: {
         justifyContent: "space-between",
-        paddingVertical: "2%"
+        paddingVertical: "2%",
     },
 });
