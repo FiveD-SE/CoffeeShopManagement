@@ -37,11 +37,15 @@ import AdminAddBranchScreen from "../screens/Admin/AdminAddBranchScreen";
 import AdminPayrollScreen from "../screens/Admin/Other/AdminPayrollScreen";
 import AdminPayrollDetailsScreen from "../screens/Admin/Other/AdminPayrollDetailsScreen";
 import AdminAddPayrollScreen from "../screens/Admin/Other/AdminAddPayrollScreen";
+import AddPromotionScreen from "../screens/Admin/AddPromotionScreen";
+import AdminPromotionListScreen from "../screens/Admin/AdminPromotionListScreen";
+import EditPromotionScreen from "../screens/Admin/EditPromotionScreen";
 
 import HeaderBackButton from "./components/HeaderBackButton";
 import AddBranchButton from "./components/AddBranchButton";
 import AddItemButton from "../components/Admin/Button/AddItemButton";
 import AddVoucherButton from "../components/Admin/Button/AddVoucherButton";
+import AddPromotionButton from "./components/AddPromotionButton";
 
 import AddPayrollButton from "./components/AddPayrollButton";
 
@@ -87,19 +91,15 @@ const OtherStack = ({ navigation, route }) => {
             navigation.setOptions({
                 tabBarStyle: { display: "none" },
             });
-        }
-        else if (routeName === "BranchManagement") {
+        } else if (routeName === "BranchManagement") {
             navigation.setOptions({
                 tabBarStyle: { display: "none" },
             });
-
         } else if (routeName === "AdminEditBranchScreen") {
             navigation.setOptions({
                 tabBarStyle: { display: "none" },
             });
-        }
-
-        else {
+        } else {
             navigation.setOptions({
                 tabBarStyle: {
                     backgroundColor: colors.white_100,
@@ -168,6 +168,17 @@ const OtherStack = ({ navigation, route }) => {
                 component={AdminAddBranchScreen}
                 options={{
                     headerTitle: "Thêm chi nhánh",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="EditPromotionScreen"
+                component={EditPromotionScreen}
+                options={{
+                    headerTitle: "Chỉnh sửa khuyến mãi",
                     headerLeftContainerStyle: {
                         paddingLeft: "5%",
                     },
@@ -286,6 +297,29 @@ const OtherStack = ({ navigation, route }) => {
                 name="SignInScreen"
                 component={SignInScreen}
                 options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="PromotionManagement"
+                component={AdminPromotionListScreen}
+                options={{
+                    headerTitle: "Danh sách khuyến mãi",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                    headerRight: () => <AddPromotionButton />,
+                }}
+            />
+            <Stack.Screen
+                name="AddPromotionScreen"
+                component={AddPromotionScreen}
+                options={{
+                    headerTitle: "Quản lý khuyến mãi",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
             />
         </Stack.Navigator>
     );

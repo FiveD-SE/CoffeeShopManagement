@@ -7,6 +7,8 @@ import {
     Dimensions,
     Animated,
 } from "react-native";
+import { db } from "../../services/firebaseService";
+import { collection, onSnapshot } from "firebase/firestore"; // Import Firestore functions
 
 const Carousel = () => {
     const flatlistRef = useRef();
@@ -14,27 +16,28 @@ const Carousel = () => {
     const screenWidth =
         Dimensions.get("window").width - 0.1 * Dimensions.get("window").width;
     const [activeIndex, setActiveIndex] = useState(0);
+    const [carouselData, setCarouselData] = useState([]);
 
-    const carouselData = [
-        {
-            id: "01",
-            image: require("../../assets/promotions/1.png"),
-        },
-        {
-            id: "02",
-            image: require("../../assets/promotions/2.png"),
-        },
-        {
-            id: "03",
-            image: require("../../assets/promotions/3.png"),
-        },
-    ];
+    // Fetch promotions from Firestore
+    useEffect(() => {
+        const promotionsRef = collection(db, "promotions");
+        const unsubscribe = onSnapshot(promotionsRef, (snapshot) => {
+            const promotions = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            console.log(promotions);
+            setCarouselData(promotions);
+        });
+
+        return unsubscribe;
+    }, []);
 
     const renderItem = ({ item }) => {
         return (
             <View style={[styles.itemContainer, { width: screenWidth }]}>
                 <Image
-                    source={item.image}
+                    source={{ uri: item.imageUrl }}
                     style={styles.image}
                     resizeMode="stretch"
                 />

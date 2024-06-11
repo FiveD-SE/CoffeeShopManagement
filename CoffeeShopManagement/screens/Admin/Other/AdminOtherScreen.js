@@ -227,6 +227,32 @@ const AdminOtherScreen = ({ userData }) => {
                                         size={19}
                                     />
                                 </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        navigation.navigate(
+                                            "PromotionManagement"
+                                        );
+                                    }}
+                                    style={styles.row}
+                                >
+                                    <FontAwesome6
+                                        color="#006C5E"
+                                        name="rectangle-ad"
+                                        size={19}
+                                        marginRight={10}
+                                    />
+                                    <Text style={styles.rowLabel}>
+                                        Quảng cáo
+                                    </Text>
+
+                                    <View style={styles.rowSpacer} />
+
+                                    <FeatherIcon
+                                        color="#bcbcbc"
+                                        name="chevron-right"
+                                        size={19}
+                                    />
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>

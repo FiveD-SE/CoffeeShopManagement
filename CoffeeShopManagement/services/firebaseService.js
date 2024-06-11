@@ -75,6 +75,21 @@ const uploadImageToFirebase = async (uri, imageName) => {
     }
 };
 
+const uploadPromotionToFirebase = async (uri, imageName) => {
+    try {
+        const response = await fetch(uri);
+        const blob = await response.blob();
+        const storageRef = ref(storage, `promotions/${imageName}`);
+        await uploadBytes(storageRef, blob);
+        const downloadURL = await getDownloadURL(storageRef);
+        console.log("downloadURL: ", downloadURL);
+        return downloadURL;
+    } catch (error) {
+        console.error("Error uploading image: ", error);
+        throw error;
+    }
+};
+
 export {
     auth,
     db,
@@ -82,5 +97,7 @@ export {
     signInWithEmailAndPassword,
     uploadImageToFirebase,
     createUserWithEmailAndPassword,
-    uploadAvatarToFirebase
+    uploadAvatarToFirebase,
+    sendEmailVerification,
+    uploadPromotionToFirebase,
 };
