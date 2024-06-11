@@ -1,5 +1,5 @@
 import React, {useState}from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import Checkbox from 'expo-checkbox';
 
 const BranchCard = ({ storeName,
@@ -9,7 +9,7 @@ const BranchCard = ({ storeName,
     onPress, }) => {
     const [isShipChecked, setShipChecked] = useState(false);
     return (
-        <View style={styles.root}>
+        <Pressable style={styles.root} onPress={onPress}>
             <View style={styles.image}>
                 <Image source={image} style={styles.image} />
             </View>
@@ -21,7 +21,7 @@ const BranchCard = ({ storeName,
                 <Text style={styles.distance}>{address} km</Text>
             </View>
 
-        </View>
+        </Pressable>
     )
 }
 

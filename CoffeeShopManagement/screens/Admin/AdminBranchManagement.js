@@ -17,9 +17,6 @@ import { db } from "../../services/firebaseService";
 const AdminBranchManagement = () => {
     const navigation = useNavigation();
     const [branchList, setBranchList] = useState([]);
-    const handleDetailBranch = (id) => {
-        navigation.navigate("AdminBranchEditScreen", { id: id });
-    };
 
     useEffect(() => {
         const loadBranches = async () => {
@@ -46,6 +43,12 @@ const AdminBranchManagement = () => {
         return unsubscribe;
     }, [navigation]);
 
+
+    const gotoEditBranchScreen = (branch) => {
+        navigation.navigate('AdminEditBranchScreen', { branch });
+    };
+
+
     const renderBranchList = () => {
         return branchList.map((item) => {
             const address = `${item.street}, ${item.wardName}, ${item.districtName}, ${item.provinceName}`;
@@ -56,7 +59,9 @@ const AdminBranchManagement = () => {
                     branchName={item.branchName}
                     address={address}
                     image={{ uri: item.branchImage }}
-                    onPress={() => handleDetailBranch(item.id)}
+                    onPress={() => gotoEditBranchScreen(item)}
+                    openingHour={item.openingHour}
+                    closingHour={item.closingHour}
                 />
             );
         });
