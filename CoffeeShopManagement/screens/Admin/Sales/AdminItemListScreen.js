@@ -97,7 +97,7 @@ const AdminItemListScreen = ({ userData }) => {
 
   const handleCategorySelect = (category) => {
     if (selectedCategory === category) {
-      setFilteredProducts(products); // Sử dụng danh sách sản phẩm gốc
+      setFilteredProducts(products);
       setCategoryTitle("Tất cả sản phẩm");
       setSelectedCategory(null);
     } else {

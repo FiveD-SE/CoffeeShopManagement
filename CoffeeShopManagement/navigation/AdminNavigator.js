@@ -87,16 +87,17 @@ const OtherStack = ({ navigation, route }) => {
             navigation.setOptions({
                 tabBarStyle: { display: "none" },
             });
-        } 
-        // else if (routeName === "AddNewAddress") {
-        //     navigation.setOptions({
-        //         tabBarStyle: { display: "none" },
-        //     });
-        // } else if (routeName === "EditAddress") {
-        //     navigation.setOptions({
-        //         tabBarStyle: { display: "none" },
-        //     });
-        // }
+        }
+        else if (routeName === "BranchManagement") {
+            navigation.setOptions({
+                tabBarStyle: { display: "none" },
+            });
+
+        } else if (routeName === "AdminEditBranchScreen") {
+            navigation.setOptions({
+                tabBarStyle: { display: "none" },
+            });
+        }
 
         else {
             navigation.setOptions({
@@ -152,7 +153,7 @@ const OtherStack = ({ navigation, route }) => {
                 }}
             />
             <Stack.Screen
-                name="AdminBranchEditScreen"
+                name="AdminEditBranchScreen"
                 component={AdminEditBranchScreen}
                 options={{
                     headerTitle: "Chỉnh sửa chi nhánh",
