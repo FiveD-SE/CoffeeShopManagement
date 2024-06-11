@@ -9,7 +9,9 @@ import {
 import React from "react";
 import { colors } from "../../../assets/colors/colors";
 
-const cardHeight = Dimensions.get("window").height / 5;
+const cardHeight = 150;
+const imageWidth = 150;
+
 const RecentlyViewedItem = ({ id, name, price, imageSource, onPress }) => {
     return (
         <Pressable style={styles.container} onPress={onPress}>
@@ -17,7 +19,7 @@ const RecentlyViewedItem = ({ id, name, price, imageSource, onPress }) => {
                 <Image
                     style={styles.image}
                     source={{ uri: imageSource }}
-                    resizeMode="stretch"
+                    resizeMode="cover"
                 />
             </View>
             <View style={styles.main}>
@@ -40,10 +42,8 @@ export default RecentlyViewedItem;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        flexDirection: "column",
-        maxWidth: 150,
-        marginRight: "1%",
+        width: 150,
+        marginRight: 10,
         borderWidth: 1,
         borderRadius: 10,
         borderColor: colors.grey_50,
@@ -53,11 +53,11 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
         overflow: "hidden",
-        maxHeight: 150,
+        height: cardHeight,
     },
     image: {
         width: "100%",
-        height: "100%",
+        aspectRatio: 1,
     },
     main: {
         flex: 1,

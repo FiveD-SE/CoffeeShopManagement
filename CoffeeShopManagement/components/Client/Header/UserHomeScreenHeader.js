@@ -31,7 +31,9 @@ const UserHomeScreenHeader = ({
             <View style={styles.headerLeft}>
                 <View>
                     <Text style={styles.welcomeText}>Xin chào,</Text>
-                    <Text style={styles.usernameText}>{username}</Text>
+                    <Text style={styles.usernameText} numberOfLines={1}>
+                        {username}
+                    </Text>
                 </View>
             </View>
             <View style={styles.headerRight}>
@@ -91,6 +93,7 @@ const styles = StyleSheet.create({
         color: colors.black_100,
         fontSize: 16,
         fontFamily: "lato-bold",
+        marginRight: "2%",
     },
     iconContainer: {
         minWidth: 48,
