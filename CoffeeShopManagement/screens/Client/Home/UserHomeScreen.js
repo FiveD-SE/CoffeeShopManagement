@@ -47,6 +47,7 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
         try {
             setSelectedItem(item);
             setIsItemDetailVisible(true);
+            console.log("Opening item detail:", item);
 
             // Update recently viewed items for the user
             const userDocRef = doc(db, "users", auth.currentUser.uid);
@@ -136,7 +137,10 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
                         const productDocRef = doc(db, "products", productId);
                         const productDocSnap = await getDoc(productDocRef);
                         return productDocSnap.exists()
-                            ? { ...productDocSnap.data(), productId }
+                            ? {
+                                  ...productDocSnap.data(),
+                                  id: productDocSnap.id,
+                              }
                             : null;
                     })
                 );

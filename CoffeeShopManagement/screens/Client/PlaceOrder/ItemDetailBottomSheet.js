@@ -49,7 +49,7 @@ const ItemDetailBottomSheet = ({
     onClose,
     userData,
 }) => {
-    console.log("selectedItem: ", selectedItem);
+    // console.log("selectedItem: ", selectedItem);
 
     const { setIsOpen } = useIsOpen();
 
