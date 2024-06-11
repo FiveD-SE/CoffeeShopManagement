@@ -4,7 +4,7 @@ import Checkbox from 'expo-checkbox';
 
 const BranchCard = ({ storeName,
     branchName,
-    distance,
+    address,
     image,
     onPress, }) => {
     const [isShipChecked, setShipChecked] = useState(false);
@@ -18,14 +18,9 @@ const BranchCard = ({ storeName,
                     <Text style={styles.storeName}>{storeName}</Text>
                     <Text style={styles.branchName}>{branchName}</Text>
                 </View>
-                <Text style={styles.distance}>Cách đây {distance} km</Text>
+                <Text style={styles.distance}>{address} km</Text>
             </View>
-            <Checkbox
-                style={styles.checkbox}
-                value={isShipChecked}
-                onValueChange={setShipChecked}
-                color={isShipChecked ? '#00A188' : undefined}
-            />
+
         </View>
     )
 }

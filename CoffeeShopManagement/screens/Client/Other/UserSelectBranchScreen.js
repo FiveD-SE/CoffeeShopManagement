@@ -49,7 +49,7 @@ export default function UserSelectBranchScreen({ route }) {
 			<View style={styles.imageContainer}>
 				<Image
 					style={styles.image}
-					source={{ uri: item.imageDownloadUrl }}
+					source={{ uri: item.branchImage }}
 					resizeMode="stretch"
 				/>
 			</View>
