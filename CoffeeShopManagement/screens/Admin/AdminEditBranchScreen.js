@@ -136,6 +136,11 @@ const AdminEditBranchScreen = ({ navigation, route }) => {
         const phoneRegex = /^[0-9]{10}$/;
         return phoneRegex.test(phoneNumber);
     };
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
 
     const handleEditBranch = async () => {
         if (!hasChanges) {
@@ -157,8 +162,14 @@ const AdminEditBranchScreen = ({ navigation, route }) => {
             !street
         ) {
             errorMessage = "Vui lòng nhập đầy đủ thông tin";
-        } else if (!validatePhoneNumber(branchPhoneNumber)) {
+        } 
+        
+        else if (!validatePhoneNumber(branchPhoneNumber)) {
             errorMessage = "Vui lòng nhập số điện thoại đúng định dạng";
+        }
+
+        else if (!validateEmail(branchEmail)) {
+            errorMessage = "Vui lòng nhập email đúng định dạng";
         }
 
         if (errorMessage) {

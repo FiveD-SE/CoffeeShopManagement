@@ -1,13 +1,37 @@
-import React, {useState}from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import Checkbox from 'expo-checkbox';
+import { Feather } from "@expo/vector-icons";
 
 const BranchCard = ({ storeName,
     branchName,
     address,
     image,
-    onPress, }) => {
-    const [isShipChecked, setShipChecked] = useState(false);
+    onPress,
+    openingHour,
+    closingHour, }) => {
+
+    const convertTimestampToDate = (timestamp) => {
+        const isSeconds = timestamp.seconds !== undefined;
+
+        const ts = isSeconds ? timestamp.seconds * 1000 : timestamp;
+
+        const date = new Date(ts);
+
+        return date;
+    };
+
+    const formatTime = (date) => {
+        if (date === undefined) {
+            return "";
+        }
+        else {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+    };
+
     return (
         <Pressable style={styles.root} onPress={onPress}>
             <View style={styles.image}>
@@ -17,8 +41,14 @@ const BranchCard = ({ storeName,
                 <View style={styles.title}>
                     <Text style={styles.storeName}>{storeName}</Text>
                     <Text style={styles.branchName}>{branchName}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: "center" }}>
+                        <Feather name='clock' size={20} color={'#9c9c9c'} />
+                        <View style={styles.timeWrapper}>
+                            <Text style={styles.timeText}>{formatTime(convertTimestampToDate(openingHour))} - {formatTime(convertTimestampToDate(closingHour))}</Text>
+                        </View>
+                    </View>
+                    <Text style={styles.address}>Địa chỉ: {address}</Text>
                 </View>
-                <Text style={styles.distance}>{address} km</Text>
             </View>
 
         </Pressable>
@@ -63,6 +93,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontStyle: "normal",
         fontWeight: "600",
+
     },
     content: {
         flexDirection: "column",
@@ -76,24 +107,23 @@ const styles = StyleSheet.create({
     title: {
         flexDirection: "column",
         alignItems: "flex-start",
-        rowGap: 10,
-        columnGap: 10,
     },
-    distance: {
-        color: "rgba(58, 58, 58, 0.501960813999176)",
-        textAlign: "center",
+    address: {
+        color: "#3a3a3a",
         fontFamily: "lato-regular",
-        fontSize: 12,
+        fontSize: 14,
         fontStyle: "normal",
-        fontWeight: "400",
-        lineHeight: 12,
+        fontWeight: "500",
+        marginBottom: "3%"
     },
-    button: {
-        flexDirection: "row",
-        width: 16,
-        height: 16,
-        justifyContent: "center",
-        alignItems: "center",
-        flexShrink: 0,
+    timeText: {
+        color: '#006c5e',
+    },
+    timeWrapper: {
+        backgroundColor: '#f2f8f7',
+        padding: '2%',
+        borderRadius: 20,
+        paddingHorizontal: '5%',
+        marginStart: '2%'
     },
 });
