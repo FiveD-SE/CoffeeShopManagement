@@ -85,7 +85,9 @@ export const updateUserCredit = (credit) => ({
     payload: credit,
 });
 
-export const updateUserRecentlyViewed = (productId) => ({
-    type: types.UPDATE_USER_RECENTLY_VIEWED,
-    payload: productId,
-});
+export const updateUserRecentlyViewed = (recentlyViewedItems) => {
+    return {
+        type: types.UPDATE_USER_RECENTLY_VIEWED,
+        payload: recentlyViewedItems,
+    };
+};
