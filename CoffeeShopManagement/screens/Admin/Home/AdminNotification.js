@@ -1,147 +1,178 @@
-import { View, Text, SafeAreaView, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import Icon from 'react-native-vector-icons/Entypo'
-import NotificationCard from '../../../components/Staff/NotificationCard';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Pressable,
+    FlatList,
+    Platform,
+    SafeAreaView,
+} from "react-native";
+import { connect } from "react-redux";
+import {
+    collection,
+    query,
+    where,
+    onSnapshot,
+    orderBy,
+} from "firebase/firestore";
+import NotificationCard from "../../../components/Staff/NotificationCard";
+import { db } from "../../../services/firebaseService";
 
-export default function AdminNotification() {
+function AdminNotification({ userData }) {
+    const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
+    const [notifications, setNotifications] = useState([]);
 
-    const [selectedButtonIndex, setSelectedButtonIndex] = useState(1);
+    const selectionButtons = ["Tất cả", "Chưa đọc", "Đã đọc"];
+
+    const fetchNotifications = useCallback(() => {
+        if (userData?.id) {
+            const notificationsQuery = query(
+                collection(db, "notifications"),
+                orderBy("notificationCreatedDate", "desc")
+            );
+
+            const unsubscribe = onSnapshot(
+                notificationsQuery,
+                (querySnapshot) => {
+                    const notificationsData = [];
+                    querySnapshot.forEach((doc) => {
+                        const notificationDoc = doc.data();
+                        notificationsData.push({
+                            id: doc.id,
+                            title: notificationDoc.notificationTitle,
+                            content: notificationDoc.notificationContent,
+                            state: notificationDoc.notificationStatus,
+                            type: notificationDoc.notificationType,
+                            products: notificationDoc.productOrders,
+                            time: notificationDoc.notificationCreatedDate,
+                        });
+                    });
+                    setNotifications(notificationsData);
+                }
+            );
+            return () => unsubscribe();
+        }
+    }, [userData?.id]);
 
     useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * 3);
-        setSelectedButtonIndex(randomIndex);
-    }, []);
+        fetchNotifications();
+    }, [fetchNotifications]);
 
-    const selectionButtons = ['Tất cả', 'Chưa đọc', 'Đã đọc'];
-    const DATA = [
-        {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12341',
-            state: 'Success',
-            isRead: false
-        },
-        {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12342',
-            state: 'Success',
-            isRead: true
-        },
-        {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12343',
-            state: 'Failed',
-            isRead: false
-        },
-        {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12344',
-            state: 'Failed',
-            isRead: true
-        },
-        {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#12345',
-            state: 'None',
-            isRead: false
-        },
-        {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#123456',
-            state: 'None',
-            isRead: true
-        },
-        {
-            title: 'Tiêu đề',
-            content: 'Nội dung',
-            orderId: '#123456',
-            state: 'None',
-            isRead: true
-        },
-    ]
+    const getFilteredNotifications = () => {
+        switch (selectedButtonIndex) {
+            case 1:
+                return notifications.filter(
+                    (notification) => !notification.state
+                );
+            case 2:
+                return notifications.filter(
+                    (notification) => notification.state
+                );
+            default:
+                return notifications;
+        }
+    };
+
     return (
-        <View style={styles.container}>
-            <View>
-                <View style={styles.filter}>
-                    <View style={styles.filterWrapper}>
-                        {selectionButtons.map((buttonTitle, index) => (
-                            <TouchableOpacity
-                                key={index}
+        <SafeAreaView style={styles.container}>
+            <View style={styles.filter}>
+                <View style={styles.filterWrapper}>
+                    {selectionButtons.map((buttonTitle, index) => (
+                        <Pressable
+                            key={index}
+                            style={[
+                                styles.filterDetail,
+                                selectedButtonIndex === index &&
+                                    styles.filterDetailSelected,
+                            ]}
+                            onPress={() => setSelectedButtonIndex(index)}
+                        >
+                            <Text
                                 style={[
-                                    styles.filterDetail,
-                                    selectedButtonIndex === index && { borderWidth: 1, borderColor: '#ffdfe7', backgroundColor: '#fff6f8' }
+                                    styles.filterDetailText,
+                                    selectedButtonIndex === index &&
+                                        styles.filterDetailTextSelected,
                                 ]}
-                                onPress={() => setSelectedButtonIndex(index)}
                             >
-                                <Text style={[{ paddingVertical: "1%", paddingHorizontal: "2%", fontSize: 16 }, selectedButtonIndex === index && { color: '#ff9cb2' }]}>{buttonTitle}</Text>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                    <View>
-                        <TouchableOpacity style={styles.filterButton}>
-                            <Icon name='list' size={40} />
-                        </TouchableOpacity>
-                    </View>
+                                {buttonTitle}
+                            </Text>
+                        </Pressable>
+                    ))}
                 </View>
             </View>
             <View style={styles.listNotification}>
                 <Text style={styles.allNotificationText}>Tất cả thông báo</Text>
                 <FlatList
+                    data={getFilteredNotifications()}
                     showsVerticalScrollIndicator={false}
-                    data={DATA}
+                    keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
-                        <NotificationCard item={item} />
-                    )} />
+                        <NotificationCard
+                            item={item}
+                            onStatusChange={fetchNotifications}
+                        />
+                    )}
+                />
             </View>
-        </View>
-    )
+        </SafeAreaView>
+    );
 }
+
+const mapStateToProps = (state) => ({
+    userData: state.auth.userData,
+});
+
+export default connect(mapStateToProps)(AdminNotification);
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginHorizontal: "3%",
-        marginTop: "2%",
-        marginBottom: "3%"
+        backgroundColor: 'white'
     },
     filter: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: "center"
-    },
-    filterDetail: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 10,
-        padding: '3%',
-        backgroundColor: '#fafafb'
-    },
-    filterButton: {
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: 'rgba(58, 58, 58, 0.1)',
-        borderWidth: 1,
-        borderRadius: 10,
-        padding: '1%'
+        padding: "5%",
+        flexDirection: "row",
+        justifyContent: "flex-start",
     },
     filterWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '80%',
-        alignItems: 'center'
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "80%",
+    },
+    filterDetail: {
+        paddingVertical: "2%",
+        paddingHorizontal: "5%",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 8,
+        paddingHorizontal: "6%",
+        backgroundColor: '#FFFFFF',
+        borderColor: '#000000',
+        borderWidth: 1,
+    },
+    filterDetailSelected: {
+        borderColor: '#006C5E',
+        backgroundColor: '#006C5E'
+    },
+    filterDetailText: {
+        color: 'black',
+        fontFamily: "lato-regular",
+        fontSize: 16,
+    },
+    filterDetailTextSelected: {
+        color: 'white',
+        fontFamily: "lato-bold",
+        fontSize: 16,
     },
     listNotification: {
-        marginTop: '5%',
-        flex: 1
+        height: "100%",
+        padding: "5%",
     },
     allNotificationText: {
-        fontSize: 18,
-        fontWeight: '600',
-        marginBottom: "2%"
-    }
-})
+        color: 'black',
+        fontFamily: "lato-bold",
+        fontSize: 16,
+    },
+});
