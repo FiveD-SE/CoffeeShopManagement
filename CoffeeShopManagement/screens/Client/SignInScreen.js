@@ -1,4 +1,16 @@
-import { View, Text, StyleSheet, Image, Pressable, Alert } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    Pressable,
+    Alert,
+    TouchableWithoutFeedback,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    Keyboard,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import Checkbox from "expo-checkbox";
@@ -197,60 +209,66 @@ const SignInScreen = ({ saveUserData }) => {
     };
 
     return (
-        <View style={styles.container}>
-            <Image style={styles.header} source={BACKGROUND_SOURCE} />
-            <View style={styles.main}>
-                <Text style={styles.title}>Đăng nhập</Text>
-                <InputField
-                    placeholder="Email" // Changed to Email
-                    keyboardType="email-address" // Added keyboard type
-                    onChangeText={setEmail}
-                />
-                <PasswordInput
-                    placeholder="Mật khẩu"
-                    onChangeText={setPassword}
-                />
-                <View style={styles.helperContainer}>
-                    <View
-                        style={{
-                            flex: 1,
-                            flexDirection: "row",
-                            marginRight: "auto",
-                        }}
-                    >
-                        <Checkbox
-                            style={styles.checkbox}
-                            value={isChecked}
-                            color={isChecked ? "#a8a19b" : undefined}
-                            onValueChange={handleRememberMe}
-                        />
-                        <Text style={styles.helperText}>Ghi nhớ tôi</Text>
-                    </View>
-                    <BrownTextButton
-                        text="Quên mật khẩu?"
-                        onPress={goToForgotPassword}
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+            <KeyboardAvoidingView
+                style={styles.container}
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+            >
+                <Image style={styles.header} source={BACKGROUND_SOURCE} />
+                <ScrollView contentContainerStyle={styles.main}>
+                    <Image
+                        source={require("../../assets/fived.png")}
+                        style={{ width: 100, height: 100 }}
                     />
-                </View>
-                <BrownButton text="Đăng nhập" onPress={handleSignIn} />
-                <View style={styles.labelContainer}>
-                    <View style={styles.divider}></View>
-                    <Text style={styles.label}>hoặc đăng nhập bằng</Text>
-                    <View style={styles.divider}></View>
-                </View>
-                <Pressable style={styles.iconButton}>
-                    <Image source={GOOGLE_ICON_SOURCE} style={styles.icon} />
-                </Pressable>
-                <View style={styles.helperContainer}>
-                    <Text style={styles.helperText}>Khách hàng mới?</Text>
-                    <View style={{ marginLeft: "2%" }}>
+                    <Text style={styles.title}>Đăng nhập</Text>
+                    <InputField
+                        placeholder="Email"
+                        keyboardType="email-address"
+                        onChangeText={setEmail}
+                    />
+                    <PasswordInput
+                        placeholder="Mật khẩu"
+                        onChangeText={setPassword}
+                    />
+                    <View style={styles.helperContainer}>
+                        <View style={styles.rememberMeContainer}>
+                            <Checkbox
+                                style={styles.checkbox}
+                                value={isChecked}
+                                color={isChecked ? "#a8a19b" : undefined}
+                                onValueChange={handleRememberMe}
+                            />
+                            <Text style={styles.helperText}>Ghi nhớ tôi</Text>
+                        </View>
                         <BrownTextButton
-                            text="Tạo một tài khoản mới"
-                            onPress={goToSignUp}
+                            text="Quên mật khẩu?"
+                            onPress={goToForgotPassword}
                         />
                     </View>
-                </View>
-            </View>
-        </View>
+                    <BrownButton text="Đăng nhập" onPress={handleSignIn} />
+                    <View style={styles.labelContainer}>
+                        <View style={styles.divider}></View>
+                        <Text style={styles.label}>hoặc đăng nhập bằng</Text>
+                        <View style={styles.divider}></View>
+                    </View>
+                    <Pressable style={styles.iconButton}>
+                        <Image
+                            source={GOOGLE_ICON_SOURCE}
+                            style={styles.icon}
+                        />
+                    </Pressable>
+                    <View style={styles.helperContainer}>
+                        <Text style={styles.helperText}>Khách hàng mới?</Text>
+                        <View style={{ marginLeft: "2%" }}>
+                            <BrownTextButton
+                                text="Tạo một tài khoản mới"
+                                onPress={goToSignUp}
+                            />
+                        </View>
+                    </View>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
     );
 };
 
@@ -261,10 +279,11 @@ const styles = StyleSheet.create({
     },
     header: {
         width: "100%",
-        resizeMode: "stretch",
+        resizeMode: "cover",
+        height: 200,
     },
     main: {
-        flex: 1,
+        flexGrow: 1,
         alignItems: "center",
         padding: "5%",
     },
@@ -272,15 +291,23 @@ const styles = StyleSheet.create({
         fontSize: 32,
         fontWeight: "600",
         color: "#54433A",
+        marginBottom: 20,
     },
     helperContainer: {
         flexDirection: "row",
-        marginTop: "5%",
+        marginTop: 20,
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+    },
+    rememberMeContainer: {
+        flexDirection: "row",
+        alignItems: "center",
     },
     checkbox: {
         borderColor: "#A8A19B",
         borderRadius: 100,
-        marginRight: "2%",
+        marginRight: 8,
     },
     helperText: {
         color: "#3a3a3a",
@@ -291,7 +318,7 @@ const styles = StyleSheet.create({
         width: "100%",
         flexDirection: "row",
         alignItems: "center",
-        marginTop: "5%",
+        marginTop: 20,
     },
     divider: {
         flex: 1,
@@ -299,16 +326,16 @@ const styles = StyleSheet.create({
         height: 1,
     },
     label: {
-        marginHorizontal: "3%",
+        marginHorizontal: 10,
         color: "#3a3a3a",
         fontSize: 12,
         fontWeight: "500",
     },
     iconButton: {
-        marginTop: "5%",
+        marginTop: 20,
         borderWidth: 1,
         borderRadius: 30,
-        padding: "2%",
+        padding: 10,
         borderColor: "rgba(58,58,58,0.2)",
         justifyContent: "center",
         alignItems: "center",
