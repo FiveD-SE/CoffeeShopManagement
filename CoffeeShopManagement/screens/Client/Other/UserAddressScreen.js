@@ -28,7 +28,7 @@ import { db } from "../../../services/firebaseService";
 import AddressInfo from "../../../components/Client/Card/AddressInfo";
 
 const UserAddressScreen = ({ userData, route }) => {
-	const { isOrdered, productOrders } = route.params;
+	const { isOrdered, productOrders, selectedBranch } = route.params;
 
 	const navigation = useNavigation();
 
@@ -128,6 +128,7 @@ const UserAddressScreen = ({ userData, route }) => {
 		if (isOrdered) {
 			navigation.navigate("UserOrderConfirmationScreen", {
 				productOrders,
+				selectedBranch,
 				selectedAddress: item,
 			});
 		}

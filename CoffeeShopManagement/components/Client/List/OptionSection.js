@@ -3,27 +3,29 @@ import { View, Text, StyleSheet } from "react-native";
 import OptionButton from "../Button/OptionButton";
 
 const OptionSection = ({ title, options, onSelectOption }) => {
-	const [selectedOptionIndex, setSelectedOptionIndex] = useState(null);
+	const [selectedOptionIndex, setSelectedOptionIndex] = useState(0);
+
 	const handleOptionPress = (index) => {
 		setSelectedOptionIndex(index);
 		onSelectOption(title, options[index]);
 	};
+
+	const renderOptionList = () => {
+		return options.map((option, index) => (
+			<OptionButton
+				key={index}
+				option={option}
+				index={index}
+				isSelected={selectedOptionIndex === index}
+				onPress={() => handleOptionPress(index)}
+			/>
+		));
+	};
+
 	return (
 		<View style={{ marginTop: "5%" }}>
-			<View style={styles.optionHeader}>
-				<Text style={styles.optionTitle}>{title}</Text>
-			</View>
-			<View style={styles.optionContainer}>
-				{options.map((option, index) => (
-					<OptionButton
-						key={index}
-						option={option}
-						index={index}
-						isSelected={selectedOptionIndex === index}
-						onPress={() => handleOptionPress(index)}
-					/>
-				))}
-			</View>
+			<Text style={styles.optionTitle}>{title}</Text>
+			<View style={styles.optionContainer}>{renderOptionList()}</View>
 		</View>
 	);
 };

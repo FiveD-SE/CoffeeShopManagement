@@ -52,743 +52,754 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const HomeStack = ({ navigation, route }) => {
-    useLayoutEffect(() => {
-        const routeName = getFocusedRouteNameFromRoute(route);
-        if (routeName === "ExchangeVoucher") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "VoucherDetails") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "BestSeller") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "SearchScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "CashierNotification") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "UserOrderConfirmationScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "SelectAddress") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "AddNewAddress") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "EditAddress") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "SelectBranchScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "UserOrderInformationScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else {
-            navigation.setOptions({
-                tabBarStyle: {
-                    backgroundColor: colors.white_100,
-                    borderTopColor: colors.grey_20,
-                    borderTopWidth: 1,
-                    borderOpacity: 0.5,
-                    height: isIOS ? 100 : 80,
-                },
-            });
-        }
-    }, [navigation, route]);
+	useLayoutEffect(() => {
+		const routeName = getFocusedRouteNameFromRoute(route);
+		if (routeName === "ExchangeVoucher") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "VoucherDetails") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "BestSeller") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "SearchScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "CashierNotification") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserOrderConfirmationScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserOrderScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "SelectAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "AddNewAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "EditAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "SelectBranchScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserOrderInformationScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else {
+			navigation.setOptions({
+				tabBarStyle: {
+					backgroundColor: colors.white_100,
+					borderTopColor: colors.grey_20,
+					borderTopWidth: 1,
+					borderOpacity: 0.5,
+					height: isIOS ? 100 : 80,
+				},
+			});
+		}
+	}, [navigation, route]);
 
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="UserHomeScreen"
-                component={UserHomeScreen}
-                options={{ headerShown: false }}
-            />
-
-            <Stack.Screen
-                name="UserOrderConfirmationScreen"
-                component={UserOrderConfirmationScreen}
-                options={{
-                    headerTitle: "Xác nhận đơn hàng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="SelectAddress"
-                component={UserAddressScreen}
-                options={{
-                    headerTitle: "Chọn địa chỉ",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="AddNewAddress"
-                component={UserAddNewAddressScreen}
-                options={{
-                    headerTitle: "Thêm địa chỉ mới",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="EditAddress"
-                component={UserEditAddressScreen}
-                options={{
-                    headerTitle: "Sửa địa chỉ",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="SelectBranchScreen"
-                component={SelectBranch}
-                options={{
-                    headerTitle: "Chọn chi nhánh",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="UserOrderInformationScreen"
-                component={UserOrderInformationScreen}
-                options={{
-                    headerTitle: "Đơn hàng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-
-            <Stack.Screen
-                name="ExchangeVoucher"
-                component={UserExchangeVoucherScreen}
-                options={{
-                    headerTitle: "Đổi thưởng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="VoucherDetails"
-                component={UserVoucherDetailsScreen}
-                options={{
-                    headerTitle: "Chi tiết quy đổi",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="SearchScreen"
-                component={UserSearchScreen}
-                options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name="BestSeller"
-                component={UserBestSellerScreen}
-                options={{
-                    headerTitle: "Sản phẩm bán chạy",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="CashierNotification"
-                component={CashierNotification}
-                options={{
-                    headerTitle: "Thông báo",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-        </Stack.Navigator>
-    );
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="UserHomeScreen"
+				component={UserHomeScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="UserOrderConfirmationScreen"
+				component={UserOrderConfirmationScreen}
+				options={{
+					headerTitle: "Xác nhận đơn hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="SelectAddress"
+				component={UserAddressScreen}
+				options={{
+					headerTitle: "Chọn địa chỉ",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="AddNewAddress"
+				component={UserAddNewAddressScreen}
+				options={{
+					headerTitle: "Thêm địa chỉ mới",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="EditAddress"
+				component={UserEditAddressScreen}
+				options={{
+					headerTitle: "Sửa địa chỉ",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="SelectBranchScreen"
+				component={SelectBranch}
+				options={{
+					headerTitle: "Chọn chi nhánh",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserOrderScreen"
+				component={UserOrderScreen}
+				options={{
+					headerTitle: "Danh sách đơn hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserOrderInformationScreen"
+				component={UserOrderInformationScreen}
+				options={{
+					headerTitle: "Đơn hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton isOrderSuccess={true} />,
+				}}
+			/>
+			<Stack.Screen
+				name="ExchangeVoucher"
+				component={UserExchangeVoucherScreen}
+				options={{
+					headerTitle: "Đổi thưởng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="VoucherDetails"
+				component={UserVoucherDetailsScreen}
+				options={{
+					headerTitle: "Chi tiết quy đổi",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="SearchScreen"
+				component={UserSearchScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="BestSeller"
+				component={UserBestSellerScreen}
+				options={{
+					headerTitle: "Sản phẩm bán chạy",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="CashierNotification"
+				component={CashierNotification}
+				options={{
+					headerTitle: "Thông báo",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+		</Stack.Navigator>
+	);
 };
 
 const OrderStack = ({ navigation, route }) => {
-    useLayoutEffect(() => {
-        const routeName = getFocusedRouteNameFromRoute(route);
-        if (routeName === "UserOrderScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "UserSearchScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "UserMustTryItemScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "UserCartScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "UserOrderConfirmationScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "SelectAddress") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "AddNewAddress") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "EditAddress") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "SelectBranchScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "UserOrderInformationScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else {
-            navigation.setOptions({
-                tabBarStyle: {
-                    backgroundColor: colors.white_100,
-                    borderTopColor: colors.grey_20,
-                    borderTopWidth: 1,
-                    borderOpacity: 0.5,
-                    height: isIOS ? 100 : 80,
-                },
-            });
-        }
-    }, [navigation, route]);
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="UserPlaceOrderScreen"
-                component={UserPlaceOrderScreen}
-                options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name="UserOrderScreen"
-                component={UserOrderScreen}
-                options={{
-                    headerTitle: "Danh sách đơn hàng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="UserSearchScreen"
-                component={UserSearchScreen}
-                options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name="UserMustTryItemScreen"
-                component={UserBestSellerScreen}
-                options={{
-                    headerTitle: "Món mới phải thử",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="UserCartScreen"
-                component={UserCartScreen}
-                options={{
-                    headerTitle: "Giỏ hàng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="UserOrderConfirmationScreen"
-                component={UserOrderConfirmationScreen}
-                options={{
-                    headerTitle: "Xác nhận đơn hàng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="SelectAddress"
-                component={UserAddressScreen}
-                options={{
-                    headerTitle: "Chọn địa chỉ",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="AddNewAddress"
-                component={UserAddNewAddressScreen}
-                options={{
-                    headerTitle: "Thêm địa chỉ mới",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="EditAddress"
-                component={UserEditAddressScreen}
-                options={{
-                    headerTitle: "Sửa địa chỉ",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="SelectBranchScreen"
-                component={SelectBranch}
-                options={{
-                    headerTitle: "Chọn chi nhánh",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="UserOrderInformationScreen"
-                component={UserOrderInformationScreen}
-                options={{
-                    headerTitle: "Đơn hàng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="UserFavoriteItemScreen"
-                component={UserFavoriteItemScreen}
-                options={{
-                    headerTitle: "Yêu thích",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-        </Stack.Navigator>
-    );
+	useLayoutEffect(() => {
+		const routeName = getFocusedRouteNameFromRoute(route);
+		if (routeName === "UserOrderScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserSearchScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserMustTryItemScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserCartScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserFavoriteItemScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserOrderConfirmationScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "SelectAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "AddNewAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "EditAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "SelectBranchScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserOrderInformationScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else {
+			navigation.setOptions({
+				tabBarStyle: {
+					backgroundColor: colors.white_100,
+					borderTopColor: colors.grey_20,
+					borderTopWidth: 1,
+					borderOpacity: 0.5,
+					height: isIOS ? 100 : 80,
+				},
+			});
+		}
+	}, [navigation, route]);
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="UserPlaceOrderScreen"
+				component={UserPlaceOrderScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="UserOrderScreen"
+				component={UserOrderScreen}
+				options={{
+					headerTitle: "Danh sách đơn hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserSearchScreen"
+				component={UserSearchScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="UserMustTryItemScreen"
+				component={UserBestSellerScreen}
+				options={{
+					headerTitle: "Món mới phải thử",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserCartScreen"
+				component={UserCartScreen}
+				options={{
+					headerTitle: "Giỏ hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserOrderConfirmationScreen"
+				component={UserOrderConfirmationScreen}
+				options={{
+					headerTitle: "Xác nhận đơn hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="SelectAddress"
+				component={UserAddressScreen}
+				options={{
+					headerTitle: "Chọn địa chỉ",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="AddNewAddress"
+				component={UserAddNewAddressScreen}
+				options={{
+					headerTitle: "Thêm địa chỉ mới",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="EditAddress"
+				component={UserEditAddressScreen}
+				options={{
+					headerTitle: "Sửa địa chỉ",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="SelectBranchScreen"
+				component={SelectBranch}
+				options={{
+					headerTitle: "Chọn chi nhánh",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserOrderInformationScreen"
+				component={UserOrderInformationScreen}
+				options={{
+					headerTitle: "Đơn hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserFavoriteItemScreen"
+				component={UserFavoriteItemScreen}
+				options={{
+					headerTitle: "Yêu thích",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+		</Stack.Navigator>
+	);
 };
 
 const CouponsStack = ({ navigation, route }) => {
-    useLayoutEffect(() => {
-        const routeName = getFocusedRouteNameFromRoute(route);
-        if (routeName === "Rank") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "UserVoucherScreen") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "History") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "Benefit") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "Exchange") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "VoucherDetails") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else {
-            navigation.setOptions({
-                tabBarStyle: {
-                    backgroundColor: colors.white_100,
-                    borderTopColor: colors.grey_20,
-                    borderTopWidth: 1,
-                    borderOpacity: 0.5,
-                    height: isIOS ? 100 : 80,
-                },
-            });
-        }
-    }, [navigation, route]);
+	useLayoutEffect(() => {
+		const routeName = getFocusedRouteNameFromRoute(route);
+		if (routeName === "Rank") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserVoucherScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "History") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "Benefit") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "Exchange") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "VoucherDetails") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else {
+			navigation.setOptions({
+				tabBarStyle: {
+					backgroundColor: colors.white_100,
+					borderTopColor: colors.grey_20,
+					borderTopWidth: 1,
+					borderOpacity: 0.5,
+					height: isIOS ? 100 : 80,
+				},
+			});
+		}
+	}, [navigation, route]);
 
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="Promotions"
-                component={UserCouponScreen}
-                options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name="Rank"
-                component={MembershipTier}
-                options={{
-                    headerTitle: "Hạng thành viên",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="Promotions"
+				component={UserCouponScreen}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="Rank"
+				component={MembershipTier}
+				options={{
+					headerTitle: "Hạng thành viên",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
 
-            <Stack.Screen
-                name="UserVoucherScreen"
-                component={UserVoucherScreen}
-                options={{
-                    headerTitle: "Voucher của bạn",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="History"
-                component={History}
-                options={{
-                    headerTitle: "Lịch sử đổi thưởng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="Benefit"
-                component={Benefit}
-                options={{
-                    headerTitle: "Quyền lợi của bạn",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="Exchange"
-                component={UserExchangeVoucherScreen}
-                options={{
-                    headerTitle: "Đổi thưởng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="VoucherDetails"
-                component={UserVoucherDetailsScreen}
-                options={{
-                    headerTitle: "Chi tiết quy đổi",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-        </Stack.Navigator>
-    );
+			<Stack.Screen
+				name="UserVoucherScreen"
+				component={UserVoucherScreen}
+				options={{
+					headerTitle: "Voucher của bạn",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="History"
+				component={History}
+				options={{
+					headerTitle: "Lịch sử đổi thưởng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="Benefit"
+				component={Benefit}
+				options={{
+					headerTitle: "Quyền lợi của bạn",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="Exchange"
+				component={UserExchangeVoucherScreen}
+				options={{
+					headerTitle: "Đổi thưởng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="VoucherDetails"
+				component={UserVoucherDetailsScreen}
+				options={{
+					headerTitle: "Chi tiết quy đổi",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+		</Stack.Navigator>
+	);
 };
 
 const OtherStack = ({ navigation, route }) => {
-    useLayoutEffect(() => {
-        const routeName = getFocusedRouteNameFromRoute(route);
-        if (routeName === "AddNewAddress") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "AddNewAddress") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else if (routeName === "EditAddress") {
-            navigation.setOptions({
-                tabBarStyle: { display: "none" },
-            });
-        } else {
-            navigation.setOptions({
-                tabBarStyle: {
-                    backgroundColor: colors.white_100,
-                    borderTopColor: colors.grey_20,
-                    borderTopWidth: 1,
-                    borderOpacity: 0.5,
-                    height: isIOS ? 100 : 80,
-                },
-            });
-        }
-    }, [navigation, route]);
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="Other"
-                component={Other}
-                options={{ headerShown: false }}
-            />
-            <Stack.Screen
-                name="EditProfile"
-                component={EditProfileDetail}
-                options={{
-                    headerTitle: "Hồ sơ",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="ProfileDetails"
-                component={ProfileDetails}
-                options={{
-                    headerTitle: "Hồ sơ",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="Settings"
-                component={Setting}
-                options={{
-                    headerTitle: "Cài đặt",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="OrderHistory"
-                component={OrderHistory}
-                options={{
-                    headerTitle: "Lịch sử đơn hàng",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="SelectAddress"
-                component={UserAddressScreen}
-                options={{
-                    headerTitle: "Địa chỉ của bạn",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="FeedbackAndHelp"
-                component={FeedbackAndHelp}
-                options={{
-                    headerTitle: "Phản hồi và hỗ trợ",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="ChangePassword"
-                component={ChangePassword}
-                options={{
-                    headerTitle: "Thay đổi mật khẩu",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="Logout"
-                component={SignInScreen}
-                options={{
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerShown: false,
-                }}
-            />
-            <Stack.Screen
-                name="EditAddress"
-                component={UserEditAddressScreen}
-                options={{
-                    headerTitle: "Sửa địa chỉ",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="AddNewAddress"
-                component={UserAddNewAddressScreen}
-                options={{
-                    headerTitle: "Thêm địa chỉ mới",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="SelectBranch"
-                component={SelectBranch}
-                options={{
-                    headerTitle: () => <SearchBar />,
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                    headerRight: () => <SelectPositionButton />,
-                }}
-            />
-            <Stack.Screen
-                name="SignIn"
-                component={SignInScreen}
-                options={{
-                    headerTitle: "Đăng nhập",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerShown: false,
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="UserMapScreen"
-                component={UserMapScreen}
-                options={{
-                    headerTitle: () => <SearchBar />,
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="ConfirmPassword"
-                component={ConfirmPassword}
-                options={{
-                    headerTitle: "Xác nhận mật khẩu",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-            <Stack.Screen
-                name="StorePolicyScreen"
-                component={StorePolicyScreen}
-                options={{
-                    headerTitle: "Chính sách",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
-        </Stack.Navigator>
-    );
+	useLayoutEffect(() => {
+		const routeName = getFocusedRouteNameFromRoute(route);
+		if (routeName === "AddNewAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "AddNewAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "EditAddress") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else {
+			navigation.setOptions({
+				tabBarStyle: {
+					backgroundColor: colors.white_100,
+					borderTopColor: colors.grey_20,
+					borderTopWidth: 1,
+					borderOpacity: 0.5,
+					height: isIOS ? 100 : 80,
+				},
+			});
+		}
+	}, [navigation, route]);
+	return (
+		<Stack.Navigator>
+			<Stack.Screen
+				name="Other"
+				component={Other}
+				options={{ headerShown: false }}
+			/>
+			<Stack.Screen
+				name="EditProfile"
+				component={EditProfileDetail}
+				options={{
+					headerTitle: "Hồ sơ",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="ProfileDetails"
+				component={ProfileDetails}
+				options={{
+					headerTitle: "Hồ sơ",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="Settings"
+				component={Setting}
+				options={{
+					headerTitle: "Cài đặt",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="OrderHistory"
+				component={OrderHistory}
+				options={{
+					headerTitle: "Lịch sử đơn hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="SelectAddress"
+				component={UserAddressScreen}
+				options={{
+					headerTitle: "Địa chỉ của bạn",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="FeedbackAndHelp"
+				component={FeedbackAndHelp}
+				options={{
+					headerTitle: "Phản hồi và hỗ trợ",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="ChangePassword"
+				component={ChangePassword}
+				options={{
+					headerTitle: "Thay đổi mật khẩu",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="Logout"
+				component={SignInScreen}
+				options={{
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerShown: false,
+				}}
+			/>
+			<Stack.Screen
+				name="EditAddress"
+				component={UserEditAddressScreen}
+				options={{
+					headerTitle: "Sửa địa chỉ",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="AddNewAddress"
+				component={UserAddNewAddressScreen}
+				options={{
+					headerTitle: "Thêm địa chỉ mới",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="SelectBranch"
+				component={SelectBranch}
+				options={{
+					headerTitle: () => <SearchBar />,
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+					headerRight: () => <SelectPositionButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="SignIn"
+				component={SignInScreen}
+				options={{
+					headerTitle: "Đăng nhập",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerShown: false,
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserMapScreen"
+				component={UserMapScreen}
+				options={{
+					headerTitle: () => <SearchBar />,
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="ConfirmPassword"
+				component={ConfirmPassword}
+				options={{
+					headerTitle: "Xác nhận mật khẩu",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="StorePolicyScreen"
+				component={StorePolicyScreen}
+				options={{
+					headerTitle: "Chính sách",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+		</Stack.Navigator>
+	);
 };
 
 function UserNavigator() {
-    const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
+	const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
 
-    return (
-        <Tab.Navigator
-            screenOptions={({ route }) => ({
-                tabBarActiveTintColor: "#006C5E",
-                tabBarInactiveTintColor: "#CBCBD4",
-                tabBarStyle: {
-                    backgroundColor: "white",
-                    borderTopColor: "#CBCBD4",
-                    borderTopWidth: 1,
-                    borderOpacity: 0.5,
-                    height: 83,
-                    display: bottomSheetOpen ? "none" : "flex",
-                },
-                tabBarShowLabel: true,
-                headerShown: false,
-                tabBarHideOnKeyboard: true,
-                tabBarLabelStyle: styles.labelStyle,
-                tabBarIcon: ({ focused, color, size }) => {
-                    let iconName;
-                    if (route.name === "Trang chủ") {
-                        iconName = "home";
-                    } else if (route.name === "Đặt hàng") {
-                        iconName = "cart";
-                    } else if (route.name === "Ưu đãi") {
-                        iconName = "bookmark";
-                    } else if (route.name === "Khác") {
-                        iconName = "reorder-three";
-                    }
-                    return (
-                        <TabBarIcon
-                            focused={focused}
-                            name={iconName}
-                            color={color}
-                        />
-                    );
-                },
-            })}
-        >
-            <Tab.Screen name="Trang chủ" component={HomeStack} />
-            <Tab.Screen name="Đặt hàng" component={OrderStack} />
-            <Tab.Screen name="Ưu đãi" component={CouponsStack} />
-            <Tab.Screen name="Khác" component={OtherStack} />
-        </Tab.Navigator>
-    );
+	return (
+		<Tab.Navigator
+			screenOptions={({ route }) => ({
+				tabBarActiveTintColor: "#006C5E",
+				tabBarInactiveTintColor: "#CBCBD4",
+				tabBarStyle: {
+					backgroundColor: "white",
+					borderTopColor: "#CBCBD4",
+					borderTopWidth: 1,
+					borderOpacity: 0.5,
+					height: 83,
+					display: bottomSheetOpen ? "none" : "flex",
+				},
+				tabBarShowLabel: true,
+				headerShown: false,
+				tabBarHideOnKeyboard: true,
+				tabBarLabelStyle: styles.labelStyle,
+				tabBarIcon: ({ focused, color, size }) => {
+					let iconName;
+					if (route.name === "Trang chủ") {
+						iconName = "home";
+					} else if (route.name === "Đặt hàng") {
+						iconName = "cart";
+					} else if (route.name === "Ưu đãi") {
+						iconName = "bookmark";
+					} else if (route.name === "Khác") {
+						iconName = "reorder-three";
+					}
+					return <TabBarIcon focused={focused} name={iconName} color={color} />;
+				},
+			})}
+		>
+			<Tab.Screen name="Trang chủ" component={HomeStack} />
+			<Tab.Screen name="Đặt hàng" component={OrderStack} />
+			<Tab.Screen name="Ưu đãi" component={CouponsStack} />
+			<Tab.Screen name="Khác" component={OtherStack} />
+		</Tab.Navigator>
+	);
 }
 
 export default UserNavigator;
@@ -796,17 +807,17 @@ export default UserNavigator;
 const isIOS = Platform.OS === "ios";
 
 const styles = StyleSheet.create({
-    bottomTabBar: {
-        backgroundColor: "white",
-        borderTopColor: "#CBCBD4",
-        borderTopWidth: 1,
-        borderOpacity: 0.5,
-        height: 83,
-    },
-    labelStyle: {
-        fontSize: 12,
-        marginTop: 0,
-        fontFamily: "lato-bold",
-        marginBottom: isIOS ? 0 : 15,
-    },
+	bottomTabBar: {
+		backgroundColor: "white",
+		borderTopColor: "#CBCBD4",
+		borderTopWidth: 1,
+		borderOpacity: 0.5,
+		height: 83,
+	},
+	labelStyle: {
+		fontSize: 12,
+		marginTop: 0,
+		fontFamily: "lato-bold",
+		marginBottom: isIOS ? 0 : 15,
+	},
 });

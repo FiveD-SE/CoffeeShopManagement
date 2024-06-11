@@ -5,16 +5,16 @@ import {
 	StyleSheet,
 	ScrollView,
 	SafeAreaView,
-	Pressable,
 	Image,
-	Dimensions,
 	TouchableOpacity,
 } from "react-native";
-import { colors } from "../../../assets/colors/colors";
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../../services/firebaseService";
-import Section from "../../../components/Client/Section";
 import { useNavigation } from "@react-navigation/native";
+import { collection, getDocs, query, where } from "firebase/firestore";
+
+import { colors } from "../../../assets/colors/colors";
+import { db } from "../../../services/firebaseService";
+
+import Section from "../../../components/Client/Section";
 
 export default function UserSelectBranchScreen({ route }) {
 	const { productOrders, addresses } = route.params;
@@ -36,6 +36,7 @@ export default function UserSelectBranchScreen({ route }) {
 		navigation.navigate("UserOrderConfirmationScreen", {
 			productOrders,
 			selectedBranch: item,
+			selectedAddress: addresses,
 		});
 	};
 
@@ -100,11 +101,35 @@ export default function UserSelectBranchScreen({ route }) {
 		<SafeAreaView style={styles.container}>
 			<ScrollView contentContainerStyle={styles.scrollViewContent}>
 				<Section title={"Chi nhánh gần đây"}>
-					{nearbyBranch.map(renderBranchItem)}
+					{nearbyBranch.length === 0 ? (
+						<View style={styles.emptyContainer}>
+							<Image
+								source={require("../../../assets/empty.png")}
+								style={styles.emptyImage}
+							/>
+							<Text style={styles.emptyText}>
+								Không tìm thấy chi nhánh phù hợp
+							</Text>
+						</View>
+					) : (
+						nearbyBranch.map(renderBranchItem)
+					)}
 				</Section>
 
 				<Section title={"Các chi nhánh khác"}>
-					{otherBranch.map(renderBranchItem)}
+					{otherBranch.length === 0 ? (
+						<View style={styles.emptyContainer}>
+							<Image
+								source={require("../../../assets/empty.png")}
+								style={styles.emptyImage}
+							/>
+							<Text style={styles.emptyText}>
+								Không tìm thấy chi nhánh khác
+							</Text>
+						</View>
+					) : (
+						otherBranch.map(renderBranchItem)
+					)}
 				</Section>
 			</ScrollView>
 		</SafeAreaView>
@@ -157,6 +182,21 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		backgroundColor: "#CBCBD4",
 		marginRight: "4%",
+	},
+	emptyContainer: {
+		justifyContent: "center",
+		alignItems: "center",
+		padding: "4%",
+	},
+	emptyImage: {
+		width: 100,
+		height: 100,
+	},
+	emptyText: {
+		color: colors.grey_100,
+		fontSize: 14,
+		fontFamily: "lato-bold",
+		marginTop: "4%",
 	},
 	vertical: {
 		flex: 1,
