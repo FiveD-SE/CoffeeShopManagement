@@ -1,12 +1,23 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import {
+	ActivityIndicator,
+	FlatList,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { collection, getDocs } from "firebase/firestore";
 import unidecode from "unidecode";
+
 import SearchBar from "../../../components/Client/SearchBar";
 import ProductCardHorizontal from "../../../components/Client/Card/ProductCardHorizontal";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
-import { PRODUCT_ITEM_LIST } from "../../../utils/constants";
-import { getProductsList } from "../../../api";
+
+import { db } from "../../../services/firebaseService";
+import { colors } from "../../../assets/colors/colors";
+
 const UserSearchScreen = () => {
 	const navigation = useNavigation();
 
@@ -16,39 +27,48 @@ const UserSearchScreen = () => {
 
 	const [selectedItem, setSelectedItem] = useState(null);
 
+	const [productList, setProductList] = useState([]);
+
+	const [loading, setLoading] = useState(true);
+
 	const itemDetailSnapPoints = useMemo(() => ["85%"], []);
 
 	const itemDetailBottomSheetRef = useRef(null);
 
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 
-	const [productList, setProductList] = useState([]);
-
 	const handleGoBack = () => {
 		navigation.goBack();
+	};
+
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
 	};
 
 	const handleSearch = (text) => {
 		setSearchQuery(text);
 		const normalizedSearchText = unidecode(text.toLowerCase().trim());
-		const filteredList = productList.filter((item) =>
-			unidecode(item.name.toLowerCase()).includes(normalizedSearchText)
+		const filteredList = productList.filter(
+			(item) =>
+				item.productName &&
+				unidecode(item.productName.toLowerCase()).includes(normalizedSearchText)
 		);
 		setFilteredProductList(filteredList);
 	};
 
 	const renderItemList = ({ item }) => (
 		<ProductCardHorizontal
-			id={item._id}
-			name={item.name}
-			price={item.price.toLocaleString("vi-VN", {
-				style: "currency",
-				currency: "VND",
-			})}
-			imageSource={item.imageSource}
+			id={item.productId}
+			name={item.productName}
+			price={formatCurrency(item.productPrice)}
+			imageSource={item?.productImage}
 			onPress={() => handleOpenItemDetail(item)}
 		/>
 	);
+
 	const handleOpenItemDetail = (item) => {
 		setSelectedItem(item);
 		setIsItemDetailVisible(true);
@@ -57,23 +77,30 @@ const UserSearchScreen = () => {
 	const handleCloseItemDetail = () => setIsItemDetailVisible(false);
 
 	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const productRef = await getDocs(collection(db, "products"));
+
+				const productList = productRef.docs.map((doc) => ({
+					id: doc.id,
+					...doc.data(),
+				}));
+				setProductList(productList);
+			} catch (error) {
+				console.error("Error fetching product: ", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	useEffect(() => {
 		if (isItemDetailVisible) {
 			itemDetailBottomSheetRef.current?.present();
 		}
 	}, [isItemDetailVisible]);
-
-	useEffect(() => {
-		const fetchProductList = async () => {
-			try {
-				const productList = await getProductsList();
-				setProductList(productList);
-			} catch (error) {
-				console.error("Error fetching product list:", error);
-			}
-		};
-
-		fetchProductList();
-	}, []);
 
 	return (
 		<>
@@ -89,11 +116,19 @@ const UserSearchScreen = () => {
 					</Pressable>
 				</View>
 				<View style={styles.main}>
-					<FlatList
-						data={searchQuery ? filteredProductList : productList}
-						renderItem={renderItemList}
-						showsVerticalScrollIndicator={false}
-					/>
+					{loading ? (
+						<ActivityIndicator
+							size="large"
+							color={colors.green_100}
+							style={{ flex: 1 }}
+						/>
+					) : (
+						<FlatList
+							data={searchQuery ? filteredProductList : productList}
+							renderItem={renderItemList}
+							showsVerticalScrollIndicator={false}
+						/>
+					)}
 				</View>
 				{isItemDetailVisible && (
 					<ItemDetailBottomSheet

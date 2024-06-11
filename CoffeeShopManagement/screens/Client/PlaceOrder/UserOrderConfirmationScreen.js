@@ -1,27 +1,29 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import {
-	StyleSheet,
-	Text,
-	View,
-	Pressable,
-	ScrollView,
-	Platform,
-} from "react-native";
+import { StyleSheet, Text, View, ScrollView, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
+import Toast from "react-native-toast-message";
 
 import Section from "../../../components/Client/Section";
 import SelectedProductList from "../../../components/Client/List/SelectedProductList";
 import ApplyVoucherButton from "../../../components/Client/Button/ApplyVoucherButton";
 import TotalOrderList from "../../../components/Client/List/TotalOrderList";
 import PaymentMethodButton from "../../../components/Client/Button/PaymentMethodButton";
-import ChooseDeliveryBottomSheet from "../../../components/Client/BottomSheet/ChooseDeliveryBottomSheet";
 import DeliveryInformationButton from "../../../components/Client/Button/DeliveryInformationButton";
 import ChooseCouponBottomSheet from "../../../components/Client/BottomSheet/ChooseCouponBottomSheet";
 import SelectTimeBottomSheet from "../../../components/Client/BottomSheet/SelectTimeBottomSheet";
+import SuccessModal from "../../../components/Client/SuccessModal";
+import CustomButton from "../../../components/Client/Button/CustomButton";
 
 import { colors } from "../../../assets/colors/colors";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+	addDoc,
+	collection,
+	getDocs,
+	query,
+	updateDoc,
+	where,
+} from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
 
 const CASH_ICON = require("../../../assets/cash.png");
@@ -32,27 +34,19 @@ const isIOS = Platform.OS === "ios";
 const UserOrderConfirmationScreen = ({ route, userData }) => {
 	const { productOrders, selectedAddress, selectedBranch } = route.params;
 
-	// console.log("productOrders: ", productOrders);
-
-	console.log("selectedAddress: ", selectedAddress);
-
 	const navigation = useNavigation();
 
 	const selectTimeBottomSheetRef = useRef();
-
-	const chooseDeliveryBottomSheetRef = useRef(null);
 
 	const chooseCouponBottomSheetRef = useRef(null);
 
 	const selectTimeSnapPoints = useMemo(() => [isIOS ? "50%" : "40%"], []);
 
-	const chooseDeliverySnapPoints = useMemo(() => ["30%"], []);
-
 	const chooseCouponSnapPoints = useMemo(() => ["85%"], []);
 
 	const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
-	const [deliveryOption, setDeliveryOption] = useState("");
+	const [deliveryFee, setDeliveryFee] = useState(0);
 
 	const [selectedDeliveryCoupon, setSelectedDeliveryCoupon] = useState(null);
 
@@ -70,29 +64,80 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 
 	const [isOpen, setIsOpen] = useState(false);
 
+	const [modalVisible, setModalVisible] = useState(false);
+
 	const paymentMethods = {
 		cash: { title: "Tiền mặt", imageSource: CASH_ICON },
 		momo: { title: "Momo", imageSource: MOMO_ICON },
 	};
 
-	const deliveryMethod = {
-		delivery: {
-			branch: {
-				title: "Chi nhánh",
-				details: selectedBranch && `${selectedBranch.branchName}`,
-			},
-			address: {
-				title: "Thông tin đặt hàng",
-				details:
-					addresses &&
-					`${addresses.street}, ${addresses.districtName}, ${addresses.provinceName}`,
-			},
-			deliveryTime: {
-				title: "Thời gian nhận hàng",
-				details:
-					selectedTime && selectedDate && `${selectedDate} (${selectedTime})`,
-			},
+	const deliveryOption = {
+		address: {
+			title: "Thông tin đặt hàng",
+			details:
+				addresses &&
+				`${addresses.street}, ${addresses.districtName}, ${addresses.provinceName}`,
 		},
+		branch: {
+			title: "Chi nhánh",
+			details: selectedBranch && `${selectedBranch.branchName}`,
+		},
+		deliveryTime: {
+			title: "Thời gian nhận hàng",
+			details:
+				selectedTime && selectedDate && `${selectedDate} (${selectedTime})`,
+		},
+	};
+
+	const handleDeliveryInfoPress = (title) => {
+		if (title === "Thông tin đặt hàng") {
+			handleSelectAddress();
+		} else if (title === "Thời gian nhận hàng") {
+			handleSelectTime();
+		} else if (title === "Chi nhánh") {
+			handleSelectBranch();
+		}
+	};
+
+	const handleSelectAddress = () => {
+		navigation.navigate("SelectAddress", {
+			productOrders,
+			selectedBranch,
+			isOrdered: true,
+		});
+	};
+
+	const handleSelectBranch = () => {
+		navigation.navigate("SelectBranchScreen", {
+			productOrders,
+			addresses,
+		});
+	};
+
+	const handleSelectTime = () => {
+		selectTimeBottomSheetRef.current.present();
+	};
+
+	const renderDeliveryList = () => {
+		const delivery = deliveryOption;
+
+		return Object.keys(delivery).map((index) => {
+			const { title, details } = delivery[index];
+			return (
+				<View key={index} style={{ marginTop: "5%" }}>
+					<DeliveryInformationButton
+						title={title}
+						details={details}
+						onPress={() => handleDeliveryInfoPress(title)}
+					/>
+				</View>
+			);
+		});
+	};
+
+	const handleChooseCoupon = () => {
+		chooseCouponBottomSheetRef.current?.present();
+		setIsOpen(true);
 	};
 
 	const handleSelectDeliveryCoupon = (deliveryCoupon) => {
@@ -115,96 +160,8 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 		}
 	};
 
-	const handleChooseCoupon = () => {
-		chooseCouponBottomSheetRef.current?.present();
-		setIsOpen(true);
-	};
-
 	const handlePaymentMethodChange = (method) => {
 		setSelectedPaymentMethod(method);
-	};
-
-	const handleConfirmOrder = () => {
-		navigation.navigate("UserOrderInformationScreen");
-	};
-
-	const handleDeliveryInfoPress = (title) => {
-		if (title === "Thông tin đặt hàng") {
-			goToSelectAddress();
-		} else if (title === "Thời gian nhận hàng") {
-			handleSelectTime();
-		} else if (title === "Chi nhánh") {
-			goToSelectBranch();
-		}
-	};
-
-	const renderDeliveryList = () => {
-		const delivery = deliveryMethod.delivery;
-
-		return Object.keys(delivery).map((index) => {
-			const { title, details } = delivery[index];
-			return (
-				<View key={index} style={{ marginTop: "5%" }}>
-					<DeliveryInformationButton
-						title={title}
-						details={details}
-						onPress={() => handleDeliveryInfoPress(title)}
-					/>
-				</View>
-			);
-		});
-	};
-
-	const formatCurrency = (amount) => {
-		return new Intl.NumberFormat("vi-VN", {
-			style: "currency",
-			currency: "VND",
-		}).format(amount);
-	};
-
-	const calculateTotalPrice = () => {
-		let total = 0;
-		let totalDiscount = 0;
-		productOrders.forEach((product) => {
-			total += product.totalPrice * product.quantity;
-		});
-
-		if (selectedDeliveryCoupon && selectedDeliveryCoupon.deliveryCoupon) {
-			total -=
-				total *
-				(selectedDeliveryCoupon.deliveryCoupon.discountPercentage / 100);
-			totalDiscount +=
-				total *
-				(selectedDeliveryCoupon.deliveryCoupon.discountPercentage / 100);
-		}
-
-		if (selectedDiscountCoupon && selectedDiscountCoupon.discountCoupon) {
-			total -=
-				total *
-				(selectedDiscountCoupon.discountCoupon.discountPercentage / 100);
-			totalDiscount +=
-				total *
-				(selectedDiscountCoupon.discountCoupon.discountPercentage / 100);
-		}
-
-		setTotalDiscount(totalDiscount);
-		setTotalPrice(total);
-	};
-
-	const handleDeliveryTypeSelect = (deliveryType) => {
-		setDeliveryOption(deliveryType);
-	};
-
-	const goToSelectAddress = () => {
-		navigation.navigate("SelectAddress", { productOrders, isOrdered: true });
-	};
-
-	const goToSelectBranch = () => {
-		navigation.navigate("SelectBranchScreen", { productOrders, addresses });
-	};
-
-	const handleSelectTime = () => {
-		selectTimeBottomSheetRef.current.present();
 	};
 
 	const renderPaymentMethods = () => {
@@ -222,6 +179,156 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 				/>
 			);
 		});
+	};
+
+	const checkConfirmValidation = () => {
+		if (!selectedBranch) {
+			Toast.show({
+				type: "error",
+				text1: "Lỗi",
+				text2: "Vui lòng chọn chi nhánh đặt hàng",
+				text1Style: {
+					color: colors.black_100,
+					fontSize: 16,
+					fontFamily: "lato-bold",
+				},
+				text2Style: {
+					color: colors.grey_100,
+					fontSize: 14,
+					fontFamily: "lato-regular",
+				},
+				autoHide: true,
+			});
+			return false;
+		} else if (!selectedDate || !selectedTime) {
+			Toast.show({
+				type: "error",
+				text1: "Lỗi",
+				text2: "Vui lòng chọn thời gian nhận hàng",
+				text1Style: {
+					color: colors.black_100,
+					fontSize: 16,
+					fontFamily: "lato-bold",
+				},
+				text2Style: {
+					color: colors.grey_100,
+					fontSize: 14,
+					fontFamily: "lato-regular",
+				},
+				autoHide: true,
+			});
+			return false;
+		} else if (!selectedPaymentMethod) {
+			Toast.show({
+				type: "error",
+				text1: "Lỗi",
+				text2: "Vui lòng chọn phương thức thanh toán",
+				text1Style: {
+					color: colors.black_100,
+					fontSize: 16,
+					fontFamily: "lato-bold",
+				},
+				text2Style: {
+					color: colors.grey_100,
+					fontSize: 14,
+					fontFamily: "lato-regular",
+				},
+				autoHide: true,
+			});
+			return false;
+		} else if (!addresses) {
+			Toast.show({
+				type: "error",
+				text1: "Lỗi",
+				text2: "Vui lòng chọn địa chỉ nhận hàng",
+				text1Style: {
+					color: colors.black_100,
+					fontSize: 16,
+					fontFamily: "lato-bold",
+				},
+				text2Style: {
+					color: colors.grey_100,
+					fontSize: 14,
+					fontFamily: "lato-regular",
+				},
+				autoHide: true,
+			});
+			return false;
+		}
+		return true;
+	};
+
+	const handleConfirmOrder = async () => {
+		if (checkConfirmValidation()) {
+			try {
+				const docRef = await addDoc(collection(db, "orders"), {
+					userId: userData.id,
+					products: productOrders,
+					orderTotalPrice: totalPrice,
+					orderTotalDiscount: totalDiscount,
+					paymentMethod: selectedPaymentMethod,
+					deliveryAddress: addresses,
+					deliveryFee: deliveryFee,
+					deliveryBranch: selectedBranch,
+					deliveryTime: `${selectedDate} (${selectedTime})`,
+					orderDate: new Date(),
+					orderState: 1,
+				});
+
+				await updateDoc(docRef, { orderId: docRef.id });
+
+				showSuccessModal();
+			} catch (e) {
+				console.error("Error adding document: ", e);
+			}
+		}
+	};
+
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
+	};
+
+	const calculateTotalPrice = () => {
+		let total = 0;
+		let totalDiscount = 0;
+
+		productOrders.forEach((product) => {
+			total += product.totalPrice * product.quantity;
+		});
+
+		if (selectedDeliveryCoupon && selectedDeliveryCoupon.deliveryCoupon) {
+			total -=
+				total *
+				(selectedDeliveryCoupon.deliveryCoupon.discountPercentage / 100);
+
+			totalDiscount +=
+				total *
+				(selectedDeliveryCoupon.deliveryCoupon.discountPercentage / 100);
+		}
+
+		if (selectedDiscountCoupon && selectedDiscountCoupon.discountCoupon) {
+			total -=
+				total *
+				(selectedDiscountCoupon.discountCoupon.discountPercentage / 100);
+
+			totalDiscount +=
+				total *
+				(selectedDiscountCoupon.discountCoupon.discountPercentage / 100);
+		}
+
+		setTotalDiscount(totalDiscount);
+		setTotalPrice(total);
+	};
+
+	const showSuccessModal = () => {
+		setModalVisible(true);
+	};
+
+	const hideSuccessModal = () => {
+		setModalVisible(false);
 	};
 
 	useEffect(() => {
@@ -259,10 +366,6 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	useEffect(() => {
 		setAddresses(selectedAddress);
 	}, [selectedAddress]);
-
-	useEffect(() => {
-		chooseDeliveryBottomSheetRef.current.close();
-	}, [deliveryOption]);
 
 	useEffect(() => {
 		if (selectedDeliveryCoupon || selectedDiscountCoupon) {
@@ -307,15 +410,8 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 					<Text style={styles.label}>Tổng cộng:</Text>
 					<Text style={styles.price}>{formatCurrency(totalPrice)}</Text>
 				</View>
-				<Pressable style={styles.orderButton} onPress={handleConfirmOrder}>
-					<Text style={styles.orderButtonText}>Đặt hàng</Text>
-				</Pressable>
+				<CustomButton text={"Đặt hàng"} onPress={handleConfirmOrder} />
 			</View>
-			<ChooseDeliveryBottomSheet
-				bottomSheetRef={chooseDeliveryBottomSheetRef}
-				snapPoints={chooseDeliverySnapPoints}
-				onDeliveryTypeSelect={handleDeliveryTypeSelect}
-			/>
 			<ChooseCouponBottomSheet
 				userData={userData}
 				bottomSheetRef={chooseCouponBottomSheetRef}
@@ -329,6 +425,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 				onDateSelected={setSelectedDate}
 				onTimeSelected={setSelectedTime}
 			/>
+			<SuccessModal visible={modalVisible} onClose={hideSuccessModal} />
 		</>
 	);
 };
@@ -346,35 +443,10 @@ const styles = StyleSheet.create({
 		backgroundColor: colors.white_100,
 		padding: "4%",
 	},
-	headerContainer: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-	},
-	headerTitle: {
-		color: colors.black_100,
-		fontSize: 20,
-		fontFamily: "lato-bold",
-	},
 	title: {
 		color: colors.black_100,
 		fontSize: 18,
 		fontWeight: "600",
-	},
-	buttonContainer: {
-		backgroundColor: colors.green_10,
-		flexDirection: "row",
-		justifyContent: "center",
-		alignItems: "center",
-		paddingVertical: "2%",
-		paddingHorizontal: "4%",
-		borderRadius: 30,
-	},
-	buttonText: {
-		marginRight: "5%",
-		color: colors.green_100,
-		fontSize: 14,
-		fontFamily: "lato-regular",
 	},
 	footer: {
 		backgroundColor: colors.white_100,
@@ -396,27 +468,6 @@ const styles = StyleSheet.create({
 	price: {
 		color: colors.black_100,
 		fontSize: 20,
-		fontFamily: "lato-bold",
-	},
-	orderButton: {
-		backgroundColor: colors.green_100,
-		justifyContent: "center",
-		alignItems: "center",
-		paddingVertical: "6%",
-		borderRadius: 12,
-		marginTop: "4%",
-		shadowColor: colors.grey_100,
-		shadowOffset: {
-			width: 0,
-			height: 5,
-		},
-		shadowOpacity: 0.4,
-		shadowRadius: 4,
-		elevation: 4,
-	},
-	orderButtonText: {
-		color: colors.white_100,
-		fontSize: 16,
 		fontFamily: "lato-bold",
 	},
 });
