@@ -17,10 +17,12 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { saveUserData } from "../../../redux/actions/userActions";
 import SwitchToggle from "toggle-switch-react-native";
 import * as ImagePicker from "expo-image-picker";
+import { isLoading } from "expo-font";
 
 const EditProfileDetails = ({ userData, saveUserData }) => {
     const navigation = useNavigation();
 
+    const [userImage, setUserImage] = useState(userData?.userImage || "");
     const [isToggled, setIsToggled] = useState(false);
     const [name, setName] = useState(userData?.name || "");
     const [phoneNumber, setPhoneNumber] = useState(userData?.phoneNumber || "");
@@ -41,11 +43,17 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
             const docRef = doc(db, "users", user.uid);
             const docSnap = await getDoc(docRef);
 
+            const downloadURL = await uploadImageToFirebase(
+                userImage,
+                "user_" + userData.id
+            );
+
             if (docSnap.exists()) {
                 // Update Firestore
                 await updateDoc(docRef, {
                     fullName: name, // Use the state values
                     phoneNumber: phoneNumber,
+                    userImage: downloadURL,
                 });
 
                 // Update Redux with ONLY the changed fields
@@ -53,6 +61,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                     ...userData,
                     name: name,
                     phoneNumber: phoneNumber,
+                    userImage: downloadURL,
                 });
 
                 navigation.navigate("ProfileDetails");
@@ -81,16 +90,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
         });
 
         if (!result.canceled) {
-            const userImage = await uploadImageToFirebase(
-                result.assets[0].uri,
-                "user_" + userData.id
-            );
-            const updatedUserData = { ...userData, userImage: userImage };
-            saveUserData(updatedUserData);
-            const userDocRef = doc(db, "users", userData.id);
-            await updateDoc(userDocRef, {
-                userImage: userImage,
-            });
+            setUserImage(result.assets[0].uri);
         }
     };
 
@@ -111,7 +111,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                         <TouchableOpacity onPress={() => handleImagePicker()}>
                             <Image
                                 alt="avatar"
-                                source={{ uri: userData?.userImage }}
+                                source={{ uri: userImage }}
                                 style={styles.profileAvatar}
                             />
                         </TouchableOpacity>
@@ -121,9 +121,9 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                 <View style={styles.section}>
                     <View style={styles.row_space_between}>
                         <Text style={styles.sectionTitle}>Thông tin chung</Text>
-                        <Pressable onPress={navigateToProfileDetails}>
+                        <TouchableOpacity onPress={navigateToProfileDetails}>
                             <Text style={styles.editButton}>Lưu</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
@@ -204,6 +204,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                     </View>
                 </View>
             </ScrollView>
+            {isLoading}
         </View>
     );
 };
