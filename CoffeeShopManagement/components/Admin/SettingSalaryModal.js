@@ -2,14 +2,17 @@ import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity, Keyboard } 
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../Client/Header/ModalHeader'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { doc, updateDoc } from 'firebase/firestore'
+import { db } from '../../services/firebaseService'
 
-const SettingSalaryModal = ({ visible, onClose, roleName }) => {
+const SettingSalaryModal = ({ visible, onClose, roleName, staffRoleId, salary }) => {
     const [modalHeight, setModalHeight] = useState('40%'); // Kích thước mặc định của modal
+    const [currentSalary, setCurrentSalary] = useState(salary); // Mức lương mới
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
             // Khi bàn phím xuất hiện, giảm kích thước của modal
-            setModalHeight('70%');
+            setModalHeight('40%');
         });
 
         const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
@@ -22,6 +25,21 @@ const SettingSalaryModal = ({ visible, onClose, roleName }) => {
             keyboardDidHideListener.remove();
         };
     }, []);
+
+    const updateSalary = async () => {
+        // Cập nhật mức lương
+        await updateDoc(doc(db, 'staffRole', staffRoleId), {
+            salary: currentSalary
+        })
+        onClose();
+    }
+
+    const formatSalary = (salary) => {
+        const formattedSalary = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(salary);
+        return formattedSalary;
+    };
+
+
     return (
         <Modal
             animationType="fade"
@@ -35,6 +53,8 @@ const SettingSalaryModal = ({ visible, onClose, roleName }) => {
                         <Text style={styles.roleName}>{roleName}</Text>
                         <TextInput
                             placeholder='Mức lương mới'
+                            value={currentSalary.toString()}
+                            onChangeText={setCurrentSalary}
                             placeholderTextColor={'#3a3a3a'}
                             padding={'3%'}
                             style={styles.addSalary} />
@@ -44,7 +64,9 @@ const SettingSalaryModal = ({ visible, onClose, roleName }) => {
                                 <Text style={{ marginStart: '2%', fontSize: 16, fontWeight: '600', color: '#f61a3d' }}>Xoá vai trò</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.acceptButton}>
+                        <TouchableOpacity
+                            onPress={() => updateSalary()}
+                            style={styles.acceptButton}>
                             <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>Xác nhận</Text>
                         </TouchableOpacity>
                     </View>

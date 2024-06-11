@@ -22,10 +22,6 @@ export default function RoleListScreen({ bottomSheetRef, snapPoints, setIsOpen, 
     setRoles(listRoles);
   }, [listRoles]);
 
-  const addNewRole = () => {
-
-  };
-
   const [modalVisible, setModalVisible] = useState(false);
 
   const showAddRoleModal = () => {
@@ -47,7 +43,7 @@ export default function RoleListScreen({ bottomSheetRef, snapPoints, setIsOpen, 
         <View style={styles.bodyApp}>
           <ScrollView style={styles.listStaff}>
             {roles.map((item, index) => (
-              <RoleCard key={index} roleName={item.roleName} salary={item.salary} />
+              <RoleCard key={index} roleName={item.roleName} salary={item.salary} staffRoleId={item.staffRoleId} />
             ))}
             <>
               <TouchableOpacity
@@ -64,7 +60,7 @@ export default function RoleListScreen({ bottomSheetRef, snapPoints, setIsOpen, 
                   Thêm vai trò
                 </Text>
               </TouchableOpacity>
-              <AddRoleModal visible={modalVisible} onClose={hideAddRoleModal} callBack={addNewRole} />
+              <AddRoleModal visible={modalVisible} onClose={hideAddRoleModal} />
             </>
           </ScrollView>
         </View>
