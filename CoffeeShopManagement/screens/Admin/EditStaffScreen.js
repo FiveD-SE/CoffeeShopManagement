@@ -40,16 +40,81 @@ import * as ImagePicker from "expo-image-picker";
 import { deleteUser, getAuth, sendEmailVerification } from "firebase/auth";
 import Toast from "react-native-toast-message";
 
-const TextBox = ({ text, value, setValue }) => {
+const TextBox = ({ text, value, setValue, keyboardType, handleValidInput }) => {
+
     return (
         <TextInput
             placeholder={text}
             style={styles.textBox}
             value={value}
             onChangeText={setValue}
+            keyboardType={keyboardType ? keyboardType : 'default'}
+            onBlur={() => {
+                if (handleValidInput(value)) {
+                } else {
+                    switch (text) {
+                        case 'Họ và tên': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Vui lòng nhập đúng định dạng họ và tên!',
+                                visibilityTime: 2000,
+                                autoHide: true
+                            });
+                            break;
+                        }
+                        case 'Số điện thoại': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Số điện thoại gồm 10 chữ số!',
+                                visibilityTime: 2000,
+                                autoHide: true,
+                                swipeable: true,
+                            });
+                            break;
+                        }
+                        case 'Số CMND/CCCD': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Số CCCD gồm 12 số!',
+                                visibilityTime: 2000,
+                                autoHide: true
+                            });
+                            break;
+                        }
+                        case 'Email': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Vui lòng nhập đúng định dạng email!',
+                                visibilityTime: 2000,
+                                autoHide: true,
+                                swipeable: true
+                            });
+                            break;
+                        }
+                        case 'Password': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Mật khẩu phải gồm 6 kí tự trở lên !',
+                                visibilityTime: 2000,
+                                autoHide: true
+                            });
+                        }
+                    }
+                }
+            }}
         />
-    );
-};
+    )
+}
 
 const TextBox2 = ({ text, iconName, marginRate, value, setValue, onPress }) => {
     return (
@@ -116,6 +181,13 @@ export default function EditStaffScreen({ route }) {
     const [date, setDate] = useState(new Date());
     const [isLoading, setIsLoading] = useState(false);
 
+    const [isNameValid, setIsNameValid] = useState(true);
+    const [isPhoneValid, setIsPhoneValid] = useState(true);
+    const [isGenderValid, setIsGenderValid] = useState(true);
+    const [isIdCardValid, setIsIdCardValid] = useState(true);
+    const [isEmailValid, setIsEmailValid] = useState(true);
+    const [isBirthdayValid, setIsBirthdayValid] = useState(true);
+
     const [isShowDateTimePicker, setIsShowDateTimePicker] = useState(false);
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -147,12 +219,24 @@ export default function EditStaffScreen({ route }) {
         if (type === "set") {
             const currentDate = selectedDate;
             setBirthday(currentDate);
-
-            if (Platform.OS === "android") {
-                toggleDatePicker();
-                setBirthday(currentDate);
+            if (new Date().getFullYear() - currentDate.getFullYear() < 18) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Lỗi',
+                    text2: 'Tuổi phải lớn hơn 18',
+                    visibilityTime: 2000,
+                    autoHide: true
+                });
+                setIsBirthdayValid(false);
             } else {
-                setDate(currentDate);
+                if (Platform.OS === 'android') {
+                    toggleDatePicker();
+                    setBirthday(currentDate.toDateString());
+                } else {
+                    setDate(currentDate);
+                }
+                setIsBirthdayValid(true);
             }
         } else {
             toggleDatePicker();
@@ -160,8 +244,19 @@ export default function EditStaffScreen({ route }) {
     };
 
     const confirmIOSDate = () => {
-        setBirthday(date);
-        toggleDatePicker();
+        if (isBirthdayValid) {
+            setBirthday(date);
+            toggleDatePicker();
+        } else {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Lỗi',
+                text2: 'Vui lòng chọn ngày sinh hợp lệ',
+                visibilityTime: 2000,
+                autoHide: true
+            });
+        }
     };
 
     const handleImagePicker = async () => {
@@ -181,6 +276,44 @@ export default function EditStaffScreen({ route }) {
             setCashierImage(result.assets[0].uri);
         }
     };
+
+    const isValidName = (name) => {
+        if (name === '') {
+            setIsNameValid(false);
+            return false;
+        }
+        setIsNameValid(true);
+        return true;
+    }
+
+    const isValidPhoneNumber = (phoneNumber) => {
+        if (phoneNumber.length !== 10) {
+            setIsPhoneValid(false);
+            return false;
+        }
+        setIsPhoneValid(true);
+        return true;
+    }
+
+    const isValidIdCard = (idCard) => {
+        if (idCard.length !== 12) {
+            setIsIdCardValid(false);
+            return false;
+        }
+        setIsIdCardValid(true);
+        return true;
+    }
+
+    const isValidEmail = (email) => {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!re.test(email)) {
+            setIsEmailValid(false);
+            return false;
+        }
+        setIsEmailValid(true);
+        return true;
+    }
+
 
     const navigation = useNavigation();
     const handleSaveInfor = async () => {
@@ -283,11 +416,14 @@ export default function EditStaffScreen({ route }) {
                         text={"Họ và tên"}
                         value={name}
                         setValue={setName}
+                        handleValidInput={isValidName}
                     />
                     <TextBox
                         text={"Số điện thoại"}
                         value={sdt}
                         setValue={setSdt}
+                        keyboardType={"number-pad"}
+                        handleValidInput={isValidPhoneNumber}
                     />
                     <View style={styles.rowContainerTextBox}>
                         <TextBox2
@@ -371,8 +507,12 @@ export default function EditStaffScreen({ route }) {
                         text={"Số CMND/CCCD"}
                         value={cccd}
                         setValue={setCccd}
+                        keyboardType={"number-pad"}
+                        handleValidInput={isValidIdCard}
                     />
-                    <TextBox text={"Email"} value={email} setValue={setEmail} />
+                    <Text style={[styles.textBox, { color: '#cacaca' }]}>
+                        {email}
+                    </Text>
                 </View>
                 <View>
                     <Text style={styles.topText}>Thông tin công việc</Text>

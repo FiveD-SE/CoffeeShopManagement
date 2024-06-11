@@ -15,13 +15,80 @@ import { sendEmailVerification } from 'firebase/auth'
 import { Dropdown } from "react-native-element-dropdown";
 import Toast from 'react-native-toast-message'
 
-const TextBox = ({ text, value, setValue }) => {
+const TextBox = ({ text, value, setValue, keyboardType, handleValidInput }) => {
+
     return (
         <TextInput
             placeholder={text}
             style={styles.textBox}
             value={value}
-            onChangeText={setValue} />
+            onChangeText={setValue}
+            keyboardType={keyboardType ? keyboardType : 'default'}
+            onBlur={() => {
+                if (handleValidInput(value)) {
+
+                } else {
+                    switch (text) {
+                        case 'Họ và tên': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Vui lòng nhập đúng định dạng họ và tên!',
+                                visibilityTime: 2000,
+                                autoHide: true
+                            });
+                            break;
+                        }
+                        case 'Số điện thoại': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Số điện thoại gồm 10 chữ số!',
+                                visibilityTime: 2000,
+                                autoHide: true,
+                                swipeable: true,
+                            });
+                            break;
+                        }
+                        case 'Số CMND/CCCD': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Số CCCD gồm 12 số!',
+                                visibilityTime: 2000,
+                                autoHide: true
+                            });
+                            break;
+                        }
+                        case 'Email': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Vui lòng nhập đúng định dạng email!',
+                                visibilityTime: 2000,
+                                autoHide: true,
+                                swipeable: true
+                            });
+                            break;
+                        }
+                        case 'Password': {
+                            Toast.show({
+                                type: 'error',
+                                position: 'top',
+                                text1: 'Lỗi',
+                                text2: 'Mật khẩu phải gồm 6 kí tự trở lên !',
+                                visibilityTime: 2000,
+                                autoHide: true
+                            });
+                        }
+                    }
+                }
+            }}
+        />
     )
 }
 const TextBox2 = ({ text, iconName, marginRate, value, setValue, onPress }) => {
@@ -73,14 +140,68 @@ export default function AddStaffScreen() {
     const [isShowDateTimePicker, setIsShowDateTimePicker] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    const [isNameValid, setIsNameValid] = useState(false);
+    const [isPhoneValid, setIsPhoneValid] = useState(false);
+    const [isGenderValid, setIsGenderValid] = useState(false);
+    const [isIdCardValid, setIsIdCardValid] = useState(false);
+    const [isEmailValid, setIsEmailValid] = useState(false);
+    const [isPasswordValid, setIsPasswordValid] = useState(false);
+    const [isBirthdayValid, setIsBirthdayValid] = useState(false);
+
     const [isOpen, setIsOpen] = useState(false);
     const chooseDateSnapPoints = useMemo(() => ["60%"], []);
     const chooseDateBottomSheetRef = useRef(null);
 
-    const handleConfirm = async () => {
+    const isValidName = (name) => {
+        if (name === '') {
+            setIsNameValid(false);
+            return false;
+        }
+        setIsNameValid(true);
+        return true;
+    }
 
+    const isValidPhoneNumber = (phoneNumber) => {
+        if (phoneNumber.length !== 10) {
+            setIsPhoneValid(false);
+            return false;
+        }
+        setIsPhoneValid(true);
+        return true;
+    }
+
+    const isValidIdCard = (idCard) => {
+        if (idCard.length !== 12) {
+            setIsIdCardValid(false);
+            return false;
+        }
+        setIsIdCardValid(true);
+        return true;
+    }
+
+    const isValidPassword = (password) => {
+        if (password.length < 6) {
+            setIsPasswordValid(false);
+            return false;
+        }
+        setIsPasswordValid(true);
+        return true;
+    }
+
+    const isValidEmail = (email) => {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (!re.test(email)) {
+            setIsEmailValid(false);
+            return false;
+        }
+        setIsEmailValid(true);
+        return true;
+    }
+
+    const handleConfirm = async () => {
+        console.log(isNameValid, isPhoneValid, isBirthdayValid, isGenderValid, isIdCardValid, isEmailValid, isPasswordValid);
         setIsLoading(true);
-        if (name === '' || phoneNumber === '' || birthday === '' || gender === '' || idCard === '' || email === '' || password === '') {
+        if (!isNameValid || !isPhoneValid || !isBirthdayValid || !isGenderValid || !isIdCardValid || !isEmailValid || !isPasswordValid) {
             Toast.show({
                 type: 'error',
                 position: 'top',
@@ -169,10 +290,23 @@ export default function AddStaffScreen() {
         if (type === 'set') {
             const currentDate = selectedDate;
             setDate(currentDate);
+            if (new Date().getFullYear() - currentDate.getFullYear() < 18) {
+                Toast.show({
+                    type: 'error',
+                    position: 'top',
+                    text1: 'Lỗi',
+                    text2: 'Tuổi phải lớn hơn 18',
+                    visibilityTime: 2000,
+                    autoHide: true
+                });
+                setIsBirthdayValid(false);
+            } else {
+                if (Platform.OS === 'android') {
+                    toggleDatePicker();
+                    setBirthday(currentDate.toDateString());
 
-            if (Platform.OS === 'android') {
-                toggleDatePicker();
-                setBirthday(currentDate.toDateString());
+                }
+                setIsBirthdayValid(true);
             }
         } else {
             toggleDatePicker();
@@ -180,8 +314,19 @@ export default function AddStaffScreen() {
     }
 
     const confirmIOSDate = () => {
-        setBirthday(date.toDateString());
-        toggleDatePicker();
+        if (isBirthdayValid) {
+            setBirthday(date.toDateString());
+            toggleDatePicker();
+        } else {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Lỗi',
+                text2: 'Vui lòng chọn ngày sinh hợp lệ',
+                visibilityTime: 2000,
+                autoHide: true
+            });
+        }
     }
 
     const handleImagePicker = async () => {
@@ -217,8 +362,8 @@ export default function AddStaffScreen() {
                 </View>
                 <View style={styles.informationWrapper}>
                     <Text style={styles.topText}>Thông tin cá nhân</Text>
-                    <TextBox text={'Họ và tên'} value={name} setValue={setName} />
-                    <TextBox text={'Số điện thoại'} value={phoneNumber} setValue={setPhoneNumber} />
+                    <TextBox text={'Họ và tên'} value={name} setValue={setName} handleValidInput={isValidName} />
+                    <TextBox text={'Số điện thoại'} value={phoneNumber} setValue={setPhoneNumber} keyboardType={'number-pad'} handleValidInput={isValidPhoneNumber} />
                     <View style={styles.rowContainerTextBox}>
                         <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'10%'} value={birthday} setValue={setBirthday} onPress={() => toggleDatePicker()} />
                         <Dropdown
@@ -231,6 +376,7 @@ export default function AddStaffScreen() {
                             value={gender}
                             onChange={item => {
                                 setGender(item.value);
+                                setIsGenderValid(true);
                             }} />
                     </View>
                     {isShowDateTimePicker && Platform.OS === 'ios' &&
@@ -259,11 +405,12 @@ export default function AddStaffScreen() {
                                 value={date}
                                 mode='date'
                                 display='spinner'
-                                onChange={onChange} />
+                                onChange={onChange}
+                            />
                         </View>}
-                    <TextBox text={'Số CMND/CCCD'} value={idCard} setValue={setIdCard} />
-                    <TextBox text={'Email'} value={email} setValue={setEmail} />
-                    <TextBox text={'Password'} value={password} setValue={setPassword} />
+                    <TextBox text={'Số CMND/CCCD'} value={idCard} setValue={setIdCard} handleValidInput={isValidIdCard} />
+                    <TextBox text={'Email'} value={email} setValue={setEmail} handleValidInput={isValidEmail} />
+                    <TextBox text={'Password'} value={password} setValue={setPassword} handleValidInput={isValidPassword} />
                 </View>
                 <View>
                     <Text style={styles.topText}>Thông tin công việc</Text>
@@ -321,6 +468,14 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
         borderColor: "#CCCCCC",
+        marginBottom: '3%',
+        padding: '4%'
+    },
+    inValidTextBox: {
+        backgroundColor: '#fff',
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: "#f73755",
         marginBottom: '3%',
         padding: '4%'
     },
