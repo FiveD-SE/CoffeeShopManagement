@@ -1,16 +1,15 @@
-import React from "react";
+import React, {useState}from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import Checkbox from 'expo-checkbox';
 
-export default function Branch({
-    storeName,
+const BranchCard = ({ storeName,
     branchName,
-    distance,
+    address,
     image,
-    onPress,
-}) {
+    onPress, }) => {
+    const [isShipChecked, setShipChecked] = useState(false);
     return (
-        <TouchableOpacity style={styles.root} onPress={onPress}>
+        <View style={styles.root}>
             <View style={styles.image}>
                 <Image source={image} style={styles.image} />
             </View>
@@ -19,11 +18,14 @@ export default function Branch({
                     <Text style={styles.storeName}>{storeName}</Text>
                     <Text style={styles.branchName}>{branchName}</Text>
                 </View>
-                <Text style={styles.distance}>Cách đây {distance} km</Text>
+                <Text style={styles.distance}>{address} km</Text>
             </View>
-        </TouchableOpacity>
-    );
+
+        </View>
+    )
 }
+
+export default BranchCard
 
 const styles = StyleSheet.create({
     root: {
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
     storeName: {
         color: "#9c9c9c",
         textAlign: "center",
-        fontFamily: "Lato-Light",
+        fontFamily: "lato-light",
         fontSize: 10,
         fontStyle: "normal",
         fontWeight: "700",
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     branchName: {
         color: "#3A3A3A",
         textAlign: "center",
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         fontStyle: "normal",
         fontWeight: "600",
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
     distance: {
         color: "rgba(58, 58, 58, 0.501960813999176)",
         textAlign: "center",
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
         fontSize: 12,
         fontStyle: "normal",
         fontWeight: "400",

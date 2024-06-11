@@ -194,7 +194,7 @@ const AdminBranchEditScreen = ({ navigation, route }) => {
 
                 openingHour: openingHour,
                 closingHour: closingHour,
-                imageDownloadUrl: imageDownloadUrl,
+                branchImage: imageDownloadUrl,
                 dateCreated: new Date(),
             });
             const branchId = docRef.id;
