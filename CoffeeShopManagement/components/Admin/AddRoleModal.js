@@ -3,23 +3,26 @@ import React, { useState, useEffect } from 'react'
 import ModalHeader from '../Client/Header/ModalHeader'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { SliderBase } from 'react-native'
+import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore'
+import { db } from '../../services/firebaseService'
 
-const AddRoleModal = ({ visible, onClose, callBack }) => {
+const AddRoleModal = ({ visible, onClose }) => {
 
-    const onAddNewRole = callBack;
 
     const [roleName, setRoleName] = useState('');
     const [salary, setSalary] = useState('');
 
-    const handleConfirm = () => {
-        const newRole = {
-            idRole: Math.random().toString(36).substr(2, 9),
+    const handleConfirm = async () => {
+        const docRef = await addDoc(collection(db, "staffRole"), {
             roleName: roleName,
-            salary: salary,
-        };
-        onAddNewRole(newRole);
-        onClose();
+            salary: salary
+        });
+        const staffRoleId = docRef.id;
 
+        await updateDoc(doc(collection(db, "staffRole"), staffRoleId), {
+            staffRoleId: staffRoleId,
+        });
+        onClose();
     };
     const [modalHeight, setModalHeight] = useState('40%'); // Kích thước mặc định của modal
 

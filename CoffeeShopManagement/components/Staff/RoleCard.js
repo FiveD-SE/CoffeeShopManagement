@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Entypo'
 import SettingSalaryModal from '../Admin/SettingSalaryModal';
-export default function RoleCard({ roleName, salary }) {
+export default function RoleCard({ roleName, salary, staffRoleId }) {
     const [modalVisible, setModalVisible] = useState(false);
 
     const showSettingSalaryModal = () => {
@@ -30,7 +30,7 @@ export default function RoleCard({ roleName, salary }) {
                 <View>
                     <Icon name='chevron-right' size={28} color={'#a6a6aa'} />
                 </View>
-                <SettingSalaryModal visible={modalVisible} onClose={hideSettingSalaryModal} roleName={roleName} />
+                <SettingSalaryModal visible={modalVisible} onClose={hideSettingSalaryModal} roleName={roleName} staffRoleId={staffRoleId} salary={salary} />
             </TouchableOpacity>
 
         </View>
