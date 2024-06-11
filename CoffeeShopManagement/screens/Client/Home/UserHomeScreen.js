@@ -206,7 +206,7 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.contentContainer}
             >
-                <Carousel />
+                <Carousel style={{ width: "100%" }} />
                 <View style={{ marginTop: "5%" }}>
                     <Section
                         title="Sản Phẩm Bán Chạy"

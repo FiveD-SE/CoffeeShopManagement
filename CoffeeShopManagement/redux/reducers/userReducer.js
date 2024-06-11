@@ -79,11 +79,6 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 favoriteList: action.payload,
             };
-        case types.UPDATE_USER_RECENTLY_VIEWED:
-            return {
-                ...state,
-                recentlyViewed: action.payload,
-            };
 
         default:
             return state;
