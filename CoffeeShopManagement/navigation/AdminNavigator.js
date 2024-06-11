@@ -379,6 +379,18 @@ const HomeStack = () => (
                 headerLeft: () => <HeaderBackButton />,
             }}
         />
+
+        <Stack.Screen
+            name="AdminProfileDetail"
+            component={AdminProfileDetail}
+            options={{
+                headerTitle: "Chỉnh sửa thông tin",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
     </Stack.Navigator>
 );
 
