@@ -128,6 +128,12 @@ const AdminBranchEditScreen = ({ navigation, route }) => {
         return phoneRegex.test(phoneNumber);
     };
 
+    const validateEmail = (email) => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
+
     const handleSaveBranchToFireBase = async () => {
         let errorMessage = "";
 
@@ -138,12 +144,16 @@ const AdminBranchEditScreen = ({ navigation, route }) => {
             !districtId ||
             !wardId ||
             !street
-            ) {
+        ) {
             errorMessage = "Vui lòng nhập đầy đủ thông tin";
         }
 
         else if (!validatePhoneNumber(branchPhoneNumber)) {
             errorMessage = "Vui lòng nhập số điện thoại đúng định dạng";
+        }
+
+        else if (!validateEmail(branchEmail)) {
+            errorMessage = "Vui lòng nhập email đúng định dạng";
         }
 
         else if (!isOpeningHourChange) {

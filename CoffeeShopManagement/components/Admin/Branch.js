@@ -41,13 +41,13 @@ const BranchCard = ({ storeName,
                 <View style={styles.title}>
                     <Text style={styles.storeName}>{storeName}</Text>
                     <Text style={styles.branchName}>{branchName}</Text>
-                    <Text style={styles.address}>Địa chỉ: {address}</Text>
                     <View style={{ flexDirection: 'row', alignItems: "center" }}>
                         <Feather name='clock' size={20} color={'#9c9c9c'} />
                         <View style={styles.timeWrapper}>
                             <Text style={styles.timeText}>{formatTime(convertTimestampToDate(openingHour))} - {formatTime(convertTimestampToDate(closingHour))}</Text>
                         </View>
                     </View>
+                    <Text style={styles.address}>Địa chỉ: {address}</Text>
                 </View>
             </View>
 
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontStyle: "normal",
         fontWeight: "500",
-        marginBottom:"3%"
+        marginBottom: "3%"
     },
     timeText: {
         color: '#006c5e',
@@ -124,6 +124,6 @@ const styles = StyleSheet.create({
         padding: '2%',
         borderRadius: 20,
         paddingHorizontal: '5%',
-        marginStart: '3%'
+        marginStart: '2%'
     },
 });
