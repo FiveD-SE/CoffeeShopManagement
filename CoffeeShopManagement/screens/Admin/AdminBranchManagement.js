@@ -55,7 +55,7 @@ const AdminBranchManagement = () => {
                     storeName="FIVED COFFEE"
                     branchName={item.branchName}
                     address={address}
-                    image={{ uri: item.imageDownloadUrl }}
+                    image={{ uri: item.branchImage }}
                     onPress={() => handleDetailBranch(item.id)}
                 />
             );
