@@ -38,7 +38,7 @@ export default function DetailBillingScreen({ route }) {
           <View style={styles.infoWrapper}>
             <Text style={styles.infoItem}>
               <Text style={styles.titleText}>Người nhận:  </Text>
-              <Text style={styles.contentText}>{orderData.userName}</Text>
+              <Text style={styles.contentText}>{orderData.deliveryAddress.name}</Text>
             </Text>
             <View style={styles.infoItem}>
               <Text style={styles.titleText}>Số điện thoại:  </Text>
