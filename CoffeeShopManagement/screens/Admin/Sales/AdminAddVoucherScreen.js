@@ -13,12 +13,20 @@ import { getDownloadURL, ref } from 'firebase/storage';
 
 const AdminAddVoucherScreen = () => {
   const navigation = useNavigation();
-  const [voucherName, setVoucherName] = useState("");
-  const [discountPercentage, setDiscountPercentage] = useState("");
-  const [isDiscountFocused, setIsDiscountFocused] = useState(false);
-  const [voucherExchangePrice, setVoucherExchangePrice] = useState(0);
-  const [isPriceAble, setIsPriceAble] = useState(false);
   const [voucherDescription, setVoucherDescription] = useState("");
+
+  const [minimumOrderPrice, setMinimumOrderPrice] = useState("");
+  const [isMinimumOrderPriceFocused, setIsMinimumOrderPriceFocused] = useState(false);
+
+  const [productDiscountPercentage, setProductDiscountPercentage] = useState("");
+  const [isDiscountFocused, setIsDiscountFocused] = useState(false);
+  const [maximumDiscount, setMaximumDiscount] = useState("");
+  const [isMaximumDiscountFocused, setIsMaximumDiscountFocused] = useState(false);
+
+  const [shipDiscountPrice, setShipDiscountPrice] = useState("");
+  const [isShipDiscountPriceFocused, setIsShipDiscountPriceFocused] = useState(false);
+
+  const [voucherExchangePrice, setVoucherExchangePrice] = useState(0);
 
   const [rankUserModalVisible, setRankUserModalVisible] = useState(false);
   const [rankUser, setRankUser] = useState(null);
@@ -68,111 +76,140 @@ const AdminAddVoucherScreen = () => {
     setDaySelect(selectedDay);
   };
 
-  useEffect(() => {
-    if (voucherType && voucherType.voucherType === "exchange") {
-      setIsPriceAble(true);
-    } else {
-      setIsPriceAble(false);
-    }
-  }, [voucherType])
-
   const handleSaveVoucherToFirebase = async () => {
-    if (voucherName === "" || voucherDescription === "" || rankUser === null || voucherType === null || daySelect === null || discountPercentage === 0) {
+    if (voucherDescription === "" || rankUser === null || voucherType === null || daySelect === null || !minimumOrderPrice) {
       Toast.show({
         type: "error",
         text1: "Lỗi",
         text2: "Vui lòng nhập đầy đủ thông tin",
       });
     } else {
+
+      if (voucherType.discountType === "productDiscount" && !productDiscountPercentage) {
+        Toast.show({
+          type: "error",
+          text1: "Lỗi",
+          text2: "Vui lòng nhập % giảm giá sản phẩm",
+        });
+        return;
+      }
+
+      if (voucherType.discountType === "shipDiscount" && !shipDiscountPrice) {
+        Toast.show({
+          type: "error",
+          text1: "Lỗi",
+          text2: "Vui lòng nhập giá khuyến mãi cho phí ship",
+        });
+        return;
+      }
+
       if (voucherType.voucherType === "exchange" && voucherExchangePrice === 0) {
         Toast.show({
           type: "error",
           text1: "Lỗi",
           text2: "Vui lòng nhập giá sản phẩm khi chọn loại quy đổi",
         });
+        return;
       }
-      else {
-        Alert.alert(
-          "Xác nhận thêm khuyến mãi. ",
-          "Bạn sẽ không thể chỉnh sửa hoặc xóa khuyến mãi.",
-          [
-            {
-              text: "Hủy",
-              style: "cancel",
-            },
-            {
-              text: "Đồng ý",
-              style: "destructive",
-              onPress: async () => {
-                try {
-                  let expirationDate = new Date();
 
-                  switch (daySelect.circle) {
-                    case "Day":
-                      expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount));
-                      break;
-                    case "Week":
-                      expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount) * 7);
-                      break;
-                    case "Month":
-                      expirationDate.setMonth(expirationDate.getMonth() + parseInt(daySelect.amount));
-                      break;
-                    case "Year":
-                      expirationDate.setFullYear(expirationDate.getFullYear() + parseInt(daySelect.amount));
-                      break;
-                    default:
-                      break;
-                  }
+      Alert.alert(
+        "Xác nhận thêm khuyến mãi. ",
+        "Bạn sẽ không thể chỉnh sửa hoặc xóa khuyến mãi.",
+        [
+          {
+            text: "Hủy",
+            style: "cancel",
+          },
+          {
+            text: "Đồng ý",
+            style: "destructive",
+            onPress: async () => {
+              try {
+                let expirationDate = new Date();
 
-                  let downloadURL = null;
-                  if (voucherType.discountType === "productDiscount") {
-                    const storageRef = ref(storage, "images/productDiscount");
-                    downloadURL = await getDownloadURL(storageRef);
-                  }
-                  else {
-                    const storageRef = ref(storage, "images/shipDiscount");
-                    downloadURL = await getDownloadURL(storageRef);
-                  }
-                  const docRef = await addDoc(collection(db, "vouchers"), {
-                    voucherName: voucherName,
-                    discountPercentage: discountPercentage,
-                    voucherExchangePrice
-                      : voucherExchangePrice,
-                    voucherDescription: voucherDescription,
-                    voucherType: voucherType,
-                    userRank: rankUser,
-                    voucherImage: downloadURL,
-                    expirationDate: expirationDate,
-                    dateCreated: new Date()
-                  });
-                  const voucherId = docRef.id;
-
-                  await updateDoc(doc(collection(db, "vouchers"), voucherId), {
-                    voucherId: voucherId,
-                  });
-
-                  Toast.show({
-                    type: "success",
-                    text1: "Thành công",
-                    text2: "Khuyến mãi đã được thêm mới",
-                  });
-                  navigation.goBack();
-                } catch (error) {
-                  console.log(error);
-                  Toast.show({
-                    type: "error",
-                    text1: "Lỗi",
-                    text2: "Có lỗi xảy ra khi thêm khuyến mãi",
-                  });
+                switch (daySelect.circle) {
+                  case "Day":
+                    expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount));
+                    break;
+                  case "Week":
+                    expirationDate.setDate(expirationDate.getDate() + parseInt(daySelect.amount) * 7);
+                    break;
+                  case "Month":
+                    expirationDate.setMonth(expirationDate.getMonth() + parseInt(daySelect.amount));
+                    break;
+                  case "Year":
+                    expirationDate.setFullYear(expirationDate.getFullYear() + parseInt(daySelect.amount));
+                    break;
+                  default:
+                    break;
                 }
-              }
-            },
-            ,
-          ],
-          { cancelable: false }
-        );
 
-      }
+                let voucherName = null;
+                let discountPrice = null;
+                let downloadURL = null;
+                if (voucherType.discountType === "productDiscount") {
+                  const storageRef = ref(storage, "images/productDiscount");
+                  downloadURL = await getDownloadURL(storageRef);
+                  if (!maximumDiscount) {
+                    discountPrice = {
+                      discountPercentage: parseInt(productDiscountPercentage),
+                      maximumDiscount: parseInt("-1")
+                    };
+                    voucherName = "Giảm " + formatDiscountPercentage(productDiscountPercentage);
+                  }
+                  else
+                    discountPrice = {
+                      discountPercentage: parseInt(productDiscountPercentage),
+                      maximumDiscount: parseInt(maximumDiscount)
+                    };
+                    voucherName = "Giảm " + formatDiscountPercentage(productDiscountPercentage) + " Tối đa " + formatPrice(maximumDiscount);
+                }
+                else {
+                  const storageRef = ref(storage, "images/shipDiscount");
+                  downloadURL = await getDownloadURL(storageRef);
+                  discountPrice = parseInt(shipDiscountPrice);
+                  voucherName = "Giảm " + formatPrice(shipDiscountPrice);
+                }
+                const docRef = await addDoc(collection(db, "vouchers"), {
+                  voucherName: voucherName,
+                  minimumOrderPrice: minimumOrderPrice,
+                  voucherExchangePrice: voucherExchangePrice,
+                  voucherDescription: voucherDescription,
+                  voucherType: voucherType,
+                  userRank: rankUser,
+                  discountPrice: discountPrice,
+                  voucherImage: downloadURL,
+                  expirationDate: expirationDate,
+                  dateCreated: new Date()
+                });
+                const voucherId = docRef.id;
+
+                await updateDoc(doc(collection(db, "vouchers"), voucherId), {
+                  voucherId: voucherId,
+                });
+
+                Toast.show({
+                  type: "success",
+                  text1: "Thành công",
+                  text2: "Khuyến mãi đã được thêm mới",
+                });
+                navigation.goBack();
+              } catch (error) {
+                console.log(error);
+                Toast.show({
+                  type: "error",
+                  text1: "Lỗi",
+                  text2: "Có lỗi xảy ra khi thêm khuyến mãi",
+                });
+              }
+            }
+          },
+          ,
+        ],
+        { cancelable: false }
+      );
+
+
     }
   };
 
@@ -185,7 +222,7 @@ const AdminAddVoucherScreen = () => {
         text2: 'Giá trị nhập phải nhỏ hơn hoặc bằng 100%',
       });
     } else {
-      setDiscountPercentage(parseInt(numericValue));
+      setProductDiscountPercentage(parseInt(numericValue));
     }
   };
 
@@ -194,22 +231,59 @@ const AdminAddVoucherScreen = () => {
   };
 
   const getDisplayPercentage = () => {
-    return isDiscountFocused || discountPercentage === ""
-      ? discountPercentage
-      : formatDiscountPercentage(discountPercentage);
+    return isDiscountFocused || productDiscountPercentage === ""
+      ? productDiscountPercentage
+      : formatDiscountPercentage(productDiscountPercentage);
+  };
+
+  const formatPrice = (price) => {
+    const formatter = new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+    return formatter.format(price);
+  };
+
+  //Ship discount change
+  const handleShipDiscountChange = (text) => {
+    const numericValue = text.replace(/\D/g, "");
+    setShipDiscountPrice(numericValue);
+  };
+
+  const getShipDiscountPrice = () => {
+    return isShipDiscountPriceFocused || shipDiscountPrice === ""
+      ? shipDiscountPrice
+      : formatPrice(shipDiscountPrice);
+  };
+
+  //Maximmum product price
+  const handleMaximumProductDiscountChange = (text) => {
+    const numericValue = text.replace(/\D/g, "");
+    setMaximumDiscount(numericValue);
+  };
+
+  const getMaximumProductDiscountPrice = () => {
+    return isMaximumDiscountFocused || maximumDiscount === ""
+      ? maximumDiscount
+      : formatPrice(maximumDiscount);
+  };
+
+  //Minimum Order
+  const handleMinimumOrderPriceChange = (text) => {
+    const numericValue = text.replace(/\D/g, "");
+    setMinimumOrderPrice(numericValue);
+  };
+
+  const getMinimumOrderPrice = () => {
+    return isMinimumOrderPriceFocused || minimumOrderPrice === ""
+      ? minimumOrderPrice
+      : formatPrice(minimumOrderPrice);
   };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.inputContainer}>
         <Text style={styles.header}>Thông tin khuyến mãi</Text>
-        <View style={styles.inputBox}>
-          <TextInput
-            style={styles.input}
-            placeholder="Tên khuyến mãi"
-            onChangeText={(text) => setVoucherName(text)}
-          />
-        </View>
 
         <View>
           <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showVoucherTypeModal}>
@@ -233,18 +307,6 @@ const AdminAddVoucherScreen = () => {
             setVoucherType={handleSelectVoucherType}
             visible={voucherTypeModalVisible}
             onClose={hideVoucherTypeModal} />
-        </View>
-
-        <View style={styles.inputBox}>
-          <TextInput
-            style={styles.input}
-            value={getDisplayPercentage() === "" ? null : getDisplayPercentage()}
-            onChangeText={handleDiscountChange}
-            onBlur={() => setIsDiscountFocused(false)}
-            onFocus={() => setIsDiscountFocused(true)}
-            keyboardType="numeric"
-            placeholder="Phần trăm khuyến mãi"
-          />
         </View>
 
         <View>
@@ -284,21 +346,6 @@ const AdminAddVoucherScreen = () => {
             onClose={hideRankUserModal} />
         </View>
 
-        <View style={{ flexDirection: "row" }}>
-          <View style={[styles.inputBox, { flex: 1, marginRight: "2%" }]}>
-            <Text style={styles.input}>Chiết khấu</Text>
-          </View>
-          <View style={[styles.inputBox, { flex: 1, marginLeft: "2%" }]}>
-            <TextInput
-              style={styles.input}
-              keyboardType="numeric"
-              editable={isPriceAble}
-              placeholder="Số điểm quy đổi"
-              onChangeText={(text) => setVoucherExchangePrice(parseInt(text))}
-            />
-          </View>
-        </View>
-
         <View>
           <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]} onPress={showDaySelectModal}>
             <View style={{ flexDirection: "row" }}>
@@ -317,7 +364,18 @@ const AdminAddVoucherScreen = () => {
             setSelectDay={handleDaySelect} />
         </View>
       </View>
-      <View style={[styles.inputBox, { marginTop: "0%", marginBottom: "3%" }]}>
+      <View style={[styles.inputBox, { marginTop: "0%" }]}>
+        <TextInput
+          keyboardType="numeric"
+          style={[styles.input, { flex: 1 }]}
+          value={getMinimumOrderPrice() === "" ? null : getMinimumOrderPrice()}
+          placeholder="Giá trị đơn hàng tối thiểu"
+          onChangeText={handleMinimumOrderPriceChange}
+          onBlur={() => setIsMinimumOrderPriceFocused(false)}
+          onFocus={() => setIsMinimumOrderPriceFocused(true)}
+        />
+      </View>
+      <View style={[styles.inputBox, { marginBottom: "3%" }]}>
         <TextInput
           style={[styles.input, { flex: 1, textAlignVertical: "top" }]}
           placeholder="Mô tả khuyến mãi"
@@ -326,7 +384,56 @@ const AdminAddVoucherScreen = () => {
           onChangeText={(text) => setVoucherDescription(text)}
         />
       </View>
+      <Text style={styles.header}>Chi tiết khuyến mãi</Text>
+      {voucherType && voucherType.discountType === "productDiscount" && 
+      <View style={styles.inputBox}>
+        <TextInput
+          style={[styles.input, { flex: 1 }]}
+          value={getDisplayPercentage() === "" ? null : getDisplayPercentage()}
+          onChangeText={handleDiscountChange}
+          onBlur={() => setIsDiscountFocused(false)}
+          onFocus={() => setIsDiscountFocused(true)}
+          keyboardType="numeric"
+          placeholder="Phần trăm khuyến mãi"
+        />
+      </View>}
+      {voucherType && voucherType.discountType === "productDiscount" && <View style={styles.inputBox}>
+        <TextInput
+          keyboardType="numeric"
+          style={[styles.input, { flex: 1 }]}
+          value={getMaximumProductDiscountPrice() === "" ? null : getMaximumProductDiscountPrice()}
+          placeholder="Số tiền giảm tối đa (không bắt buộc)"
+          onChangeText={handleMaximumProductDiscountChange}
+          onBlur={() => setIsMaximumDiscountFocused(false)}
+          onFocus={() => setIsMaximumDiscountFocused(true)}
+        />
+      </View>}
+      {voucherType && voucherType.discountType === "shipDiscount" && <View style={styles.inputBox}>
+        <TextInput
+          keyboardType="numeric"
+          style={[styles.input, { flex: 1 }]}
+          value={getShipDiscountPrice() === "" ? null : getShipDiscountPrice()}
+          placeholder="Giá tiền sản phẩm"
+          onChangeText={handleShipDiscountChange}
+          onBlur={() => setIsShipDiscountPriceFocused(false)}
+          onFocus={() => setIsShipDiscountPriceFocused(true)}
+        />
+      </View>}
+      {voucherType && voucherType.voucherType === "exchange" && <View style={{ flexDirection: "row" }}>
+        <View style={[styles.inputBox, { flex: 1, marginRight: "2%" }]}>
+          <Text style={styles.input}>Chiết khấu</Text>
+        </View>
+        <View style={[styles.inputBox, { flex: 1, marginLeft: "2%" }]}>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            placeholder="Số điểm quy đổi"
+            onChangeText={(text) => setVoucherExchangePrice(parseInt(text))}
+          />
+        </View>
+      </View>}
       <ColorButton
+        style={{ marginTop: "2%" }}
         OnPress={handleSaveVoucherToFirebase}
         color="#00A188"
         text="Thêm mới"
@@ -371,7 +478,7 @@ const styles = StyleSheet.create({
     color: "#3a3a3a",
     fontSize: 18,
     fontWeight: "600",
-    marginVertical: "4%"
+    marginVertical: "2%"
   },
   toggleContainer: {
     flexDirection: "row",
