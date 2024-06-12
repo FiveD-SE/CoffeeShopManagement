@@ -10,10 +10,7 @@ const VoucherTypeModal = ({ visible, onClose, onSelect, setVoucherType }) => {
   const [type, setType] = useState(null);
   const [selectedType, setSelectedType] = useState();
   const [selectedDiscount, setSelectedDiscount] = useState();
-  const handleSelectType = (selectedType) => {
-    setType(selectedType);
-    onSelect(selectedType);
-  };
+
   const handleSave = () => {
     if (!selectedType || !selectedDiscount) {
       Toast.show({
