@@ -11,6 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 const OrderHistory = ({ userData }) => {
     const navigation = useNavigation();
@@ -43,6 +44,19 @@ const OrderHistory = ({ userData }) => {
         }
     };
 
+    const setOrderStatusIcon = (status) => {
+        switch (status) {
+            case 1:
+                return "shipping-fast";
+            case 2:
+                return "check-circle";
+            case 3:
+                return "times-circle";
+            default:
+                return "";
+        }
+    };
+
     const getStatusColors = (status) => {
         switch (status) {
             case 1:
@@ -68,12 +82,13 @@ const OrderHistory = ({ userData }) => {
                 <Pressable style={styles.labelItem} key={item.orderId} onPress={() => handleGoToDetail(item)}>
                     <View style={styles.row}>
                         <Text style={styles.itemId}>#{item.orderId.substring(0, 6).toUpperCase()}</Text>
-                        <Text style={styles.itemDate}>{date}</Text>
+                        <View style={[styles.labelStatus, { backgroundColor }]}>
+                            <FontAwesome5 name={setOrderStatusIcon(item.orderState)} size={20} color={textColor} />
+                            <Text style={[styles.itemStatus, { color: textColor }]}>  {setOrderStatus(item.orderState)}</Text>
+                        </View>
                     </View>
                     <View style={styles.row}>
-                        <View style={[styles.labelStatus, { backgroundColor }]}>
-                            <Text style={[styles.itemStatus, { color: textColor }]}>{setOrderStatus(item.orderState)}</Text>
-                        </View>
+                        <Text style={styles.itemDate}>{date}</Text>
                         <View style={styles.priceContainer}>
                             <Text style={styles.itemPrice}>{formatCurrency(Number(item.orderTotalPrice))}</Text>
                             <Text style={styles.currency}> VNĐ</Text>
@@ -105,9 +120,8 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         paddingVertical: 15,
         paddingHorizontal: 15,
-        backgroundColor: "#FCFFE0",
         borderWidth: 1,
-        borderColor: "#EBEBEB",
+        borderColor: "#B3A398",
         borderRadius: 10,
         marginBottom: 10,
         gap: 20,
@@ -126,8 +140,7 @@ const styles = StyleSheet.create({
     itemDate: {
         color: "#A3A3A3",
         fontFamily: "lato-bold",
-        fontSize: 16,
-        lineHeight: 20,
+        fontSize: 18,
     },
     itemPrice: {
         color: "#151515",
@@ -153,8 +166,8 @@ const styles = StyleSheet.create({
         paddingVertical: 2,
         justifyContent: "center",
         alignItems: "center",
-        alignSelf: "center",
         borderRadius: 10,
+        flexDirection: "row",
     },
     priceContainer: {
         flexDirection: 'row',
