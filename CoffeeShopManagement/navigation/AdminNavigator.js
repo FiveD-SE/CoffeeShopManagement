@@ -77,10 +77,16 @@ const BillingStack = () => (
             options={{ headerShown: false }}
         />
         <Stack.Screen
-            name="AdminDetailBilling"
-            component={DetailBillingScreen}
-            options={{ headerShown: false }}
-        />
+                name="AdminDetailBilling"
+                component={DetailBillingScreen}
+                options={{
+                    headerTitle: "Chi tiết hoá đơn",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
     </Stack.Navigator>
 );
 

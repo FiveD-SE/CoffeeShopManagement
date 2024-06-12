@@ -168,12 +168,8 @@ export default function AdminBillingScreen() {
           {selectionButtons.map((item) => (
             <TouchableOpacity
               key={item.id}
-              style={[
-                styles.selectionButton,
-                selectedButtonIndex === item.id && styles.selectedSelectionButton
-              ]}
-              onPress={() => setSelectedButtonIndex(item.id)}
-            >
+              style={[styles.selectionButton, selectedButtonIndex === item.id && styles.selectedSelectionButton]}
+              onPress={() => setSelectedButtonIndex(item.id)}>
               <Text style={[
                 styles.selectionButtonText,
                 selectedButtonIndex === item.id && styles.selectedSelectionButtonText
@@ -237,20 +233,24 @@ const styles = StyleSheet.create({
     marginBottom: '5%',
   },
   selectionButton: {
+    flex: 1,
     padding: '3%',
     borderRadius: 10,
     marginEnd: '5%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   selectedSelectionButton: {
-    backgroundColor: '#e6f1ef',
+    backgroundColor: '#D8EFD3',
   },
   selectionButtonText: {
-    fontSize: 14,
-    color: '#a6a6aa',
+    fontSize: 16,
+    color: '#151515',
+    fontFamily: 'lato-regular',
   },
   selectedSelectionButtonText: {
     color: '#006C5E',
-    fontWeight: '600',
+    fontFamily: 'lato-bold',
   },
   labelItem: {
     flexDirection: "column",

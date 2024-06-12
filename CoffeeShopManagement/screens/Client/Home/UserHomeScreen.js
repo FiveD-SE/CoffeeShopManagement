@@ -129,8 +129,8 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
     useEffect(() => {
         const fetchRecentlyViewed = async () => {
             if (
-                userData.recentlyViewedItems &&
-                userData.recentlyViewedItems.length > 0
+                userData?.recentlyViewedItems &&
+                userData?.recentlyViewedItems.length > 0
             ) {
                 const products = await Promise.all(
                     userData.recentlyViewedItems.map(async (productId) => {
@@ -138,9 +138,9 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
                         const productDocSnap = await getDoc(productDocRef);
                         return productDocSnap.exists()
                             ? {
-                                  ...productDocSnap.data(),
-                                  id: productDocSnap.id,
-                              }
+                                ...productDocSnap.data(),
+                                id: productDocSnap.id,
+                            }
                             : null;
                     })
                 );
@@ -165,11 +165,11 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
         ));
 
     const renderRecentlyViewedItemList = () => {
-        if (recentlyViewedList.length === 0) {
+        if (recentlyViewedList?.length === 0) {
             return null;
         }
 
-        return recentlyViewedList.map((item, index) => (
+        return recentlyViewedList?.map((item, index) => (
             <RecentlyViewedItem
                 key={index}
                 id={item.productId} // Assuming productId is part of the data

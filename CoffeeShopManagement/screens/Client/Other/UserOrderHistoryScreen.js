@@ -1,72 +1,94 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
     SafeAreaView,
     StyleSheet,
     Pressable,
-    FlatList,
+    ScrollView,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { connect } from "react-redux";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../services/firebaseService";
 
-const OrderHistory = ({ navigation }) => {
-    const orderHistory = [
-        { orderId: "#12345", status: true, total: "100.000" },
-        { orderId: "#67890", status: false, total: "50.000" },
-        { orderId: "#13579", status: NaN, total: "80.000" },
-    ];
+const OrderHistory = ({ userData }) => {
+    const navigation = useNavigation();
+    const [orderHistoryData, setOrderHistoryData] = useState([]);
 
-    const getStatusView = (status) => {
-        let statusText, statusColor, textColor;
-
-        if (status === true) {
-            statusText = "Đã giao hàng";
-            statusColor = "#EDFAF1";
-            textColor = "#4ECB71";
-        } else if (status === false) {
-            statusText = "Đang giao hàng";
-            statusColor = "#FFF6E5";
-            textColor = "#FFA500";
-        } else {
-            statusText = "Đã hủy";
-            statusColor = "#FEE8EC";
-            textColor = "#F61A3D";
+    useEffect(() => {
+        const fetchOrdersData = async () => {
+            const ordersCollection = collection(db, 'orders');
+            const orderSnapshot = await getDocs(query(ordersCollection, where("userId", "==", userData.id)));
+            const orderListData = orderSnapshot.docs.map(doc => doc.data());
+            setOrderHistoryData(orderListData);
         }
+        fetchOrdersData();
+    }, [userData.id]);
 
-        return (
-            <View
-                style={[styles.borderStatus, { backgroundColor: statusColor }]}
-            >
-                <Text style={[styles.textStatus, { color: textColor }]}>
-                    {statusText}
-                </Text>
-            </View>
-        );
+    const handleGoToDetail = (orderData) => {
+        navigation.navigate("DetailBilling", { orderData });
     };
 
-    const renderItem = ({ item }) => (
-        <Pressable
-            style={styles.orderItem}
-            onPress={() =>
-                navigation.navigate("OrderDetail", { orderId: item.orderId })
-            }
-        >
-            <View style={styles.orderInfo}>
-                <Text style={styles.orderId}>Mã đơn hàng: {item.orderId}</Text>
-                <Text style={styles.orderStatus}>
-                    Trạng thái: {getStatusView(item.status)}
-                </Text>
-                <Text style={styles.orderTotal}>Tổng tiền: {item.total}đ</Text>
-            </View>
-        </Pressable>
+    const setOrderStatus = (status) => {
+        switch (status) {
+            case 1:
+                return "Đang giao";
+            case 2:
+                return "Đã hoàn thành";
+            case 3:
+                return "Đã hủy";
+            default:
+                return "";
+        }
+    };
+
+    const getStatusColors = (status) => {
+        switch (status) {
+            case 1:
+                return { backgroundColor: '#C3E2C2', textColor: '#527853' };
+            case 2:
+                return { backgroundColor: '#F9E8D9', textColor: '#EE7214' };
+            case 3:
+                return { backgroundColor: '#FFCAC2', textColor: '#C81912' };
+            default:
+                return {};
+        }
+    };
+
+    const formatCurrency = (price) => {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+    const renderItem = () => (
+        orderHistoryData.map(item => {
+            const date = new Date(item.orderDate.seconds * 1000).toLocaleDateString("en-US");
+            const { backgroundColor, textColor } = getStatusColors(item.orderState);
+            return (
+                <Pressable style={styles.labelItem} key={item.orderId} onPress={() => handleGoToDetail(item)}>
+                    <View style={styles.row}>
+                        <Text style={styles.itemId}>#{item.orderId.substring(0, 6).toUpperCase()}</Text>
+                        <Text style={styles.itemDate}>{date}</Text>
+                    </View>
+                    <View style={styles.row}>
+                        <View style={[styles.labelStatus, { backgroundColor }]}>
+                            <Text style={[styles.itemStatus, { color: textColor }]}>{setOrderStatus(item.orderState)}</Text>
+                        </View>
+                        <View style={styles.priceContainer}>
+                            <Text style={styles.itemPrice}>{formatCurrency(Number(item.orderTotalPrice))}</Text>
+                            <Text style={styles.currency}> VNĐ</Text>
+                        </View>
+                    </View>
+                </Pressable>
+            );
+        })
     );
 
     return (
         <SafeAreaView style={styles.container}>
-            <FlatList
-                data={orderHistory}
-                renderItem={renderItem}
-                keyExtractor={(item) => item.orderId}
-            />
+            <ScrollView>
+                {renderItem()}
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -77,50 +99,70 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 10,
     },
-    orderItem: {
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        backgroundColor: "#fff",
+    labelItem: {
+        flexDirection: "column",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
+        paddingVertical: 15,
+        paddingHorizontal: 15,
+        backgroundColor: "#FCFFE0",
         borderWidth: 1,
-        borderRadius: 20,
-        padding: 15,
+        borderColor: "#EBEBEB",
+        borderRadius: 10,
         marginBottom: 10,
-        borderColor: "#CBCBD4",
+        gap: 20,
     },
-    orderInfo: {
-        flex: 1,
-        gap: 10,
+    row: {
+        flexDirection: "row",
+        width: '100%',
+        justifyContent: "space-between"
     },
-    orderId: {
-        color: "#000",
-        fontFamily: "lato-regular",
+    itemId: {
+        color: "#151515",
+        fontFamily: "lato-bold",
+        fontSize: 18,
+        textAlignVertical: "bottom",
+    },
+    itemDate: {
+        color: "#A3A3A3",
+        fontFamily: "lato-bold",
         fontSize: 16,
-        fontStyle: "normal",
-        fontWeight: "600",
+        lineHeight: 20,
     },
-    orderStatus: {
-        fontSize: 14,
-        color: "#333",
+    itemPrice: {
+        color: "#151515",
+        fontFamily: "lato-bold",
+        fontSize: 25,
+        lineHeight: 25,
+        textAlignVertical: "bottom",
     },
-    orderTotal: {
-        color: "#000",
-        fontFamily: "lato-regular",
+    currency: {
+        color: "#A3A3A3",
+        fontFamily: "lato-bold",
         fontSize: 16,
-        fontStyle: "normal",
-        fontWeight: "600",
+        lineHeight: 18,
+        textAlignVertical: "bottom",
     },
-    borderStatus: {
-        paddingVertical: 4,
+    itemStatus: {
+        fontFamily: "lato-bold",
+        alignSelf: "center",
+        fontSize: 16,
+    },
+    labelStatus: {
         paddingHorizontal: 10,
+        paddingVertical: 2,
+        justifyContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
         borderRadius: 10,
     },
-    textStatus: {
-        textAlign: "center",
-        fontFamily: "lato-regular",
-        fontSize: 10,
-        fontStyle: "normal",
-        fontWeight: "500",
+    priceContainer: {
+        flexDirection: 'row',
     },
 });
 
-export default OrderHistory;
+const mapStateToProps = (state) => ({
+    userData: state.auth.userData,
+});
+
+export default connect(mapStateToProps)(OrderHistory);
