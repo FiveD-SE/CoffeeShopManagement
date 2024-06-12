@@ -42,6 +42,7 @@ import CashierNotification from "../screens/Staff/CashierNotification";
 import UserChooseAddressScreen from "../screens/Client/PlaceOrder/UserChooseAddressScreen";
 import ConfirmPassword from "../screens/Client/ConfirmPassword";
 import StorePolicyScreen from "../screens/Client/Other/StorePolicyScreen";
+import DetailBilling from "../screens/Admin/DetailBillingScreen";
 
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { colors } from "../assets/colors/colors";
@@ -749,6 +750,17 @@ const OtherStack = ({ navigation, route }) => {
 				component={StorePolicyScreen}
 				options={{
 					headerTitle: "Chính sách",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="DetailBilling"
+				component={DetailBilling}
+				options={{
+					headerTitle: "Chi tiết đơn hàng",
 					headerLeftContainerStyle: {
 						paddingLeft: "5%",
 					},

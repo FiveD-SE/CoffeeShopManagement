@@ -7,10 +7,6 @@ export default function DetailBillingScreen({ route }) {
   const navigation = useNavigation();
   const { orderData } = route.params;
 
-  const handleBack = () => {
-    navigation.goBack();
-  };
-
   const totalPrice = orderData.orderTotalPrice + orderData.deliveryFee - orderData.orderTotalDiscount;
 
   const formatCurrency = (price) => {
@@ -19,12 +15,6 @@ export default function DetailBillingScreen({ route }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topApp}>
-        <TouchableOpacity onPress={handleBack}>
-          <Icon name='chevron-left' size={32} />
-        </TouchableOpacity>
-        <Text style={styles.orderText}>Đơn hàng: #{orderData.orderId.substring(0, 6).toUpperCase()}</Text>
-      </View>
       <ScrollView style={styles.section} showsVerticalScrollIndicator={false}>
         <View style={styles.sectionContainer}>
           {orderData.products.map((item, index) => (
@@ -47,19 +37,19 @@ export default function DetailBillingScreen({ route }) {
           </View>
           <View style={styles.infoWrapper}>
             <Text style={styles.infoItem}>
-              <Text style={styles.titleText}>Người nhận: </Text>
+              <Text style={styles.titleText}>Người nhận:  </Text>
               <Text style={styles.contentText}>{orderData.userName}</Text>
             </Text>
-            <Text style={styles.infoItem}>
-              <Text style={styles.titleText}>Số điện thoại: </Text>
+            <View style={styles.infoItem}>
+              <Text style={styles.titleText}>Số điện thoại:  </Text>
               <Text style={styles.contentText}>{orderData.deliveryAddress.phoneNumber}</Text>
-            </Text>
-            <Text style={styles.infoItem}>
-              <Text style={styles.titleText}>Địa chỉ: </Text>
-              <Text style={styles.contentText}>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.titleText}>Địa chỉ:  </Text>
+              <Text style={styles.contentText} numberOfLines={2}>
                 {orderData.deliveryAddress.street}, {orderData.deliveryAddress.wardName}, {orderData.deliveryAddress.districtName}, {orderData.deliveryAddress.provinceName}
               </Text>
-            </Text>
+            </View>
           </View>
         </View>
         <View style={styles.sectionContainer}>
@@ -68,22 +58,37 @@ export default function DetailBillingScreen({ route }) {
             <Text style={styles.sectionText}>Thông tin đơn hàng</Text>
           </View>
           <View style={styles.infoWrapper}>
-            <Text style={styles.infoItem}>
-              <Text style={styles.titleText}>Người giao: </Text>
-              <Text style={styles.contentText}>Nguyễn Quốc Thắng</Text>
-            </Text>
-            <Text style={styles.infoItem}>
-              <Text style={styles.titleText}>Số điện thoại: </Text>
-              <Text style={styles.contentText}>0123456789</Text>
-            </Text>
-            <Text style={styles.infoItem}>
-              <Text style={styles.titleText}>Mã gửi hàng: </Text>
-              <Text style={styles.contentText}>#####</Text>
-            </Text>
-            <Text style={styles.infoItem}>
-              <Text style={styles.titleText}>Mã phiếu gửi: </Text>
-              <Text style={styles.contentText}>#####</Text>
-            </Text>
+            {orderData.deliveryFee !== 0 ? (
+              <>
+                <View style={styles.infoItem}>
+                  <Text style={styles.titleText}>Người giao:  </Text>
+                  <Text style={styles.contentText}>Nguyễn Quốc Thắng</Text>
+                </View>
+                <View style={styles.infoItem}>
+                  <Text style={styles.titleText}>Số điện thoại:  </Text>
+                  <Text style={styles.contentText}>0123456789</Text>
+                </View>
+                <View style={styles.infoItem}>
+                  <Text style={styles.titleText}>Mã gửi hàng:  </Text>
+                  <Text style={styles.contentText}>#####</Text>
+                </View>
+                <View style={styles.infoItem}>
+                  <Text style={styles.titleText}>Mã phiếu gửi:  </Text>
+                  <Text style={styles.contentText}>#####</Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <View style={styles.infoItem}>
+                  <Text style={styles.titleText}>Mã gửi hàng:  </Text>
+                  <Text style={styles.contentText}>#####</Text>
+                </View>
+                <View style={styles.infoItem}>
+                  <Text style={styles.titleText}>Mã phiếu gửi:  </Text>
+                  <Text style={styles.contentText}>#####</Text>
+                </View>
+              </>
+            )}
           </View>
         </View>
         <View style={styles.sectionContainer}>
@@ -98,15 +103,15 @@ export default function DetailBillingScreen({ route }) {
             </View>
             <View style={styles.totalWrapper}>
               <View style={styles.totalItem}>
-                <Text style={styles.titleText}>Tổng tiền hàng: </Text>
+                <Text style={styles.titleText}>Tổng tiền hàng:  </Text>
                 <Text style={styles.contentText}>{formatCurrency(orderData.orderTotalPrice)} VND</Text>
               </View>
               <View style={styles.totalItem}>
-                <Text style={styles.titleText}>Tổng tiền phí vận chuyển: </Text>
+                <Text style={styles.titleText}>Tổng tiền phí vận chuyển:  </Text>
                 <Text style={styles.contentText}>{formatCurrency(orderData.deliveryFee)} VND</Text>
               </View>
               <View style={styles.totalItem}>
-                <Text style={styles.titleText}>Giảm giá phí vận chuyển: </Text>
+                <Text style={styles.titleText}>Giảm giá phí vận chuyển:  </Text>
                 <Text style={styles.contentText}>{formatCurrency(orderData.orderTotalDiscount)} VND</Text>
               </View>
             </View>
@@ -192,6 +197,7 @@ const styles = StyleSheet.create({
   },
   infoItem: {
     paddingBottom: '1%',
+    flexDirection: 'row',
   },
   titleText: {
     fontSize: 18,
@@ -199,9 +205,11 @@ const styles = StyleSheet.create({
     color: '#151515',
   },
   contentText: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'lato-regular',
     color: '#A3A3A3',
+    width: '80%',
+    height: '100%',
   },
   sectionText: {
     fontSize: 18,
