@@ -172,7 +172,7 @@ const AdminAddVoucherScreen = () => {
                 }
                 const docRef = await addDoc(collection(db, "vouchers"), {
                   voucherName: voucherName,
-                  minimumOrderPrice: minimumOrderPrice,
+                  minimumOrderPrice: parseInt(minimumOrderPrice),
                   voucherExchangePrice: voucherExchangePrice,
                   voucherDescription: voucherDescription,
                   voucherType: voucherType,
@@ -413,7 +413,7 @@ const AdminAddVoucherScreen = () => {
           keyboardType="numeric"
           style={[styles.input, { flex: 1 }]}
           value={getShipDiscountPrice() === "" ? null : getShipDiscountPrice()}
-          placeholder="Giá tiền sản phẩm"
+          placeholder="Số tiền giảm"
           onChangeText={handleShipDiscountChange}
           onBlur={() => setIsShipDiscountPriceFocused(false)}
           onFocus={() => setIsShipDiscountPriceFocused(true)}
