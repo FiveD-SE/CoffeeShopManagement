@@ -101,6 +101,7 @@ const AdminSalesScreen = () => {
                 imageSource={{ uri: item.voucherImage }}
                 expiryDate={formatDate(item.expirationDate)}
                 status={item.status}
+                minimumPrice={item.minimumOrderPrice}
             />
         ));
     };

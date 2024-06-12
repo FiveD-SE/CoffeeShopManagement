@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import OptionModal from '../Modal/OptionModal';
-const VoucherCard = ({ itemName, imageSource, status, expiryDate }) => {
+const VoucherCard = ({ itemName, imageSource, status, expiryDate, minimumPrice }) => {
 
     const statusColor = status ? "#00A188" : "#F61A3D";
     const [optionModalVisible, setOptionModalVisible] = useState(false);
@@ -13,6 +13,13 @@ const VoucherCard = ({ itemName, imageSource, status, expiryDate }) => {
     const hideOptionModal = () => {
         setOptionModalVisible(false);
     };
+    const formatPrice = (price) => {
+        const formatter = new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        });
+        return formatter.format(price);
+    };
     return (
         <View>
             <View style={styles.container} onLongPress={showOptionModal}>
@@ -21,6 +28,7 @@ const VoucherCard = ({ itemName, imageSource, status, expiryDate }) => {
                 </View>
                 <View style={styles.main}>
                     <Text style={styles.title}>{itemName}</Text>
+                    <Text style={styles.label}>Đơn tối thiểu: {formatPrice(minimumPrice)}</Text>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                         <Text style={styles.label}>Trạng thái:</Text>
                         <Text style={[styles.status, { color: statusColor }]}>{status ? "Hoạt động" : "Không hoạt động"}</Text>
@@ -49,7 +57,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         borderWidth: 1,
         borderColor: "#D8D8D8",
-    
+
     },
     imageContainer: {
     },
@@ -68,7 +76,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "500",
         lineHeight: 20,
-        marginBottom: "10%",
+        marginBottom: "6%",
     },
     label: {
         color: "#3a3a3a",
