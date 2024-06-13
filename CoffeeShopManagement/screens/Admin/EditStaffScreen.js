@@ -10,7 +10,7 @@ import {
     ActivityIndicator,
     Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Entypo";
 import Icon1 from "react-native-vector-icons/Feather";
@@ -23,6 +23,8 @@ import {
     collection,
     deleteDoc,
     doc,
+    onSnapshot,
+    query,
     setDoc,
     updateDoc,
 } from "firebase/firestore";
@@ -39,6 +41,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
 import { deleteUser, getAuth, sendEmailVerification } from "firebase/auth";
 import Toast from "react-native-toast-message";
+import SelectRoleModal from "../../components/Admin/Modal/SelectRoleModal";
 
 const TextBox = ({ text, value, setValue, keyboardType, handleValidInput }) => {
 
@@ -165,21 +168,27 @@ const ButtonBox = ({ text, placeholder, onPress }) => {
 };
 
 export default function EditStaffScreen({ route }) {
-    console.log(route.params.cashiers);
+
+
 
     const [cashierImage, setCashierImage] = useState(
-        route.params.cashiers.cashierImage
+        route.params.staffs.staffImage
     );
-    const [name, setName] = useState(route.params.cashiers.fullName);
-    const [sdt, setSdt] = useState(route.params.cashiers.phoneNumber);
+    const [name, setName] = useState(route.params.staffs.fullName);
+    const [sdt, setSdt] = useState(route.params.staffs.phoneNumber);
     const [birthday, setBirthday] = useState(
-        route.params.cashiers.birthday.toDate()
+        route.params.staffs.birthday.toDate()
     );
-    const [gender, setGender] = useState(route.params.cashiers.gender);
-    const [cccd, setCccd] = useState(route.params.cashiers.idCard);
-    const [email, setEmail] = useState(route.params.cashiers.email);
+    const [gender, setGender] = useState(route.params.staffs.gender);
+    const [cccd, setCccd] = useState(route.params.staffs.idCard);
+    const [email, setEmail] = useState(route.params.staffs.email);
     const [date, setDate] = useState(new Date());
     const [isLoading, setIsLoading] = useState(false);
+    const [role, setRole] = useState(route.params.staffs.role);
+    const [branch, setBranch] = useState(route.params.staffs.branch);
+    const [roles, setRoles] = useState([]);
+    const [branches, setBranches] = useState([]);
+
 
     const [isNameValid, setIsNameValid] = useState(true);
     const [isPhoneValid, setIsPhoneValid] = useState(true);
@@ -192,8 +201,8 @@ export default function EditStaffScreen({ route }) {
 
     const [modalVisible, setModalVisible] = useState(false);
 
-    const [modalSelectBranchVisible, setModalSelectBranchVisible] =
-        useState(false);
+    const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
+    const [modalSelectRoleVisibile, setModalSelectRoleVisibile] = useState(false);
 
     const showSelectBranchModal = () => {
         setModalSelectBranchVisible(true);
@@ -203,17 +212,37 @@ export default function EditStaffScreen({ route }) {
         setModalSelectBranchVisible(false);
     };
 
-    const showDeleteStaffModal = () => {
-        setModalVisible(true);
+    const showSelectRoleModal = () => {
+        setModalSelectRoleVisibile(true);
     };
 
-    const hideDeleteStaffModal = () => {
-        setModalVisible(false);
+    const hideSelectRoleModal = () => {
+        setModalSelectRoleVisibile(false);
     };
 
     const toggleDatePicker = () => {
         setIsShowDateTimePicker(!isShowDateTimePicker);
     };
+
+    useEffect(() => {
+        const unsub = onSnapshot(
+            query(collection(db, "staffRoles")),
+            (snapshot) => {
+                setRoles(snapshot.docs.map((doc) => doc.data()));
+            }
+        );
+        return () => unsub();
+    }, []);
+
+    useEffect(() => {
+        const unsub = onSnapshot(
+            query(collection(db, "branches")),
+            (snapshot) => {
+                setBranches(snapshot.docs.map((doc) => doc.data()));
+            }
+        );
+        return () => unsub();
+    }, []);
 
     const onChange = ({ type }, selectedDate) => {
         if (type === "set") {
@@ -320,16 +349,16 @@ export default function EditStaffScreen({ route }) {
         setIsLoading(true);
         const cashierImageURL = await uploadAvatarToFirebase(
             cashierImage,
-            "cashier_" + route.params.cashiers.cashierId
+            "staff_" + route.params.staffs.staffId
         );
-        await updateDoc(doc(db, "cashier", route.params.cashiers.cashierId), {
+        await updateDoc(doc(db, "staffs", route.params.staffs.staffId), {
             fullName: name,
             phoneNumber: sdt,
             birthday: birthday,
             idCard: cccd,
             gender: gender,
             email: email,
-            cashierImage: cashierImageURL,
+            staffImage: cashierImageURL,
         });
         setIsLoading(false);
         navigation.goBack();
@@ -349,12 +378,12 @@ export default function EditStaffScreen({ route }) {
                     style: "destructive",
                     onPress: async () => {
                         console.log(
-                            "route.params.cashiers.cashierId",
-                            route.params.cashiers.cashierId
+                            "route.params.staffs.staffId",
+                            route.params.staffs.staffId
                         );
                         try {
                             const response = await fetch(
-                                `https://cfbe.up.railway.app/users/${route.params.cashiers.cashierId}`,
+                                `https://cfbe.up.railway.app/users/${route.params.staffs.staffId}`,
                                 {
                                     method: "DELETE",
                                 }
@@ -516,15 +545,18 @@ export default function EditStaffScreen({ route }) {
                 </View>
                 <View>
                     <Text style={styles.topText}>Thông tin công việc</Text>
-                    <ButtonBox text={"Vai trò"} placeholder={"Tên vai trò"} />
+                    <ButtonBox text={"Vai trò"} placeholder={role.roleName ? role.roleName : 'Vai Trò'} onPress={showSelectRoleModal} />
+                    <SelectRoleModal visible={modalSelectRoleVisibile} onClose={hideSelectRoleModal} roles={roles} setRole={setRole} />
                     <ButtonBox
                         text={"Chi nhánh làm việc"}
-                        placeholder={"Tên chi nhánh"}
+                        placeholder={branch.branchName ? branch.branchName : 'Tên chi nhánh'}
                         onPress={showSelectBranchModal}
                     />
                     <SelectBranchModal
                         visible={modalSelectBranchVisible}
                         onClose={hideSelectBranchModal}
+                        branches={branches}
+                        setBranch={setBranch}
                     />
                 </View>
                 <View>

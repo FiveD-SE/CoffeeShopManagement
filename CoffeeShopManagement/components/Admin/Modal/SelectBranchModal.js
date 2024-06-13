@@ -3,33 +3,32 @@ import React, { useState } from 'react';
 import ModalHeader from '../../Client/Header/ModalHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Branch from '../Branch';
 
-const SelectBranchModal = ({ visible, onClose }) => {
-  const [branch, setBranch] = useState([
-    { nameBranch: 'THE COFFEE HOUSE', addressBranch: 'HCM Đường D1', distanceBranch: 'Cách đây 3.3 km' },
-    { nameBranch: 'THE COFFEE HOUSE', addressBranch: 'HCM Đường D1', distanceBranch: 'Cách đây 3.3 km' },
-    { nameBranch: 'THE COFFEE HOUSE', addressBranch: 'HCM Đường D1', distanceBranch: 'Cách đây 3.3 km' },
-    { nameBranch: 'THE COFFEE HOUSE', addressBranch: 'HCM Đường D1', distanceBranch: 'Cách đây 3.3 km' },
-  ]);
+const SelectBranchModal = ({ visible, onClose, branches, setBranch }) => {
 
-  const renderBranchItem = ({ item }) => (
-    <Pressable style={styles.addressItem}>
-        <Image style={styles.image} />
-        <View style={styles.vertical}>
-            <View>
-                <Text style={styles.nameBranchText}>{item.nameBranch}</Text>
-                <Text style={styles.addressBranchText}>{item.addressBranch}</Text>
-            </View>
-            <Text style={styles.distanceBranchText}>{item.distanceBranch}</Text>
-        </View>
-        <MaterialCommunityIcons 
-            name="checkbox-blank-circle-outline"
-            size={25}
-            color="#000000"
+  const handleChooseBranch = (branch) => {
+    setBranch(branch);
+    onClose();
+  }
+
+  const renderBranchList = () => {
+    return branches.map((item, index) => {
+      const address = `${item.street}, ${item.wardName}, ${item.districtName}, ${item.provinceName}`;
+      return (
+        <Branch
+          key={index}
+          storeName="FIVED COFFEE"
+          branchName={item.branchName}
+          address={address}
+          image={{ uri: item.branchImage }}
+          onPress={() => handleChooseBranch(item)}
+          openingHour={item.openingHour}
+          closingHour={item.closingHour}
         />
-    </Pressable>
-  );
-
+      );
+    });
+  };
   return (
     <Modal
       animationType="fade"
@@ -45,12 +44,7 @@ const SelectBranchModal = ({ visible, onClose }) => {
               <TextInput style={styles.searchText} placeholder='Tìm kiếm' />
               <Ionicons name='search' size={20} />
             </View>
-            <FlatList
-              data={branch}
-              renderItem={renderBranchItem}
-              keyExtractor={(item, index) => index.toString()}
-              style={styles.branchList}
-            />
+            {renderBranchList()}
           </View>
         </View>
       </View>

@@ -24,7 +24,7 @@ export default function ManageStaffScreen({ route }) {
 
     useEffect(() => {
         const unsub = onSnapshot(
-            query(collection(db, "cashier")),
+            query(collection(db, "staffs")),
             (snapshot) => {
                 setCashiers(snapshot.docs.map((doc) => doc.data()));
             }
@@ -35,7 +35,7 @@ export default function ManageStaffScreen({ route }) {
 
     useEffect(() => {
         const unsub = onSnapshot(
-            query(collection(db, "staffRole")),
+            query(collection(db, "staffRoles")),
             (snapshot) => {
                 setRoles(snapshot.docs.map((doc) => doc.data()));
             }
@@ -76,8 +76,8 @@ export default function ManageStaffScreen({ route }) {
     const goToAddStaff = () => {
         navigation.navigate("AddStaff");
     };
-    const goToEditStaff = (cashiers) => {
-        navigation.navigate("EditStaff", { cashiers: cashiers });
+    const goToEditStaff = (staffs) => {
+        navigation.navigate("EditStaff", { staffs: staffs });
     };
     return (
         <>
@@ -128,7 +128,7 @@ export default function ManageStaffScreen({ route }) {
                                     key={index}
                                     cashierName={item.fullName}
                                     cashierPhone={item.phoneNumber}
-                                    cashierImage={item.cashierImage}
+                                    cashierImage={item.staffImage}
                                     onPress={() => goToEditStaff(item)}
                                 />
                             ))}
