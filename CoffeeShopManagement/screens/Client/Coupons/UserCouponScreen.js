@@ -7,8 +7,8 @@ import {
 	SafeAreaView,
 	Image,
 } from "react-native";
-import React, { useState, useEffect, useCallback } from "react";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import VoucherCard from "../../../components/Client/Card/VoucherCard";
 import UserVoucherCard from "../../../components/Client/Card/UserVoucherCard";
 import { auth, db } from "../../../services/firebaseService";
@@ -17,6 +17,8 @@ import {
 	doc,
 	getDoc,
 	getDocs,
+	limit,
+	orderBy,
 	query,
 	where,
 } from "firebase/firestore";
@@ -101,6 +103,23 @@ function UserCouponScreen({ userData }) {
 		));
 	};
 
+	const changeColorByRank = () => {
+		switch (userRank) {
+			case "Mới":
+				return colors.green_100;
+			case "Đồng":
+				return colors.bronze;
+			case "Bạc":
+				return colors.silver;
+			case "Vàng":
+				return colors.gold;
+			case "Kim cương":
+				return colors.diamond;
+			default:
+				return colors.green_100;
+		}
+	};
+
 	useEffect(() => {
 		const fetchUserData = async () => {
 			const userDocRef = doc(db, "users", auth.currentUser.uid);
@@ -133,13 +152,16 @@ function UserCouponScreen({ userData }) {
 				console.log("User document does not exist.");
 			}
 		};
+
 		const fetchVoucherData = async () => {
 			const voucherList = [];
 
 			try {
 				const voucherQuery = query(
 					collection(db, "vouchers"),
-					where("voucherExchangePrice", "<=", userData.credit)
+					where("voucherExchangePrice", "<=", userData.credit),
+					orderBy("dateCreated", "desc"),
+					limit(3)
 				);
 
 				const querySnapshot = await getDocs(voucherQuery);
@@ -179,18 +201,28 @@ function UserCouponScreen({ userData }) {
 				for (const ref of userVoucherRefs) {
 					const voucherDoc = await getDoc(doc(db, "vouchers", ref.id));
 					const voucherData = voucherDoc.data();
-					const expirationDate = convertTimestampToDate(
-						voucherData.expirationDate
-					);
 
 					userVoucherList.push({
 						...voucherData,
 						quantity: ref.quantity,
-						expirationDate: formatDate(expirationDate),
+						expirationDate: voucherData.expirationDate,
 					});
 				}
 
-				setUserVoucherItemList(userVoucherList);
+				userVoucherList.sort((a, b) => {
+					return a.expirationDate - b.expirationDate;
+				});
+
+				const formattedVoucherList = userVoucherList
+					.map((voucher) => ({
+						...voucher,
+						expirationDate: formatDate(
+							convertTimestampToDate(voucher.expirationDate)
+						),
+					}))
+					.slice(0, 3);
+
+				setUserVoucherItemList(formattedVoucherList);
 			} catch (error) {
 				console.error(error);
 			}
@@ -243,7 +275,9 @@ function UserCouponScreen({ userData }) {
 
 					<View style={styles.rankContainer}>
 						<Text style={styles.rankLabel}>Hạng thành viên{"\n"}</Text>
-						<Text style={styles.rankText}>{userRank}</Text>
+						<Text style={[styles.rankText, { color: changeColorByRank() }]}>
+							{userRank}
+						</Text>
 					</View>
 
 					<Text style={styles.headerText}>
@@ -393,7 +427,6 @@ const styles = StyleSheet.create({
 	},
 	rankText: {
 		fontFamily: "lato-bold",
-		color: colors.green_100,
 		fontSize: 30,
 		textAlign: "center",
 	},
