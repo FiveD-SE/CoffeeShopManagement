@@ -2,7 +2,7 @@ import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity, Keyboard } 
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../Client/Header/ModalHeader'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { doc, updateDoc } from 'firebase/firestore'
+import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import { db } from '../../services/firebaseService'
 
 const SettingSalaryModal = ({ visible, onClose, roleName, staffRoleId, salary }) => {
@@ -28,9 +28,15 @@ const SettingSalaryModal = ({ visible, onClose, roleName, staffRoleId, salary })
 
     const updateSalary = async () => {
         // Cập nhật mức lương
-        await updateDoc(doc(db, 'staffRole', staffRoleId), {
+        await updateDoc(doc(db, 'staffRoles', staffRoleId), {
             salary: currentSalary
         })
+        onClose();
+    }
+
+    const handleDelete = async () => {
+        // Xoá vai trò
+        await deleteDoc(doc(db, 'staffRoles', staffRoleId));
         onClose();
     }
 
@@ -58,7 +64,7 @@ const SettingSalaryModal = ({ visible, onClose, roleName, staffRoleId, salary })
                             placeholderTextColor={'#3a3a3a'}
                             padding={'3%'}
                             style={styles.addSalary} />
-                        <TouchableOpacity style={styles.deleteButton}>
+                        <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete()}>
                             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                                 <Ionicons name='trash-outline' size={32} color={'#f61a3d'} />
                                 <Text style={{ marginStart: '2%', fontSize: 16, fontWeight: '600', color: '#f61a3d' }}>Xoá vai trò</Text>

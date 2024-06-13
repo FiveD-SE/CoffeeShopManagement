@@ -5,21 +5,24 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import { SliderBase } from 'react-native'
 import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore'
 import { db } from '../../services/firebaseService'
+import { Dropdown } from 'react-native-element-dropdown'
 
 const AddRoleModal = ({ visible, onClose }) => {
 
 
     const [roleName, setRoleName] = useState('');
     const [salary, setSalary] = useState('');
+    const [roleType, setRoleType] = useState('');
 
     const handleConfirm = async () => {
-        const docRef = await addDoc(collection(db, "staffRole"), {
+        const docRef = await addDoc(collection(db, "staffRoles"), {
             roleName: roleName,
-            salary: salary
+            salary: salary,
+            roleType: roleType
         });
         const staffRoleId = docRef.id;
 
-        await updateDoc(doc(collection(db, "staffRole"), staffRoleId), {
+        await updateDoc(doc(collection(db, "staffRoles"), staffRoleId), {
             staffRoleId: staffRoleId,
         });
         onClose();
@@ -66,6 +69,17 @@ const AddRoleModal = ({ visible, onClose }) => {
                             style={styles.addSalary}
                             value={salary}
                             onChangeText={text => setSalary(text)} />
+                        <Dropdown
+                            style={[styles.dropDown]}
+                            placeholder='Loại vai trò'
+                            placeholderStyle={{ color: "rgba(0, 0, 0, 0.2)" }}
+                            data={[{ label: "Cashier", value: 'cashier' }, { label: "Bảo vệ", value: 'security ' }, { label: "Pha chế", value: 'Bartender' }]}
+                            labelField="label"
+                            valueField="value"
+                            value={roleType}
+                            onChange={item => {
+                                setRoleType(item.value);
+                            }} />
                         <TouchableOpacity
                             onPress={handleConfirm}
                             style={styles.acceptButton}>
@@ -119,7 +133,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: '5%'
-    }
+    },
+    dropDown: {
+        marginBottom: "3%",
+        alignItems: "center",
+        borderWidth: 1,
+        borderRadius: 10,
+        borderColor: "#CCCCCC",
+        paddingHorizontal: "3%",
+        paddingVertical: "2%",
+        backgroundColor: "#ffffff",
+
+    },
 })
 
 export default AddRoleModal

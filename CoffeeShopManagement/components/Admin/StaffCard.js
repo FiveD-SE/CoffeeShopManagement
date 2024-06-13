@@ -25,6 +25,7 @@ const StaffCard = ({
                     style={{
                         marginStart: "5%",
                         justifyContent: "space-between",
+
                     }}
                 >
                     <Text style={{ fontSize: 16, fontWeight: "600" }}>
@@ -39,7 +40,9 @@ const StaffCard = ({
                             borderRadius: 15,
                             justifyContent: "center",
                             alignItems: "center",
-                            padding: "5%",
+                            paddingVertical: "5%",
+                            width: 100,
+                            height: 30
                         }}
                     >
                         <Text

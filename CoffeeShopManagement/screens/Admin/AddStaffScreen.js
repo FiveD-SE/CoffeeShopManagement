@@ -6,7 +6,7 @@ import SelectBranchModal from '../../components/Admin/Modal/SelectBranchModal'
 import { Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import RNDateTimePicker from '@react-native-community/datetimepicker'
-import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore'
+import { addDoc, collection, doc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore'
 import { auth, createUserWithEmailAndPassword, db, uploadAvatarToFirebase, uploadImageToFirebase } from '../../services/firebaseService'
 import RNPickerSelect from 'react-native-picker-select'
 import { getDownloadURL, ref } from 'firebase/storage'
@@ -14,6 +14,7 @@ import * as ImagePicker from "expo-image-picker";
 import { sendEmailVerification } from 'firebase/auth'
 import { Dropdown } from "react-native-element-dropdown";
 import Toast from 'react-native-toast-message'
+import SelectRoleModal from '../../components/Admin/Modal/SelectRoleModal'
 
 const TextBox = ({ text, value, setValue, keyboardType, handleValidInput }) => {
 
@@ -137,8 +138,13 @@ export default function AddStaffScreen() {
     const [password, setPassword] = useState('');
     const [cashierImage, setCashierImage] = useState("https://firebasestorage.googleapis.com/v0/b/fived-project-cf.appspot.com/o/avatars%2Fdefault.png?alt=media&token=0fffed45-23f0-4456-a939-cc3f437a7c2f");
     const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
+    const [modalSelectRoleVisibile, setModalSelectRoleVisibile] = useState(false);
     const [isShowDateTimePicker, setIsShowDateTimePicker] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [roles, setRoles] = useState([]);
+    const [role, setRole] = useState({});
+    const [branches, setBranches] = useState([]);
+    const [branch, setBranch] = useState({});
 
     const [isNameValid, setIsNameValid] = useState(false);
     const [isPhoneValid, setIsPhoneValid] = useState(false);
@@ -151,6 +157,26 @@ export default function AddStaffScreen() {
     const [isOpen, setIsOpen] = useState(false);
     const chooseDateSnapPoints = useMemo(() => ["60%"], []);
     const chooseDateBottomSheetRef = useRef(null);
+
+    useEffect(() => {
+        const unsub = onSnapshot(
+            query(collection(db, "staffRoles")),
+            (snapshot) => {
+                setRoles(snapshot.docs.map((doc) => doc.data()));
+            }
+        );
+        return () => unsub();
+    }, []);
+
+    useEffect(() => {
+        const unsub = onSnapshot(
+            query(collection(db, "branches")),
+            (snapshot) => {
+                setBranches(snapshot.docs.map((doc) => doc.data()));
+            }
+        );
+        return () => unsub();
+    }, []);
 
     const isValidName = (name) => {
         if (name === '') {
@@ -225,7 +251,7 @@ export default function AddStaffScreen() {
             );
             setCashierImage(userImage);
 
-            await setDoc(doc(collection(db, "cashier"), user.uid), {
+            await setDoc(doc(collection(db, "staffs"), user.uid), {
                 fullName: name,
                 phoneNumber: phoneNumber,
                 birthday: new Date(birthday),
@@ -233,7 +259,9 @@ export default function AddStaffScreen() {
                 idCard: idCard,
                 email: email,
                 gender: gender,
-                cashierImage: userImage,
+                staffImage: userImage,
+                role: role,
+                branch: branch,
             });
 
             await setDoc(doc(collection(db, "users"), user.uid), {
@@ -242,14 +270,14 @@ export default function AddStaffScreen() {
                 email: email,
                 fullName: name,
                 password: password,
-                role: 'cashier',
+                role: role.roleType,
                 userId: user.uid,
                 userImage: cashierImage,
             });
 
             const userId = user.uid;
-            await updateDoc(doc(db, "cashier", userId), {
-                cashierId: userId,
+            await updateDoc(doc(db, "staffs", userId), {
+                staffId: userId,
             });
 
             const newNotificationRef = doc(collection(db, "notifications"));
@@ -280,6 +308,14 @@ export default function AddStaffScreen() {
 
     const hideSelectBranchModal = () => {
         setModalSelectBranchVisible(false);
+    };
+
+    const showSelectRoleModal = () => {
+        setModalSelectRoleVisibile(true);
+    };
+
+    const hideSelectRoleModal = () => {
+        setModalSelectRoleVisibile(false);
     };
 
     const toggleDatePicker = () => {
@@ -408,15 +444,16 @@ export default function AddStaffScreen() {
                                 onChange={onChange}
                             />
                         </View>}
-                    <TextBox text={'Số CMND/CCCD'} value={idCard} setValue={setIdCard} handleValidInput={isValidIdCard} />
+                    <TextBox text={'Số CMND/CCCD'} value={idCard} keyboardType={'number-pad'} setValue={setIdCard} handleValidInput={isValidIdCard} />
                     <TextBox text={'Email'} value={email} setValue={setEmail} handleValidInput={isValidEmail} />
                     <TextBox text={'Password'} value={password} setValue={setPassword} handleValidInput={isValidPassword} />
                 </View>
                 <View>
                     <Text style={styles.topText}>Thông tin công việc</Text>
-                    <ButtonBox text={'Vai trò'} placeholder={'Tên vai trò'} />
-                    <ButtonBox text={'Chi nhánh làm việc'} placeholder={'Tên chi nhánh'} onPress={showSelectBranchModal} />
-                    <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} />
+                    <ButtonBox text={'Vai trò'} placeholder={role.roleName ? role.roleName : 'Vai Trò'} onPress={showSelectRoleModal} />
+                    <SelectRoleModal visible={modalSelectRoleVisibile} onClose={hideSelectRoleModal} roles={roles} setRole={setRole} />
+                    <ButtonBox text={'Chi nhánh làm việc'} placeholder={branch.branchName ? branch.branchName : 'Tên chi nhánh'} onPress={showSelectBranchModal} />
+                    <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} branches={branches} setBranch={setBranch} />
                 </View>
                 <View style={{ marginBottom: '10%' }}>
                     {<Pressable
