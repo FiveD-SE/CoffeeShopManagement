@@ -77,16 +77,16 @@ const BillingStack = () => (
             options={{ headerShown: false }}
         />
         <Stack.Screen
-                name="AdminDetailBilling"
-                component={DetailBillingScreen}
-                options={{
-                    headerTitle: "Chi tiết hoá đơn",
-                    headerLeftContainerStyle: {
-                        paddingLeft: "5%",
-                    },
-                    headerLeft: () => <HeaderBackButton />,
-                }}
-            />
+            name="AdminDetailBilling"
+            component={DetailBillingScreen}
+            options={{
+                headerTitle: "Chi tiết hoá đơn",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
     </Stack.Navigator>
 );
 
@@ -426,6 +426,18 @@ const HomeStack = () => (
             component={AdminProfileDetail}
             options={{
                 headerTitle: "Chỉnh sửa thông tin",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+
+        <Stack.Screen
+            name="DetailBillingScreen"
+            component={DetailBillingScreen}
+            options={{
+                headerTitle: "Chi tiết đơn hàng",
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },

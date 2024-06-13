@@ -37,9 +37,6 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
 
     const avatar = require("../../../assets/vietnam.png");
     const flag = require("../../../assets/vietnam.png");
-    //
-
-    // UserEditProfileScreen.js
 
     const navigateToProfileDetails = async () => {
         try {
@@ -53,14 +50,12 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
             );
 
             if (docSnap.exists()) {
-                // Update Firestore
                 await updateDoc(docRef, {
-                    fullName: name, // Use the state values
+                    fullName: name,
                     phoneNumber: phoneNumber,
                     userImage: downloadURL,
                 });
 
-                // Update Redux with ONLY the changed fields
                 saveUserData({
                     ...userData,
                     name: name,
@@ -84,7 +79,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
         const { status } =
             await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== "granted") {
-            alert("Sorry, we need camera roll permissions to make this work!");
+            alert("Xin lỗi, chúng tôi cần quyền truy cập vào thư viện ảnh.");
             return;
         }
         const result = await ImagePicker.launchImageLibraryAsync({
@@ -108,7 +103,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                                 paddingTop: 60,
                                 paddingBottom: 50,
                                 alignContent: "center",
-                                alignItems: "center", // Add alignItems: 'center'
+                                alignItems: "center",
                             },
                         ]}
                     >
@@ -133,8 +128,8 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <TextInput
                                 style={styles.text}
-                                onChangeText={setName} // Cập nhật state name
-                                value={name} // Hiển thị giá trị hiện tại của state name
+                                onChangeText={setName}
+                                value={name}
                             />
                         </View>
                     </View>
@@ -158,8 +153,8 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                             <Text style={styles.text}>+84 </Text>
                             <TextInput
                                 style={styles.text}
-                                onChangeText={setPhoneNumber} // Cập nhật state phoneNumber
-                                value={phoneNumber} // Hiển thị giá trị hiện tại của state phoneNumber
+                                onChangeText={setPhoneNumber}
+                                value={phoneNumber}
                             />
                         </View>
                     </View>
@@ -283,12 +278,12 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = (state) => {
     return {
-        userData: state.auth.userData, // Get user data from the 'user' state
+        userData: state.auth.userData,
     };
 };
 
 const mapDispatchToProps = {
-    saveUserData, // Save user data
+    saveUserData,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfileDetails);

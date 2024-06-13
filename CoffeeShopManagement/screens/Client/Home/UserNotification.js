@@ -12,13 +12,16 @@ import {
     query,
     onSnapshot,
     getDocs,
-    doc, updateDoc
+    doc, updateDoc,
+    where
 } from "firebase/firestore";
 import NotificationCard from "../../../components/Staff/NotificationCard";
 import { db } from "../../../services/firebaseService";
 import { useNavigation } from "@react-navigation/native";
 
-function AdminNotification() {
+import { connect } from "react-redux";
+
+function UserNotification({ userData }) {
     const navigation = useNavigation();
     const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
     const [notifications, setNotifications] = useState([]);
@@ -26,15 +29,15 @@ function AdminNotification() {
     const selectionButtons = ["Tất cả", "Chưa đọc", "Đã đọc"];
 
     useEffect(() => {
-        const fetchNotifications = (async () => {
-            const notificationCollection = collection(db, 'admin_notifications');
-            const notificationSnapshot = await getDocs(query(notificationCollection));
+        const fetchNotifications = async () => {
+            const notificationCollection = collection(db, 'user_notifications');
+            const notificationQuery = query(notificationCollection, where("userId", "==", userData.id));
+            const notificationSnapshot = await getDocs(notificationQuery);
             const notificationListData = notificationSnapshot.docs.map((doc) => ({
                 ...doc.data(),
             }));
             setNotifications(notificationListData);
-        });
-
+        };
         fetchNotifications();
     }, [notifications]);
 
@@ -69,7 +72,7 @@ function AdminNotification() {
 
     const handleOnPressNotification = async (item) => {
         try {
-            const notificationRef = doc(db, 'admin_notifications', item.admin_notificationId);
+            const notificationRef = doc(db, 'user_notifications', item.user_notificationId);
 
             await updateDoc(notificationRef, { notificationStatus: true });
 
@@ -80,7 +83,7 @@ function AdminNotification() {
                 const docs = querySnapshot.docs;
                 docs.forEach((doc) => {
                     if (doc.id === item.orderId && item.notificationType === 2) {
-                        navigation.navigate("DetailBillingScreen", {
+                        navigation.navigate("DetailBilling", {
                             orderData: doc.data(),
                         });
                     }
@@ -121,7 +124,11 @@ function AdminNotification() {
     );
 }
 
-export default AdminNotification;
+const mapStateToProps = (state) => ({
+    userData: state.auth.userData,
+});
+
+export default connect(mapStateToProps)(UserNotification);
 
 const styles = StyleSheet.create({
     container: {

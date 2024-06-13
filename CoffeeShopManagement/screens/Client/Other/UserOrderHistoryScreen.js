@@ -22,6 +22,13 @@ const OrderHistory = ({ userData }) => {
             const ordersCollection = collection(db, 'orders');
             const orderSnapshot = await getDocs(query(ordersCollection, where("userId", "==", userData.id)));
             const orderListData = orderSnapshot.docs.map(doc => doc.data());
+
+            invoicesListData.sort((a, b) => {
+                const dateA = new Date(a.orderDate.seconds * 1000);
+                const dateB = new Date(b.orderDate.seconds * 1000);
+                return dateB - dateA;
+            });
+
             setOrderHistoryData(orderListData);
         }
         fetchOrdersData();

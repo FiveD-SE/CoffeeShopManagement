@@ -84,7 +84,7 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
     const goToSearchScreen = () => navigation.navigate("SearchScreen");
     const goToBestSellerScreen = () => navigation.navigate("BestSeller");
     const goToNotificationScreen = () =>
-        navigation.navigate("CashierNotification");
+        navigation.navigate("UserNotification");
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("vi-VN", {

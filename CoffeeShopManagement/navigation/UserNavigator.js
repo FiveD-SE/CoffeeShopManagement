@@ -38,7 +38,7 @@ import MembershipTier from "../screens/Client/Coupons/UserMembershipTierScreen";
 import History from "../screens/Client/Coupons/UserExchangeHistoryScreen";
 import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
 import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
-import CashierNotification from "../screens/Staff/CashierNotification";
+import UserNotification from "../screens/Client/Home/UserNotification";
 import UserChooseAddressScreen from "../screens/Client/PlaceOrder/UserChooseAddressScreen";
 import ConfirmPassword from "../screens/Client/ConfirmPassword";
 import StorePolicyScreen from "../screens/Client/Other/StorePolicyScreen";
@@ -71,7 +71,7 @@ const HomeStack = ({ navigation, route }) => {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
-		} else if (routeName === "CashierNotification") {
+		} else if (routeName === "UserNotification") {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
@@ -239,10 +239,22 @@ const HomeStack = ({ navigation, route }) => {
 				}}
 			/>
 			<Stack.Screen
-				name="CashierNotification"
-				component={CashierNotification}
+				name="UserNotification"
+				component={UserNotification}
 				options={{
 					headerTitle: "Thông báo",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+
+			<Stack.Screen
+				name="DetailBilling"
+				component={DetailBilling}
+				options={{
+					headerTitle: "Chi tiết đơn hàng",
 					headerLeftContainerStyle: {
 						paddingLeft: "5%",
 					},
