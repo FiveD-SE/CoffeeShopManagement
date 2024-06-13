@@ -279,6 +279,7 @@ const styles = StyleSheet.create({
     fontFamily: "lato-bold",
   },
   labelItem: {
+    backgroundColor: "#FFFFFF",
     flexDirection: "column",
     alignItems: "flex-start",
     justifyContent: "space-between",

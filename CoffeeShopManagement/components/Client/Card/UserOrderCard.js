@@ -1,48 +1,88 @@
 import React from "react";
 import { Pressable, StyleSheet, Text, View, Platform } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-const DeliveredOrderItem = ({ orderId, status, total, onPress }) => {
-	let statusColor = "#3a3a3a";
-	let statusIndicatorColor = "rgba(0, 0, 0, 0.1)";
+const UserOrderCard = ({ orderId, status, total, onPress }) => {
 
-	if (status === "Đang giao") {
-		statusColor = "#FFA730";
-		statusIndicatorColor = "rgba(255, 167, 48, 0.10)";
-	} else if (status === "Đã giao") {
-		statusColor = "#4ECB71";
-		statusIndicatorColor = "rgba(78, 203, 113, 0.10)";
-	} else if (status === "Đã huỷ") {
-		statusColor = "#F61A3D";
-		statusIndicatorColor = "rgba(246, 26, 61, 0.10)";
-	}
+	const setOrderStatusIcon = (status) => {
+		switch (status) {
+			case 1:
+				return "shipping-fast";
+			case 2:
+				return "check-circle";
+			case 3:
+				return "times-circle";
+			default:
+				return "";
+		}
+	};
+
+	const getStatusColors = (status) => {
+		let backgroundColor, textColor;
+
+		switch (status) {
+			case 1:
+				backgroundColor = '#C3E2C2';
+				textColor = '#527853';
+				break;
+			case 2:
+				backgroundColor = '#F9E8D9';
+				textColor = '#EE7214';
+				break;
+			case 3:
+				backgroundColor = '#FFCAC2';
+				textColor = '#C81912';
+				break;
+			default:
+				break;
+		}
+
+		return { backgroundColor, textColor };
+	};
+
+	const formatCurrency = (price) => {
+		return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+	};
+
+	const setOrderStatus = (status) => {
+		switch (status) {
+			case 1:
+				return "Đang giao";
+			case 2:
+				return "Đã hoàn thành";
+			case 3:
+				return "Đã hủy";
+			default:
+				return;
+		}
+	};
+
+	const { backgroundColor, textColor } = getStatusColors(status);
+
 	return (
 		<Pressable style={styles.orderContainer} onPress={onPress}>
 			<View style={styles.orderDetails}>
 				<View style={styles.orderId}>
 					<Text style={styles.orderIdText}>Mã đơn hàng:</Text>
-					<Text style={styles.orderIdValue}>{orderId}</Text>
+					<Text style={styles.orderIdValue}>#{(orderId.substring(0, 6)).toUpperCase()}</Text>
 				</View>
 				<View style={styles.orderStatus}>
 					<Text style={styles.orderStatusText}>Trạng thái:</Text>
 					<View
 						style={[
 							styles.statusIndicator,
-							{ backgroundColor: statusIndicatorColor },
+							{ backgroundColor: backgroundColor },
 						]}
 					>
-						<Text style={[styles.statusText, { color: statusColor }]}>
-							{status}
-						</Text>
+						<FontAwesome5 name={setOrderStatusIcon(status)} size={20} color={textColor} />
+						<Text style={[styles.statusText, { color: textColor }]}>  {setOrderStatus(status)}</Text>
 					</View>
 				</View>
 				<View style={styles.orderTotal}>
 					<Text style={styles.orderTotalText}>Tổng tiền:</Text>
 					<Text style={styles.orderTotalValue}>
-						{total.toLocaleString("vi-VN", {
-							style: "currency",
-							currency: "VND",
-						})}
+						{formatCurrency(total)} VND
 					</Text>
 				</View>
 			</View>
@@ -54,7 +94,8 @@ const DeliveredOrderItem = ({ orderId, status, total, onPress }) => {
 const styles = StyleSheet.create({
 	orderContainer: {
 		backgroundColor: "#FFFFFF",
-		padding: "5%",
+		paddingVertical: "3%",
+		paddingHorizontal: "5%",
 		borderRadius: 20,
 		flexDirection: "row",
 		alignItems: "center",
@@ -83,13 +124,13 @@ const styles = StyleSheet.create({
 	},
 	orderIdText: {
 		color: "#3a3a3a",
-		fontSize: 16,
-		fontWeight: "500",
+		fontFamily: "lato-bold",
+		fontSize: 18,
 	},
 	orderIdValue: {
 		color: "#3a3a3a",
-		fontSize: 16,
-		fontWeight: "500",
+		fontFamily: "lato-bold",
+		fontSize: 18,
 		marginLeft: "2%",
 	},
 	orderStatus: {
@@ -99,20 +140,22 @@ const styles = StyleSheet.create({
 	},
 	orderStatusText: {
 		color: "#3a3a3a",
-		fontSize: 12,
-		fontWeight: "600",
+		fontFamily: "lato-bold",
+		fontSize: 18,
 	},
 	statusIndicator: {
-		backgroundColor: "rgba(255, 167, 48, 0.10)",
 		paddingVertical: "1%",
 		paddingHorizontal: "4%",
 		marginLeft: "2%",
 		borderRadius: 30,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	statusText: {
 		color: "#FFA730",
-		fontSize: 12,
-		fontWeight: "500",
+		fontFamily: "lato-regular",
+		fontSize: 18,
 	},
 	orderTotal: {
 		flexDirection: "row",
@@ -121,15 +164,15 @@ const styles = StyleSheet.create({
 	},
 	orderTotalText: {
 		color: "#3a3a3a",
-		fontSize: 12,
-		fontWeight: "600",
+		fontFamily: "lato-bold",
+		fontSize: 18,
 	},
 	orderTotalValue: {
 		color: "#3a3a3a",
-		fontSize: 12,
-		fontWeight: "400",
+		fontFamily: "lato-bold",
+		fontSize: 18,
 		marginLeft: "5%",
 	},
 });
 
-export default DeliveredOrderItem;
+export default UserOrderCard;

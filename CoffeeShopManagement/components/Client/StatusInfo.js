@@ -25,12 +25,12 @@ const styles = StyleSheet.create({
 		marginTop: "2%",
 	},
 	labelText: {
-		fontSize: 12,
+		fontSize: 16,
 		fontWeight: "500",
 	},
 	statusText: {
 		marginLeft: "2%",
-		fontSize: 12,
+		fontSize: 16,
 		fontWeight: "600",
 	},
 });
