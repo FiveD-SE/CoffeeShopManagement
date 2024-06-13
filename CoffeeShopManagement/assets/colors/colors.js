@@ -10,4 +10,9 @@ export const colors = {
 	grey_10: "#F6F6F6",
 	success: "#4ECB71",
 	error: "#F61A3D",
+	bronze: "#CD7F32",
+	silver: "#A9A9A9",
+	gold: "#FFCE45",
+	diamond: "#34ebc9",
+	transparent: "transparent",
 };

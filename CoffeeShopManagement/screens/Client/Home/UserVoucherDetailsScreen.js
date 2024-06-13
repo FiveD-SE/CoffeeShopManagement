@@ -23,12 +23,13 @@ const UserVoucherDetailsScreen = ({ route, userData, updateUserCredit }) => {
 	const navigation = useNavigation();
 
 	const { voucherDetails, type } = route.params;
-	console.log("voucherDetails", voucherDetails);
 
 	const handleExchangeVoucher = async () => {
 		try {
 			const userVoucherRef = doc(db, "userVouchers", userData.id);
 			const userVoucherSnap = await getDoc(userVoucherRef);
+
+			const dateCreated = new Date().toISOString();
 
 			if (userVoucherSnap.exists()) {
 				const userVoucherData = userVoucherSnap.data();
@@ -40,7 +41,7 @@ const UserVoucherDetailsScreen = ({ route, userData, updateUserCredit }) => {
 				if (voucherIndex >= 0) {
 					vouchers[voucherIndex].quantity += 1;
 				} else {
-					vouchers.push({ id: voucherDetails.id, quantity: 1 });
+					vouchers.push({ id: voucherDetails.id, quantity: 1, dateCreated });
 				}
 
 				await updateDoc(userVoucherRef, {
@@ -49,7 +50,7 @@ const UserVoucherDetailsScreen = ({ route, userData, updateUserCredit }) => {
 			} else {
 				await setDoc(userVoucherRef, {
 					userId: userData.id,
-					voucherId: [{ id: voucherDetails.id, quantity: 1 }],
+					voucherId: [{ id: voucherDetails.id, quantity: 1, dateCreated }],
 				});
 			}
 
@@ -104,6 +105,11 @@ const UserVoucherDetailsScreen = ({ route, userData, updateUserCredit }) => {
 					<View style={styles.pointContainer}>
 						<Text style={styles.point}>
 							{voucherDetails.voucherExchangePrice} điểm
+						</Text>
+					</View>
+					<View style={styles.expirationDateContainer}>
+						<Text style={styles.expirationDateText}>
+							Hết hạn: {voucherDetails.expirationDate}
 						</Text>
 					</View>
 					<View style={styles.detailsContainer}>
@@ -163,19 +169,34 @@ const styles = StyleSheet.create({
 	title: {
 		color: "#3a3a3a",
 		fontSize: 20,
-		lineHeight: 24,
+		lineHeight: 30,
 		fontFamily: "lato-bold",
 	},
 	pointContainer: {
+		marginTop: "4%",
 		alignSelf: "flex-start",
 		backgroundColor: "rgba(78, 203, 113, 0.10)",
 		paddingHorizontal: "6%",
 		paddingVertical: "2%",
 		borderRadius: 20,
-		marginTop: "6%",
 	},
 	point: {
 		color: "#4ECB71",
+		fontSize: 14,
+		fontFamily: "lato-regular",
+	},
+	expirationDateContainer: {
+		marginTop: "4%",
+		backgroundColor: colors.grey_10,
+		paddingVertical: "2%",
+		paddingHorizontal: "6%",
+		borderRadius: 20,
+		borderWidth: 1,
+		borderColor: colors.grey_50,
+		alignSelf: "flex-start",
+	},
+	expirationDateText: {
+		color: colors.grey_100,
 		fontSize: 14,
 		fontFamily: "lato-regular",
 	},
