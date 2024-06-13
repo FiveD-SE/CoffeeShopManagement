@@ -77,7 +77,7 @@ const AdminAddVoucherScreen = () => {
   };
 
   const handleSaveVoucherToFirebase = async () => {
-    if (voucherDescription === "" || rankUser === null || voucherType === null || daySelect === null || !minimumOrderPrice) {
+    if (rankUser === null || voucherType === null || daySelect === null || !minimumOrderPrice) {
       Toast.show({
         type: "error",
         text1: "Lỗi",

@@ -2,10 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { colors } from "../../../assets/colors/colors";
 
-const TotalOrderList = ({ orderInformation, totalDiscount }) => {
-	const totalPrice = orderInformation.reduce((accumulator, currentItem) => {
-		return accumulator + currentItem.totalPrice * currentItem.quantity;
-	}, 0);
+const TotalOrderList = ({ totalPrice, deliveryfee, productDiscount, deliveryDiscount }) => {
 
 	const selectedProductList = [
 		{
@@ -14,11 +11,15 @@ const TotalOrderList = ({ orderInformation, totalDiscount }) => {
 		},
 		{
 			title: "Phí giao hàng:",
-			price: 0,
+			price: deliveryfee,
 		},
 		{
-			title: "Chiết khấu:",
-			price: totalDiscount,
+			title: "Giảm giá sản phẩm:",
+			price: -productDiscount,
+		},
+		{
+			title: "Giảm giá phí vận chuyển:",
+			price: -deliveryDiscount,
 		},
 	];
 
@@ -30,12 +31,22 @@ const TotalOrderList = ({ orderInformation, totalDiscount }) => {
 	};
 
 	const renderItem = () => {
-		return selectedProductList.map((item, index) => (
-			<View style={styles.itemContainer} key={index}>
-				<Text style={styles.title}>{item.title}</Text>
-				<Text style={styles.price}>{formatCurrency(item.price)}</Text>
-			</View>
-		));
+		return selectedProductList.map((item, index) => {
+			const isDiscountProduct = item.title === "Giảm giá sản phẩm:";
+			const isDiscountDelivery = item.title === "Giảm giá phí vận chuyển:";
+			const isDiscount = isDiscountProduct || isDiscountDelivery;
+
+			return (
+				<View style={styles.itemContainer} key={index}>
+					<Text style={[styles.title, isDiscount && styles.discountTitle]}>
+						{item.title}
+					</Text>
+					<Text style={[styles.price, isDiscount && styles.discountTitle]}>
+						{formatCurrency(item.price)}
+					</Text>
+				</View>
+			);
+		});
 	};
 	return <View style={styles.container}>{renderItem()}</View>;
 };
@@ -72,4 +83,9 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		fontFamily: "lato-regular",
 	},
+	discountTitle: {
+		color: colors.grey_100,
+		fontSize: 14,
+		fontFamily: "lato-regular",
+	}
 });

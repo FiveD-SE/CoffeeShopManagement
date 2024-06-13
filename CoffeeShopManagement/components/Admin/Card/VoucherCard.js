@@ -20,6 +20,7 @@ const VoucherCard = ({ itemName, imageSource, status, expiryDate, minimumPrice }
         });
         return formatter.format(price);
     };
+    
     return (
         <View>
             <View style={styles.container} onLongPress={showOptionModal}>
