@@ -6,6 +6,7 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import { collection, getDocs, query } from 'firebase/firestore';
 import { db } from '../../services/firebaseService';
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 export default function AdminBillingScreen() {
   const navigation = useNavigation();
@@ -23,6 +24,12 @@ export default function AdminBillingScreen() {
         id: doc.id,
         ...doc.data()
       }));
+
+      invoicesListData.sort((a, b) => {
+        const dateA = new Date(a.orderDate.seconds * 1000);
+        const dateB = new Date(b.orderDate.seconds * 1000);
+        return dateB - dateA;
+      });
 
       const usersCollection = collection(db, 'users');
       const usersSnapshot = await getDocs(query(usersCollection));
@@ -81,7 +88,8 @@ export default function AdminBillingScreen() {
           </View>
           <View style={styles.row}>
             <View style={[styles.labelStatus, { backgroundColor }]}>
-              <Text style={[styles.itemStatus, { color: textColor }]}>{setOrderStatus(item.orderState)}</Text>
+              <FontAwesome5 name={setOrderStatusIcon(item.orderState)} size={20} color={textColor} />
+              <Text style={[styles.itemStatus, { color: textColor }]}>  {setOrderStatus(item.orderState)}</Text>
             </View>
             <View style={{ flexDirection: 'row' }}>
               <Text style={styles.itemPrice}>{formatCurrency(Number(item.orderTotalPrice))}</Text>
@@ -106,6 +114,19 @@ export default function AdminBillingScreen() {
     }
   };
 
+  const setOrderStatusIcon = (status) => {
+    switch (status) {
+      case 1:
+        return "shipping-fast";
+      case 2:
+        return "check-circle";
+      case 3:
+        return "times-circle";
+      default:
+        return "";
+    }
+  };
+
   const formatCurrency = (price) => {
     return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
@@ -117,7 +138,7 @@ export default function AdminBillingScreen() {
   ];
 
   const handleSearch = (query) => {
-    const filteredData = invoiceData.filter(item => item.orderId.toLowerCase().includes(query.toLowerCase()) || item.orderOwner.toLowerCase().includes(query.toLowerCase()));
+    const filteredData = invoiceData.filter(item => (item.orderId.substring(0, 6)).toLowerCase().includes(query.toLowerCase()) || item.userName.toLowerCase().includes(query.toLowerCase()));
     setFilteredInvoiceData(filteredData);
   };
 
@@ -231,26 +252,31 @@ const styles = StyleSheet.create({
   selectionButtonContainer: {
     flexDirection: 'row',
     marginBottom: '5%',
+    gap: 10,
   },
   selectionButton: {
-    flex: 1,
-    padding: '3%',
-    borderRadius: 10,
-    marginEnd: '5%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingVertical: "2%",
+    paddingHorizontal: "5%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    paddingHorizontal: "6%",
+    backgroundColor: '#FFFFFF',
+    borderColor: '#9D9D9D',
+    borderWidth: 1,
   },
   selectedSelectionButton: {
-    backgroundColor: '#D8EFD3',
+    borderColor: '#006C5E',
+    backgroundColor: '#006C5E'
   },
   selectionButtonText: {
+    color: '#9D9D9D',
+    fontFamily: "lato-regular",
     fontSize: 16,
-    color: '#151515',
-    fontFamily: 'lato-regular',
   },
   selectedSelectionButtonText: {
-    color: '#006C5E',
-    fontFamily: 'lato-bold',
+    color: 'white',
+    fontFamily: "lato-bold",
   },
   labelItem: {
     flexDirection: "column",
@@ -258,12 +284,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 15,
     paddingHorizontal: 15,
-    backgroundColor: "#fff",
     borderWidth: 1,
-    borderColor: "#EBEBEB",
+    borderColor: "#B3A398",
     borderRadius: 10,
     marginBottom: 10,
-    gap: 20,
+    gap: 15,
   },
   row: {
     flexDirection: "row",
@@ -313,6 +338,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     alignSelf: "center",
+    flexDirection: "row",
     borderRadius: 10,
   },
   upTrendText: {

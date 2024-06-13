@@ -1,10 +1,7 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
 import React from 'react';
-import Icon from 'react-native-vector-icons/Entypo';
-import { useNavigation } from '@react-navigation/native';
 
 export default function DetailBillingScreen({ route }) {
-  const navigation = useNavigation();
   const { orderData } = route.params;
 
   const totalPrice = orderData.orderTotalPrice + orderData.deliveryFee - orderData.orderTotalDiscount;

@@ -20,8 +20,10 @@ import { colors } from "../../../assets/colors/colors";
 import {
 	addDoc,
 	collection,
+	doc,
 	getDocs,
 	query,
+	setDoc,
 	updateDoc,
 	where,
 } from "firebase/firestore";
@@ -339,8 +341,34 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 					orderDate: new Date(),
 					orderState: 1,
 				});
-
 				await updateDoc(docRef, { orderId: docRef.id });
+
+				const userNotificationRef = doc(collection(db, "user_notifications"));
+				const user_notificationId = userNotificationRef.id;
+				const user_notification = {
+					user_notificationId,
+					notificationTitle: "Đơn hàng mới",
+					notificationContent: "Đặt hàng thành công!",
+					notificationType: 2,
+					notificationStatus: false,
+					orderId: docRef.id,
+					notificationCreatedDate: new Date(),
+					userId: userData.id,
+				};
+				await setDoc(userNotificationRef, user_notification);
+
+				const adminNotificationRef = doc(collection(db, "admin_notifications"));
+				const admin_notificationId = adminNotificationRef.id;
+				const admin_notification = {
+					admin_notificationId,
+					notificationTitle: "Đơn hàng mới",
+					notificationContent: "Có đơn hàng mới cần xử lý!",
+					notificationType: 2,
+					notificationStatus: false,
+					orderId: docRef.id,
+					notificationCreatedDate: new Date(),
+				};
+				await setDoc(adminNotificationRef, admin_notification);
 
 				showSuccessModal();
 			} catch (e) {

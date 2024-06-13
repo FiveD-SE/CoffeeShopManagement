@@ -61,7 +61,7 @@ export default function SignUpScreen() {
                 const userCredential = await createUserWithEmailAndPassword(
                     auth,
                     email,
-                    password 
+                    password
                 );
                 const user = userCredential.user;
                 const storageRef = ref(storage, "avatars/default.png");
@@ -83,21 +83,33 @@ export default function SignUpScreen() {
                     userId: userId,
                 });
 
-                const newNotificationRef = doc(collection(db, "notifications"));
-                const notificationId = newNotificationRef.id;
-
-                const notification = {
-                    notificationId,
+                const userNotificationRef = doc(collection(db, "user_notifications"));
+                const user_notificationId = userNotificationRef.id;
+                const user_notification = {
+                    user_notificationId,
                     notificationContent: "Tạo tài khoản thành công!",
                     notificationTitle: "Chào mừng bạn đến với Enigma",
                     notificationCreatedDate: new Date(),
                     notificationStatus: false,
                     notificationType: 1,
-                    productOrder: [],
+                    orderId: null,
                     userId: user.uid,
                 };
+                await setDoc(userNotificationRef, user_notification);
 
-                await setDoc(newNotificationRef, notification);
+                const adminNotificationRef = doc(collection(db, "admin_notifications"));
+                const adminNotificationId = adminNotificationRef.id;
+                const adminNotification = {
+                    adminNotificationId,
+                    notificationContent: `Người dùng ${fullName} đã đăng ký tài khoản`,
+                    notificationTitle: "Thông báo mới",
+                    notificationCreatedDate: new Date(),
+                    notificationStatus: false,
+                    notificationType: 1,
+                    orderId: null,
+                    userId: user.uid,
+                };
+                await setDoc(adminNotificationRef, adminNotification);
 
                 await sendEmailVerification(user);
 
