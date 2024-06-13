@@ -31,12 +31,12 @@ const styles = StyleSheet.create({
 	},
 	titleText: {
 		color: "#3a3a3a",
-		fontSize: 12,
+		fontSize: 16,
 		fontWeight: "600",
 	},
 	infoText: {
 		color: "rgba(58, 58, 58, 0.5)",
-		fontSize: 12,
+		fontSize: 16,
 		fontWeight: "500",
 	},
 	highlightedText: {

@@ -43,7 +43,7 @@ export default function DetailBillingScreen({ route }) {
             </View>
             <View style={styles.infoItem}>
               <Text style={styles.titleText}>Địa chỉ:  </Text>
-              <Text style={styles.contentText} numberOfLines={2}>
+              <Text style={styles.contentText} numberOfLines={3}>
                 {orderData.deliveryAddress.street}, {orderData.deliveryAddress.wardName}, {orderData.deliveryAddress.districtName}, {orderData.deliveryAddress.provinceName}
               </Text>
             </View>
@@ -65,52 +65,35 @@ export default function DetailBillingScreen({ route }) {
                   <Text style={styles.titleText}>Số điện thoại:  </Text>
                   <Text style={styles.contentText}>0123456789</Text>
                 </View>
-                <View style={styles.infoItem}>
-                  <Text style={styles.titleText}>Mã gửi hàng:  </Text>
-                  <Text style={styles.contentText}>#####</Text>
-                </View>
-                <View style={styles.infoItem}>
-                  <Text style={styles.titleText}>Mã phiếu gửi:  </Text>
-                  <Text style={styles.contentText}>#####</Text>
-                </View>
               </>
-            ) : (
-              <>
-                <View style={styles.infoItem}>
-                  <Text style={styles.titleText}>Mã gửi hàng:  </Text>
-                  <Text style={styles.contentText}>#####</Text>
-                </View>
-                <View style={styles.infoItem}>
-                  <Text style={styles.titleText}>Mã phiếu gửi:  </Text>
-                  <Text style={styles.contentText}>#####</Text>
-                </View>
-              </>
-            )}
+            ) : null}
+            <View style={styles.infoItem}>
+              <Text style={styles.titleText}>Mã gửi hàng:  </Text>
+              <Text style={styles.contentText}>#####</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Text style={styles.titleText}>Mã phiếu gửi:  </Text>
+              <Text style={styles.contentText}>#####</Text>
+            </View>
           </View>
         </View>
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeader}>
-            <Image source={require('../../assets/delivery_icon.png')} />
-            <Text style={styles.sectionText}>BrandName Voucher</Text>
+            <Image source={require('../../assets/person_icon.png')} />
+            <Text style={styles.sectionText}>Chi tiết thanh toán</Text>
           </View>
-          <View style={styles.sectionContainer}>
-            <View style={styles.sectionHeader}>
-              <Image source={require('../../assets/person_icon.png')} />
-              <Text style={styles.sectionText}>Chi tiết thanh toán</Text>
+          <View style={styles.infoWrapper}>
+            <View style={styles.totalItem}>
+              <Text style={styles.titleText}>Tổng tiền hàng:  </Text>
+              <Text style={styles.contentText}>{formatCurrency(orderData.orderTotalPrice)} VND</Text>
             </View>
-            <View style={styles.totalWrapper}>
-              <View style={styles.totalItem}>
-                <Text style={styles.titleText}>Tổng tiền hàng:  </Text>
-                <Text style={styles.contentText}>{formatCurrency(orderData.orderTotalPrice)} VND</Text>
-              </View>
-              <View style={styles.totalItem}>
-                <Text style={styles.titleText}>Tổng tiền phí vận chuyển:  </Text>
-                <Text style={styles.contentText}>{formatCurrency(orderData.deliveryFee)} VND</Text>
-              </View>
-              <View style={styles.totalItem}>
-                <Text style={styles.titleText}>Giảm giá phí vận chuyển:  </Text>
-                <Text style={styles.contentText}>{formatCurrency(orderData.orderTotalDiscount)} VND</Text>
-              </View>
+            <View style={styles.totalItem}>
+              <Text style={styles.titleText}>Tổng tiền phí vận chuyển:  </Text>
+              <Text style={styles.contentText}>{formatCurrency(orderData.deliveryFee)} VND</Text>
+            </View>
+            <View style={styles.totalItem}>
+              <Text style={styles.titleText}>Giảm giá phí vận chuyển:  </Text>
+              <Text style={styles.contentText}>{formatCurrency(orderData.orderTotalDiscount)} VND</Text>
             </View>
           </View>
         </View>
@@ -118,6 +101,7 @@ export default function DetailBillingScreen({ route }) {
           <Text style={styles.totalAmount}>Tổng tiền:</Text>
           <Text style={styles.totalAmount}>{formatCurrency(totalPrice)} VND</Text>
         </View>
+
       </ScrollView>
     </View>
   );
@@ -127,20 +111,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-  },
-  topApp: {
-    marginTop: '10%',
-    backgroundColor: '#fff',
-    padding: '3%',
-    borderBottomWidth: 1,
-    borderColor: '#cbcbd4',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  orderText: {
-    fontSize: 18,
-    fontFamily: 'lato-bold',
-    paddingStart: '20%',
   },
   section: {
     flex: 1,
@@ -152,6 +122,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: '2%',
     marginTop: '2%',
   },
@@ -160,8 +131,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   productImage: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     borderRadius: 10,
   },
   productInfo: {
@@ -188,9 +159,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   infoWrapper: {
-    backgroundColor: '#f1f7f3',
     padding: '3%',
-    borderRadius: 10,
   },
   infoItem: {
     paddingBottom: '1%',
@@ -213,11 +182,6 @@ const styles = StyleSheet.create({
     fontFamily: 'lato-bold',
     color: '#151515',
     marginStart: '3%',
-  },
-  totalWrapper: {
-    backgroundColor: '#f1f7f3',
-    padding: '3%',
-    borderRadius: 10,
   },
   totalItem: {
     paddingBottom: '1%',

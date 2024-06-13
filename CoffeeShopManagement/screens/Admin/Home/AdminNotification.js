@@ -76,18 +76,20 @@ function AdminNotification() {
             const invoicesCollection = collection(db, 'orders');
             const invoiceQuery = query(invoicesCollection);
 
-            const unsubscribe = onSnapshot(invoiceQuery, (querySnapshot) => {
-                const docs = querySnapshot.docs;
-                docs.forEach((doc) => {
-                    if (doc.id === item.orderId && item.notificationType === 2) {
-                        navigation.navigate("DetailBillingScreen", {
-                            orderData: doc.data(),
-                        });
-                    }
+            if (item.notificationType === 2) {
+                const unsubscribe = onSnapshot(invoiceQuery, (querySnapshot) => {
+                    const docs = querySnapshot.docs;
+                    docs.forEach((doc) => {
+                        if (doc.id === item.orderId) {
+                            navigation.navigate("DetailBillingScreen", {
+                                orderData: doc.data(),
+                            });
+                        }
+                    });
                 });
-            });
 
-            return unsubscribe;
+                return unsubscribe;
+            }
         } catch (error) {
             console.error("Error updating notification status: ", error);
         }

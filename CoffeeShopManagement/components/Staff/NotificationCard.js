@@ -22,7 +22,7 @@ const NotificationCard = ({ item, onPress }) => {
                     {item.notificationContent}
                 </Text>
             </View>
-            {item.notificationStatus ? <></> : <Ionicons name="ellipse" color="#FFC567" />}
+            {item.notificationStatus ? <></> : <Ionicons name="ellipse" color="#FFC567" style={styles.icon} />}
         </Pressable>
     );
 };
@@ -33,24 +33,30 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.background.black_20,
         alignItems: "center",
+        justifyContent: "space-between",
         borderRadius: 10,
+        paddingHorizontal: "2%",
+        paddingVertical: "2%",
         marginVertical: "2%",
     },
     textContainer: {
-        flex: 1,
         flexDirection: "column",
-        marginRight: "10%",
         marginLeft: "2%",
+        gap: 10,
     },
     title: {
-        fontSize: 16,
+        fontSize: 18,
         fontFamily: "lato-bold",
         color: colors.text.black_100,
     },
     content: {
-        fontSize: 14,
+        fontSize: 16,
         color: colors.text.grey_100,
     },
+    icon: {
+        alignSelf: 'center',
+        justifyContent: 'right',
+    }
 });
 
 export default NotificationCard;

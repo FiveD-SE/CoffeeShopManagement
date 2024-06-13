@@ -103,6 +103,10 @@ const HomeStack = ({ navigation, route }) => {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
+		} else if (routeName === "DetailBilling") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
 		} else {
 			navigation.setOptions({
 				tabBarStyle: {

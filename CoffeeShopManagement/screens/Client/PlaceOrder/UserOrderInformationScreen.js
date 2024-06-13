@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from "react";
+import React, { useState } from "react";
 import { Text, View, ScrollView, Pressable, StyleSheet } from "react-native";
 import OrderProgressBar from "../../../components/Client/OrderProgressBar";
 import UserInfoRow from "../../../components/Client/UserInfoRow";
@@ -8,46 +8,30 @@ import RouteDetails from "../../../components/Client/RouteDetails";
 import SectionWithBackground from "../../../components/Client/SectionWithBackground";
 import RatingModal from "./RatingModal";
 
-const ORDER_ITEM_IMAGE = require("../../../assets/starbucks.jpeg");
-
-const UserOrderInformationScreen = () => {
+const UserOrderInformationScreen = ({ route }) => {
+    const { orderData } = route.params;
+    console.log("ORDER DATA: ", orderData);
     const [currentPage, setCurrentPage] = useState(0);
+    const [modalVisible, setModalVisible] = useState(false);
 
     const handleReceiveOrder = () => {
         setCurrentPage(4);
         setModalVisible(true);
     };
 
-    const orderItemList = [
-        {
-            title: "Trà đào chân châu trắng",
-            price: 59000,
-            quantity: 4,
-            imageSource: ORDER_ITEM_IMAGE,
-        },
-        {
-            title: "Trà đào chân châu đen",
-            price: 59000,
-            quantity: 2,
-            imageSource: ORDER_ITEM_IMAGE,
-        },
-    ];
-
     const renderOrderedItem = () =>
-        orderItemList.map((item, index) => (
+        orderData.products.map((item, index) => (
             <OrderedItem
                 key={index}
-                title={item.title}
-                price={item.price.toLocaleString("vi-VN", {
+                title={item.productName}
+                price={item.totalPrice.toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
                 })}
                 quantity={item.quantity}
-                imageSource={item.imageSource}
+                imageSource={{ uri: item.productImage }}
             />
         ));
-
-    const [modalVisible, setModalVisible] = useState(false);
 
     const showToppingModal = () => {
         setModalVisible(true);
@@ -56,6 +40,9 @@ const UserOrderInformationScreen = () => {
     const hideToppingModal = () => {
         setModalVisible(false);
     };
+
+    const deliveryAddress = orderData.deliveryAddress;
+    const deliveryBranch = orderData.deliveryBranch;
 
     return (
         <>
@@ -73,26 +60,29 @@ const UserOrderInformationScreen = () => {
                             />
                         </View>
                     </SectionWithBackground>
-                    <SectionWithBackground title="THE COFFEE HOUSE chi nhánh D2">
+                    <SectionWithBackground title={deliveryBranch.branchName}>
                         <Text style={styles.infoText}>
-                            66E Hoàng Diệu 2, Quận Thủ Đức, HCM, Việt Nam
+                            {`${deliveryBranch.street}, ${deliveryBranch.districtName}, ${deliveryBranch.provinceName}, Việt Nam`}
                         </Text>
                     </SectionWithBackground>
 
                     <RouteDetails
-                        from={"THE COFFEE HOUSE chi nhánh D2"}
-                        to={"KTX khu B"}
+                        from={deliveryBranch.branchName}
+                        to={`${deliveryAddress.street}, ${deliveryAddress.wardName}`}
                     />
 
                     <SectionWithBackground title="Thông tin khách hàng">
                         <UserInfoRow
                             label="Họ và tên"
-                            value="Tánh'ss Trần'ss"
+                            value={deliveryAddress.name}
                         />
-                        <UserInfoRow label="Số điện thoại" value="0352085655" />
+                        <UserInfoRow
+                            label="Số điện thoại"
+                            value={deliveryAddress.phoneNumber}
+                        />
                         <StatusInfo
                             label="Trạng thái thanh toán"
-                            isPaid={true}
+                            isPaid={orderData.paymentMethod === "cash" ? false : true}
                         />
                     </SectionWithBackground>
                     <SectionWithBackground title="Danh sách các món đã đặt">
@@ -104,20 +94,25 @@ const UserOrderInformationScreen = () => {
                         </View>
                         <View style={styles.totalContainer}>
                             <Text style={styles.titleText}>Tổng cộng:</Text>
-                            <Text style={styles.titleText}>177.000đ</Text>
+                            <Text style={styles.titleText}>
+                                {(
+                                    orderData.orderTotalPrice +
+                                    orderData.deliveryFee -
+                                    orderData.orderTotalDiscount
+                                ).toLocaleString("vi-VN", {
+                                    style: "currency",
+                                    currency: "VND",
+                                })}
+                            </Text>
                         </View>
                     </SectionWithBackground>
                 </View>
             </ScrollView>
             <View style={styles.bottomContainer}>
                 <Pressable
-                    style={[
-                        styles.button,
-                        currentPage < 3 && styles.disabledButton,
-                    ]}
+                    style={[styles.button, currentPage < 3 && styles.disabledButton]}
                     onPress={handleReceiveOrder}
-                    disabled={currentPage < 3}
-                >
+                    disabled={currentPage < 3}>
                     <Text style={styles.buttonText}>Đã nhận hàng</Text>
                 </Pressable>
             </View>
@@ -148,13 +143,13 @@ const styles = StyleSheet.create({
     },
     subTitleText: {
         color: "rgba(58, 58, 58, 0.50)",
-        fontSize: 12,
+        fontSize: 16,
         fontWeight: "500",
         marginTop: "2%",
     },
     infoText: {
         color: "rgba(58, 58, 58, 0.5)",
-        fontSize: 12,
+        fontSize: 16,
         fontWeight: "500",
         marginTop: "2%",
     },
