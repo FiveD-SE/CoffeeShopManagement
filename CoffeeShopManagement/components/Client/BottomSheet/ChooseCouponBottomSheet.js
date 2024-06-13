@@ -24,6 +24,7 @@ const ChooseCouponBottomSheet = ({
 	setIsOpen,
 	onSelectDeliveryCoupon,
 	onSelectDiscountCoupon,
+	totalProductsPrice
 }) => {
 	const [productVoucherList, setProductVoucherList] = useState([]);
 	const [shipVoucherList, setShipVoucherList] = useState([]);
@@ -39,21 +40,31 @@ const ChooseCouponBottomSheet = ({
 		return date.toLocaleDateString("vi-VN", options);
 	};
 
-	const handleSelectedDeliveryCouponChange = (index) => {
+	const handleSelectedDeliveryCouponChange = (selectedCoupon) => {
 		setSelectedDeliveryCoupon((prev) =>
-			prev && prev.index === index
+			prev && prev.coupon === selectedCoupon
 				? null
-				: { index: index, coupon: shipVoucherList[index] }
+				: { coupon: selectedCoupon }
 		);
 	};
 
-	const handleSelectedDiscountCouponChange = (index) => {
+	const handleSelectedDiscountCouponChange = (selectedCoupon) => {
 		setSelectedDiscountCoupon((prev) =>
-			prev && prev.index === index
+			prev && prev.coupon === selectedCoupon
 				? null
-				: { index: index, coupon: productVoucherList[index] }
+				: { coupon: selectedCoupon }
 		);
 	};
+
+
+	const handleChooseVoucher = (minimumOrderPrice) => {
+		if (minimumOrderPrice < totalProductsPrice) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 
 	const handleApplyCoupon = () => {
 		if (selectedDiscountCoupon === null && selectedDeliveryCoupon === null) {
@@ -86,10 +97,18 @@ const ChooseCouponBottomSheet = ({
 	};
 
 	const renderDeliveryFee = () => {
-		const delivery = shipVoucherList;
-		return delivery.map((item, index) => {
-			const isChecked =
-				selectedDeliveryCoupon && selectedDeliveryCoupon.index === index;
+		const sortedDeliveryVouchers = shipVoucherList.slice().sort((a, b) => {
+			if (handleChooseVoucher(a.minimumOrderPrice) && !handleChooseVoucher(b.minimumOrderPrice)) {
+				return -1;
+			}
+			if (!handleChooseVoucher(a.minimumOrderPrice) && handleChooseVoucher(b.minimumOrderPrice)) {
+				return 1;
+			}
+			return 0;
+		});
+
+		return sortedDeliveryVouchers.map((item, index) => {
+			const isChecked = selectedDeliveryCoupon && selectedDeliveryCoupon.coupon === item;
 			return (
 				<SelectCouponCard
 					key={index}
@@ -97,18 +116,28 @@ const ChooseCouponBottomSheet = ({
 					quantity={item.quantity}
 					expireDate={item.expirationDate}
 					imageSource={item.voucherImage}
+					minimumOrderPrice={item.minimumOrderPrice}
 					isChecked={isChecked}
-					onPress={() => handleSelectedDeliveryCouponChange(index)}
+					onPress={() => handleChooseVoucher(item.minimumOrderPrice) ? handleSelectedDeliveryCouponChange(item) : null}
+					isChooseAble={handleChooseVoucher(item.minimumOrderPrice)}
 				/>
 			);
 		});
 	};
 
 	const renderDiscount = () => {
-		const discount = productVoucherList;
-		return discount.map((item, index) => {
-			const isChecked =
-				selectedDiscountCoupon && selectedDiscountCoupon.index === index;
+		const sortedDiscountVouchers = productVoucherList.slice().sort((a, b) => {
+			if (handleChooseVoucher(a.minimumOrderPrice) && !handleChooseVoucher(b.minimumOrderPrice)) {
+				return -1;
+			}
+			if (!handleChooseVoucher(a.minimumOrderPrice) && handleChooseVoucher(b.minimumOrderPrice)) {
+				return 1;
+			}
+			return 0;
+		});
+
+		return sortedDiscountVouchers.map((item, index) => {
+			const isChecked = selectedDiscountCoupon && selectedDiscountCoupon.coupon === item;
 			return (
 				<SelectCouponCard
 					key={index}
@@ -116,8 +145,10 @@ const ChooseCouponBottomSheet = ({
 					quantity={item.quantity}
 					expireDate={item.expirationDate}
 					imageSource={item.voucherImage}
+					minimumOrderPrice={item.minimumOrderPrice}
 					isChecked={isChecked}
-					onPress={() => handleSelectedDiscountCouponChange(index)}
+					onPress={() => handleChooseVoucher(item.minimumOrderPrice) ? handleSelectedDiscountCouponChange(item) : null}
+					isChooseAble={handleChooseVoucher(item.minimumOrderPrice)}
 				/>
 			);
 		});

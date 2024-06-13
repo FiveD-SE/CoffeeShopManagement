@@ -10,14 +10,24 @@ const SelectCouponCard = ({
 	expireDate,
 	imageSource,
 	isChecked,
+	minimumOrderPrice,
 	onPress,
+	isChooseAble,
 }) => {
+	const formatPrice = (price) => {
+		const formatter = new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		});
+		return formatter.format(price);
+	};
 	return (
 		<Pressable
 			onPress={onPress}
 			style={[
 				styles.container,
 				{ backgroundColor: isChecked ? "rgba(0, 108, 94, 0.05)" : "#FFFFFF" },
+				{ opacity: isChooseAble ? 1 : 0.4 }
 			]}
 		>
 			<View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
@@ -27,6 +37,7 @@ const SelectCouponCard = ({
 						{title}
 					</Text>
 					<Text style={styles.quantity}>Số lượng: {quantity}</Text>
+					<Text style={styles.expireDate}>Đơn hàng tối thiểu: {formatPrice(minimumOrderPrice)}</Text>
 					<Text style={styles.expireDate}>Hết hạn: {expireDate}</Text>
 				</View>
 			</View>

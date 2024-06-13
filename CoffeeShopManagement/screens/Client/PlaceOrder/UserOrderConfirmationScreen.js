@@ -14,6 +14,7 @@ import ChooseCouponBottomSheet from "../../../components/Client/BottomSheet/Choo
 import SelectTimeBottomSheet from "../../../components/Client/BottomSheet/SelectTimeBottomSheet";
 import SuccessModal from "../../../components/Client/SuccessModal";
 import CustomButton from "../../../components/Client/Button/CustomButton";
+import { calculateFee } from "../../../services/ghnService"
 
 import { colors } from "../../../assets/colors/colors";
 import {
@@ -60,11 +61,19 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 
 	const [totalPrice, setTotalPrice] = useState(0);
 
+	const [productDiscount, setProductDiscount] = useState(0);
+
+	const [deliveryDiscount, setDeliveryDiscount] = useState(0);
+
 	const [totalDiscount, setTotalDiscount] = useState(0);
 
 	const [isOpen, setIsOpen] = useState(false);
 
 	const [modalVisible, setModalVisible] = useState(false);
+
+	const totalProductsPrice = productOrders.reduce((accumulator, currentItem) => {
+		return accumulator + currentItem.totalPrice * currentItem.quantity;
+	}, 0);
 
 	const paymentMethods = {
 		cash: { title: "Tiền mặt", imageSource: CASH_ICON },
@@ -135,6 +144,46 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 		});
 	};
 
+	const calculateShippingFee = async (address, selectedBranch) => {
+		try {
+			const from_district_id = selectedBranch.districtId;
+			const from_ward_code = selectedBranch.wardId;
+			const service_id = null;
+			const service_type_id = 2;
+			const to_district_id = address.districtId;
+			const to_ward_code = address.wardId;
+			const height = 10;
+			const length = 50;
+			const weight = 200;
+			const width = 20;
+			const insurance_value = 1000;
+			const cod_failed_amount = 2000;
+			const coupon = null;
+
+			const feeData = {
+				from_district_id,
+				from_ward_code,
+				service_id,
+				service_type_id,
+				to_district_id,
+				to_ward_code,
+				height,
+				length,
+				weight,
+				width,
+				insurance_value,
+				cod_failed_amount,
+				coupon,
+			};
+			const feeResponse = await calculateFee(feeData);
+
+			const newShippingFee = feeResponse;
+			setDeliveryFee(newShippingFee);
+		} catch (error) {
+			console.log("Error calculating shipping fee:", error);
+		}
+	};
+
 	const handleChooseCoupon = () => {
 		chooseCouponBottomSheetRef.current?.present();
 		setIsOpen(true);
@@ -145,8 +194,15 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 			setSelectedDeliveryCoupon({
 				deliveryCoupon: deliveryCoupon,
 			});
+			if (deliveryCoupon.discountPrice > deliveryFee) {
+				setDeliveryDiscount(deliveryFee);
+			}
+			else {
+				setDeliveryDiscount(deliveryCoupon.discountPrice);
+			}
 		} else {
 			setSelectedDeliveryCoupon(null);
+			setDeliveryDiscount(0);
 		}
 	};
 
@@ -155,8 +211,17 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 			setSelectedDiscountCoupon({
 				discountCoupon: discountCoupon,
 			});
+			const productDiscount = totalProductsPrice * (discountCoupon.discountPrice.discountPercentage / 100);
+			if (productDiscount > discountCoupon.discountPrice.maximumDiscount) {
+				setProductDiscount(discountCoupon.discountPrice.maximumDiscount);
+			}
+			else {
+				setProductDiscount(productDiscount);
+			}
+			console.log("discount:", productDiscount);
 		} else {
 			setSelectedDiscountCoupon(null);
+			setProductDiscount(0);
 		}
 	};
 
@@ -294,31 +359,36 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	const calculateTotalPrice = () => {
 		let total = 0;
 		let totalDiscount = 0;
+		let shipFee = 0;
 
 		productOrders.forEach((product) => {
 			total += product.totalPrice * product.quantity;
 		});
 
 		if (selectedDeliveryCoupon && selectedDeliveryCoupon.deliveryCoupon) {
-			total -=
-				total *
-				(selectedDeliveryCoupon.deliveryCoupon.discountPercentage / 100);
+			const newDeliveryFee = deliveryFee - deliveryDiscount;
 
-			totalDiscount +=
-				total *
-				(selectedDeliveryCoupon.deliveryCoupon.discountPercentage / 100);
+			if (newDeliveryFee >= 0) {
+				shipFee = newDeliveryFee;
+				totalDiscount += deliveryDiscount;
+			}
+			else {
+				totalDiscount += deliveryFee;
+			}
+
+			totalDiscount += deliveryDiscount;
+		}
+		else {
+			shipFee = deliveryFee;
 		}
 
 		if (selectedDiscountCoupon && selectedDiscountCoupon.discountCoupon) {
-			total -=
-				total *
-				(selectedDiscountCoupon.discountCoupon.discountPercentage / 100);
+			total -= productDiscount;
 
-			totalDiscount +=
-				total *
-				(selectedDiscountCoupon.discountCoupon.discountPercentage / 100);
+			totalDiscount += productDiscount
 		}
 
+		total += shipFee;
 		setTotalDiscount(totalDiscount);
 		setTotalPrice(total);
 	};
@@ -333,6 +403,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 
 	useEffect(() => {
 		calculateTotalPrice();
+		console.log(deliveryFee);
 	});
 
 	useEffect(() => {
@@ -373,6 +444,12 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 		}
 	}, [selectedDeliveryCoupon, selectedDiscountCoupon]);
 
+	useEffect(() => {
+		if (addresses && selectedBranch) {
+			calculateShippingFee(addresses, selectedBranch);
+		}
+	}, [addresses, selectedBranch]);
+
 	return (
 		<>
 			<ScrollView showsVerticalScrollIndicator={false}>
@@ -392,8 +469,10 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 						<Section title="Tổng cộng">
 							<View style={{ marginTop: "2%" }}>
 								<TotalOrderList
-									orderInformation={productOrders}
-									totalDiscount={totalDiscount}
+									totalPrice={totalProductsPrice}
+									deliveryDiscount={deliveryDiscount}
+									deliveryfee={deliveryFee}
+									productDiscount={productDiscount}
 								/>
 							</View>
 						</Section>
@@ -418,6 +497,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 				snapPoints={chooseCouponSnapPoints}
 				onSelectDeliveryCoupon={handleSelectDeliveryCoupon}
 				onSelectDiscountCoupon={handleSelectDiscountCoupon}
+				totalProductsPrice={totalProductsPrice}
 			/>
 			<SelectTimeBottomSheet
 				bottomSheetRef={selectTimeBottomSheetRef}
