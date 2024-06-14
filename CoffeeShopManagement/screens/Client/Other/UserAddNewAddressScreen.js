@@ -40,6 +40,7 @@ const UserAddNewAddressScreen = ({ userData, updateAddressStatus }) => {
 	const [phoneNumber, setPhoneNumber] = useState("");
 	const [street, setStreet] = useState("");
 	const [isDefault, setIsDefault] = useState(false);
+	const [isFirstAddress, setIsFirstAddress] = useState(false);
 
 	const [provinceList, setProvinceList] = useState([]);
 	const [provinceName, setProvinceName] = useState("");
@@ -54,7 +55,22 @@ const UserAddNewAddressScreen = ({ userData, updateAddressStatus }) => {
 	const [wardId, setWardId] = useState("");
 
 	const handleToggle = () => {
-		setIsDefault(!isDefault);
+		if (isFirstAddress) {
+			Toast.show({
+				type: "info",
+				text1: "Thông báo",
+				text2: "Địa chỉ đầu tiên được đặt là địa chỉ mặc định",
+				text1Style: {
+					fontSize: 16,
+				},
+				text2Style: {
+					fontSize: 12,
+				},
+			});
+		}
+		else {
+			setIsDefault(!isDefault);
+		}
 	};
 
 	useEffect(() => {
@@ -69,6 +85,7 @@ const UserAddNewAddressScreen = ({ userData, updateAddressStatus }) => {
 				const hasExistingAddress = existingAddresses.length > 0;
 				const isFirstAddress = !hasExistingAddress;
 
+				setIsFirstAddress(isFirstAddress);
 				if (isFirstAddress) {
 					setIsDefault(true);
 				}

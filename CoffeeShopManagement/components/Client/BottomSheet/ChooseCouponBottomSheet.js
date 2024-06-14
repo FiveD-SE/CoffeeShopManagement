@@ -24,13 +24,23 @@ const ChooseCouponBottomSheet = ({
 	setIsOpen,
 	onSelectDeliveryCoupon,
 	onSelectDiscountCoupon,
-	totalProductsPrice
+	totalProductsPrice,
+	deliveryFee,
+	isChangeAddress,
+	setIsChangeAddress
 }) => {
 	const [productVoucherList, setProductVoucherList] = useState([]);
 	const [shipVoucherList, setShipVoucherList] = useState([]);
 	const [selectedDeliveryCoupon, setSelectedDeliveryCoupon] = useState(null);
 	const [selectedDiscountCoupon, setSelectedDiscountCoupon] = useState(null);
 
+	useEffect(() => {
+		if (isChangeAddress) {
+			setSelectedDeliveryCoupon(null);
+			setIsChangeAddress(false);
+			renderDeliveryFee();
+		}
+	}, [isChangeAddress]);
 	const convertTimestampToDate = (timestamp) => {
 		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
 	};
@@ -64,6 +74,13 @@ const ChooseCouponBottomSheet = ({
 		else {
 			return false;
 		}
+	}
+
+	const handleFreeShip = () => {
+		if (deliveryFee === 0) {
+			return true;
+		}
+		return false;
 	}
 
 	const handleApplyCoupon = () => {
@@ -118,8 +135,8 @@ const ChooseCouponBottomSheet = ({
 					imageSource={item.voucherImage}
 					minimumOrderPrice={item.minimumOrderPrice}
 					isChecked={isChecked}
-					onPress={() => handleChooseVoucher(item.minimumOrderPrice) ? handleSelectedDeliveryCouponChange(item) : null}
-					isChooseAble={handleChooseVoucher(item.minimumOrderPrice)}
+					onPress={() => (handleChooseVoucher(item.minimumOrderPrice) && !handleFreeShip()) ? handleSelectedDeliveryCouponChange(item) : null}
+					isChooseAble={(handleChooseVoucher(item.minimumOrderPrice) && !handleFreeShip())}
 				/>
 			);
 		});
