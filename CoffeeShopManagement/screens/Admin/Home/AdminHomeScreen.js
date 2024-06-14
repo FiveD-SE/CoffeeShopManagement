@@ -9,7 +9,7 @@ import {
   Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { connect } from "react-redux";
 import { collection, getDocs, query, where } from "firebase/firestore";
@@ -17,20 +17,28 @@ import { db } from "../../../services/firebaseService";
 
 const AdminHomeScreen = ({ userData }) => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalStaffs, setTotalStaffs] = useState(0);
+  const [totalUnreadNotification, setTotalUnreadNotification] = useState(0);
 
-  const fetchData = async () => {
-    const users = await getDocs(query(collection(db, "users"), where("role", "==", "user")));
-    setTotalUsers(users.docs.length);
 
-    const staffs = await getDocs(collection(db, "cashier"));
-    setTotalStaffs(staffs.docs.length);
-  };
 
   useEffect(() => {
+    const fetchData = async () => {
+      const users = await getDocs(query(collection(db, "users"), where("role", "==", "user")));
+      setTotalUsers(users.docs.length);
+
+      const staffs = await getDocs(collection(db, "staffs"));
+      setTotalStaffs(staffs.docs.length);
+
+      const notifications = await getDocs(collection(db, "admin_notifications"));
+      const unreadNotifications = notifications.docs.filter((doc) => doc.data().notificationStatus === false);
+      setTotalUnreadNotification(unreadNotifications.length);
+    };
+
     fetchData();
-  }, []);
+  }, [isFocused]);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -44,6 +52,7 @@ const AdminHomeScreen = ({ userData }) => {
             <Text style={styles.profileName}>{userData?.name}</Text>
           </View>
           <TouchableOpacity style={styles.iconContainer} onPress={() => navigation.navigate("Notification")}>
+            {totalUnreadNotification > 0 && <Text style={styles.notificationCount}>{totalUnreadNotification}</Text>}
             <Icon name="bell" size={20} />
           </TouchableOpacity>
         </View>
@@ -212,5 +221,19 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#3A3A3A",
     marginTop: "1%",
+  },
+  notificationCount: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    backgroundColor: '#C80036',
+    color: 'white',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    textAlign: 'center',
+    fontSize: 12,
+    lineHeight: 19,
+    fontWeight: 'bold',
   },
 });

@@ -5,9 +5,8 @@ import {
     SafeAreaView,
     StyleSheet,
     Dimensions,
-    Text,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import UserHomeScreenHeader from "../../../components/Client/Header/UserHomeScreenHeader";
 import Carousel from "../../../components/Client/Carousel";
 import SearchBar from "../../../components/Client/SearchBar";
@@ -23,8 +22,6 @@ import {
     getDoc,
     onSnapshot,
     updateDoc,
-    query,
-    where,
 } from "firebase/firestore";
 
 import { connect } from "react-redux";
@@ -34,6 +31,7 @@ const cardWidth = Dimensions.get("window").width;
 
 const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
     const itemDetailBottomSheetRef = useRef(null);
     const [selectedItem, setSelectedItem] = useState(null);
     const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
@@ -42,6 +40,7 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
     const [recentlyViewedList, setRecentlyViewedList] = useState(
         userData.recentlyViewedItems
     );
+    const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
 
     const handleOpenItemDetail = async (item) => {
         try {
@@ -49,7 +48,6 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
             setIsItemDetailVisible(true);
             console.log("Opening item detail:", item);
 
-            // Update recently viewed items for the user
             const userDocRef = doc(db, "users", auth.currentUser.uid);
             const userDocSnap = await getDoc(userDocRef);
             const userDocData = userDocSnap.data();
@@ -63,15 +61,11 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
                 updatedRecentlyViewedItems.splice(itemIndex, 1);
             }
             updatedRecentlyViewedItems.unshift(item.productId);
-
-            // Limit to 5 items
             updatedRecentlyViewedItems = updatedRecentlyViewedItems.slice(0, 5);
 
             await updateDoc(userDocRef, {
                 recentlyViewedItems: updatedRecentlyViewedItems,
             });
-
-            // Update Redux state for recently viewed items
             updateUserRecentlyViewed(updatedRecentlyViewedItems);
         } catch (error) {
             console.error("Error opening item detail:", error);
@@ -92,22 +86,23 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
             currency: "VND",
         }).format(amount);
     };
-
-    // Fetch all products
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchData = async () => {
             const querySnapshot = await getDocs(collection(db, "products"));
             const updatedProductList = querySnapshot.docs.map((doc) => {
                 const data = doc.data();
                 return { ...data, id: doc.id };
             });
             setProductList(updatedProductList);
+
+            const notifications = await getDocs(collection(db, "user_notifications"));
+            const unreadNotifications = notifications.docs.filter((doc) => doc.data().notificationStatus === false && doc.data().userId === userData.id);
+            setUnreadNotificationCount(unreadNotifications.length);
         };
 
-        fetchProducts();
-    }, []);
+        fetchData();
+    }, [isFocused]);
 
-    // Fetch best-selling products
     useEffect(() => {
         const unsubscribe = onSnapshot(
             collection(db, "products"),
@@ -124,8 +119,6 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
 
         return () => unsubscribe();
     }, []);
-
-    // Fetch recently viewed products
     useEffect(() => {
         const fetchRecentlyViewed = async () => {
             if (
@@ -144,7 +137,7 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
                             : null;
                     })
                 );
-                setRecentlyViewedList(products.filter(Boolean)); // Remove any null values
+                setRecentlyViewedList(products.filter(Boolean));
             }
         };
 
@@ -172,7 +165,7 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
         return recentlyViewedList?.map((item, index) => (
             <RecentlyViewedItem
                 key={index}
-                id={item.productId} // Assuming productId is part of the data
+                id={item.productId}
                 name={item.productName}
                 price={formatCurrency(item.productPrice)}
                 imageSource={item.productImage}
@@ -193,6 +186,7 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
         }
     }, [isItemDetailVisible]);
 
+    console.log("USER DATA", userData);
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.headerCointainer}>
@@ -201,6 +195,7 @@ const UserHomeScreen = ({ userData, updateUserRecentlyViewed }) => {
                     totalPoint={userData.credit}
                     onPressBean={goToExchangeVoucher}
                     onPressNotify={goToNotificationScreen}
+                    unreadNotificationCount={unreadNotificationCount}
                 />
                 <View style={styles.searchBarContainer}>
                     <SearchBar onFocus={goToSearchScreen} />

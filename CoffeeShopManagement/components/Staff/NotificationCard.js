@@ -17,8 +17,8 @@ const NotificationCard = ({ item, onPress }) => {
             ]}
         >
             <View style={styles.textContainer}>
-                <Text style={styles.title}>{item.notificationTitle}</Text>
-                <Text style={styles.content} numberOfLines={1}>
+                <Text style={styles.title} numberOfLines={1}>{item.notificationTitle}</Text>
+                <Text style={styles.content} numberOfLines={2}>
                     {item.notificationContent}
                 </Text>
             </View>
@@ -40,11 +40,13 @@ const styles = StyleSheet.create({
         marginVertical: "2%",
     },
     textContainer: {
+        width: "85%",
         flexDirection: "column",
         marginLeft: "2%",
         gap: 10,
     },
     title: {
+        width: "85%",
         fontSize: 18,
         fontFamily: "lato-bold",
         color: colors.text.black_100,

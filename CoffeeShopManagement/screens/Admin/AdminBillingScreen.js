@@ -177,7 +177,7 @@ export default function AdminBillingScreen() {
           </View>
           <View style={[styles.invoiceFirst, { flexDirection: 'column' }]}>
             <Text style={styles.orderNumber}>{totalInvoice}</Text>
-            <Text style={styles.invoiceText}>Tổng số hoá đơn</Text>
+            <Text style={styles.invoiceText} numberOfLines={2}>Hóa đơn</Text>
           </View>
           <View style={[styles.invoiceFirst, { flexDirection: 'row' }]}>
             <Text style={trendingPercentage > 0 ? styles.upTrendText : styles.downTrendText}>
@@ -218,8 +218,6 @@ const styles = StyleSheet.create({
   invoice: {
     backgroundColor: '#fff',
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#e5e4e7',
     width: '100%',
     flexDirection: 'row',
     marginVertical: '3%',
@@ -262,11 +260,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: "6%",
     backgroundColor: '#FFFFFF',
-    borderColor: '#9D9D9D',
-    borderWidth: 1,
   },
   selectedSelectionButton: {
-    borderColor: '#006C5E',
     backgroundColor: '#006C5E'
   },
   selectionButtonText: {
@@ -285,8 +280,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 15,
     paddingHorizontal: 15,
-    borderWidth: 1,
-    borderColor: "#B3A398",
     borderRadius: 10,
     marginBottom: 10,
     gap: 15,
