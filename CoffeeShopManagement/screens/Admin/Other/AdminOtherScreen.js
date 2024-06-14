@@ -264,7 +264,7 @@ const AdminOtherScreen = ({ userData }) => {
                             <View style={[styles.rowWrapper, styles.rowFirst]}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("StorePolicyScreen");
                                     }}
                                     style={styles.row}
                                 >
@@ -291,7 +291,7 @@ const AdminOtherScreen = ({ userData }) => {
                             <View style={styles.rowWrapper}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("UserMembershipScreen");
                                     }}
                                     style={styles.row}
                                 >
@@ -318,7 +318,7 @@ const AdminOtherScreen = ({ userData }) => {
                             <View style={[styles.rowWrapper, styles.rowLast]}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        // handle onPress
+                                        navigation.navigate("UserAboutAppVersion");
                                     }}
                                     style={styles.row}
                                 >
