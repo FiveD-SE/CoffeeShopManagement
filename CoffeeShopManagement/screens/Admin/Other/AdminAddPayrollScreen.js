@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
     },
     labelText: {
-        fontFamily: 'Lato-Bold',
+        fontFamily: 'lato-bold',
         fontSize: 16,
         color: '#000000'
     },
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     searchText: {
-        fontFamily: 'Lato-Regular',
+        fontFamily: 'lato-regular',
         fontSize: 16,
         color: '#000000'
     },
@@ -420,12 +420,12 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     textPrimary: {
-        fontFamily: 'Lato-Bold',
+        fontFamily: 'lato-bold',
         fontSize: 16,
         color: '#000000',
     },
     textSecondary: {
-        fontFamily: 'Lato-Regular',
+        fontFamily: 'lato-regular',
         fontSize: 16,
         color: '#9C9C9C',
         lineHeight: 20
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     sectionText: {
-        fontFamily: 'Lato-Bold',
+        fontFamily: 'lato-bold',
         fontSize: 18,
         color: '#000000',
         lineHeight: 20

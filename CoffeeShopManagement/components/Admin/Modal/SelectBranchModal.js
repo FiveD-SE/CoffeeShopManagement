@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   searchText: {
     flex: 1,
-    fontFamily: 'Lato-Regular',
+    fontFamily: 'lato-regular',
     fontSize: 16,
     color: '#000000',
   },
@@ -120,17 +120,17 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
   },
   nameBranchText: {
-    fontFamily: 'Lato-Bold',
+    fontFamily: 'lato-bold',
     fontSize: 16,
     color: '#000000',
   },
   addressBranchText: {
-    fontFamily: 'Lato-Regular',
+    fontFamily: 'lato-regular',
     fontSize: 16,
     color: '#9C9C9C',
   },
   distanceBranchText: {
-    fontFamily: 'Lato-Regular',
+    fontFamily: 'lato-regular',
     fontSize: 16,
     color: '#9C9C9C',
     marginTop: 5,

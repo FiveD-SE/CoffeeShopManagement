@@ -230,7 +230,6 @@ export default function AddStaffScreen() {
         if (!isNameValid || !isPhoneValid || !isBirthdayValid || !isGenderValid || !isIdCardValid || !isEmailValid || !isPasswordValid) {
             Toast.show({
                 type: 'error',
-                position: 'top',
                 text1: 'Lỗi',
                 text2: 'Vui lòng nhập đầy đủ thông tin',
                 visibilityTime: 2000,
@@ -262,6 +261,7 @@ export default function AddStaffScreen() {
                 staffImage: userImage,
                 role: role,
                 branch: branch,
+                workingHours: 0,
             });
 
             await setDoc(doc(collection(db, "users"), user.uid), {
@@ -329,7 +329,7 @@ export default function AddStaffScreen() {
             if (new Date().getFullYear() - currentDate.getFullYear() < 18) {
                 Toast.show({
                     type: 'error',
-                    position: 'top',
+                
                     text1: 'Lỗi',
                     text2: 'Tuổi phải lớn hơn 18',
                     visibilityTime: 2000,
@@ -356,7 +356,6 @@ export default function AddStaffScreen() {
         } else {
             Toast.show({
                 type: 'error',
-                position: 'top',
                 text1: 'Lỗi',
                 text2: 'Vui lòng chọn ngày sinh hợp lệ',
                 visibilityTime: 2000,

@@ -42,6 +42,7 @@ import * as ImagePicker from "expo-image-picker";
 import { deleteUser, getAuth, sendEmailVerification } from "firebase/auth";
 import Toast from "react-native-toast-message";
 import SelectRoleModal from "../../components/Admin/Modal/SelectRoleModal";
+import DeleteButton from '../../components/Admin/Button/DeleteButton';
 
 const TextBox = ({ text, value, setValue, keyboardType, handleValidInput }) => {
 
