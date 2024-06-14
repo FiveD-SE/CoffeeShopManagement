@@ -9,15 +9,34 @@ import { Dropdown } from 'react-native-element-dropdown'
 
 const AddRoleModal = ({ visible, onClose }) => {
 
-
     const [roleName, setRoleName] = useState('');
     const [salary, setSalary] = useState('');
     const [roleType, setRoleType] = useState('');
+    const [isFocused, setIsFocused] = useState(false);
+
+    const formatPrice = (price) => {
+        const formatter = new Intl.NumberFormat("vi-VN", {
+            style: "currency",
+            currency: "VND",
+        });
+        return formatter.format(price);
+    };
+
+    const handlePriceChange = (text) => {
+        const numericValue = text.replace(/\D/g, "");
+        setSalary(numericValue);
+    };
+
+    const getDisplayPrice = () => {
+        return isFocused || salary === ""
+            ? salary
+            : formatPrice(salary);
+    };
 
     const handleConfirm = async () => {
         const docRef = await addDoc(collection(db, "staffRoles"), {
             roleName: roleName,
-            salary: salary,
+            salary: parseInt(salary),
             roleType: roleType
         });
         const staffRoleId = docRef.id;
@@ -27,7 +46,7 @@ const AddRoleModal = ({ visible, onClose }) => {
         });
         onClose();
     };
-    const [modalHeight, setModalHeight] = useState('40%'); // Kích thước mặc định của modal
+    const [modalHeight, setModalHeight] = useState('45%'); // Kích thước mặc định của modal
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -37,7 +56,7 @@ const AddRoleModal = ({ visible, onClose }) => {
 
         const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
             // Khi bàn phím ẩn đi, khôi phục kích thước mặc định của modal
-            setModalHeight('35%');
+            setModalHeight('45%');
         });
 
         return () => {
@@ -53,7 +72,7 @@ const AddRoleModal = ({ visible, onClose }) => {
             onRequestClose={onClose}>
             <View style={styles.modalContainer}>
                 <View style={[styles.modalContent, { height: modalHeight }]}>
-                    <ModalHeader title="Ca làm việc mới" onClose={onClose} />
+                    <ModalHeader title="Thêm vai trò mới" onClose={onClose} />
                     <View style={styles.bodyModal}>
                         <TextInput
                             placeholder='Tên vai trò'
@@ -63,12 +82,15 @@ const AddRoleModal = ({ visible, onClose }) => {
                             value={roleName}
                             onChangeText={text => setRoleName(text)} />
                         <TextInput
-                            placeholder='Mức lương mới'
+                            placeholder='Mức lương / 1 giờ'
                             placeholderTextColor={'#3a3a3a'}
                             padding={'3%'}
                             style={styles.addSalary}
-                            value={salary}
-                            onChangeText={text => setSalary(text)} />
+                            keyboardType='numeric'
+                            value={getDisplayPrice() === "" ? null : getDisplayPrice()}
+                            onChangeText={handlePriceChange}
+                            onBlur={() => setIsFocused(false)}
+                            onFocus={() => setIsFocused(true)} />
                         <Dropdown
                             style={[styles.dropDown]}
                             placeholder='Loại vai trò'
