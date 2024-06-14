@@ -11,7 +11,7 @@ const ShiftListButton = () => {
             style={styles.roleButton}
             onPress={() => navigation.navigate("AddShift")}
         >
-            <FontAwesome5 name="business-time" size={16} color='#FFF' />
+            <FontAwesome5 name="business-time" size={13} color='#FFF' />
             <Text style={styles.text}>
                 Danh sách ca làm
             </Text>

@@ -42,7 +42,6 @@ const ItemSizeModal = ({ visible, onClose, setSize }) => {
                                 <Image
                                     source={require("../../../assets/coffee-cup.png")} />
                                 <Text style={styles.title}>Nhỏ</Text>
-                                <Text style={styles.title}>+0đ</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => handleSelectType("mediumEnabled")}
@@ -50,7 +49,6 @@ const ItemSizeModal = ({ visible, onClose, setSize }) => {
                                 <Image
                                     source={require("../../../assets/coffee-cup.png")} />
                                 <Text style={styles.title}>Trung bình</Text>
-                                <Text style={styles.title}>+5.000đ</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => handleSelectType("largeEnabled")}
@@ -58,7 +56,6 @@ const ItemSizeModal = ({ visible, onClose, setSize }) => {
                                 <Image
                                     source={require("../../../assets/coffee-cup.png")} />
                                 <Text style={styles.title}>Lớn</Text>
-                                <Text style={styles.title}>+10.000đ</Text>
                             </TouchableOpacity>
                         </View>
                         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
@@ -84,7 +81,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#F8F7FA",
         borderRadius: 20,
         width: "90%",
-        height: "34%",
+        height: "33%",
     },
     imageContainer: {
         marginTop: "5%",
@@ -111,7 +108,8 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flex: 1,
         marginHorizontal: "1%",
-        padding: "5%",
+        paddingHorizontal: "5%",
+        paddingVertical: "7%",
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "#ffffff",

@@ -39,7 +39,7 @@ const UserHomeScreenHeader = ({
             </View>
             <View style={styles.headerRight}>
                 <Pressable
-                    style={[styles.iconContainer, { paddingHorizontal: "10%" }]}
+                    style={[styles.iconContainer, { paddingHorizontal: "5%" }]}
                     onPress={onPressBean}
                 >
                     <Image source={COFFEE_BEAN_ICONS} style={styles.icon} />
@@ -117,9 +117,9 @@ const styles = StyleSheet.create({
     },
     iconText: {
         color: colors.black_100,
-        fontSize: 16,
+        fontSize: 14,
         fontFamily: "lato-regular",
-        marginLeft: "10%",
+        marginLeft: "4%",
     },
     notificationCount: {
         position: 'absolute',
