@@ -33,21 +33,23 @@ import ChangePassword from "../screens/Client/ChangePassword";
 import SignInScreen from "../screens/Client/SignInScreen";
 import UserOrderConfirmationScreen from "../screens/Client/PlaceOrder/UserOrderConfirmationScreen";
 import UserMapScreen from "../screens/Client/Other/UserMapScreen";
+import UserQuestions from "../screens/Client/Other/UserQuestions";
 
 import MembershipTier from "../screens/Client/Coupons/UserMembershipTierScreen";
 import History from "../screens/Client/Coupons/UserExchangeHistoryScreen";
 import Benefit from "../screens/Client/Coupons/UserBenefitScreen";
 import UserOrderInformationScreen from "../screens/Client/PlaceOrder/UserOrderInformationScreen";
 import UserNotification from "../screens/Client/Home/UserNotification";
-import UserChooseAddressScreen from "../screens/Client/PlaceOrder/UserChooseAddressScreen";
 import ConfirmPassword from "../screens/Client/ConfirmPassword";
 import StorePolicyScreen from "../screens/Client/Other/StorePolicyScreen";
 import DetailBilling from "../screens/Admin/DetailBillingScreen";
+import ReportBranch from "../screens/Client/Other/UserChooseBranchToReport";
 
 import { getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { colors } from "../assets/colors/colors";
 import UserCouponScreen from "../screens/Client/Coupons/UserCouponScreen";
 import UserVoucherScreen from "../screens/Client/Coupons/UserVoucherScreen";
+import UserAboutAppVersion from "../screens/Client/Other/UserAboutAppVersion";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -587,6 +589,18 @@ const OtherStack = ({ navigation, route }) => {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
+		} else if (routeName === "ReportBranch") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserQuestions") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
+		} else if (routeName === "UserAboutAppVersion") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
 		} else {
 			navigation.setOptions({
 				tabBarStyle: {
@@ -777,6 +791,39 @@ const OtherStack = ({ navigation, route }) => {
 				component={DetailBilling}
 				options={{
 					headerTitle: "Chi tiết đơn hàng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="ReportBranch"
+				component={ReportBranch}
+				options={{
+					headerTitle: "Chọn chi nhánh",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserQuestions"
+				component={UserQuestions}
+				options={{
+					headerTitle: "Câu hỏi thường gặp",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserAboutAppVersion"
+				component={UserAboutAppVersion}
+				options={{
+					headerTitle: "Phiên bản ứng dụng",
 					headerLeftContainerStyle: {
 						paddingLeft: "5%",
 					},
