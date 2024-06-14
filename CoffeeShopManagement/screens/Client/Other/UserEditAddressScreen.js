@@ -430,7 +430,6 @@ export default connect(mapStateToProps)(UserEditAddressScreen);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
     },
     scrollViewContent: {
         paddingHorizontal: "4%",

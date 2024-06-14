@@ -24,6 +24,13 @@ const ProfileDetails = ({ userData }) => {
 
     const flag = require("../../../assets/vietnam.png");
 
+    const formatPhoneNumber = (phoneNumber) => {
+        if (phoneNumber.startsWith('0')) {
+            phoneNumber = phoneNumber.substring(1);
+        }
+        return phoneNumber.replace(/(\d{2})(\d{3})(\d{3})/, "$1 $2 $3");
+    }
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
@@ -84,7 +91,7 @@ const ProfileDetails = ({ userData }) => {
                             />
                             <Text style={styles.text}>+84 </Text>
                             <Text style={styles.text}>
-                                {userData.phoneNumber}
+                                {formatPhoneNumber(userData.phoneNumber)}
                             </Text>
                         </View>
                     </View>

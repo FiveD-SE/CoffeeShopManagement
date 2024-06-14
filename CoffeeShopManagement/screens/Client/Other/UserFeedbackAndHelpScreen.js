@@ -14,20 +14,21 @@ import { addDoc, collection } from "firebase/firestore"; // Import from Firebase
 import Toast from "react-native-toast-message";
 import { colors } from "../../../assets/colors/colors";
 import { connect } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
-const FeedbackAndHelp = ({ userData }) => {
-    const [store, setStore] = useState("");
+const FeedbackAndHelp = ({ userData, route }) => {
+    const navigation = useNavigation();
+    const branch = route.params ? route.params.branch : undefined;
     const [report, setReport] = useState("");
+    const [branchName, setBranchName] = useState(branch?.branchName || "Địa chỉ");
 
     const handleSubmitFeedback = async () => {
         try {
             const user = auth.currentUser;
-
             const userName = userData?.name;
             const phoneNumber = userData.phoneNumber;
 
-            // Validate store input
-            if (store.trim() === "") {
+            if (branch.branchName.trim() === "") {
                 Toast.show({
                     type: "error",
                     text1: "Vui lòng nhập chi nhánh!",
@@ -49,7 +50,6 @@ const FeedbackAndHelp = ({ userData }) => {
                 return;
             }
 
-            // Validate report length
             if (report.trim().length < 10) {
                 Toast.show({
                     type: "error",
@@ -74,15 +74,17 @@ const FeedbackAndHelp = ({ userData }) => {
 
             const feedbackCollectionRef = collection(db, "feedback");
             await addDoc(feedbackCollectionRef, {
-                store: store,
+                branch: branch,
                 report: report,
-                timestamp: new Date(), // Add timestamp for sorting
-                user: user.uid,
+                date: new Date(),
+                userId: user.uid,
                 userName: userName,
                 phoneNumber: phoneNumber,
             });
-            setStore("");
+
             setReport("");
+            setBranchName("Địa chỉ");
+
             Toast.show({
                 type: "success",
                 text1: "Cảm ơn bạn đã góp ý!",
@@ -124,27 +126,25 @@ const FeedbackAndHelp = ({ userData }) => {
         }
     };
 
+    const handleNavigateToBranch = () => {
+        navigation.navigate("ReportBranch");
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <View style={styles.section}>
-                    <Text style={styles.primaryText}>
-                        Chúng mình luôn lắng nghe! Hãy cho chúng{"\n"}mình biết
+                    <Text style={styles.primaryText} numberOfLines={2}>
+                        Chúng mình luôn lắng nghe! Hãy cho chúng mình biết
                         cảm nhận của bạn
                     </Text>
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={styles.primaryText}>Chi nhánh *</Text>
+                    <Text style={styles.primaryText}>Chi nhánh*</Text>
                     <View style={styles.rowLabelText}>
-                        <TextInput
-                            style={styles.textInput}
-                            onChangeText={setStore}
-                            value={store}
-                            placeholder="Địa chỉ"
-                            keyboardType="default"
-                        />
-                        <TouchableOpacity>
+                        <Text style={styles.textInput}>{branch ? branchName : "Địa chỉ"}</Text>
+                        <TouchableOpacity onPress={handleNavigateToBranch}>
                             <FontAwesome
                                 name="angle-right"
                                 size={32}
@@ -164,12 +164,12 @@ const FeedbackAndHelp = ({ userData }) => {
                             onChangeText={setReport}
                             value={report}
                             placeholder="Cảm nhận của bạn."
+                            placeholderTextColor={"#151515"}
                             keyboardType="default"
                             multiline={true}
                         />
                     </View>
                 </View>
-
                 <TouchableOpacity
                     style={styles.submitButton}
                     onPress={handleSubmitFeedback}
@@ -194,10 +194,10 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     primaryText: {
-        color: "#000",
+        color: "#151515",
         fontFamily: "lato-regular",
         fontSize: 18,
-        fontWeight: "600",
+        lineHeight: 20,
     },
     rowLabelText: {
         flexDirection: "row",
@@ -212,12 +212,14 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     textInput: {
-        flex: 1,
         fontSize: 16,
+        fontFamily: "lato-regular",
+        color: "#151515",
     },
     textInputMultiline: {
         flex: 1,
         minHeight: 150,
+        fontFamily: "lato-regular",
         textAlignVertical: "top",
         fontSize: 16,
     },

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
     StyleSheet,
-    SafeAreaView,
     View,
     ScrollView,
     Text,
@@ -12,8 +11,6 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import SwitchToggle from "toggle-switch-react-native";
 import { useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
-import { getDoc, doc } from "firebase/firestore";
-import { db } from "../../../services/firebaseService";
 
 const ProfileDetails = ({ userData }) => {
     const navigation = useNavigation();
@@ -25,6 +22,13 @@ const ProfileDetails = ({ userData }) => {
 
     const flag = require("../../../assets/vietnam.png");
 
+    const formatPhoneNumber = (phoneNumber) => {
+        if (phoneNumber.startsWith('0')) {
+            phoneNumber = phoneNumber.substring(1);
+        }
+        return phoneNumber.replace(/(\d{2})(\d{3})(\d{3})/, "$1 $2 $3");
+    }
+
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
@@ -35,7 +39,7 @@ const ProfileDetails = ({ userData }) => {
                                 paddingTop: 60,
                                 paddingBottom: 50,
                                 alignContent: "center",
-                                alignItems: "center", // Add alignItems: 'center'
+                                alignItems: "center",
                             },
                         ]}
                     >
@@ -85,7 +89,7 @@ const ProfileDetails = ({ userData }) => {
                             />
                             <Text style={styles.text}>+84 </Text>
                             <Text style={styles.text}>
-                                {userData.phoneNumber}
+                                {formatPhoneNumber(userData.phoneNumber)}
                             </Text>
                         </View>
                     </View>

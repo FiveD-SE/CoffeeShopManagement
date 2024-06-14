@@ -9,15 +9,14 @@ import {
   Pressable,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
-import { useNavigation, useIsFocused } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import { connect } from "react-redux";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
 
 const AdminHomeScreen = ({ userData }) => {
   const navigation = useNavigation();
-  const isFocused = useIsFocused();
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalStaffs, setTotalStaffs] = useState(0);
   const [totalUnreadNotification, setTotalUnreadNotification] = useState(0);
@@ -25,20 +24,49 @@ const AdminHomeScreen = ({ userData }) => {
 
 
   useEffect(() => {
-    const fetchData = async () => {
-      const users = await getDocs(query(collection(db, "users"), where("role", "==", "user")));
-      setTotalUsers(users.docs.length);
-
-      const staffs = await getDocs(collection(db, "staffs"));
-      setTotalStaffs(staffs.docs.length);
-
-      const notifications = await getDocs(collection(db, "admin_notifications"));
-      const unreadNotifications = notifications.docs.filter((doc) => doc.data().notificationStatus === false);
+    const unsubscribe = onSnapshot(collection(db, "admin_notifications"), (snapshot) => {
+      const unreadNotifications = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (!data.notificationStatus) {
+          unreadNotifications.push(data);
+        }
+      });
+      unreadNotifications.sort((a, b) => b.buyCount - a.buyCount);
       setTotalUnreadNotification(unreadNotifications.length);
-    };
+    });
 
-    fetchData();
-  }, [isFocused]);
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
+      const updatedUserList = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.role === "user") {
+          updatedUserList.push(data);
+        }
+      });
+      setTotalUsers(updatedUserList.length);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "staffs"), (snapshot) => {
+      const updatedStaffList = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        updatedStaffList.push({ ...data, id: doc.id });
+      });
+      setTotalStaffs(updatedStaffList.length);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>

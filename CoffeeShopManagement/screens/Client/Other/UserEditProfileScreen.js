@@ -4,14 +4,15 @@ import {
     View,
     ScrollView,
     Text,
-    Pressable,
     Image,
     TextInput,
     TouchableOpacity,
+    Alert,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
+import { colors } from "../../../assets/colors/colors";
 import {
     db,
     auth,
@@ -21,6 +22,7 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { saveUserData } from "../../../redux/actions/userActions";
 import SwitchToggle from "toggle-switch-react-native";
 import * as ImagePicker from "expo-image-picker";
+import Toast from "react-native-toast-message";
 import { isLoading } from "expo-font";
 
 const EditProfileDetails = ({ userData, saveUserData }) => {
@@ -40,32 +42,90 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
 
     const navigateToProfileDetails = async () => {
         try {
-            const user = auth.currentUser;
-            const docRef = doc(db, "users", user.uid);
-            const docSnap = await getDoc(docRef);
-
-            const downloadURL = await uploadImageToFirebase(
-                userImage,
-                "user_" + userData.id
-            );
-
-            if (docSnap.exists()) {
-                await updateDoc(docRef, {
-                    fullName: name,
-                    phoneNumber: phoneNumber,
-                    userImage: downloadURL,
+            if (!handleInvalideName() && !handleInvalidePhoneNumber()) {
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Vui lòng nhập đầy đủ thông tin.",
+                    text1Style: {
+                        color: colors.black_100,
+                        fontSize: 16,
+                        fontFamily: "lato-bold",
+                    },
+                    text2Style: {
+                        color: colors.grey_100,
+                        fontSize: 14,
+                        fontFamily: "lato-regular",
+                    },
+                    autoHide: true,
                 });
-
-                saveUserData({
-                    ...userData,
-                    name: name,
-                    phoneNumber: phoneNumber,
-                    userImage: downloadURL,
+                return;
+            }
+            else if (!handleInvalideName()) {
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Vui lòng nhập tên.",
+                    text1Style: {
+                        color: colors.black_100,
+                        fontSize: 16,
+                        fontFamily: "lato-bold",
+                    },
+                    text2Style: {
+                        color: colors.grey_100,
+                        fontSize: 14,
+                        fontFamily: "lato-regular",
+                    },
+                    autoHide: true,
                 });
+                return;
+            }
+            else if (!handleInvalidePhoneNumber()) {
+                Toast.show({
+                    type: "error",
+                    text1: "Lỗi",
+                    text2: "Vui lòng nhập đầy số điện thoại hợp lệ.",
+                    text1Style: {
+                        color: colors.black_100,
+                        fontSize: 16,
+                        fontFamily: "lato-bold",
+                    },
+                    text2Style: {
+                        color: colors.grey_100,
+                        fontSize: 14,
+                        fontFamily: "lato-regular",
+                    },
+                    autoHide: true,
+                });
+                return;
+            } else {
+                const user = auth.currentUser;
+                const docRef = doc(db, "users", user.uid);
+                const docSnap = await getDoc(docRef);
 
-                navigation.navigate("ProfileDetails");
+                const downloadURL = await uploadImageToFirebase(
+                    userImage,
+                    "user_" + userData.id
+                );
 
-                console.log("Cập nhật dữ liệu người dùng thành công");
+                if (docSnap.exists()) {
+                    await updateDoc(docRef, {
+                        fullName: name,
+                        phoneNumber: phoneNumber,
+                        userImage: downloadURL,
+                    });
+
+                    saveUserData({
+                        ...userData,
+                        name: name,
+                        phoneNumber: phoneNumber,
+                        userImage: downloadURL,
+                    });
+
+                    navigation.navigate("ProfileDetails");
+
+                    console.log("Cập nhật dữ liệu người dùng thành công");
+                }
             }
         } catch (error) {
             console.error(
@@ -92,6 +152,20 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
             setUserImage(result.assets[0].uri);
         }
     };
+
+    const handleInvalidePhoneNumber = () => {
+        if (phoneNumber.length < 10 || phoneNumber.length === 0) {
+            return false;
+        }
+        return true;
+    }
+
+    const handleInvalideName = () => {
+        if (name.length === 0) {
+            return false;
+        }
+        return true;
+    }
 
     return (
         <View style={styles.container}>
@@ -127,7 +201,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                     <View style={styles.row_space_between}>
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <TextInput
-                                style={styles.text}
+                                style={[styles.text, { width: "100%" }]}
                                 onChangeText={setName}
                                 value={name}
                             />
@@ -203,7 +277,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                     </View>
                 </View>
             </ScrollView>
-            {isLoading}
+            {isLoading()}
         </View>
     );
 };

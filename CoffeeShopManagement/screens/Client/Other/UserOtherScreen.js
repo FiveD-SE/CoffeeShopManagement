@@ -13,24 +13,13 @@ import FontAwesome6 from "react-native-vector-icons/FontAwesome6";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { removeToken } from "../../../services/authServices";
 import * as Updates from "expo-updates";
-import { getUserData } from "../../../api";
-import store from "../../../redux/store/store";
-
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connect } from "react-redux";
 
 const UserOtherScreen = ({ userData }) => {
 	const navigation = useNavigation();
-	const [phoneNumber, setPhoneNumber] = useState("");
-
-	const [form, setForm] = useState({
-		emailNotifications: true,
-		pushNotifications: false,
-	});
-
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: "#F8F7FA" }}>
 			<View style={styles.container}>
@@ -164,7 +153,7 @@ const UserOtherScreen = ({ userData }) => {
 							<View style={[styles.rowWrapper, styles.rowFirst]}>
 								<Pressable
 									onPress={() => {
-										// handle onPress
+										navigation.navigate("UserQuestions");
 									}}
 									style={styles.row}
 								>
@@ -254,7 +243,7 @@ const UserOtherScreen = ({ userData }) => {
 							<View style={[styles.rowWrapper, styles.rowLast]}>
 								<Pressable
 									onPress={() => {
-										// handle onPress
+										navigation.navigate("UserAboutAppVersion");
 									}}
 									style={styles.row}
 								>

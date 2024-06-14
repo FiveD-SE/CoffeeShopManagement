@@ -116,18 +116,20 @@ const UserHomeScreen = ({
 	};
 
 	useEffect(() => {
-		const fetchData = async () => {
-			const notifications = await getDocs(collection(db, "user_notifications"));
-			const unreadNotifications = notifications.docs.filter(
-				(doc) =>
-					doc.data().notificationStatus === false &&
-					doc.data().userId === userData.id
-			);
+		const unsubscribe = onSnapshot(collection(db, "user_notifications"), (snapshot) => {
+			const unreadNotifications = [];
+			snapshot.forEach((doc) => {
+				const data = doc.data();
+				if (data.userId === userData.id && !data.notificationStatus) {
+					unreadNotifications.push(data);
+				}
+			});
+			unreadNotifications.sort((a, b) => b.buyCount - a.buyCount);
 			setUnreadNotificationCount(unreadNotifications.length);
-		};
+		});
 
-		fetchData();
-	}, [isFocused]);
+		return () => unsubscribe();
+	}, []);
 
 	useEffect(() => {
 		const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
@@ -150,7 +152,6 @@ const UserHomeScreen = ({
 	const goToBestSellerScreen = () => navigation.navigate("BestSeller");
 	const goToNotificationScreen = () => navigation.navigate("UserNotification");
 
-	// Fetch all products
 	useEffect(() => {
 		const fetchProducts = async () => {
 			const querySnapshot = await getDocs(collection(db, "products"));
@@ -164,7 +165,6 @@ const UserHomeScreen = ({
 		fetchProducts();
 	}, []);
 
-	// Fetch recently viewed products
 	useEffect(() => {
 		const fetchRecentlyViewed = async () => {
 			if (
@@ -177,9 +177,9 @@ const UserHomeScreen = ({
 						const productDocSnap = await getDoc(productDocRef);
 						return productDocSnap.exists()
 							? {
-									...productDocSnap.data(),
-									id: productDocSnap.id,
-							  }
+								...productDocSnap.data(),
+								id: productDocSnap.id,
+							}
 							: null;
 					})
 				);
