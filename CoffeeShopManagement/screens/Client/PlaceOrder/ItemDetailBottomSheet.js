@@ -68,12 +68,12 @@ const ItemDetailBottomSheet = ({
 		},
 		{
 			size: "M",
-			price: selectedItem.productPrice + 10000,
+			price: selectedItem.productPrice,
 			enabled: selectedItem.size.mediumEnabled,
 		},
 		{
 			size: "L",
-			price: selectedItem.productPrice + 20000,
+			price: selectedItem.productPrice,
 			enabled: selectedItem.size.largeEnabled,
 		},
 	].filter((sizeItem) => sizeItem.enabled);
@@ -139,17 +139,28 @@ const ItemDetailBottomSheet = ({
 		setSelectedToppings(toppings);
 	};
 
+	const formattedSizeItemList = () => {
+		const formattedSizeItemList = [...sizeItemList];
+
+		formattedSizeItemList.forEach((item, index) => {
+			let stepPrice = 10000;
+			if (index === 0) {
+				item.price = selectedItem.productPrice;
+			} else {
+				item.price = formattedSizeItemList[index - 1].price + stepPrice;
+			}
+		});
+
+		return formattedSizeItemList;
+	};
+
 	const renderSizeItemList = () =>
-		sizeItemList.map(({ size, price }, index) => (
+		formattedSizeItemList().map(({ size, price }, index) => (
 			<SizeItem
 				key={index}
 				index={index}
 				size={size}
-				price={
-					size === "S"
-						? formatCurrency(selectedItem?.productPrice)
-						: formatCurrency(price)
-				}
+				price={formatCurrency(price)}
 				isSelected={selectedSizeIndex === index}
 				onPress={handleSizePress}
 			/>

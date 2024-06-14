@@ -14,13 +14,14 @@ import ChooseCouponBottomSheet from "../../../components/Client/BottomSheet/Choo
 import SelectTimeBottomSheet from "../../../components/Client/BottomSheet/SelectTimeBottomSheet";
 import SuccessModal from "../../../components/Client/SuccessModal";
 import CustomButton from "../../../components/Client/Button/CustomButton";
-import { calculateFee } from "../../../services/ghnService"
+import { calculateFee } from "../../../services/ghnService";
 
 import { colors } from "../../../assets/colors/colors";
 import {
 	addDoc,
 	collection,
 	doc,
+	getDoc,
 	getDocs,
 	query,
 	setDoc,
@@ -73,9 +74,12 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 
 	const [modalVisible, setModalVisible] = useState(false);
 
-	const totalProductsPrice = productOrders.reduce((accumulator, currentItem) => {
-		return accumulator + currentItem.totalPrice * currentItem.quantity;
-	}, 0);
+	const totalProductsPrice = productOrders.reduce(
+		(accumulator, currentItem) => {
+			return accumulator + currentItem.totalPrice * currentItem.quantity;
+		},
+		0
+	);
 
 	const paymentMethods = {
 		cash: { title: "Tiền mặt", imageSource: CASH_ICON },
@@ -192,14 +196,14 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	};
 
 	const handleSelectDeliveryCoupon = (deliveryCoupon) => {
+		console.log("deliveryCoupon: ", deliveryCoupon);
 		if (deliveryCoupon) {
 			setSelectedDeliveryCoupon({
 				deliveryCoupon: deliveryCoupon,
 			});
 			if (deliveryCoupon.discountPrice > deliveryFee) {
 				setDeliveryDiscount(deliveryFee);
-			}
-			else {
+			} else {
 				setDeliveryDiscount(deliveryCoupon.discountPrice);
 			}
 		} else {
@@ -209,15 +213,17 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	};
 
 	const handleSelectDiscountCoupon = (discountCoupon) => {
+		console.log("discountCoupon: ", discountCoupon);
 		if (discountCoupon) {
 			setSelectedDiscountCoupon({
 				discountCoupon: discountCoupon,
 			});
-			const productDiscount = totalProductsPrice * (discountCoupon.discountPrice.discountPercentage / 100);
+			const productDiscount =
+				totalProductsPrice *
+				(discountCoupon.discountPrice.discountPercentage / 100);
 			if (productDiscount > discountCoupon.discountPrice.maximumDiscount) {
 				setProductDiscount(discountCoupon.discountPrice.maximumDiscount);
-			}
-			else {
+			} else {
 				setProductDiscount(productDiscount);
 			}
 			console.log("discount:", productDiscount);
@@ -343,6 +349,48 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 				});
 				await updateDoc(docRef, { orderId: docRef.id });
 
+				if (selectedDeliveryCoupon) {
+					console.log("selectedDeliveryCoupon: ", selectedDeliveryCoupon);
+					const userVoucherRef = doc(db, "userVouchers", userData.id);
+					const userVoucherSnap = await getDoc(userVoucherRef);
+					const userVoucherData = userVoucherSnap.data();
+					const vouchers = userVoucherData.voucherId || [];
+					const voucherIndex = vouchers.findIndex(
+						(v) => v.id === selectedDeliveryCoupon.deliveryCoupon.voucherId
+					);
+					if (voucherIndex >= 0) {
+						if (vouchers[voucherIndex].quantity === 1) {
+							vouchers.splice(voucherIndex, 1);
+						} else {
+							vouchers[voucherIndex].quantity -= 1;
+						}
+						await updateDoc(userVoucherRef, {
+							voucherId: vouchers,
+						});
+					}
+				}
+
+				if (selectedDiscountCoupon) {
+					console.log("selectedDiscountCoupon: ", selectedDiscountCoupon);
+					const userVoucherRef = doc(db, "userVouchers", userData.id);
+					const userVoucherSnap = await getDoc(userVoucherRef);
+					const userVoucherData = userVoucherSnap.data();
+					const vouchers = userVoucherData.voucherId || [];
+					const voucherIndex = vouchers.findIndex(
+						(v) => v.id === selectedDiscountCoupon.discountCoupon.voucherId
+					);
+					if (voucherIndex >= 0) {
+						if (vouchers[voucherIndex].quantity === 1) {
+							vouchers.splice(voucherIndex, 1);
+						} else {
+							vouchers[voucherIndex].quantity -= 1;
+						}
+						await updateDoc(userVoucherRef, {
+							voucherId: vouchers,
+						});
+					}
+				}
+
 				const userNotificationRef = doc(collection(db, "user_notifications"));
 				const user_notificationId = userNotificationRef.id;
 				const user_notification = {
@@ -399,21 +447,19 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 			if (newDeliveryFee >= 0) {
 				shipFee = newDeliveryFee;
 				totalDiscount += deliveryDiscount;
-			}
-			else {
+			} else {
 				totalDiscount += deliveryFee;
 			}
 
 			totalDiscount += deliveryDiscount;
-		}
-		else {
+		} else {
 			shipFee = deliveryFee;
 		}
 
 		if (selectedDiscountCoupon && selectedDiscountCoupon.discountCoupon) {
 			total -= productDiscount;
 
-			totalDiscount += productDiscount
+			totalDiscount += productDiscount;
 		}
 
 		total += shipFee;
