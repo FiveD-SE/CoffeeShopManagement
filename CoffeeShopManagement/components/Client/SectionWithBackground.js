@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { colors } from "../../assets/colors/colors";
 
 const SectionWithBackground = ({ title, children }) => {
 	return (
@@ -17,7 +18,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FFFFFF",
 		padding: "5%",
 		borderRadius: 20,
-		marginTop: "5%",
+		marginTop: "4%",
 	},
 	titleText: {
 		color: "#3a3a3a",
