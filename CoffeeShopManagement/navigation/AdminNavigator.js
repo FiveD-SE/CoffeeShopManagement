@@ -67,6 +67,9 @@ import AddStaffButton from "./components/AddStaffButton";
 import SignInScreen from "../screens/Client/SignInScreen";
 import ShiftListButton from "../components/Admin/Button/ShiftListButton";
 import AdminSelectBranchScreen from "../screens/Admin/Home/AdminSelectBranchScreen";
+import StorePolicyScreen from "../screens/Client/Other/StorePolicyScreen";
+import UserMembershipScreen from "../screens/Client/Other/UserMembershipScreen";
+import UserAboutAppVersion from "../screens/Client/Other/UserAboutAppVersion";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -104,6 +107,18 @@ const OtherStack = ({ navigation, route }) => {
                 tabBarStyle: { display: "none" },
             });
         } else if (routeName === "AdminEditBranchScreen") {
+            navigation.setOptions({
+                tabBarStyle: { display: "none" },
+            });
+        } else if (routeName === "StorePolicyScreen") {
+            navigation.setOptions({
+                tabBarStyle: { display: "none" },
+            });
+        } else if (routeName === "UserMembershipScreen") {
+            navigation.setOptions({
+                tabBarStyle: { display: "none" },
+            });
+        } else if (routeName === "UserAboutAppVersion") {
             navigation.setOptions({
                 tabBarStyle: { display: "none" },
             });
@@ -322,6 +337,39 @@ const OtherStack = ({ navigation, route }) => {
                 component={AddPromotionScreen}
                 options={{
                     headerTitle: "Quản lý khuyến mãi",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="StorePolicyScreen"
+                component={StorePolicyScreen}
+                options={{
+                    headerTitle: "Chính sách cửa hàng",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="UserMembershipScreen"
+                component={UserMembershipScreen}
+                options={{
+                    headerTitle: "Chính sách cửa hàng",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="UserAboutAppVersion"
+                component={UserAboutAppVersion}
+                options={{
+                    headerTitle: "Phiên bản ứng dụng",
                     headerLeftContainerStyle: {
                         paddingLeft: "5%",
                     },
