@@ -3,24 +3,41 @@ import React, { useState } from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import Icon from 'react-native-vector-icons/Entypo'
 import Checkbox from 'expo-checkbox'
+import { MaterialIcons } from '@expo/vector-icons'
 
-export default function ShiftCard2({ item }) {
-    const [toggleCheckBox, setToggleCheckBox] = useState(true)
+export default function ShiftCard2({ item, onPress }) {
+    const convertTimestampToDate = (timestamp) => {
+        const isSeconds = timestamp.seconds !== undefined;
+
+        const ts = isSeconds ? timestamp.seconds * 1000 : timestamp;
+
+        const date = new Date(ts);
+
+        return date;
+    };
+
+    const formatTime = (date) => {
+        if (date === undefined) {
+            return "";
+        }
+        else {
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${hours}:${minutes}`;
+        }
+    };
     return (
-        <TouchableOpacity style={styles.cardWrapper}>
+        <TouchableOpacity style={styles.cardWrapper} onPress={onPress}>
             <View>
-                <Text style={styles.nameShift}>{item.nameShift}</Text>
-                <View style={{ flexDirection: 'row', marginBottom: '3%' }}>
+                <Text style={styles.nameShift}>{item.shiftName}</Text>
+                <View style={{ flexDirection: 'row' }}>
                     <Feather name='clock' size={20} color={'#9c9c9c'} />
                     <View style={styles.timeWrapper}>
-                        <Text style={styles.timeText}>{item.startTime} - {item.endTime}</Text>
+                        <Text style={styles.timeText}>{formatTime(convertTimestampToDate(item.startTime))} - {formatTime(convertTimestampToDate(item.endTime))}</Text>
                     </View>
                 </View>
             </View>
-            <Checkbox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={(newValue) => setToggleCheckBox(newValue)} />
+            <MaterialIcons name="keyboard-arrow-right" size={30} color="rgba(58,58,58,0.5)" />
         </TouchableOpacity>
     )
 }
@@ -46,9 +63,9 @@ const styles = StyleSheet.create({
         marginStart: '3%'
     },
     nameShift: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: '600',
-        marginBottom: '3%'
+        marginBottom: '6%'
     },
     timeText: {
         color: '#006c5e',

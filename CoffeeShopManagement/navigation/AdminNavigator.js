@@ -65,6 +65,7 @@ import DetailShiftScreen from "../screens/Admin/DetailShiftScreen";
 import AddStaffButton from "./components/AddStaffButton";
 
 import SignInScreen from "../screens/Client/SignInScreen";
+import ShiftListButton from "../components/Admin/Button/ShiftListButton";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -272,7 +273,7 @@ const OtherStack = ({ navigation, route }) => {
                         paddingLeft: "5%",
                     },
                     headerLeft: () => <HeaderBackButton />,
-                    headerRight: () => <AddShiftButton />,
+                    headerRight: () => <ShiftListButton />,
                 }}
             />
             <Stack.Screen
@@ -284,7 +285,6 @@ const OtherStack = ({ navigation, route }) => {
                         paddingLeft: "5%",
                     },
                     headerLeft: () => <HeaderBackButton />,
-                    headerRight: () => <AddShiftButton2 />,
                 }}
             />
             <Stack.Screen
