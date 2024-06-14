@@ -1,183 +1,258 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { Dropdown } from 'react-native-element-dropdown'
 import { BarChart, LineChart } from 'react-native-gifted-charts'
-
-const WeekData = [
-  { label: "T2", value: 50 },
-  { label: "T3", value: 100 },
-  { label: "T4", value: 350 },
-  { label: "T5", value: 200 },
-  { label: "T6", value: 550 },
-  { label: "T7", value: 300 },
-  { label: "CN", value: 150 },
-]
-
-const QuarterData = [
-  { label: "First", value: 1000 },
-  { label: "Second", value: 3700 },
-  { label: "Third", value: 5000 },
-  { label: "Fourth", value: 2900 },
-]
-
-const MonthData = [
-  { label: "Jan", value: 500 },
-  { label: "Feb", value: 1000 },
-  { label: "Mar", value: 3500 },
-  { label: "Apr", value: 2000 },
-  { label: "May", value: 5500 },
-  { label: "Jun", value: 3000 },
-  { label: "Jul", value: 1500 },
-  { label: "Aug", value: 4000 },
-  { label: "Sep", value: 4500 },
-  { label: "Oct", value: 5000 },
-  { label: "Nov", value: 2500 },
-  { label: "Dec", value: 6000 },
-]
-
-const YearData = [
-  { label: "2019", value: 50910 },
-  { label: "2020", value: 10000 },
-  { label: "2021", value: 35030 },
-  { label: "2022", value: 20030 },
-  { label: "2023", value: 55010 },
-  { label: "2024", value: 30040 },
-]
+import Entypo from '@expo/vector-icons/Entypo';
+import { useNavigation } from '@react-navigation/native';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../../../services/firebaseService';
 
 const viewByRevenue = [
   { label: "Tuần", value: "Week" },
   { label: "Tháng", value: "Month" },
-  { label: "Quý", value: "Quarter " },
+  { label: "Quý", value: "Quarter" },
   { label: "Năm", value: "Year" }
-]
+];
 
 const viewByStatic = [
   { label: "Tuần", value: "Week" },
   { label: "Tháng", value: "Month" },
-  { label: "Quý", value: "Quarter " },
+  { label: "Quý", value: "Quarter" },
   { label: "Năm", value: "Year" }
-]
+];
 
-const AdminRevenueScreen = () => {
+const AdminRevenueScreen = ({ route }) => {
+  const navigation = useNavigation();
+  const branch = route.params ? route.params.branch : undefined;
   const [isRevenueFocus, setIsRevenueFocus] = useState(false);
   const [isStaticFocus, setIsStaticFocus] = useState(false);
-  const [viewByRevenueValue, setViewByRevenueValue] = useState("Week")
+  const [viewByRevenueValue, setViewByRevenueValue] = useState("Week");
   const [viewByStaticValue, setViewByStaticValue] = useState("Week");
 
-  const [revenueData, setRevenueData] = useState();
-  const [staticData, setStaticData] = useState();
+  const [revenueData, setRevenueData] = useState([]);
+  const [staticData, setStaticData] = useState([]);
+
+  const [ordersData, setOrdersData] = useState([]);
 
   useEffect(() => {
-    switch (viewByRevenueValue) {
-      case "Week":
-        setRevenueData(WeekData);
-        break;
-      case "Month":
-        setRevenueData(MonthData);
-        break;
-      case "Quarter":
-        setRevenueData(QuarterData);
-        break;
-      case "Year":
-        setRevenueData(YearData);
-        break;
-      default:
-        setRevenueData(WeekData);
-        break;
-    }
-  }, [viewByRevenueValue]);
+    if (!branch) return;
+    const unsubscribe = onSnapshot(collection(db, "orders"), (snapshot) => {
+      const ordersData = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.deliveryBranch.branchId === branch.branchId) {
+          ordersData.push(data);
+        }
+      });
+      setOrdersData(ordersData);
+    });
+
+    return () => unsubscribe();
+  }, [branch]);
 
   useEffect(() => {
-    switch (viewByStaticValue) {
-      case "Week":
-        setStaticData(WeekData);
-        break;
-      case "Month":
-        setStaticData(MonthData);
-        break;
-      case "Quarter":
-        setStaticData(QuarterData);
-        break;
-      case "Year":
-        setStaticData(YearData);
-        break;
-      default:
-        setStaticData(WeekData);
-        break;
+    const processData = () => {
+      const currentDate = new Date();
+      let groupedData = [];
+
+      switch (viewByRevenueValue) {
+        case "Week":
+          groupedData = groupDataByWeek(ordersData, currentDate);
+          break;
+        case "Month":
+          groupedData = groupDataByMonth(ordersData, currentDate);
+          break;
+        case "Quarter":
+          groupedData = groupDataByQuarter(ordersData, currentDate);
+          break;
+        case "Year":
+          groupedData = groupDataByYear(ordersData, currentDate);
+          break;
+        default:
+          groupedData = groupDataByWeek(ordersData, currentDate);
+          break;
+      }
+
+      setRevenueData(groupedData);
+    };
+
+    processData();
+  }, [ordersData, viewByRevenueValue]);
+
+  const groupDataByWeek = (orders, date) => {
+    const startOfWeek = getStartOfWeek(date);
+    const endOfWeek = getEndOfWeek(date);
+    let weekData = [];
+
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startOfWeek);
+      day.setDate(day.getDate() + i);
+      const dayOrders = orders.filter(order => {
+        const orderDate = order.orderDate.toDate();
+        return (
+          orderDate.getDate() === day.getDate() &&
+          orderDate.getMonth() === day.getMonth() &&
+          orderDate.getFullYear() === day.getFullYear()
+        );
+      });
+      const totalRevenue = dayOrders.reduce((sum, order) => sum + order.orderTotalPrice, 0);
+      weekData.push({ label: `T${i + 2}`, value: totalRevenue });
     }
-  }, [viewByStaticValue]);
+    return weekData;
+  };
+
+  const groupDataByMonth = (orders, date) => {
+    const currentMonth = date.getMonth();
+    const currentYear = date.getFullYear();
+    let monthData = [];
+
+    for (let i = 0; i <= currentMonth; i++) {
+      const monthOrders = orders.filter(order => {
+        const orderDate = order.orderDate.toDate();
+        return orderDate.getMonth() === i && orderDate.getFullYear() === currentYear;
+      });
+      const totalRevenue = monthOrders.reduce((sum, order) => sum + order.orderTotalPrice, 0);
+      monthData.push({ label: new Date(currentYear, i).toLocaleString('default', { month: 'short' }), value: totalRevenue });
+    }
+    return monthData;
+  };
+
+  const groupDataByQuarter = (orders, date) => {
+    const currentQuarter = Math.floor((date.getMonth() + 3) / 3);
+    const currentYear = date.getFullYear();
+    let quarterData = [];
+
+    for (let i = 1; i <= currentQuarter; i++) {
+      const quarterOrders = orders.filter(order => {
+        const orderDate = order.orderDate.toDate();
+        const orderQuarter = Math.floor((orderDate.getMonth() + 3) / 3);
+        return orderQuarter === i && orderDate.getFullYear() === currentYear;
+      });
+      const totalRevenue = quarterOrders.reduce((sum, order) => sum + order.orderTotalPrice, 0);
+      quarterData.push({ label: `Q${i}`, value: totalRevenue });
+    }
+    return quarterData;
+  };
+
+  const groupDataByYear = (orders, date) => {
+    const currentYear = date.getFullYear();
+    let yearData = [];
+
+    for (let i = currentYear - 5; i <= currentYear; i++) {
+      const yearOrders = orders.filter(order => {
+        const orderDate = order.orderDate.toDate();
+        return orderDate.getFullYear() === i;
+      });
+      const totalRevenue = yearOrders.reduce((sum, order) => sum + order.orderTotalPrice, 0);
+      yearData.push({ label: i.toString(), value: totalRevenue });
+    }
+    return yearData;
+  };
+
+  const getStartOfWeek = (date) => {
+    const start = new Date(date);
+    const day = start.getDay();
+    const diff = start.getDate() - day + (day === 0 ? -6 : 1);
+    start.setDate(diff);
+    start.setHours(0, 0, 0, 0);
+    return start;
+  };
+
+  const getEndOfWeek = (date) => {
+    const end = new Date(getStartOfWeek(date));
+    end.setDate(end.getDate() + 6);
+    end.setHours(23, 59, 59, 999);
+    return end;
+  };
+
+  const handleSelectBranch = () => {
+    navigation.navigate("AdminSelectBranchScreen");
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.sectionContainer}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.title}>Tổng doanh thu</Text>
-
-          <View style={styles.dropDownBox}>
-            <Dropdown
-              style={[styles.dropDown, isRevenueFocus && { borderColor: '#006C5E' }]}
-              data={viewByRevenue}
-              selectedTextStyle={styles.selectedTextStyle}
-              labelField="label"
-              valueField="value"
-              onFocus={() => setIsRevenueFocus(true)}
-              value={viewByRevenueValue}
-              onChange={item => {
-                setViewByRevenueValue(item.value);
-                setIsRevenueFocus(false);
-              }} />
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.container}>
+        <View style={styles.selectBranchContainer}>
+          <View style={styles.row}>
+            <Entypo name="address" size={24} color="black" style={styles.icon} />
+            <Text style={styles.selectBranchText}>{branch ? branch.branchName : "Chọn chi nhánh"}</Text>
           </View>
+          <Pressable onPress={handleSelectBranch}>
+            <Entypo name="chevron-small-down" size={24} color="black" />
+          </Pressable>
         </View>
+        {branch && (
+          <>
+            <View style={styles.sectionContainer}>
+              <View style={styles.headerContainer}>
+                <Text style={styles.title}>Tổng doanh thu</Text>
+                <View style={styles.dropDownBox}>
+                  <Dropdown
+                    style={[styles.dropDown, isRevenueFocus && { borderColor: '#006C5E' }]}
+                    data={viewByRevenue}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    labelField="label"
+                    valueField="value"
+                    onFocus={() => setIsRevenueFocus(true)}
+                    value={viewByRevenueValue}
+                    onChange={item => {
+                      setViewByRevenueValue(item.value);
+                      setIsRevenueFocus(false);
+                    }} />
+                </View>
+              </View>
+              <View style={styles.chartContainer}>
+                <BarChart
+                  noOfSections={5}
+                  barBorderRadius={5}
+                  frontColor="#006C5E"
+                  data={revenueData}
+                  yAxisThickness={0}
+                  xAxisThickness={0}
+                  isAnimated
+                  showValuesAsTopLabel
+                  yAxisLabelFormatter={(value) => value.toFixed(1)}
+                />
+              </View>
+            </View >
 
-        <ScrollView style={styles.chartContainer}>
-          <BarChart
-            noOfSections={5}
-            barBorderRadius={5}
-            frontColor="#006C5E"
-            data={revenueData}
-            yAxisThickness={0}
-            xAxisThickness={0}
-            isAnimated
-            showValuesAsTopLabel
-            yAxisLabelFormatter={(value) => value.toFixed(1)}
-          />
-        </ScrollView>
-      </View >
-
-      <View style={styles.sectionContainer}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.title}>Tăng trưởng</Text>
-          <View style={styles.dropDownBox}>
-            <Dropdown
-              style={[styles.dropDown, isStaticFocus && { borderColor: '#006C5E' }]}
-              data={viewByStatic}
-              selectedTextStyle={styles.selectedTextStyle}
-              labelField="label"
-              valueField="value"
-              onFocus={() => setIsStaticFocus(true)}
-              value={viewByStaticValue}
-              onChange={item => {
-                setViewByStaticValue(item.value);
-                setIsStaticFocus(false);
-              }} />
-          </View>
-        </View>
-        <ScrollView style={styles.chartContainer}>
-          <LineChart
-            noOfSections={5}
-            data={staticData}
-            color={'#006C5E'}
-            thickness={3}
-            dataPointsColor={'#FFA730'}
-            yAxisThickness={0}
-            xAxisThickness={0}
-            isAnimated
-            showValuesAsDataPointsText
-          />
-        </ScrollView>
+            <View style={styles.sectionContainer}>
+              <View style={styles.headerContainer}>
+                <Text style={styles.title}>Tăng trưởng</Text>
+                <View style={styles.dropDownBox}>
+                  <Dropdown
+                    style={[styles.dropDown, isStaticFocus && { borderColor: '#006C5E' }]}
+                    data={viewByStatic}
+                    selectedTextStyle={styles.selectedTextStyle}
+                    labelField="label"
+                    valueField="value"
+                    onFocus={() => setIsStaticFocus(true)}
+                    value={viewByStaticValue}
+                    onChange={item => {
+                      setViewByStaticValue(item.value);
+                      setIsStaticFocus(false);
+                    }} />
+                </View>
+              </View>
+              <View style={styles.chartContainer}>
+                <LineChart
+                  noOfSections={5}
+                  data={staticData}
+                  color={'#006C5E'}
+                  thickness={3}
+                  dataPointsColor={'#FFA730'}
+                  yAxisThickness={0}
+                  xAxisThickness={0}
+                  isAnimated
+                  showValuesAsDataPointsText
+                />
+              </View>
+            </View>
+          </>
+        )}
       </View>
-    </View >
-  )
+    </ScrollView>
+  );
 }
 
 export default AdminRevenueScreen
@@ -226,6 +301,30 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     marginTop: "3%",
-    flex: 1
+  },
+  selectBranchContainer: {
+    flexDirection: "row",
+    width: "100%",
+    height: 50,
+    backgroundColor: "#ffffff",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#DDDDDD",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: "5%"
+  },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  icon: {
+    marginRight: 10
+  },
+  selectBranchText: {
+    fontSize: 16,
+    fontFamily: 'lato-regular',
+    lineHeight: 20,
+    color: '#151515'
   }
 });

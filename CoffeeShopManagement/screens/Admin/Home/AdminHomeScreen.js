@@ -20,8 +20,8 @@ const AdminHomeScreen = ({ userData }) => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalStaffs, setTotalStaffs] = useState(0);
   const [totalUnreadNotification, setTotalUnreadNotification] = useState(0);
-
-
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [totalGrowthAmount, setTotalGrowthAmount] = useState(0);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "admin_notifications"), (snapshot) => {
@@ -34,6 +34,52 @@ const AdminHomeScreen = ({ userData }) => {
       });
       unreadNotifications.sort((a, b) => b.buyCount - a.buyCount);
       setTotalUnreadNotification(unreadNotifications.length);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "orders"), (snapshot) => {
+      const ordersListData = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        ordersListData.push(data);
+      });
+
+      const currentMonth = new Date().getMonth();
+      const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+      const currentYear = new Date().getFullYear();
+
+      const lastMonthOrders = ordersListData.filter((order) => {
+        const orderDate = order.orderDate.toDate();
+        return orderDate.getMonth() === lastMonth && orderDate.getFullYear() === currentYear;
+      });
+
+      const currentMonthOrders = ordersListData.filter((order) => {
+        const orderDate = order.orderDate.toDate();
+        return orderDate.getMonth() === currentMonth && orderDate.getFullYear() === currentYear;
+      });
+
+      const lastMonthRevenue = lastMonthOrders.reduce((acc, cur) => acc + cur.orderTotalPrice, 0);
+      const currentMonthRevenue = currentMonthOrders.reduce((acc, cur) => acc + cur.orderTotalPrice, 0);
+
+      console.log('Last Month Revenue:', lastMonthRevenue);
+      console.log('Current Month Revenue:', currentMonthRevenue);
+      setTotalGrowthAmount(currentMonthRevenue - lastMonthRevenue);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "orders"), (snapshot) => {
+      const ordersListData = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        ordersListData.push(data);
+      });
+      setTotalRevenue(ordersListData.reduce((acc, cur) => acc + cur.orderTotalPrice, 0));
     });
 
     return () => unsubscribe();
@@ -67,6 +113,9 @@ const AdminHomeScreen = ({ userData }) => {
     return () => unsubscribe();
   }, []);
 
+  const formatCurrency = (value) => {
+    return value.toLocaleString('vi', { style: 'currency', currency: 'VND' });
+  };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -136,14 +185,14 @@ const AdminHomeScreen = ({ userData }) => {
             <View style={[styles.iconComponentContainer, { padding: "6%", backgroundColor: "#FFFAE6" }]}>
               <Icon name="money-bills" size={30} color="#FFC700" />
             </View>
-            <Text style={[styles.dataNumber, { marginTop: "3%" }]}>100.000.000</Text>
+            <Text style={[styles.dataNumber, { marginTop: "3%" }]}>{formatCurrency(Number(totalRevenue))}</Text>
             <Text style={[styles.dataName, { marginTop: "1%" }]}>Tổng doanh thu</Text>
           </View>
           <View style={[styles.data, { flex: 1, justifyContent: "center", alignItems: "center", padding: "3%", marginTop: "3%" }]}>
             <View style={[styles.iconComponentContainer, { padding: "6%", backgroundColor: "#FFEACC" }]}>
               <FontAwesome name="line-chart" size={30} color="#FF9800" />
             </View>
-            <Text style={[styles.dataNumber, { marginTop: "3%" }]}>33.300.000</Text>
+            <Text style={[styles.dataNumber, { marginTop: "3%" }]}>{formatCurrency(Number(totalGrowthAmount))}</Text>
             <Text style={[styles.dataName, { marginTop: "1%" }]}>Tăng trưởng</Text>
           </View>
         </View>
@@ -252,13 +301,13 @@ const styles = StyleSheet.create({
   },
   notificationCount: {
     position: 'absolute',
+    height: 20,
+    width: 20,
     right: 0,
-    top: 0,
+    top: -4,
     backgroundColor: '#C80036',
     color: 'white',
     borderRadius: 10,
-    width: 20,
-    height: 20,
     textAlign: 'center',
     fontSize: 12,
     lineHeight: 19,
