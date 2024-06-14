@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { StyleSheet, Text, View, ScrollView, Platform } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
 import Toast from "react-native-toast-message";
 
@@ -74,6 +74,8 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 
 	const [modalVisible, setModalVisible] = useState(false);
 
+	const [isChangeAddress, setIsChangeAddress] = useState(false);
+
 	const totalProductsPrice = productOrders.reduce(
 		(accumulator, currentItem) => {
 			return accumulator + currentItem.totalPrice * currentItem.quantity;
@@ -132,6 +134,18 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 	const handleSelectTime = () => {
 		selectTimeBottomSheetRef.current.present();
 	};
+
+	const isFocused = useIsFocused();
+
+	useEffect(() => {
+		if (isFocused) {
+			setSelectedDeliveryCoupon(null);
+			// setDeliveryDiscount(0);
+			// setDeliveryFee(null);
+			setIsChangeAddress(true);
+		}
+		console.log("isChange: ", isChangeAddress)
+	}, [isFocused, selectedAddress]);
 
 	const renderDeliveryList = () => {
 		const delivery = deliveryOption;
@@ -201,7 +215,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 			setSelectedDeliveryCoupon({
 				deliveryCoupon: deliveryCoupon,
 			});
-			if (deliveryCoupon.discountPrice > deliveryFee) {
+			if (deliveryFee !== 0 && deliveryCoupon.discountPrice > deliveryFee) {
 				setDeliveryDiscount(deliveryFee);
 			} else {
 				setDeliveryDiscount(deliveryCoupon.discountPrice);
@@ -477,7 +491,6 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 
 	useEffect(() => {
 		calculateTotalPrice();
-		console.log(deliveryFee);
 	});
 
 	useEffect(() => {
@@ -516,11 +529,27 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 		if (selectedDeliveryCoupon || selectedDiscountCoupon) {
 			chooseCouponBottomSheetRef.current.close();
 		}
+		if (!selectedDiscountCoupon) {
+			setProductDiscount(0);
+		}
+		if (!selectedDeliveryCoupon) {
+			setDeliveryDiscount(0)
+		}
 	}, [selectedDeliveryCoupon, selectedDiscountCoupon]);
 
 	useEffect(() => {
 		if (addresses && selectedBranch) {
-			calculateShippingFee(addresses, selectedBranch);
+			if (addresses.districtId === selectedBranch.districtId &&
+				addresses.provinceId === selectedBranch.provinceId &&
+				addresses.wardId === selectedBranch.wardId) {
+				setDeliveryFee(0);
+			}
+			else {
+				calculateShippingFee(addresses, selectedBranch);
+			}
+		}
+		else {
+			setDeliveryFee(0);
 		}
 	}, [addresses, selectedBranch]);
 
@@ -572,6 +601,9 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 				onSelectDeliveryCoupon={handleSelectDeliveryCoupon}
 				onSelectDiscountCoupon={handleSelectDiscountCoupon}
 				totalProductsPrice={totalProductsPrice}
+				deliveryFee={deliveryFee}
+				isChangeAddress={isChangeAddress}
+				setIsChangeAddress={setIsChangeAddress}
 			/>
 			<SelectTimeBottomSheet
 				bottomSheetRef={selectTimeBottomSheetRef}
