@@ -222,7 +222,7 @@ const UserOtherScreen = ({ userData }) => {
 							<View style={styles.rowWrapper}>
 								<Pressable
 									onPress={() => {
-										// handle onPress
+										navigation.navigate("UserMembershipScreen");
 									}}
 									style={styles.row}
 								>
