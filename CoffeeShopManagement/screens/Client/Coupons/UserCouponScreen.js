@@ -18,6 +18,7 @@ import {
 	getDoc,
 	getDocs,
 	limit,
+	onSnapshot,
 	orderBy,
 	query,
 	where,
@@ -182,7 +183,17 @@ function UserCouponScreen({ userData }) {
 					const data = doc.data();
 					voucherList.push({ ...data, id: doc.id });
 				});
-				setVoucherItemList(voucherList);
+
+				const formattedVoucherList = voucherList
+					.map((voucher) => ({
+						...voucher,
+						expirationDate: formatDate(
+							convertTimestampToDate(voucher.expirationDate)
+						),
+					}))
+					.slice(0, 3);
+
+				setVoucherItemList(formattedVoucherList);
 			} catch (error) {
 				console.error(error);
 			}
@@ -197,45 +208,50 @@ function UserCouponScreen({ userData }) {
 					collection(db, "userVouchers"),
 					where("userId", "==", userData.id)
 				);
-				const querySnapshot = await getDocs(userVouchersQuery);
+				const unsubscribe = onSnapshot(userVouchersQuery, async (snapshot) => {
+					userVoucherRefs.length = 0;
+					userVoucherList.length = 0;
 
-				querySnapshot.forEach((doc) => {
-					const data = doc.data();
-					const voucherIds = data.voucherId;
+					snapshot.forEach((doc) => {
+						const data = doc.data();
+						const voucherIds = data.voucherId;
 
-					voucherIds.forEach((voucher) => {
-						userVoucherRefs.push({
-							id: voucher.id,
-							quantity: voucher.quantity,
+						voucherIds.forEach((voucher) => {
+							userVoucherRefs.push({
+								id: voucher.id,
+								quantity: voucher.quantity,
+							});
 						});
 					});
-				});
 
-				for (const ref of userVoucherRefs) {
-					const voucherDoc = await getDoc(doc(db, "vouchers", ref.id));
-					const voucherData = voucherDoc.data();
+					for (const ref of userVoucherRefs) {
+						const voucherDoc = await getDoc(doc(db, "vouchers", ref.id));
+						const voucherData = voucherDoc.data();
 
-					userVoucherList.push({
-						...voucherData,
-						quantity: ref.quantity,
-						expirationDate: voucherData.expirationDate,
+						userVoucherList.push({
+							...voucherData,
+							quantity: ref.quantity,
+							expirationDate: voucherData.expirationDate,
+						});
+					}
+
+					userVoucherList.sort((a, b) => {
+						return a.expirationDate - b.expirationDate;
 					});
-				}
 
-				userVoucherList.sort((a, b) => {
-					return a.expirationDate - b.expirationDate;
+					const formattedVoucherList = userVoucherList
+						.map((voucher) => ({
+							...voucher,
+							expirationDate: formatDate(
+								convertTimestampToDate(voucher.expirationDate)
+							),
+						}))
+						.slice(0, 3);
+
+					setUserVoucherItemList(formattedVoucherList);
 				});
 
-				const formattedVoucherList = userVoucherList
-					.map((voucher) => ({
-						...voucher,
-						expirationDate: formatDate(
-							convertTimestampToDate(voucher.expirationDate)
-						),
-					}))
-					.slice(0, 3);
-
-				setUserVoucherItemList(formattedVoucherList);
+				return () => unsubscribe();
 			} catch (error) {
 				console.error(error);
 			}
@@ -458,8 +474,8 @@ const styles = StyleSheet.create({
 		flexDirection: "column",
 		alignItems: "flex-start",
 		backgroundColor: "#FFFFFF",
-		paddingVertical: 15,
-		paddingHorizontal: 20,
+		paddingVertical: "6%",
+		paddingHorizontal: "4%",
 		gap: 10,
 		borderRadius: 5,
 		borderWidth: 1,

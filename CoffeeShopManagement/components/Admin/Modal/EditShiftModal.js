@@ -1,16 +1,19 @@
 import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import ModalHeader from '../Client/Header/ModalHeader'
+import ModalHeader from '../../Client/Header/ModalHeader'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
-import ColorButton from './Button/ColorButton'
+import ColorButton from '../Button/ColorButton'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Toast from 'react-native-toast-message';
 import { collection, addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
-import { db, uploadImageToFirebase } from "../../services/firebaseService";
+import { db, uploadImageToFirebase } from "../../../services/firebaseService";
+import { colors } from '../../../assets/colors/colors'
 
-const AddShiftModal = ({ visible, onClose }) => {
-    const [modalHeight, setModalHeight] = useState('40%'); // Kích thước mặc định của modal
+const EditShiftModal = ({ visible, onClose, shift }) => {
+   
+    const [modalHeight, setModalHeight] = useState('40%');
+    const [hasChanges, setHasChanges] = useState(false);
 
     const [shiftName, setShiftName] = useState('');
     const [startTime, setStartTime] = useState(new Date());
@@ -20,6 +23,15 @@ const AddShiftModal = ({ visible, onClose }) => {
     const [endTime, setEndTime] = useState(new Date());
     const [selectEndTimePickerShow, setSelectEndTimePickerShow] = useState(false);
     const [isEndTimeChange, setIsEndTimeChange] = useState(false);
+
+    useEffect(() => {
+        if (shift) {
+            setShiftName(shift.shiftName || '');
+            setStartTime(shift.startTime.toDate());
+            setEndTime(shift.endTime.toDate());
+            setHasChanges(false);
+        }
+    }, [shift]);
 
     useEffect(() => {
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -46,6 +58,7 @@ const AddShiftModal = ({ visible, onClose }) => {
         setSelectStartTimePickerShow(false);
         setStartTime(currentDate);
         setIsStartTimeChange(true);
+        setHasChanges(true);
     };
 
     const showEndTimePicker = () => {
@@ -57,6 +70,7 @@ const AddShiftModal = ({ visible, onClose }) => {
         setSelectEndTimePickerShow(false);
         setEndTime(currentDate);
         setIsEndTimeChange(true);
+        setHasChanges(true);
     };
 
     const formatTime = (date) => {
@@ -70,36 +84,24 @@ const AddShiftModal = ({ visible, onClose }) => {
         }
     };
 
-    useEffect(() => {
-        if (visible) {
-            resetForm();
-        }
-    }, [visible]);
-
-    const resetForm = () => {
-        setShiftName('');
-        setStartTime(new Date());
-        setEndTime(new Date());
-        setIsStartTimeChange(false);
-        setIsEndTimeChange(false);
-    };
-
     const handleCancel = () => {
-        resetForm();
+        setHasChanges(false);
         onClose();
     };
 
-    const handleAddShift = async () => {
+    const handleEditShift = async () => {
         let errorMessage = null;
-        if (!shiftName) {
-            errorMessage = "Vui lòng nhập tên ca làm";
-        }
-        else if (!isStartTimeChange) {
-            errorMessage = "Vui lòng chọn giờ bắt đầu";
+        if (!hasChanges) {
+            Toast.show({
+                type: 'info',
+                text1: 'Thông báo',
+                text2: 'Bạn chưa thay đổi thông tin của chi nhánh',
+            });
+            return;
         }
 
-        else if (!isEndTimeChange) {
-            errorMessage = "Vui lòng chọn giờ kết thúc";
+        if (!shiftName) {
+            errorMessage = "Vui lòng nhập tên ca làm";
         }
 
         if (errorMessage) {
@@ -117,36 +119,42 @@ const AddShiftModal = ({ visible, onClose }) => {
             return;
         }
 
+        const selectedIds = {
+            shiftName: shiftName,
+            startTime: startTime,
+            endTime: endTime,
+        };
+
         try {
-            const docRef = await addDoc(collection(db, "shifts"), {
-                shiftName: shiftName,
-                startTime: startTime,
-                endTime: endTime,
-                dateCreated: new Date(),
-            });
-            const shiftId = docRef.id;
-
-            await updateDoc(doc(collection(db, "shifts"), shiftId), {
-                shiftId: shiftId,
-            });
-
+            await updateDoc(doc(db, "shifts", shift.shiftId), selectedIds);
             Toast.show({
                 type: "success",
                 text1: "Thành công",
-                text2: "Ca làm việc đã được thêm mới",
+                text2: "Đã chỉnh sửa ca làm việc",
+                text1Style: {
+                    fontSize: 16,
+                    fontFamily: "lato-bold",
+                },
+                text2Style: {
+                    fontSize: 12,
+                    fontFamily: "lato-regular",
+                    color: colors.black_100,
+                },
             });
         } catch (error) {
-            console.log(error);
             Toast.show({
                 type: "error",
                 text1: "Lỗi",
-                text2: "Có lỗi xảy ra khi thêm ca làm",
+                text2: "Có lỗi xảy ra khi chỉnh sửa ca làm việc",
             });
+            console.log(error);
         }
-
-        resetForm();
         onClose();
     };
+
+    useEffect(()=>{
+        console.log(hasChanges);
+    },[hasChanges])
 
     return (
         <Modal
@@ -156,7 +164,7 @@ const AddShiftModal = ({ visible, onClose }) => {
             onRequestClose={handleCancel}>
             <View style={styles.modalContainer}>
                 <View style={[styles.modalContent, { height: modalHeight }]}>
-                    <ModalHeader title="Ca làm việc mới" onClose={onClose} />
+                    <ModalHeader title="Chỉnh sửa ca làm việc" onClose={onClose} />
                     <View style={styles.bodyModal}>
                         <Text style={styles.header}>Thông tin ca làm việc</Text>
                         <View style={styles.inputBox}>
@@ -167,6 +175,7 @@ const AddShiftModal = ({ visible, onClose }) => {
                                 value={shiftName}
                                 onChangeText={(text) => {
                                     setShiftName(text)
+                                    setHasChanges(true);
                                 }} />
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: '4%', }}>
@@ -176,8 +185,8 @@ const AddShiftModal = ({ visible, onClose }) => {
                                 onPress={showStartTimePicker}
                             >
                                 <Text
-                                    style={!isStartTimeChange ? styles.input : styles.selectedText}>
-                                    {!isStartTimeChange ? "Giờ mở cửa" : formatTime(startTime)}
+                                    style={!startTime ? styles.input : styles.selectedText}>
+                                    {!startTime ? "Giờ mở cửa" : formatTime(startTime)}
                                 </Text>
                                 <Feather name='clock' size={24} />
                             </TouchableOpacity>
@@ -193,8 +202,8 @@ const AddShiftModal = ({ visible, onClose }) => {
                             <TouchableOpacity
                                 style={styles.addTime}
                                 onPress={showEndTimePicker}>
-                                <Text style={!isEndTimeChange ? styles.input : styles.selectedText}>
-                                    {!isEndTimeChange ? "Giờ đóng cửa" : formatTime(endTime)}
+                                <Text style={!endTime ? styles.input : styles.selectedText}>
+                                    {!endTime ? "Giờ đóng cửa" : formatTime(endTime)}
                                 </Text>
                                 <Feather name='clock' size={24} />
                             </TouchableOpacity>
@@ -208,9 +217,9 @@ const AddShiftModal = ({ visible, onClose }) => {
                             )}
                         </View>
                         <ColorButton
-                            OnPress={handleAddShift}
+                            OnPress={handleEditShift}
                             color="#00A188"
-                            text="Thêm mới"
+                            text="Chỉnh sửa"
                             textColor="#ffffff"
                         />
                     </View>
@@ -289,4 +298,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default AddShiftModal
+export default EditShiftModal

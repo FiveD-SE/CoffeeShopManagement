@@ -27,7 +27,7 @@ import { connect } from "react-redux";
 
 const UserPlaceOrderScreen = ({ addressStatus }) => {
 	const navigation = useNavigation();
-	const [modalVisible, setModalVisible] = useState(addressStatus);
+	const [modalVisible, setModalVisible] = useState(false);
 	const [selectedItem, setSelectedItem] = useState(null);
 	const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
 
@@ -80,10 +80,10 @@ const UserPlaceOrderScreen = ({ addressStatus }) => {
 	};
 
 	const handleOpenItemDetail = (item) => {
-		// if (addressStatus === false) {
-		// 	showRequestAddressModal();
-		// 	return;
-		// }
+		if (addressStatus === false) {
+			showRequestAddressModal();
+			return;
+		}
 		setSelectedItem(item);
 		setIsItemDetailVisible(true);
 	};

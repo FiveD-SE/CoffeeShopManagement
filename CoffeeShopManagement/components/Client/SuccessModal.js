@@ -12,7 +12,7 @@ import {
 import { colors } from "../../assets/colors/colors";
 import LottieView from "lottie-react-native";
 import CustomButton from "./Button/CustomButton";
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 
 const modalHeight = Dimensions.get("window").height * 0.45;
 
@@ -20,7 +20,12 @@ const SuccessModal = ({ visible, onClose }) => {
 	const navigation = useNavigation();
 
 	const handleConfirm = () => {
-		navigation.navigate("UserHomeScreen");
+		navigation.dispatch(
+			CommonActions.reset({
+				index: 0,
+				routes: [{ name: "Trang chủ" }],
+			})
+		);
 		onClose();
 	};
 
