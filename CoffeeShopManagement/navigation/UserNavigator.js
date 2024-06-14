@@ -9,9 +9,7 @@ import UserVoucherDetailsScreen from "../screens/Client/Home/UserVoucherDetailsS
 import UserSearchScreen from "../screens/Client/Home/UserSearchScreen";
 import UserBestSellerScreen from "../screens/Client/Home/UserBestSellerScreen";
 import UserFavoriteItemScreen from "../screens/Client/Home/UserFavoriteItemScreen";
-
 import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScreen";
-
 import EditProfileDetail from "../screens/Client/Other/UserEditProfileScreen";
 import ProfileDetails from "../screens/Client/Other/UserProfileDetailScreen";
 import UserEditAddressScreen from "../screens/Client/Other/UserEditAddressScreen";
@@ -50,6 +48,7 @@ import { colors } from "../assets/colors/colors";
 import UserCouponScreen from "../screens/Client/Coupons/UserCouponScreen";
 import UserVoucherScreen from "../screens/Client/Coupons/UserVoucherScreen";
 import UserAboutAppVersion from "../screens/Client/Other/UserAboutAppVersion";
+import UserMembershipScreen from "../screens/Client/Other/UserMembershipScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -601,6 +600,10 @@ const OtherStack = ({ navigation, route }) => {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
+		} else if (routeName === "UserMembershipScreen") {
+			navigation.setOptions({
+				tabBarStyle: { display: "none" },
+			});
 		} else {
 			navigation.setOptions({
 				tabBarStyle: {
@@ -824,6 +827,17 @@ const OtherStack = ({ navigation, route }) => {
 				component={UserAboutAppVersion}
 				options={{
 					headerTitle: "Phiên bản ứng dụng",
+					headerLeftContainerStyle: {
+						paddingLeft: "5%",
+					},
+					headerLeft: () => <HeaderBackButton />,
+				}}
+			/>
+			<Stack.Screen
+				name="UserMembershipScreen"
+				component={UserMembershipScreen}
+				options={{
+					headerTitle: "Chương trình thành viên",
 					headerLeftContainerStyle: {
 						paddingLeft: "5%",
 					},
