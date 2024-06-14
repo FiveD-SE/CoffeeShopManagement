@@ -128,7 +128,7 @@ const UserAddressScreen = ({ userData, route }) => {
 		if (isOrdered) {
 			navigation.navigate("UserOrderConfirmationScreen", {
 				productOrders,
-				selectedBranch,
+				selectedBranch: null,
 				selectedAddress: item,
 			});
 		}

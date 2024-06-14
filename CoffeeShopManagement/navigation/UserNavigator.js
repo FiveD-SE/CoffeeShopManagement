@@ -579,7 +579,7 @@ const OtherStack = ({ navigation, route }) => {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
-		} else if (routeName === "AddNewAddress") {
+		} else if (routeName === "SelectAddress") {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});

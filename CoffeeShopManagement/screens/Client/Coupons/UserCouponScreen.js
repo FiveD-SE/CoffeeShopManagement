@@ -64,6 +64,21 @@ function UserCouponScreen({ userData }) {
 	};
 
 	const renderYourVoucherItemList = () => {
+		if (userVoucherItemList.length === 0) {
+			return (
+				<View style={styles.emptyContainer}>
+					<Image
+						source={require("../../../assets/empty.png")}
+						resizeMode="contain"
+						style={{ width: 64, height: 64 }}
+					/>
+					<Text style={styles.emptyText}>
+						Bạn chưa có voucher nào. Hãy đổi voucher ngay!
+					</Text>
+				</View>
+			);
+		}
+
 		return userVoucherItemList.map((item, index) => (
 			<UserVoucherCard
 				key={index}
@@ -86,7 +101,7 @@ function UserCouponScreen({ userData }) {
 						style={{ width: 64, height: 64 }}
 					/>
 					<Text style={styles.emptyText}>
-						Không có voucher có sẵn để quy đổi
+						Không có voucher nào phù hợp với số điểm của bạn
 					</Text>
 				</View>
 			);
@@ -105,8 +120,6 @@ function UserCouponScreen({ userData }) {
 
 	const changeColorByRank = () => {
 		switch (userRank) {
-			case "Mới":
-				return colors.green_100;
 			case "Đồng":
 				return colors.bronze;
 			case "Bạc":
@@ -127,7 +140,7 @@ function UserCouponScreen({ userData }) {
 
 			if (userDoc.exists()) {
 				setBeanTotal(userDoc.data().credit);
-				let rank = "Mới";
+				let rank = "Đồng";
 				const credit = userDoc.data().credit;
 				let beansToNextRank = 0;
 
@@ -313,7 +326,7 @@ function UserCouponScreen({ userData }) {
 					</View>
 				</View>
 
-				<View style={{ padding: "4%" }}>
+				<View style={{ padding: "4%", gap: 20 }}>
 					<Section
 						title={"Voucher của bạn"}
 						showSubtitle={true}
@@ -466,8 +479,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	emptyText: {
-		color: colors.black_100,
-		fontSize: 16,
+		color: colors.grey_100,
+		fontSize: 14,
 		fontFamily: "lato-bold",
 		marginTop: "4%",
 	},
