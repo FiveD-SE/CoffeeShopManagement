@@ -24,6 +24,13 @@ const UserVoucherDetailsScreen = ({ route, userData, updateUserCredit }) => {
 
 	const { voucherDetails, type } = route.params;
 
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
+	};
+
 	const handleExchangeVoucher = async () => {
 		try {
 			const userVoucherRef = doc(db, "userVouchers", userData.id);
@@ -107,10 +114,23 @@ const UserVoucherDetailsScreen = ({ route, userData, updateUserCredit }) => {
 							{voucherDetails.voucherExchangePrice} điểm
 						</Text>
 					</View>
-					<View style={styles.expirationDateContainer}>
-						<Text style={styles.expirationDateText}>
-							Hết hạn: {voucherDetails.expirationDate}
-						</Text>
+					<View style={{ flexDirection: "row" }}>
+						<View style={styles.expirationDateContainer}>
+							<Text style={styles.expirationDateText}>Hết hạn:</Text>
+							<Text
+								style={[styles.expirationDateText, { color: colors.black_100 }]}
+							>
+								{voucherDetails.expirationDate}
+							</Text>
+						</View>
+						<View style={styles.expirationDateContainer}>
+							<Text style={styles.expirationDateText}>Đơn tối thiểu:</Text>
+							<Text
+								style={[styles.expirationDateText, { color: colors.black_100 }]}
+							>
+								{formatCurrency(voucherDetails.minimumOrderPrice)}
+							</Text>
+						</View>
 					</View>
 					<View style={styles.detailsContainer}>
 						<Text style={styles.detailsTitle}>Chi tiết ưu đãi</Text>
@@ -163,7 +183,7 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		flex: 1,
-		padding: "6%",
+		padding: "4%",
 	},
 	titleContainer: {},
 	title: {
@@ -186,11 +206,13 @@ const styles = StyleSheet.create({
 		fontFamily: "lato-regular",
 	},
 	expirationDateContainer: {
+		flex: 1,
 		marginTop: "4%",
+		marginHorizontal: "1%",
 		backgroundColor: colors.grey_10,
 		paddingVertical: "2%",
 		paddingHorizontal: "6%",
-		borderRadius: 20,
+		borderRadius: 12,
 		borderWidth: 1,
 		borderColor: colors.grey_50,
 		alignSelf: "flex-start",

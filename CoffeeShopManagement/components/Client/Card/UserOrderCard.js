@@ -1,17 +1,28 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View, Platform } from "react-native";
+import {
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+	Platform,
+	TouchableOpacity,
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { colors } from "../../../assets/colors/colors";
 
 const UserOrderCard = ({ orderId, status, total, onPress }) => {
-
 	const setOrderStatusIcon = (status) => {
 		switch (status) {
 			case 1:
-				return "shipping-fast";
+				return "hourglass";
 			case 2:
-				return "check-circle";
+				return "compass";
 			case 3:
+				return "shipping-fast";
+			case 4:
+				return "check-circle";
+			case 5:
 				return "times-circle";
 			default:
 				return "";
@@ -23,16 +34,24 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 
 		switch (status) {
 			case 1:
-				backgroundColor = '#C3E2C2';
-				textColor = '#527853';
+				backgroundColor = colors.grey_20;
+				textColor = colors.grey_100;
 				break;
 			case 2:
-				backgroundColor = '#F9E8D9';
-				textColor = '#EE7214';
+				backgroundColor = "#F0F0F9";
+				textColor = "#8080AB";
 				break;
 			case 3:
-				backgroundColor = '#FFCAC2';
-				textColor = '#C81912';
+				backgroundColor = colors.yellow_20;
+				textColor = "#EE7214";
+				break;
+			case 4:
+				backgroundColor = colors.green_20;
+				textColor = colors.green_100;
+				break;
+			case 5:
+				backgroundColor = "#FFE4E5";
+				textColor = colors.error;
 				break;
 			default:
 				break;
@@ -41,18 +60,25 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 		return { backgroundColor, textColor };
 	};
 
-	const formatCurrency = (price) => {
-		return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
 	};
 
 	const setOrderStatus = (status) => {
 		switch (status) {
 			case 1:
-				return "Đang giao";
+				return "Chờ xác nhận";
 			case 2:
-				return "Đã hoàn thành";
+				return "Đang thực hiện";
 			case 3:
-				return "Đã hủy";
+				return "Đang giao";
+			case 4:
+				return "Đã hoàn thành";
+			case 5:
+				return "Đã huỷ";
 			default:
 				return;
 		}
@@ -61,48 +87,58 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 	const { backgroundColor, textColor } = getStatusColors(status);
 
 	return (
-		<Pressable style={styles.orderContainer} onPress={onPress}>
+		<TouchableOpacity
+			style={styles.orderContainer}
+			onPress={onPress}
+			activeOpacity={0.9}
+		>
 			<View style={styles.orderDetails}>
 				<View style={styles.orderId}>
-					<Text style={styles.orderIdText}>Mã đơn hàng:</Text>
-					<Text style={styles.orderIdValue}>#{(orderId.substring(0, 6)).toUpperCase()}</Text>
-				</View>
-				<View style={styles.orderStatus}>
-					<Text style={styles.orderStatusText}>Trạng thái:</Text>
+					<View style={{ flex: 1, flexDirection: "row" }}>
+						<Text style={styles.orderIdText}>Đơn hàng:</Text>
+						<Text style={styles.orderIdValue}>
+							#{orderId.substring(0, 6).toUpperCase()}
+						</Text>
+					</View>
 					<View
 						style={[
 							styles.statusIndicator,
 							{ backgroundColor: backgroundColor },
 						]}
 					>
-						<FontAwesome5 name={setOrderStatusIcon(status)} size={20} color={textColor} />
-						<Text style={[styles.statusText, { color: textColor }]}>  {setOrderStatus(status)}</Text>
+						<FontAwesome5
+							name={setOrderStatusIcon(status)}
+							size={14}
+							color={textColor}
+						/>
+						<Text style={[styles.statusText, { color: textColor }]}>
+							{" "}
+							{setOrderStatus(status)}
+						</Text>
 					</View>
 				</View>
+
 				<View style={styles.orderTotal}>
 					<Text style={styles.orderTotalText}>Tổng tiền:</Text>
-					<Text style={styles.orderTotalValue}>
-						{formatCurrency(total)} VND
-					</Text>
+					<Text style={styles.orderTotalValue}>{formatCurrency(total)}</Text>
 				</View>
 			</View>
-			<Icon name="chevron-right" size={18} />
-		</Pressable>
+			<Icon name="chevron-right" size={14} color={colors.grey_100} />
+		</TouchableOpacity>
 	);
 };
 
 const styles = StyleSheet.create({
 	orderContainer: {
 		backgroundColor: "#FFFFFF",
-		paddingVertical: "3%",
-		paddingHorizontal: "5%",
-		borderRadius: 20,
+		padding: "4%",
+		borderRadius: 16,
 		flexDirection: "row",
 		alignItems: "center",
-		marginBottom: "5%",
+		marginBottom: "4%",
 		...Platform.select({
 			ios: {
-				shadowColor: "#3a3a3a",
+				shadowColor: colors.black_100,
 				shadowOffset: {
 					width: 0,
 					height: 2,
@@ -117,21 +153,22 @@ const styles = StyleSheet.create({
 	},
 	orderDetails: {
 		flex: 1,
+		marginRight: "4%",
 	},
 	orderId: {
 		flexDirection: "row",
 		alignItems: "center",
 	},
 	orderIdText: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
+		fontSize: 16,
 	},
 	orderIdValue: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
-		marginLeft: "2%",
+		fontSize: 16,
+		marginLeft: "4%",
 	},
 	orderStatus: {
 		flexDirection: "row",
@@ -139,15 +176,14 @@ const styles = StyleSheet.create({
 		marginTop: "5%",
 	},
 	orderStatusText: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
+		fontSize: 16,
 	},
 	statusIndicator: {
 		paddingVertical: "1%",
 		paddingHorizontal: "4%",
-		marginLeft: "2%",
-		borderRadius: 30,
+		borderRadius: 100,
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
@@ -155,7 +191,8 @@ const styles = StyleSheet.create({
 	statusText: {
 		color: "#FFA730",
 		fontFamily: "lato-regular",
-		fontSize: 18,
+		fontSize: 12,
+		marginLeft: "2%",
 	},
 	orderTotal: {
 		flexDirection: "row",
@@ -163,15 +200,15 @@ const styles = StyleSheet.create({
 		marginTop: "5%",
 	},
 	orderTotalText: {
-		color: "#3a3a3a",
+		color: colors.grey_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
+		fontSize: 14,
 	},
 	orderTotalValue: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
-		marginLeft: "5%",
+		fontSize: 14,
+		marginLeft: "4%",
 	},
 });
 

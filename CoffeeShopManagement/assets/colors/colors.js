@@ -8,6 +8,7 @@ export const colors = {
 	grey_50: "#CBCBD4",
 	grey_20: "#F8F7FA",
 	grey_10: "#F6F6F6",
+	yellow_20: "#FFF7E5",
 	success: "#4ECB71",
 	error: "#F61A3D",
 	bronze: "#CD7F32",

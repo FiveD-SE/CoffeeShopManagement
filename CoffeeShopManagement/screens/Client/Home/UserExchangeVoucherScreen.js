@@ -16,6 +16,15 @@ const UserExchangeVoucherScreen = ({ userData }) => {
 		navigation.navigate("VoucherDetails", { voucherDetails: item, type });
 	};
 
+	const convertTimestampToDate = (timestamp) => {
+		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
+	};
+
+	const formatDate = (date) => {
+		const options = { year: "numeric", month: "long", day: "numeric" };
+		return date.toLocaleDateString("vi-VN", options);
+	};
+
 	const renderVoucherItem = ({ item }) => {
 		if (voucherItemList.length === 0) {
 			return (
@@ -57,7 +66,16 @@ const UserExchangeVoucherScreen = ({ userData }) => {
 					const data = doc.data();
 					voucherList.push({ ...data, id: doc.id });
 				});
-				setVoucherItemList(voucherList);
+				const formattedVoucherList = voucherList
+					.map((voucher) => ({
+						...voucher,
+						expirationDate: formatDate(
+							convertTimestampToDate(voucher.expirationDate)
+						),
+					}))
+					.slice(0, 3);
+
+				setVoucherItemList(formattedVoucherList);
 			} catch (error) {
 				console.error(error);
 			}
