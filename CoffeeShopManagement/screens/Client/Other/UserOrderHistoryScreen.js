@@ -41,23 +41,32 @@ const OrderHistory = ({ userData }) => {
     const setOrderStatus = (status) => {
         switch (status) {
             case 1:
-                return "Đang giao";
+                return "Chờ xác nhận";
             case 2:
-                return "Đã hoàn thành";
+                return "Đang thực hiện";
             case 3:
-                return "Đã hủy";
+                return "Đang giao";
+            case 4:
+                return "Đã hoàn thành";
+            case 5:
+                return "Đã huỷ";
             default:
-                return "";
+                return;
         }
     };
+
 
     const setOrderStatusIcon = (status) => {
         switch (status) {
             case 1:
-                return "shipping-fast";
+                return "hourglass-start";
             case 2:
-                return "check-circle";
+                return "pause-circle";
             case 3:
+                return "shipping-fast";
+            case 4:
+                return "check-circle";
+            case 5:
                 return "times-circle";
             default:
                 return "";
@@ -65,16 +74,34 @@ const OrderHistory = ({ userData }) => {
     };
 
     const getStatusColors = (status) => {
+        let backgroundColor, textColor;
+
         switch (status) {
             case 1:
-                return { backgroundColor: '#C3E2C2', textColor: '#527853' };
+                backgroundColor = '#C6EBC5';
+                textColor = '#799351';
+                break;
             case 2:
-                return { backgroundColor: '#F9E8D9', textColor: '#EE7214' };
+                backgroundColor = '#FFE8C5';
+                textColor = '#A3A3A3';
+                break;
             case 3:
-                return { backgroundColor: '#FFCAC2', textColor: '#C81912' };
+                backgroundColor = '#B2EBF2';
+                textColor = '#006989';
+                break;
+            case 4:
+                backgroundColor = '#F9E8D9';
+                textColor = '#EE7214';
+                break;
+            case 5:
+                backgroundColor = '#FFCAC2';
+                textColor = '#C81912';
+                break;
             default:
-                return {};
+                break;
         }
+
+        return { backgroundColor, textColor };
     };
 
     const formatCurrency = (price) => {
