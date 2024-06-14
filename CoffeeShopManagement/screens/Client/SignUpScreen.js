@@ -86,9 +86,9 @@ export default function SignUpScreen() {
                 const userNotificationRef = doc(collection(db, "user_notifications"));
                 const user_notificationId = userNotificationRef.id;
                 const user_notification = {
-                    user_notificationId,
+                    notificationId: user_notificationId,
                     notificationContent: "Tạo tài khoản thành công!",
-                    notificationTitle: "Chào mừng bạn đến với Enigma",
+                    notificationTitle: "FiveD Coffee",
                     notificationCreatedDate: new Date(),
                     notificationStatus: false,
                     notificationType: 1,
@@ -100,7 +100,7 @@ export default function SignUpScreen() {
                 const adminNotificationRef = doc(collection(db, "admin_notifications"));
                 const adminNotificationId = adminNotificationRef.id;
                 const adminNotification = {
-                    adminNotificationId,
+                    notificationId: adminNotificationId,
                     notificationContent: `Người dùng ${fullName} đã đăng ký tài khoản`,
                     notificationTitle: "Thông báo mới",
                     notificationCreatedDate: new Date(),

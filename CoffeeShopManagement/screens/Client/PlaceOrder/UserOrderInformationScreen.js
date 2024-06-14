@@ -10,7 +10,6 @@ import RatingModal from "./RatingModal";
 
 const UserOrderInformationScreen = ({ route }) => {
     const { orderData } = route.params;
-    console.log("ORDER DATA: ", orderData);
     const [currentPage, setCurrentPage] = useState(0);
     const [modalVisible, setModalVisible] = useState(false);
 

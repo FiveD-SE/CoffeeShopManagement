@@ -152,7 +152,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                             />
                             <Text style={styles.text}>+84 </Text>
                             <TextInput
-                                style={styles.text}
+                                style={[styles.text, { width: "85%" }]}
                                 onChangeText={setPhoneNumber}
                                 value={phoneNumber}
                             />

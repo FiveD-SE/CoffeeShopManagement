@@ -69,7 +69,7 @@ function AdminNotification() {
 
     const handleOnPressNotification = async (item) => {
         try {
-            const notificationRef = doc(db, 'admin_notifications', item.admin_notificationId);
+            const notificationRef = doc(db, 'admin_notifications', item.notificationId);
 
             await updateDoc(notificationRef, { notificationStatus: true });
 
@@ -115,7 +115,7 @@ function AdminNotification() {
             </View>
             <View style={styles.listNotification}>
                 <Text style={styles.allNotificationText}>Tất cả thông báo</Text>
-                <ScrollView>
+                <ScrollView showsVerticalScrollIndicator={false}>
                     {renderNotificationList()}
                 </ScrollView>
             </View>
@@ -128,7 +128,7 @@ export default AdminNotification;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: '#F8F7FA'
     },
     filter: {
         padding: "5%",
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        width: "80%",
+        width: "100%",
     },
     filterDetail: {
         paddingVertical: "2%",
@@ -149,11 +149,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: "6%",
         backgroundColor: '#FFFFFF',
-        borderColor: '#9D9D9D',
-        borderWidth: 1,
     },
     filterDetailSelected: {
-        borderColor: '#006C5E',
         backgroundColor: '#006C5E'
     },
     filterDetailText: {
@@ -167,7 +164,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     listNotification: {
-        height: "100%",
+        height: "91%",
         padding: "5%",
     },
     allNotificationText: {

@@ -7,7 +7,7 @@ import {
     Platform,
 } from "react-native";
 
-import { Ionicons } from "@expo/vector-icons";
+import Icon from "react-native-vector-icons/FontAwesome6";
 
 import React from "react";
 import { colors } from "../../../assets/colors/colors";
@@ -19,6 +19,7 @@ const UserHomeScreenHeader = ({
     totalPoint,
     onPressBean,
     onPressNotify,
+    unreadNotificationCount,
 }) => {
     return (
         <View style={styles.header}>
@@ -45,7 +46,8 @@ const UserHomeScreenHeader = ({
                     <Text style={styles.iconText}>{totalPoint}</Text>
                 </Pressable>
                 <Pressable style={styles.iconContainer} onPress={onPressNotify}>
-                    <Ionicons name="notifications-outline" size={20} />
+                    {unreadNotificationCount > 0 && <Text style={styles.notificationCount}>{unreadNotificationCount}</Text>}
+                    <Icon name="bell" size={20} />
                 </Pressable>
             </View>
         </View>
@@ -96,8 +98,8 @@ const styles = StyleSheet.create({
         marginRight: "2%",
     },
     iconContainer: {
-        minWidth: 48,
-        minHeight: 48,
+        minWidth: 50,
+        minHeight: 50,
         flexDirection: "row",
         justifyContent: "center",
         alignItems: "center",
@@ -118,5 +120,19 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "lato-regular",
         marginLeft: "10%",
+    },
+    notificationCount: {
+        position: 'absolute',
+        right: 0,
+        top: -4,
+        backgroundColor: '#C80036',
+        color: 'white',
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        textAlign: 'center',
+        fontSize: 12,
+        lineHeight: 19,
+        fontWeight: 'bold',
     },
 });

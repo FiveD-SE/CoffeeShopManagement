@@ -72,25 +72,27 @@ function UserNotification({ userData }) {
 
     const handleOnPressNotification = async (item) => {
         try {
-            const notificationRef = doc(db, 'user_notifications', item.user_notificationId);
+            const notificationRef = doc(db, 'user_notifications', item.notificationId);
 
             await updateDoc(notificationRef, { notificationStatus: true });
 
             const invoicesCollection = collection(db, 'orders');
             const invoiceQuery = query(invoicesCollection);
 
-            const unsubscribe = onSnapshot(invoiceQuery, (querySnapshot) => {
-                const docs = querySnapshot.docs;
-                docs.forEach((doc) => {
-                    if (doc.id === item.orderId && item.notificationType === 2) {
-                        navigation.navigate("DetailBilling", {
-                            orderData: doc.data(),
-                        });
-                    }
+            if (item.notificationType === 2) {
+                const unsubscribe = onSnapshot(invoiceQuery, (querySnapshot) => {
+                    const docs = querySnapshot.docs;
+                    docs.forEach((doc) => {
+                        if (doc.id === item.orderId) {
+                            navigation.navigate("DetailBilling", {
+                                orderData: doc.data(),
+                            });
+                        }
+                    });
                 });
-            });
 
-            return unsubscribe;
+                return unsubscribe;
+            }
         } catch (error) {
             console.error("Error updating notification status: ", error);
         }
@@ -133,7 +135,7 @@ export default connect(mapStateToProps)(UserNotification);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
+        backgroundColor: '#F8F7FA'
     },
     filter: {
         padding: "5%",
@@ -145,6 +147,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         width: "80%",
+        gap: 15,
     },
     filterDetail: {
         paddingVertical: "2%",
@@ -154,11 +157,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: "6%",
         backgroundColor: '#FFFFFF',
-        borderColor: '#9D9D9D',
-        borderWidth: 1,
     },
     filterDetailSelected: {
-        borderColor: '#006C5E',
         backgroundColor: '#006C5E'
     },
     filterDetailText: {
@@ -168,8 +168,6 @@ const styles = StyleSheet.create({
     },
     filterDetailTextSelected: {
         color: 'white',
-        fontFamily: "lato-bold",
-        fontSize: 16,
     },
     listNotification: {
         height: "100%",

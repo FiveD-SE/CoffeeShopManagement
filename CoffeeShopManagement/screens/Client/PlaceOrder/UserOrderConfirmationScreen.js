@@ -346,7 +346,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 				const userNotificationRef = doc(collection(db, "user_notifications"));
 				const user_notificationId = userNotificationRef.id;
 				const user_notification = {
-					user_notificationId,
+					notificationId: user_notificationId,
 					notificationTitle: "Đơn hàng mới",
 					notificationContent: "Đặt hàng thành công!",
 					notificationType: 2,
@@ -360,7 +360,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
 				const adminNotificationRef = doc(collection(db, "admin_notifications"));
 				const admin_notificationId = adminNotificationRef.id;
 				const admin_notification = {
-					admin_notificationId,
+					notificationId: admin_notificationId,
 					notificationTitle: "Đơn hàng mới",
 					notificationContent: "Có đơn hàng mới cần xử lý!",
 					notificationType: 2,

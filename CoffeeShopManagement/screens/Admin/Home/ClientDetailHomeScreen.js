@@ -1,77 +1,81 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View, ScrollView, Text, Image } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../../services/firebaseService";
+const EMPTY_ORDER = require("../../../assets/images/empty_order.png");
 
 const ClientDetailHomeScreen = ({ route }) => {
     const { selectedUser } = route.params;
+    const [userOrdersData, setUserOrdersData] = useState([]);
 
-    const DATA = [
-        {
-            id: 'FIVED-0001',
-            state: 'Hoàn thành',
-            date: '01/01/2024',
-            price: '236.000'
-        },
-        {
-            id: 'FIVED-0002',
-            state: 'Hoàn thành',
-            date: '01/01/2024',
-            price: '236.000'
-        },
-        {
-            id: 'FIVED-0003',
-            state: 'Hoàn thành',
-            date: '01/01/2024',
-            price: '236.000'
-        },
-    ]
+    useEffect(() => {
+        const fetchUserOrders = async () => {
+            const userOrdersCollection = collection(db, 'orders');
+            const userOrdersQuery = query(userOrdersCollection, where('userId', '==', selectedUser?.userId));
+            const userOrdersSnapshot = await getDocs(userOrdersQuery);
+            let userOrdersListData = userOrdersSnapshot.docs.map(doc => doc.data());
+            setUserOrdersData(userOrdersListData);
+        }
+        fetchUserOrders();
+    }, []);
 
     const renderOrdersList = () => (
-        DATA.map((item) => (
-            <View style={styles.labelItem}>
-                <View style={styles.row}>
-                    <Text style={styles.itemId}>{item.id}</Text>
-                    <Text style={styles.itemDate}>{item.date}</Text>
-                </View>
+        userOrdersData.map((item, index) => {
+            const date = new Date(item.orderDate.seconds * 1000).toLocaleDateString("en-US");
+            return (
+                <View style={styles.labelItem} key={index}>
+                    <View style={styles.row}>
+                        <Text style={styles.itemId}>#{(item.orderId.substring(0, 6)).toUpperCase()}</Text>
+                        <Text style={styles.itemDate}>{date}</Text>
+                    </View>
 
-                <View style={styles.row}>
-                    <View style={styles.labelStatus}>
-                        <Text style={styles.itemStatus}>{item.state}</Text>
-                    </View>
-                    <View style={{ flexDirection: 'row' }}>
-                        <Text style={styles.itemPrice}>{item.price}</Text>
-                        <Text style={styles.currency}> VNĐ</Text>
+                    <View style={styles.row}>
+                        <View style={styles.labelStatus}>
+                            <FontAwesome5 name={setOrderStatusIcon(item.orderState)} size={20} color={textColor} />
+                            <Text style={[styles.itemStatus, { color: textColor }]}>  {setOrderStatus(item.orderState)}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={styles.itemPrice}>{item.price}</Text>
+                            <Text style={styles.currency}> VNĐ</Text>
+                        </View>
                     </View>
                 </View>
-            </View>
-        ))
+            )
+        })
     )
 
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.content}>
-                <View style={styles.profile}>
-                    <Image
-                        alt="avatar"
-                        source={{ uri: selectedUser?.userImage }}
-                        style={styles.profileAvatar}
-                    />
+            <View style={styles.profile}>
+                <Image
+                    alt="avatar"
+                    source={{ uri: selectedUser?.userImage }}
+                    style={styles.profileAvatar}
+                />
 
-                    <View style={styles.profileBody}>
-                        <Text style={styles.profileName}>
-                            {selectedUser?.fullName}
-                        </Text>
+                <View style={styles.profileBody}>
+                    <Text style={styles.profileName}>
+                        {selectedUser?.fullName}
+                    </Text>
 
-                        <Text style={styles.profileHandle}>
-                            {selectedUser?.email}
-                        </Text>
+                    <Text style={styles.profileHandle}>
+                        {selectedUser?.email}
+                    </Text>
+                </View>
+            </View>
+            {userOrdersData.length > 0 ? (
+                <ScrollView contentContainerStyle={styles.content}>
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Lịch sử giao dịch</Text>
+                        {renderOrdersList()}
                     </View>
+                </ScrollView>
+            ) : (
+                <View style={styles.emptyOrderContainer}>
+                    <Image source={EMPTY_ORDER} style={styles.emptyOrder} />
                 </View>
-
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Lịch sử giao dịch</Text>
-                    {renderOrdersList()}
-                </View>
-            </ScrollView>
+            )}
         </View>
     );
 };
@@ -95,13 +99,14 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     profile: {
-        marginTop: 15,
         backgroundColor: "#fff",
         borderRadius: 12,
         padding: 10,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
+        marginHorizontal: 10,
+        marginVertical: 10,
     },
     profileAvatar: {
         width: 60,
@@ -183,6 +188,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         lineHeight: 18,
         textAlignVertical: "bottom",
+    },
+    emptyOrder: {
+        width: 100,
+        height: 100,
+    },
+    emptyOrderContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });
 
