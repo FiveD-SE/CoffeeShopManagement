@@ -28,11 +28,6 @@ import BottomSheet from "../../../components/Client/BottomSheet/BottomSheet";
 
 import { useIsOpen } from "../../../utils/IsOpenContext";
 import { connect } from "react-redux";
-import {
-	addToCart,
-	addToFavorites,
-	removeFromFavorites,
-} from "../../../redux/actions/userActions";
 import { db } from "../../../services/firebaseService";
 import { colors } from "../../../assets/colors/colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -458,11 +453,7 @@ const mapStateToProps = (state) => ({
 	userData: state.auth.userData,
 });
 
-const mapDispatchToProps = {
-	addToFavorites,
-	removeFromFavorites,
-	addToCart,
-};
+const mapDispatchToProps = {};
 
 export default connect(
 	mapStateToProps,

@@ -13,10 +13,6 @@ import { useNavigation } from "@react-navigation/native";
 import Section from "../../../components/Client/Section";
 import CartItemCard from "../../../components/Client/Card/CartItemCard";
 import { connect } from "react-redux";
-import {
-	confirmOrder,
-	updateCartItemQuantity,
-} from "../../../redux/actions/userActions";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
 import Toast from "react-native-toast-message";
@@ -367,6 +363,6 @@ const mapStateToProps = (state) => ({
 	userData: state.auth.userData,
 });
 
-const mapDispatchToProps = { confirmOrder, updateCartItemQuantity };
+const mapDispatchToProps = {};
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserCartScreen);

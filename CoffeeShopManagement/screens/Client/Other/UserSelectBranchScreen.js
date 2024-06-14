@@ -40,12 +40,13 @@ export default function UserSelectBranchScreen({ route }) {
 		});
 	};
 
-	const renderBranchItem = (item) => (
+	const renderBranchItem = (item, available) => (
 		<TouchableOpacity
-			style={styles.addressItem}
+			style={[styles.addressItem, !available && { opacity: 0.5 }]}
 			key={item.id}
 			activeOpacity={0.8}
 			onPress={() => handleSelectBranch(item)}
+			disabled={!available}
 		>
 			<View style={styles.imageContainer}>
 				<Image
@@ -72,25 +73,18 @@ export default function UserSelectBranchScreen({ route }) {
 		const fetchBranches = async () => {
 			let nearbyBranch = [];
 			let otherBranch = [];
-			const q = query(
-				collection(db, "branches"),
-				where("provinceId", "==", addresses.provinceId)
-			);
+			const q = query(collection(db, "branches"));
 
 			const querySnapshot = await getDocs(q);
 			querySnapshot.forEach((doc) => {
 				const branchData = doc.data();
 				const branch = { id: doc.id, ...branchData };
-				if (
-					branch.districtId === addresses.districtId &&
-					branch.wardId === addresses.wardId
-				) {
+				if (branch.provinceId === addresses.provinceId) {
 					nearbyBranch.push(branch);
 				} else {
 					otherBranch.push(branch);
 				}
 			});
-
 			setNearbyBranch(nearbyBranch);
 			setOtherBranch(otherBranch);
 		};
@@ -112,11 +106,10 @@ export default function UserSelectBranchScreen({ route }) {
 							</Text>
 						</View>
 					) : (
-						nearbyBranch.map(renderBranchItem)
+						nearbyBranch.map((item) => renderBranchItem(item, true))
 					)}
 				</Section>
-
-				<Section title={"Các chi nhánh khác"}>
+				<Section title={"Chi nhánh khác"}>
 					{otherBranch.length === 0 ? (
 						<View style={styles.emptyContainer}>
 							<Image
@@ -128,7 +121,7 @@ export default function UserSelectBranchScreen({ route }) {
 							</Text>
 						</View>
 					) : (
-						otherBranch.map(renderBranchItem)
+						otherBranch.map((item) => renderBranchItem(item, false))
 					)}
 				</Section>
 			</ScrollView>
