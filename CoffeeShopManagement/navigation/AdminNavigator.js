@@ -66,6 +66,7 @@ import AddStaffButton from "./components/AddStaffButton";
 
 import SignInScreen from "../screens/Client/SignInScreen";
 import ShiftListButton from "../components/Admin/Button/ShiftListButton";
+import AdminSelectBranchScreen from "../screens/Admin/Home/AdminSelectBranchScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -438,6 +439,18 @@ const HomeStack = () => (
             component={DetailBillingScreen}
             options={{
                 headerTitle: "Chi tiết đơn hàng",
+                headerLeftContainerStyle: {
+                    paddingLeft: "5%",
+                },
+                headerLeft: () => <HeaderBackButton />,
+            }}
+        />
+
+        <Stack.Screen
+            name="AdminSelectBranchScreen"
+            component={AdminSelectBranchScreen}
+            options={{
+                headerTitle: "Chọn chi nhánh",
                 headerLeftContainerStyle: {
                     paddingLeft: "5%",
                 },
