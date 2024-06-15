@@ -38,7 +38,13 @@ const UserOrderScreen = ({ userData }) => {
 						console.error(error);
 					}
 				);
-
+				return () => unsubscribe();
+			} catch (error) {
+				console.error(error);
+			}
+		};
+		fetchOrderData();
+	}, []);
     const handleOpenOrderDetail = (item) => {
         navigation.navigate("UserOrderInformationScreen", {
             orderData: item,

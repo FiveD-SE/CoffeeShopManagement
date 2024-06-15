@@ -85,23 +85,6 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 		}).format(amount);
 	};
 
-	const setOrderStatus = (status) => {
-		switch (status) {
-			case 1:
-				return "Chờ xác nhận";
-			case 2:
-				return "Đang thực hiện";
-			case 3:
-				return "Đang giao";
-			case 4:
-				return "Đã hoàn thành";
-			case 5:
-				return "Đã huỷ";
-			default:
-				return;
-		}
-	};
-
 	const { backgroundColor, textColor } = getStatusColors(status);
 
 	return (
