@@ -42,6 +42,14 @@ export default function AdminPayrollScreen() {
     return `${day}/${month}/${year}`;
   };
 
+  const formatDateWithTime = (date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const time = date.toLocaleTimeString();
+    return `${day}/${month}/${year} ${time}`;
+  };
+
   const formatSalary = (salary) => {
     const formattedSalary = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(salary);
     return formattedSalary;
@@ -60,7 +68,8 @@ export default function AdminPayrollScreen() {
         <View style={styles.row}>
           <View style={styles.column}>
             <Text style={[styles.textPrimary, { marginBottom: 15 }]}>Mã bảng lương: {item.payrollId}</Text>
-            <Text style={styles.textSecondary}>{formatDate(item.startDate.toDate())}-{formatDate(item.endDate.toDate())}</Text>
+            <Text style={[styles.textSecondary, { marginBottom: 15 }]}>{formatDate(item.startDate.toDate())}-{formatDate(item.endDate.toDate())}</Text>
+            <Text style={styles.textSecondary}>Ngày tạo: {formatDateWithTime(item.createdAt.toDate())}</Text>
           </View>
           <Pressable onPress={() => { navigation.navigate("AdminPayrollDetailsScreen", { staffs: item.staffs, payrollId: item.payrollId, startDate: item.startDate, endDate: item.endDate, status: item.status, total: caculateTotal() }) }}>
             <FontAwesome name='angle-right' size={32} />
