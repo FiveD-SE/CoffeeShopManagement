@@ -40,17 +40,14 @@ const OrderProgressBar = ({ currentPage, setCurrentPage }) => {
 	const renderStepIndicator = (params) => (
 		<MaterialIcons {...getStepIndicatorIconConfig(params)} />
 	);
-	const onStepPress = (position) => {
-		setCurrentPage(position);
-	};
+
 	return (
 		<StepIndicator
 			currentPosition={currentPage}
 			stepCount={4}
-			onPress={onStepPress}
 			customStyles={styles.customStyles}
 			renderStepIndicator={renderStepIndicator}
-			labels={["Chờ xác nhận", "Đang thực hiện", "Đang giao", "Thành công"]}
+			labels={["Chờ xác nhận", "Đang thực hiện", "Đang giao", "Đã hoàn thành"]}
 		/>
 	);
 };
