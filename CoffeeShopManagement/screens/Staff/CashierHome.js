@@ -5,6 +5,7 @@ import {
 	Image,
 	TouchableOpacity,
 	FlatList,
+	RefreshControl,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import OrderCard1 from "../../components/Staff/OrderCard1";
@@ -15,62 +16,74 @@ import {
 	doc,
 	getDoc,
 	getDocs,
-	onSnapshot,
-	or,
 	orderBy,
 	query,
 	where,
 } from "firebase/firestore";
 import { db } from "../../services/firebaseService";
 import { connect } from "react-redux";
+import { colors } from "../../assets/colors/colors";
 
 const CashierHome = ({ userData }) => {
-	const [phoneNumber, setPhoneNumber] = useState("");
 	const [orderData, setOrderData] = useState([]);
+	const [refreshing, setRefreshing] = useState(false);
 
 	const convertTimestampToDate = (timestamp) => {
 		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
 	};
 
 	const formatDate = (date) => {
-		const options = { year: "numeric", month: "long", day: "numeric" };
+		const options = {
+			month: "long",
+			day: "numeric",
+			hour: "2-digit",
+			minute: "2-digit",
+			second: "2-digit",
+		};
 		return date.toLocaleDateString("vi-VN", options);
 	};
 
-	useEffect(() => {
-		const fetchOrderData = async () => {
-			const unsub = onSnapshot(
-				query(collection(db, "orders"), where("orderState", "==", 1)),
-				async (snapshot) => {
-					const orderList = [];
-					for (const docSnapshot of snapshot.docs) {
-						const order = docSnapshot.data();
-						const userDocRef = doc(db, "users", order.userId);
-						const userDocSnapshot = await getDoc(userDocRef);
-						if (userDocSnapshot.exists()) {
-							const userData = userDocSnapshot.data();
-							order.orderOwner = userData.fullName;
-							orderList.push(order);
-						}
-					}
-					orderList.sort((a, b) => {
-						return b.orderDate.seconds - a.orderDate.seconds;
-					});
-					setOrderData(orderList);
-				}
+	const fetchOrderData = async () => {
+		try {
+			const orderQuery = query(
+				collection(db, "orders"),
+				where("orderState", "==", 1)
 			);
-			return unsub;
-		};
+			const snapshot = await getDocs(orderQuery);
+			const orderList = [];
+			for (const docSnapshot of snapshot.docs) {
+				const order = docSnapshot.data();
+				const userDocRef = doc(db, "users", order.userId);
+				const userDocSnapshot = await getDoc(userDocRef);
+				if (userDocSnapshot.exists()) {
+					const userData = userDocSnapshot.data();
+					order.orderOwner = userData.fullName;
+					orderList.push(order);
+				}
+			}
+			orderList.sort((a, b) => a.orderDate.seconds - b.orderDate.seconds);
+
+			setOrderData(orderList);
+		} catch (error) {
+			console.error("Error fetching orders: ", error);
+		}
+	};
+
+	useEffect(() => {
 		fetchOrderData();
 	}, []);
+
+	const onRefresh = async () => {
+		setRefreshing(true);
+		await fetchOrderData();
+		setRefreshing(false);
+	};
 
 	const navigation = useNavigation();
 	const handleNotification = () => {
 		navigation.navigate("CashierNotification");
 	};
 	const handleDetailOrder = (item) => {
-		console.log(item);
-
 		navigation.navigate("OrderScreen", {
 			selectedOrder: item,
 		});
@@ -80,7 +93,6 @@ const CashierHome = ({ userData }) => {
 	};
 
 	const renderListOrder = () => {
-		console.log(orderData);
 		if (orderData.length === 0) {
 			return (
 				<View style={{ justifyContent: "center", flex: 1 }}>
@@ -114,6 +126,9 @@ const CashierHome = ({ userData }) => {
 							handleDetailOrder={() => handleDetailOrder(item)}
 						/>
 					)}
+					refreshControl={
+						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+					}
 				/>
 			);
 		}
@@ -145,7 +160,7 @@ const CashierHome = ({ userData }) => {
 					<Icon name="bell" size={20} />
 				</TouchableOpacity>
 			</View>
-			<Text style={styles.listOrderText}>Chờ xác nhận</Text>
+			<Text style={styles.listOrderText}>Đơn hàng chờ xác nhận</Text>
 			{renderListOrder()}
 		</View>
 	);
