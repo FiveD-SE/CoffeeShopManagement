@@ -272,7 +272,7 @@ export default function AddStaffScreen() {
                 password: password,
                 role: role.roleType,
                 userId: user.uid,
-                userImage: cashierImage,
+                userImage: userImage,
             });
 
             const userId = user.uid;
@@ -329,7 +329,7 @@ export default function AddStaffScreen() {
             if (new Date().getFullYear() - currentDate.getFullYear() < 18) {
                 Toast.show({
                     type: 'error',
-                
+
                     text1: 'Lỗi',
                     text2: 'Tuổi phải lớn hơn 18',
                     visibilityTime: 2000,
