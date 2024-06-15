@@ -8,9 +8,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Toast from 'react-native-toast-message';
 import { collection, addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
 import { db, uploadImageToFirebase } from "../../services/firebaseService";
+import { MaterialIcons } from '@expo/vector-icons'
 
 const AddShiftModal = ({ visible, onClose }) => {
-    const [modalHeight, setModalHeight] = useState('40%'); // Kích thước mặc định của modal
+    const [modalHeight, setModalHeight] = useState('50%'); // Kích thước mặc định của modal
 
     const [shiftName, setShiftName] = useState('');
     const [startTime, setStartTime] = useState(new Date());
@@ -29,7 +30,7 @@ const AddShiftModal = ({ visible, onClose }) => {
 
         const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
             // Khi bàn phím ẩn đi, khôi phục kích thước mặc định của modal
-            setModalHeight('40%');
+            setModalHeight('50%');
         });
 
         return () => {
@@ -169,7 +170,22 @@ const AddShiftModal = ({ visible, onClose }) => {
                                     setShiftName(text)
                                 }} />
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: '4%', }}>
+
+                        <TouchableOpacity style={[styles.inputBox, { justifyContent: "space-between" }]}>
+                            <View style={{ flex: 1, flexDirection: "row" }}>
+                                <Text style={styles.input}>Chi nhánh áp dụng</Text>
+                            </View>
+                            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                <MaterialIcons
+                                    name="keyboard-arrow-right"
+                                    size={30}
+                                    color="#CCCCCC"
+                                />
+                            </View>
+                        </TouchableOpacity>
+
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: '3%', }}>
 
                             <TouchableOpacity
                                 style={[styles.addTime]}
@@ -261,7 +277,7 @@ const styles = StyleSheet.create({
         paddingVertical: "4%",
     },
     inputBox: {
-        marginVertical: "4%",
+        marginVertical: "3%",
         flexDirection: "row",
         alignItems: "center",
         borderWidth: 1,

@@ -105,10 +105,12 @@ export default function ScheduleScreen() {
         }
     ]
     const navigation = useNavigation();
-    const goToAddShift = () => {
-        const data = DATA[0].shift;
-        // Truyền dữ liệu cần thiết tại đây
-        navigation.navigate('AddShift', { shiftList: data });
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
     };
     const goToDetailShift = (item) => {
         const { idShift } = item; // Trích xuất idShift từ item
@@ -122,7 +124,7 @@ export default function ScheduleScreen() {
             <View style={styles.topApp}>
                 <TouchableOpacity style={[styles.topButton, { marginEnd: '2%' }]}>
                     <FontAwesome name='calendar' size={24} />
-                    <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Hôm nay | 18/03/2024</Text>
+                    <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Hôm nay | {formatDate(new Date())}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.topButton}>
                     <Icon name='location-pin' size={24} color={'#d22f27'} />
