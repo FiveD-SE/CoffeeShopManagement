@@ -7,7 +7,7 @@ import SelectTermOptionsModal from '../../../components/Admin/Modal/SelectTermOp
 import SelectBranchModal from '../../../components/Admin/Modal/SelectBranchModal';
 import SelectDateModal from '../../../components/Admin/Modal/SelectDateModal';
 import Checkbox from 'expo-checkbox'
-import { collection, doc, onSnapshot, query, setDoc } from 'firebase/firestore';
+import { collection, doc, onSnapshot, query, setDoc, where } from 'firebase/firestore';
 import { db } from '../../../services/firebaseService';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import RNDateTimePicker from '@react-native-community/datetimepicker'
@@ -223,6 +223,7 @@ export default function AdminAddPayrollScreen() {
             staffs: staffs.filter((item, index) => checkList[index] === true),
             status: false,
             branch: branch,
+            createdAt: new Date(),
         };
         await setDoc(newPayrollRef, payroll);
 
@@ -247,24 +248,18 @@ export default function AdminAddPayrollScreen() {
         }
     }, [searchText, staffs]);
 
-
-
-    useFocusEffect(useCallback(
-        () => {
-            const unsub = onSnapshot(
-                query(collection(db, "staffs")),
-                (snapshot) => {
-                    setStaffs(snapshot.docs.map((doc) => doc.data()));
-                    setFilteredStaffs(snapshot.docs.map((doc) => doc.data()));
-                    setCheckList(Array(snapshot.docs.length).fill(false))
-                }
-            );
-            return () => unsub();
-        }, []));
-
     useEffect(() => {
-        console.log(checkList)
-    }, [])
+        const unsub = onSnapshot(
+            query(collection(db, "staffs"), where("branch", "==", branch)),
+            (snapshot) => {
+                setStaffs(snapshot.docs.map((doc) => doc.data()));
+                setFilteredStaffs(snapshot.docs.map((doc) => doc.data()));
+                setCheckList(Array(snapshot.docs.length).fill(false))
+                setChecked(false);
+            }
+        );
+        return () => unsub();
+    }, [branch])
 
     useFocusEffect(useCallback(() => {
         const unsub = onSnapshot(
