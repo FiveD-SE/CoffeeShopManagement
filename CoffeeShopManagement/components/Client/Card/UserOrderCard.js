@@ -1,10 +1,17 @@
 import React from "react";
-import { Pressable, StyleSheet, Text, View, Platform } from "react-native";
+import {
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+	Platform,
+	TouchableOpacity,
+} from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { colors } from "../../../assets/colors/colors";
 
 const UserOrderCard = ({ orderId, status, total, onPress }) => {
-
 	const setOrderStatus = (status) => {
 		switch (status) {
 			case 1:
@@ -71,55 +78,68 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 		return { backgroundColor, textColor };
 	};
 
-	const formatCurrency = (price) => {
-		return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
 	};
 
 	const { backgroundColor, textColor } = getStatusColors(status);
 
 	return (
-		<Pressable style={styles.orderContainer} onPress={onPress}>
+		<TouchableOpacity
+			style={styles.orderContainer}
+			onPress={onPress}
+			activeOpacity={0.9}
+		>
 			<View style={styles.orderDetails}>
 				<View style={styles.orderId}>
-					<Text style={styles.orderIdText}>Mã đơn hàng:</Text>
-					<Text style={styles.orderIdValue}>#{(orderId.substring(0, 6)).toUpperCase()}</Text>
-				</View>
-				<View style={styles.orderStatus}>
-					<Text style={styles.orderStatusText}>Trạng thái:</Text>
+					<View style={{ flex: 1, flexDirection: "row" }}>
+						<Text style={styles.orderIdText}>Đơn hàng:</Text>
+						<Text style={styles.orderIdValue}>
+							#{orderId.substring(0, 6).toUpperCase()}
+						</Text>
+					</View>
 					<View
 						style={[
 							styles.statusIndicator,
 							{ backgroundColor: backgroundColor },
 						]}
 					>
-						<FontAwesome5 name={setOrderStatusIcon(status)} size={20} color={textColor} />
-						<Text style={[styles.statusText, { color: textColor }]}>  {setOrderStatus(status)}</Text>
+						<FontAwesome5
+							name={setOrderStatusIcon(status)}
+							size={14}
+							color={textColor}
+						/>
+						<Text style={[styles.statusText, { color: textColor }]}>
+							{" "}
+							{setOrderStatus(status)}
+						</Text>
 					</View>
 				</View>
+
 				<View style={styles.orderTotal}>
 					<Text style={styles.orderTotalText}>Tổng tiền:</Text>
-					<Text style={styles.orderTotalValue}>
-						{formatCurrency(total)} VND
-					</Text>
+					<Text style={styles.orderTotalValue}>{formatCurrency(total)}</Text>
 				</View>
 			</View>
-			<Icon name="chevron-right" size={18} />
-		</Pressable>
+			<Icon name="chevron-right" size={14} color={colors.grey_100} />
+		</TouchableOpacity>
 	);
 };
 
 const styles = StyleSheet.create({
 	orderContainer: {
 		backgroundColor: "#FFFFFF",
-		paddingVertical: "3%",
-		paddingHorizontal: "5%",
-		borderRadius: 20,
+		padding: "4%",
+		borderRadius: 16,
 		flexDirection: "row",
 		alignItems: "center",
-		marginBottom: "5%",
+		marginBottom: "4%",
 		...Platform.select({
 			ios: {
-				shadowColor: "#3a3a3a",
+				shadowColor: colors.black_100,
 				shadowOffset: {
 					width: 0,
 					height: 2,
@@ -134,21 +154,22 @@ const styles = StyleSheet.create({
 	},
 	orderDetails: {
 		flex: 1,
+		marginRight: "4%",
 	},
 	orderId: {
 		flexDirection: "row",
 		alignItems: "center",
 	},
 	orderIdText: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
+		fontSize: 16,
 	},
 	orderIdValue: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
-		marginLeft: "2%",
+		fontSize: 16,
+		marginLeft: "4%",
 	},
 	orderStatus: {
 		flexDirection: "row",
@@ -156,15 +177,14 @@ const styles = StyleSheet.create({
 		marginTop: "5%",
 	},
 	orderStatusText: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
+		fontSize: 16,
 	},
 	statusIndicator: {
 		paddingVertical: "1%",
 		paddingHorizontal: "4%",
-		marginLeft: "2%",
-		borderRadius: 30,
+		borderRadius: 100,
 		flexDirection: "row",
 		justifyContent: "center",
 		alignItems: "center",
@@ -172,7 +192,8 @@ const styles = StyleSheet.create({
 	statusText: {
 		color: "#FFA730",
 		fontFamily: "lato-regular",
-		fontSize: 18,
+		fontSize: 12,
+		marginLeft: "2%",
 	},
 	orderTotal: {
 		flexDirection: "row",
@@ -180,15 +201,15 @@ const styles = StyleSheet.create({
 		marginTop: "5%",
 	},
 	orderTotalText: {
-		color: "#3a3a3a",
+		color: colors.grey_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
+		fontSize: 14,
 	},
 	orderTotalValue: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
-		marginLeft: "5%",
+		fontSize: 14,
+		marginLeft: "4%",
 	},
 });
 

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { colors } from "../../assets/colors/colors";
 
 const UserInfoRow = ({ label, value, highlight }) => (
 	<View style={styles.userInfoRow}>
@@ -30,16 +31,16 @@ const styles = StyleSheet.create({
 		marginLeft: "2%",
 	},
 	titleText: {
-		color: "#3a3a3a",
+		color: colors.black_100,
 		fontSize: 16,
-		fontWeight: "600",
+		fontFamily: "lato-regular",
 	},
 	infoText: {
-		color: "rgba(58, 58, 58, 0.5)",
+		color: colors.grey_100,
 		fontSize: 16,
-		fontWeight: "500",
+		fontFamily: "lato-regular",
 	},
 	highlightedText: {
-		color: "#F61A3D",
+		color: colors.error,
 	},
 });
