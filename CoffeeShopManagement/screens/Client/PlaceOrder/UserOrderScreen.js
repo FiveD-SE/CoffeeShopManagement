@@ -39,20 +39,11 @@ const UserOrderScreen = ({ userData }) => {
 					}
 				);
 
-				return () => unsubscribe();
-			} catch (error) {
-				console.error(error);
-			}
-		};
-		fetchOrderData();
-	}, []);
-
-	const handleOpenOrderDetail = (item) => {
-		navigation.navigate("UserOrderInformationScreen", {
-			orderData: item,
-		});
-	};
-
+    const handleOpenOrderDetail = (item) => {
+        navigation.navigate("UserOrderInformationScreen", {
+            orderData: item,
+        });
+    };
 	const renderOrderData = () =>
 		orderData.map((order, index) => (
 			<UserOrderCard

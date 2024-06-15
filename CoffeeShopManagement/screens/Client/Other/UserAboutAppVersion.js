@@ -30,9 +30,7 @@ const AboutVersionScreen = () => {
                 <Text style={styles.sectionContent}>
                     Nếu bạn có bất kỳ câu hỏi hoặc cần hỗ trợ, vui lòng liên hệ với chúng tôi qua email support@coffeeshopapp.com.
                 </Text>
-                <Text style={styles.thankYou}>
-                    Cảm ơn bạn đã chọn ứng dụng của chúng tôi. Chúng tôi hy vọng ứng dụng này sẽ giúp bạn quản lý quán cà phê một cách hiệu quả.
-                </Text>
+                <Text style={styles.thankYou}>Cảm ơn bạn đã sử dụng ứng dụng của chúng tôi!</Text>
             </View>
         </ScrollView>
     );
@@ -73,6 +71,7 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontSize: 20,
+        lineHeight: 30,
         fontFamily: 'lato-bold',
         color: '#151515',
         marginTop: 20,
@@ -86,7 +85,7 @@ const styles = StyleSheet.create({
     },
     thankYou: {
         fontSize: 16,
-        fontFamily: 'lato-bold',
+        fontFamily: 'lato-regular',
         color: '#151515',
         marginTop: 30,
         marginBottom: 20,

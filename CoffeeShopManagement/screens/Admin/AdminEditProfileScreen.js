@@ -31,8 +31,6 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
 
     const flag = require("../../assets/vietnam.png");
 
-    // UserEditProfileScreen.js
-
     const navigateToProfileDetails = async () => {
         try {
             const user = auth.currentUser;
@@ -40,13 +38,10 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                // Update Firestore
                 await updateDoc(docRef, {
-                    fullName: name, // Use the state values
+                    fullName: name,
                     phoneNumber: phoneNumber,
                 });
-
-                // Update Redux with ONLY the changed fields
                 saveUserData({
                     ...userData,
                     name: name,
@@ -102,7 +97,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                                 paddingTop: 60,
                                 paddingBottom: 50,
                                 alignContent: "center",
-                                alignItems: "center", // Add alignItems: 'center'
+                                alignItems: "center",
                             },
                         ]}
                     >
@@ -129,8 +124,8 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                         <View style={[styles.rowLabelText, { width: "100%" }]}>
                             <TextInput
                                 style={styles.text}
-                                onChangeText={setName} // Cập nhật state name
-                                value={name} // Hiển thị giá trị hiện tại của state name
+                                onChangeText={setName}
+                                value={name}
                             />
                         </View>
                     </View>
@@ -154,8 +149,8 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                             <Text style={styles.text}>+84 </Text>
                             <TextInput
                                 style={styles.text}
-                                onChangeText={setPhoneNumber} // Cập nhật state phoneNumber
-                                value={phoneNumber} // Hiển thị giá trị hiện tại của state phoneNumber
+                                onChangeText={setPhoneNumber}
+                                value={phoneNumber}
                             />
                         </View>
                     </View>
@@ -197,7 +192,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                                 offColor="gray"
                                 labelStyle={styles.label}
                                 size="medium"
-                                value={isToggled}
+                                isOn={isToggled}
                                 onToggle={handleToggle}
                             />
                         </View>

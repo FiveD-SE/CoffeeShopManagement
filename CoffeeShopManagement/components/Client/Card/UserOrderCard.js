@@ -12,12 +12,30 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { colors } from "../../../assets/colors/colors";
 
 const UserOrderCard = ({ orderId, status, total, onPress }) => {
+	const setOrderStatus = (status) => {
+		switch (status) {
+			case 1:
+				return "Chờ xác nhận";
+			case 2:
+				return "Đang thực hiện";
+			case 3:
+				return "Đang giao";
+			case 4:
+				return "Đã hoàn thành";
+			case 5:
+				return "Đã huỷ";
+			default:
+				return;
+		}
+	};
+
+
 	const setOrderStatusIcon = (status) => {
 		switch (status) {
 			case 1:
-				return "hourglass";
+				return "hourglass-start";
 			case 2:
-				return "compass";
+				return "pause-circle";
 			case 3:
 				return "shipping-fast";
 			case 4:
@@ -34,24 +52,24 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 
 		switch (status) {
 			case 1:
-				backgroundColor = colors.grey_20;
-				textColor = colors.grey_100;
+				backgroundColor = '#C6EBC5';
+				textColor = '#799351';
 				break;
 			case 2:
-				backgroundColor = "#F0F0F9";
-				textColor = "#8080AB";
+				backgroundColor = '#FFE8C5';
+				textColor = '#A3A3A3';
 				break;
 			case 3:
-				backgroundColor = colors.yellow_20;
-				textColor = "#EE7214";
+				backgroundColor = '#B2EBF2';
+				textColor = '#006989';
 				break;
 			case 4:
-				backgroundColor = colors.green_20;
-				textColor = colors.green_100;
+				backgroundColor = '#F9E8D9';
+				textColor = '#EE7214';
 				break;
 			case 5:
-				backgroundColor = "#FFE4E5";
-				textColor = colors.error;
+				backgroundColor = '#FFCAC2';
+				textColor = '#C81912';
 				break;
 			default:
 				break;
