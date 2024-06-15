@@ -70,14 +70,18 @@ export default function AddShiftScreen() {
         ));
     };
 
+    const goToAddNewShiftScreen = () => {
+        navigation.navigate('AdminAddNewShiftScreen');
+    };
+
     return (
         <View style={styles.container}>
-            <AddNewShiftButton onModalClose={loadShifts} />
+            <AddNewShiftButton onPress={goToAddNewShiftScreen} />
             <Text style={styles.topText}>Các ca làm việc sẵn có</Text>
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 {renderShiftList()}
             </ScrollView>
-            <EditShiftModal visible={modalVisible} onClose={hideEditShiftModal} shift={selectedShift}/>
+            <EditShiftModal visible={modalVisible} onClose={hideEditShiftModal} shift={selectedShift} />
         </View>
     )
 }
@@ -85,13 +89,15 @@ export default function AddShiftScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: '5%'
+        marginTop: "3%",
+        marginHorizontal: "3%"
     },
     topText: {
         color: "#3a3a3a",
         fontSize: 18,
         fontWeight: "600",
         marginVertical: "3%",
+        fontFamily: "lato-bold"
     },
     scrollView: {
         flex: 1,

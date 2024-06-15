@@ -46,7 +46,7 @@ const UserEditAddressScreen = ({ userData, route }) => {
     const [wardId, setWardId] = useState(address.wardId);
 
     const handleToggle = () => {
-        if (isDefault) {
+        if (address.isDefault) {
             Toast.show({
                 type: "error",
                 text1: "Thông báo",

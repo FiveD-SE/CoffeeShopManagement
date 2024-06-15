@@ -63,6 +63,7 @@ import AddShiftScreen from "../screens/Admin/AddShiftScreen";
 import AddShiftButton2 from "./components/AddShiftButton2";
 import DetailShiftScreen from "../screens/Admin/DetailShiftScreen";
 import AddStaffButton from "./components/AddStaffButton";
+import AddNewShiftScreen from "../screens/Admin/AddNewShiftScreen";
 
 import SignInScreen from "../screens/Client/SignInScreen";
 import ShiftListButton from "../components/Admin/Button/ShiftListButton";
@@ -119,6 +120,10 @@ const OtherStack = ({ navigation, route }) => {
                 tabBarStyle: { display: "none" },
             });
         } else if (routeName === "UserAboutAppVersion") {
+            navigation.setOptions({
+                tabBarStyle: { display: "none" },
+            });
+        } else if (routeName === "AdminAddNewShiftScreen") {
             navigation.setOptions({
                 tabBarStyle: { display: "none" },
             });
@@ -238,6 +243,17 @@ const OtherStack = ({ navigation, route }) => {
                 component={AdminAddPayrollScreen}
                 options={{
                     headerTitle: "Thêm bảng lương",
+                    headerLeftContainerStyle: {
+                        paddingLeft: "5%",
+                    },
+                    headerLeft: () => <HeaderBackButton />,
+                }}
+            />
+            <Stack.Screen
+                name="AdminAddNewShiftScreen"
+                component={AddNewShiftScreen}
+                options={{
+                    headerTitle: "Thêm ca làm việc mới",
                     headerLeftContainerStyle: {
                         paddingLeft: "5%",
                     },

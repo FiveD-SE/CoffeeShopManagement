@@ -140,8 +140,8 @@ const UserAddressScreen = ({ userData, route }) => {
 
 	return (
 		<SafeAreaView style={styles.container}>
-			<ScrollView>
-				<Text style={styles.sectionHeading}>Địa chỉ đã lưu</Text>
+			<Text style={styles.sectionHeading}>Địa chỉ đã lưu</Text>
+			<ScrollView showsVerticalScrollIndicator={false}>
 				{renderSavedAddressItem()}
 				<TouchableOpacity
 					style={styles.buttonContainer}
@@ -166,6 +166,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		paddingHorizontal: "5%",
+		marginBottom: "3%"
 	},
 	sectionHeading: {
 		fontSize: 18,
