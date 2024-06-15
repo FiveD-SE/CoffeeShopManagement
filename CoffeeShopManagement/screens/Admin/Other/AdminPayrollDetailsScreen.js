@@ -5,85 +5,105 @@ import {
     SafeAreaView,
     Image,
     ScrollView,
+    Alert,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import ColorButton from "../../../components/Admin/Button/ColorButton";
+import { db } from "../../../services/firebaseService";
+import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
+import { doc, updateDoc } from "firebase/firestore";
 
-export default function AdminPayrollDetailsScreen() {
-    const payrollItemSelected = {
-        dateStart: "19/03/2024",
-        dateEnd: "29/02/2023",
-        total: "100.000",
-        status: false,
+export default function AdminPayrollDetailsScreen({ route }) {
+
+    const [staffs, setStaffs] = useState(route.params.staffs);
+    const [payrollId, setPayrollId] = useState(route.params.payrollId);
+    const [startDate, setStartDate] = useState(route.params.startDate);
+    const [endDate, setEndDate] = useState(route.params.endDate);
+    const [status, setStatus] = useState(route.params.status);
+    const [total, setTotal] = useState(route.params.total);
+    const [loading, setLoading] = useState(false);
+
+    const navigation = useNavigation();
+    const formatDate = (date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
     };
 
-    const staffList = [
-        {
-            name: "Nguyen Quoc Thang",
-            avatar: require("../../../assets/vietnam.png"),
-            phonenumber: "0346129897",
-            postion: "Pha chế",
-            TWT: "100",
-            hourlyWage: "22.000",
-            total: "100.000",
-        },
-        {
-            name: "Nguyen Quoc Thang",
-            avatar: require("../../../assets/vietnam.png"),
-            phonenumber: "0346129897",
-            postion: "Pha chế",
-            TWT: "100",
-            hourlyWage: "22.000",
-            total: "100.000",
-        },
-        {
-            name: "Nguyen Quoc Thang",
-            avatar: require("../../../assets/vietnam.png"),
-            phonenumber: "0346129897",
-            postion: "Pha chế",
-            TWT: "100",
-            hourlyWage: "22.000",
-            total: "100.000",
-        },
-        {
-            name: "Nguyen Quoc Thang",
-            avatar: require("../../../assets/vietnam.png"),
-            phonenumber: "0346129897",
-            postion: "Pha chế",
-            TWT: "100",
-            hourlyWage: "22.000",
-            total: "100.000",
-        },
-    ];
+    const formatSalary = (salary) => {
+        const formattedSalary = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(salary);
+        return formattedSalary;
+    };
 
-    const renderItem = ({ item }) => (
-        <View style={styles.payroll}>
+    const handleConfirm = () => {
+        Alert.alert(
+            "Xác nhận thanh toán",
+            "Bạn có chắc chắn muốn thanh toán bảng lương này không?",
+            [
+                {
+                    text: "Hủy",
+                    style: "cancel",
+                },
+                {
+                    text: "Đồng ý",
+                    style: "destructive",
+                    onPress: async () => {
+                        setLoading(true);
+                        console.log(
+                            "route.params.staffs.staffId",
+                            route.params.staffs.staffId
+                        );
+                        try {
+                            await updateDoc(doc(db, "payrolls", payrollId), {
+                                status: true,
+                            });
+                            navigation.goBack();
+                        } catch (error) {
+                            console.log("Error confirm payroll:", error);
+                            Toast.show({
+                                type: "error",
+                                text1: "Lỗi",
+                                text2: "Đã xảy ra lỗi khi trả lương cho nhân viên",
+                            });
+                        }
+                    },
+                },
+            ],
+            { cancelable: false }
+        );
+        setLoading(false);
+    }
+
+    const renderItem = ({ item, key }) => (
+        <View style={styles.payroll} key={key}>
             <View style={[styles.row, { justifyContent: "flex-start" }]}>
-                <Image source={item.avatar} style={styles.avatar} />
+                <Image source={{ uri: item.staffImage }} style={styles.avatar} />
                 <View style={styles.column}>
-                    <Text style={styles.textPrimary}>{item.name}</Text>
-                    <Text style={styles.textSecondary}>{item.phonenumber}</Text>
+                    <Text style={styles.textPrimary}>{item.fullName}</Text>
+                    <Text style={styles.textSecondary}>{item.phoneNumber}</Text>
                 </View>
             </View>
             <View style={styles.row}>
                 <Text style={styles.textPrimary}>Chức vụ:</Text>
-                <Text style={styles.textSecondary}>{item.postion}</Text>
+                <Text style={styles.textSecondary}>{item.role.roleName} / {item.role.roleType.charAt(0).toUpperCase() + item.role.roleType.slice(1)}</Text>
             </View>
             <View style={styles.row}>
                 <Text style={styles.textPrimary}>Tổng thời gian làm việc:</Text>
-                <Text style={styles.textSecondary}>{item.TWT} giờ</Text>
+                <Text style={styles.textSecondary}>{item.workingHours} giờ</Text>
             </View>
             <View style={styles.row}>
                 <Text style={styles.textPrimary}>Mức lương chức vụ:</Text>
                 <Text style={styles.textSecondary}>
-                    {item.hourlyWage} / giờ
+                    {formatSalary(item.role.salary)} / giờ
                 </Text>
             </View>
             <View style={styles.blackLine} />
             <View style={styles.row}>
                 <Text style={styles.textPrimary}>Tổng lương:</Text>
                 <Text style={[styles.textPrimary, { color: "#F61A3D" }]}>
-                    {item.total} VNĐ
+                    {formatSalary(item.role.salary * item.workingHours)} VNĐ
                 </Text>
             </View>
         </View>
@@ -97,7 +117,7 @@ export default function AdminPayrollDetailsScreen() {
                     <View style={styles.payroll}>
                         <View style={styles.row}>
                             <Text style={styles.textPrimary}>
-                                Mã bảng lương
+                                Mã bảng lương: {payrollId}
                             </Text>
                         </View>
 
@@ -106,7 +126,7 @@ export default function AdminPayrollDetailsScreen() {
                                 Kỳ làm việc từ:
                             </Text>
                             <Text style={styles.textSecondary}>
-                                {payrollItemSelected.dateStart}
+                                {formatDate(startDate.toDate())}
                             </Text>
                         </View>
 
@@ -115,7 +135,7 @@ export default function AdminPayrollDetailsScreen() {
                                 Kỳ làm việc đến:
                             </Text>
                             <Text style={styles.textSecondary}>
-                                {payrollItemSelected.dateEnd}
+                                {formatDate(endDate.toDate())}
                             </Text>
                         </View>
 
@@ -124,7 +144,7 @@ export default function AdminPayrollDetailsScreen() {
                                 Tổng lương:
                             </Text>
                             <Text style={styles.textPrimary}>
-                                {payrollItemSelected.total} VNĐ
+                                {formatSalary(total)}
                             </Text>
                         </View>
 
@@ -136,13 +156,13 @@ export default function AdminPayrollDetailsScreen() {
                                 style={[
                                     styles.textPrimary,
                                     {
-                                        color: payrollItemSelected.status
+                                        color: status
                                             ? "green"
                                             : "red",
                                     },
                                 ]}
                             >
-                                {payrollItemSelected.status
+                                {status
                                     ? "Đã thanh toán"
                                     : "Chưa thanh toán"}
                             </Text>
@@ -154,15 +174,15 @@ export default function AdminPayrollDetailsScreen() {
                     <Text style={styles.sectionTitle}>
                         Thông tin lương nhân viên
                     </Text>
-                    {staffList.map((item) => renderItem({ item }))}
+                    {staffs.map((item, index) => renderItem({ item, key: index }))}
                 </View>
 
-                {!payrollItemSelected.status && (
+                {!status && (
                     <ColorButton
-                        color={"#FFA730"}
+                        color={"#006c5e"}
                         text={"Trả lương"}
                         textColor={"#FFFFFF"}
-                        OnPress={() => {}}
+                        OnPress={() => handleConfirm()}
                     />
                 )}
             </ScrollView>
@@ -179,7 +199,7 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
     },
     sectionTitle: {
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
         fontSize: 20,
         marginBottom: 20,
         lineHeight: 30,
@@ -211,11 +231,11 @@ const styles = StyleSheet.create({
     },
     textPrimary: {
         fontSize: 16,
-        fontFamily: "Lato-Bold",
+        fontFamily: "lato-bold",
     },
     textSecondary: {
         fontSize: 16,
-        fontFamily: "Lato-Regular",
+        fontFamily: "lato-regular",
         color: "#A1A1A1",
     },
     blackLine: {

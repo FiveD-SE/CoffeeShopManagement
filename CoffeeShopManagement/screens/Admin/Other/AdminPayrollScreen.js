@@ -1,55 +1,84 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, SafeAreaView, FlatList, TextInput } from 'react-native';
-import FontAwesome from'react-native-vector-icons/FontAwesome';
-import { useNavigation } from "@react-navigation/native";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { collection, onSnapshot, query } from 'firebase/firestore';
+import { db } from '../../../services/firebaseService';
 
 export default function AdminPayrollScreen() {
   const navigation = useNavigation();
 
-  const payrollList = [
-    { dateStart: '19/03/2024', dateEnd: '29/02/2023', total: '100.000', status: true},
-    { dateStart: '19/03/2024', dateEnd: '29/02/2023', total: '100.000', status: true},
-    { dateStart: '19/03/2024', dateEnd: '29/02/2023', total: '100.000', status: false},
-  ];
-
   const [selectedTab, setSelectedTab] = useState('all');
 
-  const [currentPayrollList, setCurrentPayrollList] = useState(payrollList);
+  const [payrollList, setPayrollList] = useState([]);
+  const [filterPayrollList, setFilterPayrollList] = useState([]);
+
+  useFocusEffect(useCallback(
+    () => {
+      const unsub = onSnapshot(
+        query(collection(db, "payrolls")),
+        (snapshot) => {
+          setPayrollList(snapshot.docs.map((doc) => doc.data()));
+          setFilterPayrollList(snapshot.docs.map((doc) => doc.data()));
+        }
+      );
+      return () => unsub();
+    }, []));
 
   const handleTabPress = (tab) => {
     setSelectedTab(tab);
     if (tab === 'all') {
-      setCurrentPayrollList(payrollList);
+      setFilterPayrollList(payrollList);
     } else if (tab === 'paid') {
-      setCurrentPayrollList(payrollList.filter(item => item.status === true));
+      setFilterPayrollList(payrollList.filter(item => item.status === true));
     } else if (tab === 'unpaid') {
-      setCurrentPayrollList(payrollList.filter(item => item.status === false));
+      setFilterPayrollList(payrollList.filter(item => item.status === false));
     }
   };
+  const formatDate = (date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
-  const renderPayrollItem = ({ item }) => (
-    <View style={styles.item}>
-      <View style={styles.row}>
-        <View style={styles.column}>
-          <Text style={[styles.textPrimary, {marginBottom: 15}]}>Mã bảng lương</Text>
-          <Text style={styles.textSecondary}>{item.dateStart}-{item.dateEnd}</Text>
+  const formatSalary = (salary) => {
+    const formattedSalary = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(salary);
+    return formattedSalary;
+  };
+
+  const renderPayrollItem = ({ item }) => {
+    const caculateTotal = () => {
+      let total = 0;
+      item.staffs.forEach(staff => {
+        total += staff.role.salary * staff.workingHours;
+      });
+      return total;
+    }
+    return (
+      <View style={styles.item}>
+        <View style={styles.row}>
+          <View style={styles.column}>
+            <Text style={[styles.textPrimary, { marginBottom: 15 }]}>Mã bảng lương: {item.payrollId}</Text>
+            <Text style={styles.textSecondary}>{formatDate(item.startDate.toDate())}-{formatDate(item.endDate.toDate())}</Text>
+          </View>
+          <Pressable onPress={() => { navigation.navigate("AdminPayrollDetailsScreen", { staffs: item.staffs, payrollId: item.payrollId, startDate: item.startDate, endDate: item.endDate, status: item.status, total: caculateTotal() }) }}>
+            <FontAwesome name='angle-right' size={32} />
+          </Pressable>
         </View>
-        <Pressable onPress={() => { navigation.navigate("AdminPayrollDetailsScreen")}}>
-          <FontAwesome name='angle-right' size={32}/>
-        </Pressable>
+        <View style={styles.blackLine} />
+        <View style={styles.row}>
+          <Text style={styles.textPrimary}>Tổng lương</Text>
+          <Text style={styles.textPrimary}>{formatSalary(caculateTotal())} </Text>
+        </View>
+        <View style={[styles.statusLabel, { backgroundColor: item.status ? '#F2F8F7' : '#FEE8EC' }]}>
+          <Text style={[styles.statusText, { color: item.status ? '#006C5E' : '#F61A3D' }]}>
+            {item.status ? 'Đã thanh toán' : 'Chưa thanh toán'}
+          </Text>
+        </View>
       </View>
-      <View style={styles.blackLine} />
-      <View style={styles.row}>
-        <Text style={styles.textPrimary}>Tổng lương</Text>
-        <Text style={styles.textPrimary}>{item.total} VNĐ</Text>
-      </View>
-      <View style={[styles.statusLabel, { backgroundColor: item.status ? '#F2F8F7' : '#FEE8EC' }]}>
-        <Text style={[styles.statusText, { color: item.status ? '#006C5E' : '#F61A3D' }]}>
-          {item.status ? 'Đã thanh toán' : 'Chưa thanh toán'}
-        </Text>
-      </View>
-    </View>
-  );
+    )
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -95,15 +124,15 @@ export default function AdminPayrollScreen() {
             }}
           />
         </View>
-        
+
         {/* Payroll List */}
         <FlatList
-          data={currentPayrollList}
+          data={filterPayrollList}
           renderItem={renderPayrollItem}
           keyExtractor={(item, index) => index.toString()}
         />
       </View>
-      
+
     </SafeAreaView>
   );
 }
@@ -125,7 +154,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   headingText: {
-    fontFamily: 'Lato-Regular',
+    fontFamily: 'lato-regular',
     fontSize: 16,
     color: '#000',
     textAlign: 'center',
@@ -157,8 +186,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     shadowColor: "#333",
     shadowOffset: {
-        width: 0,
-        height: 1,
+      width: 0,
+      height: 1,
     },
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
@@ -176,8 +205,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     shadowColor: "#333",
     shadowOffset: {
-        width: 0,
-        height: 1,
+      width: 0,
+      height: 1,
     },
     shadowOpacity: 0.2,
     shadowRadius: 1.5,
@@ -208,18 +237,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   statusText: {
-    fontFamily: 'Lato-Regular',
+    fontFamily: 'lato-regular',
     fontSize: 16,
     textAlign: 'center'
   },
   textPrimary: {
-    fontFamily: 'Lato-Bold',
+    fontFamily: 'lato-bold',
     fontSize: 16,
     color: '#000',
     textAlign: 'center',
   },
   textSecondary: {
-    fontFamily: 'Lato-Light',
+    fontFamily: 'lato-regular',
     fontSize: 16,
     color: '#9C9C9C',
     textAlign: 'center',
