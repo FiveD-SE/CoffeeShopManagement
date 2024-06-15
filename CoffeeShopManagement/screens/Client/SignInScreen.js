@@ -4,7 +4,6 @@ import {
 	StyleSheet,
 	Image,
 	Pressable,
-	Alert,
 	TouchableWithoutFeedback,
 	KeyboardAvoidingView,
 	Platform,
@@ -19,7 +18,6 @@ import PasswordInput from "../../components/Client/PasswordInput";
 import BrownButton from "../../components/Client/Button/BrownButton";
 import BrownTextButton from "../../components/Client/Button/BrownTextButton";
 import {
-	saveEmail,
 	saveUserData,
 	initializeFavorites,
 	getProductList,
@@ -28,8 +26,6 @@ import {
 	updateDeliveryStatus,
 } from "../../redux/actions/userActions";
 import { connect } from "react-redux";
-import { saveToken } from "../../services/authServices";
-import store from "../../redux/store/store";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../services/firebaseService";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -55,7 +51,7 @@ const SignInScreen = ({
 }) => {
 	const navigation = useNavigation();
 	const [isChecked, setChecked] = useState(false);
-	const [email, setEmail] = useState(""); // Changed to email
+	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [role, setRole] = useState("");
 
@@ -74,7 +70,6 @@ const SignInScreen = ({
 	const getFavoritesListById = async (userId) => {
 		try {
 			const favoritesRef = collection(db, "favorites");
-			// Create a query to find favorites belonging to the current user
 			const q = query(favoritesRef, where("userId", "==", userId));
 			const favoritesSnapshot = await getDocs(q);
 			if (favoritesSnapshot.empty) {
@@ -85,7 +80,7 @@ const SignInScreen = ({
 				id: doc.id,
 				...doc.data(),
 			}));
-			return favoritesData.map((favorite) => favorite.products); // Get the products array
+			return favoritesData.map((favorite) => favorite.products);
 		} catch (error) {
 			console.error("Error fetching favorites:", error);
 			throw error;
@@ -132,9 +127,7 @@ const SignInScreen = ({
 			);
 
 			const user = userCredential.user;
-			// Kiểm tra xem email đã được xác minh hay chưa
 			if (user.emailVerified) {
-				// Thực hiện đăng nhập
 				const userDocSnap = await getDoc(doc(db, "users", user.uid));
 				if (userDocSnap.exists()) {
 					const userDoc = userDocSnap.data();
@@ -212,7 +205,6 @@ const SignInScreen = ({
 					return () => unsubscribe();
 				}
 			} else {
-				// Nếu email chưa được xác minh, hiển thị thông báo lỗi
 				Toast.show({
 					type: "error",
 					text1: "Lỗi đăng nhập",
@@ -251,39 +243,60 @@ const SignInScreen = ({
 		}
 	};
 
+	const handleSignInByGoodle = () => {
+		Toast.show({
+			type: "info",
+			text1: "Thông báo",
+			text2: "Chức năng đang được phát triển",
+			text1Style: {
+				fontSize: 16,
+				fontFamily: "lato-bold",
+				color: colors.black_100,
+			},
+			text2Style: {
+				fontSize: 12,
+				fontFamily: "lato-bold",
+				color: colors.grey_100,
+			},
+		});
+	}
+
 	return (
 		<TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
 			<KeyboardAvoidingView
 				style={styles.container}
 				behavior={Platform.OS === "ios" ? "padding" : "height"}
 			>
-				<Image style={styles.header} source={BACKGROUND_SOURCE} />
 				<ScrollView contentContainerStyle={styles.main}>
+					<Image style={styles.header} source={BACKGROUND_SOURCE} />
 					<Image
 						source={require("../../assets/fived.png")}
 						style={{ width: 100, height: 100 }}
 					/>
 					<Text style={styles.title}>Đăng nhập</Text>
-					<InputField
-						placeholder="Email"
-						keyboardType="email-address"
-						onChangeText={setEmail}
-					/>
-					<PasswordInput placeholder="Mật khẩu" onChangeText={setPassword} />
-					<View style={styles.helperContainer}>
-						<View style={styles.rememberMeContainer}>
-							<Checkbox
-								style={styles.checkbox}
-								value={isChecked}
-								color={isChecked ? "#a8a19b" : undefined}
-								onValueChange={handleRememberMe}
-							/>
-							<Text style={styles.helperText}>Ghi nhớ tôi</Text>
-						</View>
-						<BrownTextButton
-							text="Quên mật khẩu?"
-							onPress={goToForgotPassword}
+
+					<View style={styles.inputContainer}>
+						<InputField
+							placeholder="Email"
+							keyboardType="email-address"
+							onChangeText={setEmail}
 						/>
+						<PasswordInput placeholder="Mật khẩu" onChangeText={setPassword} />
+						<View style={styles.helperContainer}>
+							<View style={styles.rememberMeContainer}>
+								<Checkbox
+									style={styles.checkbox}
+									value={isChecked}
+									color={isChecked ? "#a8a19b" : undefined}
+									onValueChange={handleRememberMe}
+								/>
+								<Text style={styles.helperText}>Ghi nhớ tôi</Text>
+							</View>
+							<BrownTextButton
+								text="Quên mật khẩu?"
+								onPress={goToForgotPassword}
+							/>
+						</View>
 					</View>
 					<BrownButton text="Đăng nhập" onPress={handleSignIn} />
 					<View style={styles.labelContainer}>
@@ -291,16 +304,18 @@ const SignInScreen = ({
 						<Text style={styles.label}>hoặc đăng nhập bằng</Text>
 						<View style={styles.divider}></View>
 					</View>
-					<Pressable style={styles.iconButton}>
+					<Pressable style={styles.iconButton} onPress={handleSignInByGoodle}>
 						<Image source={GOOGLE_ICON_SOURCE} style={styles.icon} />
 					</Pressable>
-					<View style={styles.helperContainer}>
-						<Text style={styles.helperText}>Khách hàng mới?</Text>
-						<View style={{ marginLeft: "2%" }}>
-							<BrownTextButton
-								text="Tạo một tài khoản mới"
-								onPress={goToSignUp}
-							/>
+					<View style={styles.inputContainer}>
+						<View style={styles.helperContainer}>
+							<Text style={styles.helperText}>Khách hàng mới?</Text>
+							<View style={{ marginLeft: "2%" }}>
+								<BrownTextButton
+									text="Tạo một tài khoản mới"
+									onPress={goToSignUp}
+								/>
+							</View>
 						</View>
 					</View>
 				</ScrollView>
@@ -322,7 +337,6 @@ const styles = StyleSheet.create({
 	main: {
 		flexGrow: 1,
 		alignItems: "center",
-		padding: "5%",
 	},
 	title: {
 		fontSize: 32,
@@ -352,7 +366,7 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 	},
 	labelContainer: {
-		width: "100%",
+		width: "95%",
 		flexDirection: "row",
 		alignItems: "center",
 		marginTop: 20,
@@ -381,6 +395,9 @@ const styles = StyleSheet.create({
 		resizeMode: "cover",
 		width: 24,
 		height: 24,
+	},
+	inputContainer: {
+		paddingHorizontal: "5%",
 	},
 });
 

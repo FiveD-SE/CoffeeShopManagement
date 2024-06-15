@@ -16,10 +16,6 @@ const ProfileDetails = ({ userData }) => {
     const navigation = useNavigation();
     const [isToggled, setIsToggled] = useState(false);
 
-    const handleToggle = () => {
-        setIsToggled(!isToggled);
-    };
-
     const flag = require("../../../assets/vietnam.png");
 
     const formatPhoneNumber = (phoneNumber) => {
@@ -28,6 +24,14 @@ const ProfileDetails = ({ userData }) => {
         }
         return phoneNumber.replace(/(\d{2})(\d{3})(\d{3})/, "$1 $2 $3");
     }
+
+    const handleTogglePressed = () => {
+        setIsToggled(!isToggled);
+    }
+
+    useEffect(() => {
+        console.log("isToggled: ", isToggled);
+    }, [isToggled]);
 
     return (
         <View style={styles.container}>
@@ -128,12 +132,12 @@ const ProfileDetails = ({ userData }) => {
                                 <Text style={styles.text}>Google</Text>
                             </View>
                             <SwitchToggle
+                                isOn={isToggled}
                                 onColor="#4ECB71"
                                 offColor="gray"
                                 labelStyle={styles.label}
                                 size="medium"
-                                value={isToggled}
-                                onToggle={handleToggle}
+                                onToggle={handleTogglePressed}
                             />
                         </View>
                     </View>

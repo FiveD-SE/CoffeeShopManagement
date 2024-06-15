@@ -5,13 +5,35 @@ import { FontAwesome5 } from "@expo/vector-icons";
 
 const UserOrderCard = ({ orderId, status, total, onPress }) => {
 
+	const setOrderStatus = (status) => {
+		switch (status) {
+			case 1:
+				return "Chờ xác nhận";
+			case 2:
+				return "Đang thực hiện";
+			case 3:
+				return "Đang giao";
+			case 4:
+				return "Đã hoàn thành";
+			case 5:
+				return "Đã huỷ";
+			default:
+				return;
+		}
+	};
+
+
 	const setOrderStatusIcon = (status) => {
 		switch (status) {
 			case 1:
-				return "shipping-fast";
+				return "hourglass-start";
 			case 2:
-				return "check-circle";
+				return "pause-circle";
 			case 3:
+				return "shipping-fast";
+			case 4:
+				return "check-circle";
+			case 5:
 				return "times-circle";
 			default:
 				return "";
@@ -23,14 +45,22 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 
 		switch (status) {
 			case 1:
-				backgroundColor = '#C3E2C2';
-				textColor = '#527853';
+				backgroundColor = '#C6EBC5';
+				textColor = '#799351';
 				break;
 			case 2:
+				backgroundColor = '#FFE8C5';
+				textColor = '#A3A3A3';
+				break;
+			case 3:
+				backgroundColor = '#B2EBF2';
+				textColor = '#006989';
+				break;
+			case 4:
 				backgroundColor = '#F9E8D9';
 				textColor = '#EE7214';
 				break;
-			case 3:
+			case 5:
 				backgroundColor = '#FFCAC2';
 				textColor = '#C81912';
 				break;
@@ -43,19 +73,6 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 
 	const formatCurrency = (price) => {
 		return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-	};
-
-	const setOrderStatus = (status) => {
-		switch (status) {
-			case 1:
-				return "Đang giao";
-			case 2:
-				return "Đã hoàn thành";
-			case 3:
-				return "Đã hủy";
-			default:
-				return;
-		}
 	};
 
 	const { backgroundColor, textColor } = getStatusColors(status);

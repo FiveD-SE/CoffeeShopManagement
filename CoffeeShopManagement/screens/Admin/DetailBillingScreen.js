@@ -14,18 +14,29 @@ export default function DetailBillingScreen({ route }) {
     <View style={styles.container}>
       <ScrollView style={styles.section} showsVerticalScrollIndicator={false}>
         <View style={styles.sectionContainer}>
-          {orderData.products.map((item, index) => (
-            <View key={index} style={styles.item}>
-              <View style={styles.itemDetails}>
-                <Image source={{ uri: item.productImage }} style={styles.productImage} />
-                <View style={styles.productInfo}>
-                  <Text style={styles.productName}>x{item.quantity} {item.productName}</Text>
-                  <Text style={styles.productSize}>{item.size}</Text>
+          {orderData.products.map((item, index) => {
+            let itemStyle = styles.itemIndex;
+            if (orderData.products.length === 1) {
+              itemStyle = styles.item;
+            } else if (index === orderData.products.length - 1) {
+              itemStyle = styles.itemIndexEnd;
+            } else {
+              itemStyle = styles.itemIndexStart;
+            }
+
+            return (
+              <View key={index} style={itemStyle}>
+                <View style={styles.itemDetails}>
+                  <Image source={{ uri: item.productImage }} style={styles.productImage} />
+                  <View style={styles.productInfo}>
+                    <Text style={styles.productName}>x{item.quantity} {item.productName}</Text>
+                    <Text style={styles.productSize}>{item.size}</Text>
+                  </View>
                 </View>
+                <Text style={styles.itemPrice}>{formatCurrency(item.totalPrice)} VND</Text>
               </View>
-              <Text style={styles.itemPrice}>{formatCurrency(item.totalPrice)} VND</Text>
-            </View>
-          ))}
+            );
+          })}
         </View>
         <View style={styles.sectionContainer}>
           <View style={styles.sectionHeader}>
@@ -110,21 +121,15 @@ export default function DetailBillingScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F8F7FA',
   },
   section: {
     flex: 1,
-    padding: '5%',
+    paddingVertical: '5%',
+    paddingHorizontal: '2%',
   },
   sectionContainer: {
     marginBottom: '5%',
-  },
-  item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '2%',
-    marginTop: '2%',
   },
   itemDetails: {
     flexDirection: 'row',
@@ -199,4 +204,53 @@ const styles = StyleSheet.create({
     fontFamily: 'lato-bold',
     color: '#151515',
   },
+  itemIndexStart: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: '5%',
+    paddingVertical: '3%',
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    borderWidth: 1,
+    borderColor: '#A3A3A3A3',
+  },
+  itemIndex: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: '5%',
+    paddingVertical: '3%',
+    borderColor: '#A3A3A3A3',
+    borderBottomWidth: 1,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+  },
+  itemIndexEnd: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: '5%',
+    paddingVertical: '3%',
+    borderBottomRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderColor: '#A3A3A3A3',
+    borderBottomWidth: 1,
+    borderRightWidth: 1,
+    borderLeftWidth: 1,
+  },
+  item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: '5%',
+    paddingVertical: '3%',
+    backgroundColor: '#FFFFFF',
+    borderColor: '#A3A3A3A3',
+    borderWidth: 1,
+    borderRadius: 20,
+  }
 });

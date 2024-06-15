@@ -13,7 +13,7 @@ export default BrownButton;
 
 const styles = StyleSheet.create({
   brownButton: {
-    width: "100%",
+    width: "90%",
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",

@@ -134,7 +134,7 @@ const ProfileDetails = ({ userData }) => {
                                 offColor="gray"
                                 labelStyle={styles.label}
                                 size="medium"
-                                value={isToggled}
+                                isOn={isToggled}
                                 onToggle={handleToggle}
                             />
                         </View>

@@ -270,7 +270,7 @@ const EditProfileDetails = ({ userData, saveUserData }) => {
                                 offColor="gray"
                                 labelStyle={styles.label}
                                 size="medium"
-                                value={isToggled}
+                                isOn={isToggled}
                                 onToggle={handleToggle}
                             />
                         </View>
