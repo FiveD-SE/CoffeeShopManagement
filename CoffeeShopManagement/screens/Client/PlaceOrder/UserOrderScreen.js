@@ -45,7 +45,6 @@ const UserOrderScreen = ({ userData }) => {
 		};
 		fetchOrderData();
 	}, []);
-	
     const handleOpenOrderDetail = (item) => {
         navigation.navigate("UserOrderInformationScreen", {
             orderData: item,
