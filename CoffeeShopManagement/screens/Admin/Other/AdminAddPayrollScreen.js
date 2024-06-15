@@ -50,8 +50,13 @@ export default function AdminAddPayrollScreen() {
     const [endDate, setEndDate] = useState(new Date());
 
     const [isChecked, setChecked] = useState(false);
-    const [cashiers, setCashiers] = useState([]);
+    const [staffs, setStaffs] = useState([]);
     const [checkList, setCheckList] = useState([]);
+    const [branches, setBranches] = useState([]);
+    const [branch, setBranch] = useState({});
+
+    const [filteredStaffs, setFilteredStaffs] = useState([]); // state for filtered staff list
+    const [searchText, setSearchText] = useState(''); // state for search text
 
     const handleSelectTermOption = (option) => {
         setSelectedTermOption(option);
@@ -111,11 +116,49 @@ export default function AdminAddPayrollScreen() {
         setIsShowDateTimePickerEnd(!isShowDateTimePickerEnd);
     }
 
+    const formatDate = (date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
+    const isValidStartDate = (date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        if (year > new Date().getFullYear()) {
+            return false;
+        } else if (year === new Date().getFullYear() && month > new Date().getMonth()) {
+            return false;
+        } else if (year === new Date().getFullYear() && month === new Date().getMonth() && day > new Date().getDate()) {
+            return false;
+        }
+        return true;
+    }
+
+    const isValidEndDate = (date) => {
+        console.log(date)
+        console.log(startDate)
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        if ((year > new Date().getFullYear()) || (year < startDate.getFullYear())) {
+            return false;
+        } else if ((year === new Date().getFullYear() && month > new Date().getMonth()) || (year === startDate.getFullYear() && month < startDate.getMonth())) {
+            return false;
+        } else if ((year === new Date().getFullYear() && month === new Date().getMonth() && day > new Date().getDate()) || (year === startDate.getFullYear() && month === startDate.getMonth() && day < startDate.getDate())) {
+            return false;
+        }
+
+        return true;
+    }
+
     const onChangeStart = ({ type }, selectedDate) => {
         if (type === 'set') {
             const currentDate = selectedDate;
             setDate(currentDate);
-            if (new Date().getFullYear() - currentDate.getFullYear() < 0) {
+            if (!isValidStartDate(currentDate)) {
                 Toast.show({
                     type: 'error',
                     position: 'top',
@@ -139,7 +182,7 @@ export default function AdminAddPayrollScreen() {
         if (type === 'set') {
             const currentDate = selectedDate;
             setDate(currentDate);
-            if (new Date().getFullYear() - currentDate.getFullYear() < 0) {
+            if (!isValidEndDate(currentDate)) {
                 Toast.show({
                     type: 'error',
                     position: 'top',
@@ -170,28 +213,49 @@ export default function AdminAddPayrollScreen() {
     }
 
     const handleComfirm = async () => {
-        const newPayrollRef = doc(collection(db, "payroll"));
+        const newPayrollRef = doc(collection(db, "payrolls"));
         const payrollId = newPayrollRef.id;
 
         const payroll = {
             payrollId: payrollId,
             startDate: startDate,
             endDate: endDate,
-            cashier: cashiers.filter((item, index) => checkList[index] === true)
-
+            staffs: staffs.filter((item, index) => checkList[index] === true),
+            status: false,
+            branch: branch,
         };
-
         await setDoc(newPayrollRef, payroll);
 
         navigation.goBack();
     }
+    // Search staff
+    const handleSearchStaff = (searchText) => {
+        setSearchText(searchText);
+    };
+
+    // Filter staffs based on search text
+    useEffect(() => {
+        if (searchText) {
+            const filtered = staffs
+                .map((staff, index) => ({ ...staff, originalIndex: index }))
+                .filter((staff) =>
+                    staff.fullName.toLowerCase().includes(searchText.toLowerCase())
+                );
+            setFilteredStaffs(filtered);
+        } else {
+            setFilteredStaffs(staffs.map((staff, index) => ({ ...staff, originalIndex: index })));
+        }
+    }, [searchText, staffs]);
+
+
 
     useFocusEffect(useCallback(
         () => {
             const unsub = onSnapshot(
-                query(collection(db, "cashier")),
+                query(collection(db, "staffs")),
                 (snapshot) => {
-                    setCashiers(snapshot.docs.map((doc) => doc.data()));
+                    setStaffs(snapshot.docs.map((doc) => doc.data()));
+                    setFilteredStaffs(snapshot.docs.map((doc) => doc.data()));
                     setCheckList(Array(snapshot.docs.length).fill(false))
                 }
             );
@@ -202,6 +266,16 @@ export default function AdminAddPayrollScreen() {
         console.log(checkList)
     }, [])
 
+    useFocusEffect(useCallback(() => {
+        const unsub = onSnapshot(
+            query(collection(db, "branches")),
+            (snapshot) => {
+                setBranches(snapshot.docs.map((doc) => doc.data()));
+            }
+        );
+        return () => unsub();
+    }, []));
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
@@ -209,7 +283,7 @@ export default function AdminAddPayrollScreen() {
                     <View style={styles.label}>
                         <Text style={styles.labelText}>Chi nhánh</Text>
                         <View style={styles.row}>
-                            <Text style={styles.textSecondary}>Tên các chi nhánh</Text>
+                            <Text style={styles.textSecondary}>{branch.branchName ? branch.branchName : 'Tên chi nhánh'}</Text>
                             <Pressable style={styles.button} onPress={showSelectBranchModal}>
                                 <Icon name="chevron-small-right" size={30} color="#9C9C9C" />
                             </Pressable>
@@ -234,7 +308,7 @@ export default function AdminAddPayrollScreen() {
                     <View style={styles.label}>
                         <Text style={styles.labelText}>Kỳ làm việc từ</Text>
                         <View style={styles.row}>
-                            <Text style={styles.textSecondary}>{startDate.toDateString()}</Text>
+                            <Text style={styles.textSecondary}>{formatDate(startDate)}</Text>
                             <Pressable style={[styles.button, { marginLeft: 10 }]} onPress={() => toggleDatePickerStart()}>
                                 <Icon name="calendar" size={20} color="#9C9C9C" />
                             </Pressable>
@@ -274,7 +348,7 @@ export default function AdminAddPayrollScreen() {
                     <View style={styles.label}>
                         <Text style={styles.labelText}>Kỳ làm việc đến</Text>
                         <View style={styles.row}>
-                            <Text style={styles.textSecondary}>{endDate.toDateString()}</Text>
+                            <Text style={styles.textSecondary}>{formatDate(endDate)}</Text>
                             <Pressable style={[styles.button, { marginLeft: 10 }]} onPress={() => toggleDatePickerEnd()}>
                                 <Icon name="calendar" size={20} color="#9C9C9C" />
                             </Pressable>
@@ -319,15 +393,15 @@ export default function AdminAddPayrollScreen() {
                             <Checkbox style={[styles.checkbox, { marginLeft: 10 }]} value={isChecked} onValueChange={handleChecked} color={'#006c5e'} />
                         </View>
                     </View>
-                    <View style={styles.label}>
-                        <TextInput style={styles.searchText} placeholder='Tìm kiếm' />
+                    <View style={[styles.label]}>
+                        <TextInput style={[styles.searchText]} placeholder='Tìm kiếm' onChangeText={handleSearchStaff} />
                         <Ionicons name='search' size={20} />
                     </View>
                 </View>
 
                 <View style={styles.section}>
-                    {cashiers.map((item, index) => (
-                        <StaffCard cashierId={item.cashierId} name={item.fullName} phoneNumber={item.phoneNumber} image={item.cashierImage} role={'Cashier'} key={index} isChecked={checkList[index]} onChecked={() => handleItemChecked(index)} />
+                    {filteredStaffs.map((item, index) => (
+                        <StaffCard cashierId={item.staffId} name={item.fullName} phoneNumber={item.phoneNumber} image={item.staffImage} role={'Cashier'} key={index} isChecked={checkList[item.originalIndex]} onChecked={() => handleItemChecked(item.originalIndex)} />
                     ))}
                 </View>
 
@@ -339,7 +413,7 @@ export default function AdminAddPayrollScreen() {
 
                 {/* Modal */}
                 <SelectTermOptionsModal visible={modalSelectTermOptionVisible} onClose={hideSelectTermOptionsModal} onSelectOption={handleSelectTermOption} />
-                <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} />
+                <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} branches={branches} setBranch={setBranch} />
                 <SelectDateModal
                     visible={modalSelectDateVisible}
                     onClose={hideSelectDateModal}
@@ -394,7 +468,8 @@ const styles = StyleSheet.create({
     searchText: {
         fontFamily: 'lato-regular',
         fontSize: 16,
-        color: '#000000'
+        color: '#000000',
+        width: '90%'
     },
     item: {
         flexDirection: 'row',

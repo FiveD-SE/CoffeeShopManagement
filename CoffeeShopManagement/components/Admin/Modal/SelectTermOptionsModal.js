@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet,  Pressable } from 'react-native';
+import { View, Text, Modal, StyleSheet, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import ModalHeader from '../../Client/Header/ModalHeader';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -14,6 +14,7 @@ const SelectTermOptionsModal = ({ visible, onClose, onSelectOption }) => {
     setMonthlyClicked(true);
     setQuarterClicked(false);
     onSelectOption('Định kỳ hàng tháng');
+    onClose();
   };
 
   const handleQuarterClick = () => {
@@ -21,6 +22,7 @@ const SelectTermOptionsModal = ({ visible, onClose, onSelectOption }) => {
     setQuarterClicked(true);
     setMonthlyClicked(false);
     onSelectOption('Định kỳ hàng quý');
+    onClose();
   };
 
   return (
@@ -32,7 +34,7 @@ const SelectTermOptionsModal = ({ visible, onClose, onSelectOption }) => {
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <ModalHeader title="Chọn kỳ hạn" onClose={onClose} style={styles.title}/>
+          <ModalHeader title="Chọn kỳ hạn" onClose={onClose} style={styles.title} />
           <View style={styles.main}>
             <Pressable
               style={[styles.row, monthlyClicked]}
