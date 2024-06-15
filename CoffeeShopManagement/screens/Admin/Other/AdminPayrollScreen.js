@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { View, Text, StyleSheet, Pressable, SafeAreaView, FlatList, TextInput } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
 import { db } from '../../../services/firebaseService';
 
 export default function AdminPayrollScreen() {
@@ -16,7 +16,7 @@ export default function AdminPayrollScreen() {
   useFocusEffect(useCallback(
     () => {
       const unsub = onSnapshot(
-        query(collection(db, "payrolls")),
+        query(collection(db, "payrolls"), orderBy('createdAt', 'desc')),
         (snapshot) => {
           setPayrollList(snapshot.docs.map((doc) => doc.data()));
           setFilterPayrollList(snapshot.docs.map((doc) => doc.data()));
