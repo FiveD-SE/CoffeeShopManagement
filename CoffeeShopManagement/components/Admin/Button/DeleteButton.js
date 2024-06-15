@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
         marginLeft: "2%",
         fontSize: 16,
         fontWeight: "700",
-        color: "#F61A3D"
+        color: "#F61A3D",
+        fontFamily: "lato-bold"
     }
 });

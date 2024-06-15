@@ -30,7 +30,10 @@ export default function ShiftCard2({ item, onPress }) {
         <TouchableOpacity style={styles.cardWrapper} onPress={onPress}>
             <View>
                 <Text style={styles.nameShift}>{item.shiftName}</Text>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ marginBottom: "3%" }}>
+                    <Text style={styles.input}>{item.branch.branchName}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: "center" }}>
                     <Feather name='clock' size={20} color={'#9c9c9c'} />
                     <View style={styles.timeWrapper}>
                         <Text style={styles.timeText}>{formatTime(convertTimestampToDate(item.startTime))} - {formatTime(convertTimestampToDate(item.endTime))}</Text>
@@ -60,17 +63,25 @@ const styles = StyleSheet.create({
         padding: '2%',
         borderRadius: 20,
         paddingHorizontal: '5%',
-        marginStart: '3%'
+        marginStart: '3%',
     },
     nameShift: {
+        color: "#3a3a3a",
         fontSize: 18,
-        fontWeight: '600',
-        marginBottom: '6%'
+        fontWeight: "600",
+        fontFamily: "lato-bold"
     },
     timeText: {
-        color: '#006c5e',
+        color: "#00A188",
+        fontSize: 15,
+        fontWeight: "500",
+        fontFamily: "lato-regular"
     },
-    quantityText: {
-        color: '#9c9c9c'
-    }
+    input: {
+        color: "#3a3a3a",
+        fontSize: 15,
+        fontWeight: "500",
+        flex: 1,
+        fontFamily: "lato-regular"
+    },
 })

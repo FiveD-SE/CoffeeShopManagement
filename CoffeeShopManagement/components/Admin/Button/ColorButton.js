@@ -29,5 +29,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         fontWeight: "700",
+        fontFamily: "lato-bold"
     }
 });
