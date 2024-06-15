@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity, Keyboard } from 'react-native'
+import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity, Keyboard, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import ModalHeader from '../../Client/Header/ModalHeader'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -9,10 +9,11 @@ import Toast from 'react-native-toast-message';
 import { collection, addDoc, updateDoc, doc, query, where, getDocs } from "firebase/firestore";
 import { db, uploadImageToFirebase } from "../../../services/firebaseService";
 import { colors } from '../../../assets/colors/colors'
+import DeleteButton from '../../../components/Admin/Button/DeleteButton';
 
 const EditShiftModal = ({ visible, onClose, shift }) => {
-   
-    const [modalHeight, setModalHeight] = useState('40%');
+
+    const [modalHeight, setModalHeight] = useState('50%');
     const [hasChanges, setHasChanges] = useState(false);
 
     const [shiftName, setShiftName] = useState('');
@@ -41,7 +42,7 @@ const EditShiftModal = ({ visible, onClose, shift }) => {
 
         const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
             // Khi bàn phím ẩn đi, khôi phục kích thước mặc định của modal
-            setModalHeight('40%');
+            setModalHeight('50%');
         });
 
         return () => {
@@ -88,6 +89,88 @@ const EditShiftModal = ({ visible, onClose, shift }) => {
         setHasChanges(false);
         onClose();
     };
+
+    const handleDeleteShift = async () => {
+        const currentTime = new Date();
+        const startTimeToday = new Date(startTime);
+        const endTimeToday = new Date(endTime);
+
+       
+        startTimeToday.setFullYear(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate());
+        endTimeToday.setFullYear(currentTime.getFullYear(), currentTime.getMonth(), currentTime.getDate());
+
+        if (endTime <= startTime) {
+            
+            const endTimeTomorrow = new Date(endTimeToday);
+            endTimeTomorrow.setDate(endTimeToday.getDate() + 1);
+
+            if ((currentTime >= startTimeToday && currentTime <= new Date(startTimeToday.getTime() + (24 * 60 * 60 * 1000))) || currentTime <= endTimeTomorrow) {
+                Toast.show({
+                    type: "info",
+                    text1: "Thông báo",
+                    text2: "Đang trong thời gian ca làm việc, không thể xóa.",
+                    text1Style: {
+                        fontSize: 16,
+                    },
+                    text2Style: {
+                        fontSize: 12,
+                    },
+                });
+                return; 
+            }
+        } else {
+            
+            if (currentTime >= startTimeToday && currentTime <= endTimeToday) {
+                Toast.show({
+                    type: "info",
+                    text1: "Thông báo",
+                    text2: "Đang trong thời gian ca làm việc, không thể xóa.",
+                    text1Style: {
+                        fontSize: 16,
+                    },
+                    text2Style: {
+                        fontSize: 12,
+                    },
+                });
+                return;
+            }
+        }
+        Alert.alert(
+            "Xác nhận xóa ca làm việc này không",
+            "Bạn có chắc chắn muốn xóa ca làm việc này không?",
+            [
+                {
+                    text: "Hủy",
+                    style: "cancel",
+                },
+                {
+                    text: "Đồng ý",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            await deleteDoc(
+                                doc(db, "shifts", shift.shiftId)
+                            );
+                            Toast.show({
+                                type: "success",
+                                text1: "Thành công",
+                                text2: "Đã xóa ca làm việc",
+                            });
+                            navigation.goBack();
+                        } catch (error) {
+                            console.log("Error deleting shift:", error);
+                            Toast.show({
+                                type: "error",
+                                text1: "Lỗi",
+                                text2: "Đã xảy ra lỗi khi xóa ca làm việc",
+                            });
+                        }
+                    },
+                },
+            ],
+            { cancelable: false }
+        );
+    }
 
     const handleEditShift = async () => {
         let errorMessage = null;
@@ -152,9 +235,9 @@ const EditShiftModal = ({ visible, onClose, shift }) => {
         onClose();
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log(hasChanges);
-    },[hasChanges])
+    }, [hasChanges])
 
     return (
         <Modal
@@ -216,6 +299,7 @@ const EditShiftModal = ({ visible, onClose, shift }) => {
                                 />
                             )}
                         </View>
+                        <DeleteButton OnPress={handleDeleteShift} />
                         <ColorButton
                             OnPress={handleEditShift}
                             color="#00A188"
@@ -245,18 +329,6 @@ const styles = StyleSheet.create({
     bodyModal: {
         padding: '5%'
     },
-    acceptButton: {
-        borderRadius: 10,
-        backgroundColor: '#006c5e',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '5%'
-    },
-    topText: {
-        fontSize: 16,
-        fontWeight: '600',
-        marginBottom: '3%'
-    },
     addTime: {
         backgroundColor: '#fff',
         borderWidth: 1,
@@ -285,16 +357,19 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "500",
         flex: 1,
+        fontFamily: "lato-regular"
     },
     header: {
         color: "#3a3a3a",
         fontSize: 18,
         fontWeight: "600",
+        fontFamily: "lato-bold"
     },
     selectedText: {
         color: "#00A188",
         fontSize: 15,
         fontWeight: "500",
+        fontFamily: "lato-regular"
     },
 })
 

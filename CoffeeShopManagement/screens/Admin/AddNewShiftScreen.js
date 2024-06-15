@@ -163,7 +163,7 @@ const AddNewShiftScreen = () => {
                 shiftName: shiftName,
                 startTime: startTime,
                 endTime: endTime,
-                branchId: selectedBranch.branchId,
+                branch: selectedBranch,
                 dateCreated: new Date(),
             });
             const shiftId = docRef.id;
@@ -301,6 +301,9 @@ const AddNewShiftScreen = () => {
                     />
                 )}
             </View>
+            <Text style={styles.selectedText}>
+                Lưu ý: Chọn thời gian ca làm trong thời gian hoạt động của chi nhánh
+            </Text>
             {selectedBranch && <View><Text style={styles.header}>Thông tin chi nhánh</Text>
                 <View style={styles.branchInfoContainer}>
                     <Text style={styles.title}>
@@ -388,6 +391,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: "500",
         fontFamily: "lato-regular",
+        lineHeight:20
     },
     branchInfoContainer: {
         backgroundColor: colors.green_10,
