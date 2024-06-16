@@ -1,110 +1,18 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native'
-import React from 'react'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import Icon from 'react-native-vector-icons/Entypo'
-import ShiftCard from '../../components/Admin/ShiftCard'
-import { useNavigation } from '@react-navigation/native'
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Entypo';
+import ShiftCard from '../../components/Admin/ShiftCard';
+import { useNavigation } from '@react-navigation/native';
+import { doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
+import { db } from "../../services/firebaseService";
+
 export default function ScheduleScreen() {
-    const DATA = [
-        {
-            'shift': [
-                {
-                    idShift: '1',
-                    nameShift: 'Ca sáng',
-                    startTime: '7:00',
-                    endTime: '8:00',
-                    quantity: 100,
-                },
-                {
-                    idShift: '2',
-                    nameShift: 'Ca tối',
-                    startTime: '7:00',
-                    endTime: '8:00',
-                    quantity: 100,
-                },
-                {
-                    idShift: '3',
-                    nameShift: 'Ca khuya',
-                    startTime: '7:00',
-                    endTime: '8:00',
-                    quantity: 100,
-                },
-                {
-                    idShift: '4',
-                    nameShift: 'Ca chiều',
-                    startTime: '7:00',
-                    endTime: '8:00',
-                    quantity: 100,
-                },
-                {
-                    idShift: '5',
-                    nameShift: 'Ca chiều',
-                    startTime: '7:00',
-                    endTime: '8:00',
-                    quantity: 100,
-                }
-            ],
-            'staff': [
-                {
-                    idShift: '1',
-                    id: "123456",
-                    name: "Tánh Trần",
-                    SDT: "0352085655",
-                    role: "Nhân viên",
-                },
-                {
-                    idShift: '1',
-                    id: "123457",
-                    name: "Tánh Chan",
-                    SDT: "0352085656",
-                    role: "Nhân viên",
-                },
-                {
-                    idShift: '1',
-                    id: "123458",
-                    name: "Tánh hello",
-                    SDT: "0352085657",
-                    role: "Nhân viên",
-                },
-                {
-                    idShift: '1',
-                    id: "123459",
-                    name: "Tánh Dep Trai",
-                    SDT: "0352085658",
-                    role: "Nhân viên",
-                },
-                {
-                    idShift: '1',
-                    id: "123",
-                    name: "Tánh Phan",
-                    SDT: "0352085658",
-                    role: "Nhân viên",
-                },
-                {
-                    idShift: '1',
-                    id: "124",
-                    name: "Tánh Luu",
-                    SDT: "0352085658",
-                    role: "Nhân viên",
-                },
-                {
-                    idShift: '3',
-                    id: "125",
-                    name: "Tánh Nguyen",
-                    SDT: "0352085658",
-                    role: "Nhân viên",
-                },
-                {
-                    idShift: '3',
-                    id: "126",
-                    name: "Tánh Truong",
-                    SDT: "0352085658",
-                    role: "Nhân viên",
-                },
-            ]
-        }
-    ]
     const navigation = useNavigation();
+    const [selectedBranch, setSelectedBranch] = useState('H21mgNlSv8Q30Om4s043');
+    const [todaySchedule, setTodaySchedule] = useState([]);
+    const [loading, setLoading] = useState(true);
+
     const formatDate = (date) => {
         const d = new Date(date);
         const day = String(d.getDate()).padStart(2, '0');
@@ -112,13 +20,81 @@ export default function ScheduleScreen() {
         const year = d.getFullYear();
         return `${day}/${month}/${year}`;
     };
+
+    const hii = () => {
+        setSelectedBranch('H21mgNlSv8Q30Om4s043');
+    };
+
+    useEffect(() => {
+        const fetchBranchSchedule = async () => {
+            try {
+                if (!selectedBranch) return;
+
+                const branchId = selectedBranch;
+                const branchScheduleRef = doc(db, 'branchSchedules', branchId);
+                const branchScheduleDoc = await getDoc(branchScheduleRef);
+
+                const todayDate = formatDate(new Date());
+                const newScheduleEntry = {
+                    date: todayDate,
+                    shifts: [
+                        {
+                            idShift: '1',
+                            nameShift: 'Ca sáng',
+                            startTime: '7:00',
+                            endTime: '8:00',
+                            quantity: 100,
+                        },
+                        // Add other shifts as needed
+                    ],
+                };
+
+                if (branchScheduleDoc.exists()) {
+                    const branchScheduleData = branchScheduleDoc.data();
+                    const dayList = branchScheduleData.dayList || [];
+
+                    const existingEntryIndex = dayList.findIndex((day) => day.date === todayDate);
+
+                    if (existingEntryIndex !== -1) {
+                        // Entry for today already exists
+                        setTodaySchedule(dayList[existingEntryIndex].shifts);
+                    } else {
+                        // Entry for today does not exist, add new entry to dayList
+                        dayList.push(newScheduleEntry);
+                        await updateDoc(branchScheduleRef, { dayList });
+                        setTodaySchedule(newScheduleEntry.shifts);
+                    }
+                } else {
+                    // No existing schedule document, create new with today's entry
+                    await setDoc(branchScheduleRef, {
+                        branchId: branchId,
+                        dayList: [newScheduleEntry],
+                    });
+                    setTodaySchedule(newScheduleEntry.shifts);
+                }
+
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching or updating branch schedule:', error);
+                // Implement error handling as needed
+            }
+        };
+
+        fetchBranchSchedule();
+    }, [selectedBranch]);
+
     const goToDetailShift = (item) => {
-        const { idShift } = item; // Trích xuất idShift từ item
+        navigation.navigate('DetailShift', { selectedShift: item });
+    };
 
-        const selectedStaff = DATA[0].staff.filter(staff => staff.idShift === idShift);
-
-        navigation.navigate('DetailShift', { selectedStaff: selectedStaff })
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <Text>Loading...</Text>
+            </View>
+        );
     }
+
     return (
         <View style={styles.container}>
             <View style={styles.topApp}>
@@ -126,7 +102,7 @@ export default function ScheduleScreen() {
                     <FontAwesome name='calendar' size={24} />
                     <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Hôm nay | {formatDate(new Date())}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.topButton}>
+                <TouchableOpacity style={styles.topButton} onPress={hii}>
                     <Icon name='location-pin' size={24} color={'#d22f27'} />
                     <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Chọn chi nhánh</Text>
                 </TouchableOpacity>
@@ -135,7 +111,7 @@ export default function ScheduleScreen() {
                 <Text style={styles.bodyAppText}>Tên chi nhánh</Text>
                 <FlatList
                     showsVerticalScrollIndicator={false}
-                    data={DATA[0].shift}
+                    data={todaySchedule}
                     keyExtractor={item => item.idShift}
                     renderItem={({ item }) => (
                         <ShiftCard item={item} onPress={() => goToDetailShift(item)} />
@@ -166,7 +142,6 @@ const styles = StyleSheet.create({
         marginBottom: '3%'
     },
     bodyApp: {
-
         paddingBottom: '20%'
     },
     bodyAppText: {
@@ -174,4 +149,4 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginBottom: '3%',
     }
-})
+});
