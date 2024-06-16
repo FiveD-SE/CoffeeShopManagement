@@ -1,7 +1,7 @@
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native'
-import React, { useState, useEffect } from 'react'
-import { Dropdown } from 'react-native-element-dropdown'
-import { BarChart, LineChart } from 'react-native-gifted-charts'
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Dropdown } from 'react-native-element-dropdown';
+import { BarChart, LineChart } from 'react-native-gifted-charts';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import { collection, onSnapshot } from 'firebase/firestore';
@@ -30,7 +30,7 @@ const AdminRevenueScreen = ({ route }) => {
   const [viewByStaticValue, setViewByStaticValue] = useState("Week");
 
   const [revenueData, setRevenueData] = useState([]);
-  const [staticData, setStaticData] = useState([]);
+  const [growthData, setGrowthData] = useState([]);
 
   const [ordersData, setOrdersData] = useState([]);
 
@@ -79,9 +79,106 @@ const AdminRevenueScreen = ({ route }) => {
     processData();
   }, [ordersData, viewByRevenueValue]);
 
+  useEffect(() => {
+    const calculateGrowth = () => {
+      const currentDate = new Date();
+      let growth = [];
+
+      switch (viewByStaticValue) {
+        case "Week":
+          growth = calculateGrowthByWeek(ordersData, currentDate);
+          break;
+        case "Month":
+          growth = calculateGrowthByMonth(ordersData, currentDate);
+          break;
+        case "Quarter":
+          growth = calculateGrowthByQuarter(ordersData, currentDate);
+          break;
+        case "Year":
+          growth = calculateGrowthByYear(ordersData, currentDate);
+          break;
+        default:
+          growth = calculateGrowthByWeek(ordersData, currentDate);
+          break;
+      }
+
+      setGrowthData(growth);
+    };
+
+    calculateGrowth();
+  }, [ordersData, viewByStaticValue]);
+
+  const calculateGrowthByWeek = (orders, date) => {
+    const startOfWeek = getStartOfWeek(date);
+    let weekGrowth = [];
+
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(startOfWeek);
+      day.setDate(day.getDate() + i);
+      const dayOrders = orders.filter(order => {
+        const orderDate = order.orderDate.toDate();
+        return (
+          orderDate.getDate() === day.getDate() &&
+          orderDate.getMonth() === day.getMonth() &&
+          orderDate.getFullYear() === day.getFullYear()
+        );
+      });
+      const totalRevenue = dayOrders.reduce((sum, order) => sum + order.orderTotalPrice, 0);
+      weekGrowth.push({ label: i === 6 ? "CN" : `T${i + 2}`, value: totalRevenue });
+    }
+    return weekGrowth;
+  };
+
+  const calculateGrowthByMonth = (orders, date) => {
+    const currentMonth = date.getMonth();
+    const currentYear = date.getFullYear();
+    let monthGrowth = [];
+
+    for (let i = 0; i <= currentMonth; i++) {
+      const monthOrders = orders.filter(order => {
+        const orderDate = order.orderDate.toDate();
+        return orderDate.getMonth() === i && orderDate.getFullYear() === currentYear;
+      });
+      const totalRevenue = monthOrders.reduce((sum, order) => sum + order.orderTotalPrice, 0);
+      monthGrowth.push({ label: new Date(currentYear, i).toLocaleString('default', { month: 'short' }), value: totalRevenue });
+    }
+    return monthGrowth;
+  };
+
+  const calculateGrowthByQuarter = (orders, date) => {
+    const currentQuarter = Math.floor((date.getMonth() + 3) / 3);
+    const currentYear = date.getFullYear();
+    let quarterGrowth = [];
+
+    for (let i = 1; i <= currentQuarter; i++) {
+      const quarterOrders = orders.filter(order => {
+        const orderDate = order.orderDate.toDate();
+        const orderQuarter = Math.floor((orderDate.getMonth() + 3) / 3);
+        return orderQuarter === i && orderDate.getFullYear() === currentYear;
+      });
+      const totalRevenue = quarterOrders.reduce((sum, order) => sum + order.orderTotalPrice, 0);
+      quarterGrowth.push({ label: `Q${i}`, value: totalRevenue });
+    }
+    return quarterGrowth;
+  };
+
+  const calculateGrowthByYear = (orders, date) => {
+    const currentYear = date.getFullYear();
+    let yearGrowth = [];
+
+    for (let i = currentYear - 5; i <= currentYear; i++) {
+      const yearOrders = orders.filter(order => {
+        const orderDate = order.orderDate.toDate();
+        return orderDate.getFullYear() === i;
+      });
+      const totalRevenue = yearOrders.reduce((sum, order) => sum + order.orderTotalPrice, 0);
+      yearGrowth.push({ label: i.toString(), value: totalRevenue });
+    }
+    return yearGrowth;
+  };
+
   const groupDataByWeek = (orders, date) => {
     const startOfWeek = getStartOfWeek(date);
-    const endOfWeek = getEndOfWeek(date);
     let weekData = [];
 
     for (let i = 0; i < 7; i++) {
@@ -96,7 +193,7 @@ const AdminRevenueScreen = ({ route }) => {
         );
       });
       const totalRevenue = dayOrders.reduce((sum, order) => sum + order.orderTotalPrice, 0);
-      weekData.push({ label: `T${i + 2}`, value: totalRevenue });
+      weekData.push({ label: i === 6 ? "CN" : `T${i + 2}`, value: totalRevenue });
     }
     return weekData;
   };
@@ -158,15 +255,12 @@ const AdminRevenueScreen = ({ route }) => {
     return start;
   };
 
-  const getEndOfWeek = (date) => {
-    const end = new Date(getStartOfWeek(date));
-    end.setDate(end.getDate() + 6);
-    end.setHours(23, 59, 59, 999);
-    return end;
-  };
-
   const handleSelectBranch = () => {
     navigation.navigate("AdminSelectBranchScreen");
+  };
+
+  const formatCurrency = (value) => {
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
 
   return (
@@ -212,6 +306,8 @@ const AdminRevenueScreen = ({ route }) => {
                   isAnimated
                   showValuesAsTopLabel
                   yAxisLabelFormatter={(value) => value.toFixed(1)}
+                  textFontSize={15}
+                  textColor="#151515"
                 />
               </View>
             </View >
@@ -237,7 +333,7 @@ const AdminRevenueScreen = ({ route }) => {
               <View style={styles.chartContainer}>
                 <LineChart
                   noOfSections={5}
-                  data={staticData}
+                  data={growthData}
                   color={'#006C5E'}
                   thickness={3}
                   dataPointsColor={'#FFA730'}
@@ -245,6 +341,8 @@ const AdminRevenueScreen = ({ route }) => {
                   xAxisThickness={0}
                   isAnimated
                   showValuesAsDataPointsText
+                  textFontSize={15}
+                  textColor="#151515"
                 />
               </View>
             </View>
@@ -255,7 +353,7 @@ const AdminRevenueScreen = ({ route }) => {
   );
 }
 
-export default AdminRevenueScreen
+export default AdminRevenueScreen;
 
 const styles = StyleSheet.create({
   container: {
