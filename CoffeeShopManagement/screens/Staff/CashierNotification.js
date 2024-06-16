@@ -1,138 +1,195 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
-    View,
-    Text,
-    StyleSheet,
-    Pressable,
-    FlatList,
-    Platform,
-    SafeAreaView,
+	View,
+	Text,
+	StyleSheet,
+	Pressable,
+	ScrollView,
+	SafeAreaView,
 } from "react-native";
+import {
+	collection,
+	query,
+	onSnapshot,
+	getDocs,
+	doc,
+	updateDoc,
+	where,
+} from "firebase/firestore";
 import NotificationCard from "../../components/Staff/NotificationCard";
-import { colors } from "../../assets/colors";
 
-const isIOS = Platform.OS === "ios";
-const isAndroid = Platform.OS === "android";
+import { useNavigation } from "@react-navigation/native";
 
-export default function CashierNotification() {
-    const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
+import { connect } from "react-redux";
+import { db } from "../../services/firebaseService";
+import { colors } from "../../assets/colors/colors";
 
-    const selectionButtons = ["Tất cả", "Chưa đọc", "Đã đọc"];
-    const DATA = [
-        {
-            title: "Tiêu đề",
-            content: "Nội dung",
-            orderId: "#12342",
-            state: "Success",
-            isRead: true,
-        },
-        {
-            title: "Tiêu đề",
-            content: "Nội dung",
-            orderId: "#12344",
-            state: "Failed",
-            isRead: true,
-        },
-        {
-            title: "Tiêu đề",
-            content: "Nội dung Nội dung Nội dung Nội dungNội dung Nội dung ",
-            orderId: "#123456",
-            state: "None",
-            isRead: false,
-        },
-        {
-            title: "Tiêu đề",
-            content: "Nội dung Nội dung Nội dung Nội dungNội dung Nội dung ",
-            orderId: "#123456",
-            state: "None",
-            isRead: false,
-        },
-    ];
+function CashierNotification({ userData }) {
+	const navigation = useNavigation();
+	const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
+	const [notifications, setNotifications] = useState([]);
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.filter}>
-                <View style={styles.filterWrapper}>
-                    {selectionButtons.map((buttonTitle, index) => (
-                        <Pressable
-                            key={index}
-                            style={[
-                                styles.filterDetail,
-                                selectedButtonIndex === index &&
-                                    styles.filterDetailSelected,
-                            ]}
-                            onPress={() => setSelectedButtonIndex(index)}
-                        >
-                            <Text
-                                style={[
-                                    styles.filterDetailText,
-                                    selectedButtonIndex === index &&
-                                        styles.filterDetailTextSelected,
-                                ]}
-                            >
-                                {buttonTitle}
-                            </Text>
-                        </Pressable>
-                    ))}
-                </View>
-            </View>
-            <View style={styles.listNotification}>
-                <Text style={styles.allNotificationText}>Tất cả thông báo</Text>
-                <FlatList
-                    data={DATA}
-                    showsVerticalScrollIndicator={false}
-                    renderItem={({ item }) => <NotificationCard item={item} />}
-                />
-            </View>
-        </SafeAreaView>
-    );
+	const selectionButtons = ["Tất cả", "Chưa đọc", "Đã đọc"];
+
+	useEffect(() => {
+		const fetchNotifications = async () => {
+			const notificationCollection = collection(db, "user_notifications");
+			const notificationQuery = query(
+				notificationCollection,
+				where("userId", "==", userData.id)
+			);
+			const notificationSnapshot = await getDocs(notificationQuery);
+			const notificationListData = notificationSnapshot.docs.map((doc) => ({
+				...doc.data(),
+			}));
+			setNotifications(notificationListData);
+		};
+		fetchNotifications();
+	}, [notifications]);
+
+	const getFilteredNotifications = () => {
+		let filteredNotifications;
+		switch (selectedButtonIndex) {
+			case 1:
+				filteredNotifications = notifications.filter(
+					(notification) => !notification.notificationStatus
+				);
+				break;
+			case 2:
+				filteredNotifications = notifications.filter(
+					(notification) => notification.notificationStatus
+				);
+				break;
+			default:
+				filteredNotifications = notifications;
+		}
+		return filteredNotifications.sort((a, b) => b.createdAt - a.createdAt);
+	};
+
+	const renderNotificationKinds = () =>
+		selectionButtons.map((buttonTitle, index) => (
+			<Pressable
+				key={index}
+				style={[
+					styles.filterDetail,
+					selectedButtonIndex === index && styles.filterDetailSelected,
+				]}
+				onPress={() => setSelectedButtonIndex(index)}
+			>
+				<Text
+					style={[
+						styles.filterDetailText,
+						selectedButtonIndex === index && styles.filterDetailTextSelected,
+					]}
+				>
+					{buttonTitle}
+				</Text>
+			</Pressable>
+		));
+
+	const handleOnPressNotification = async (item) => {
+		try {
+			const notificationRef = doc(
+				db,
+				"user_notifications",
+				item.notificationId
+			);
+
+			await updateDoc(notificationRef, { notificationStatus: true });
+
+			const invoicesCollection = collection(db, "orders");
+			const invoiceQuery = query(invoicesCollection);
+
+			if (item.notificationType === 2) {
+				const unsubscribe = onSnapshot(invoiceQuery, (querySnapshot) => {
+					const docs = querySnapshot.docs;
+					docs.forEach((doc) => {
+						if (doc.id === item.orderId) {
+							navigation.navigate("DetailBilling", {
+								orderData: doc.data(),
+							});
+						}
+					});
+				});
+
+				return unsubscribe;
+			}
+		} catch (error) {
+			console.error("Error updating notification status: ", error);
+		}
+	};
+
+	const renderNotificationList = () =>
+		getFilteredNotifications().map((notification, index) => (
+			<NotificationCard
+				key={index}
+				item={notification}
+				onPress={() => handleOnPressNotification(notification)}
+			/>
+		));
+
+	return (
+		<SafeAreaView style={styles.container}>
+			<View style={styles.filter}>
+				<View style={styles.filterWrapper}>{renderNotificationKinds()}</View>
+			</View>
+			<View style={styles.listNotification}>
+				<Text style={styles.allNotificationText}>Tất cả thông báo</Text>
+				<ScrollView>{renderNotificationList()}</ScrollView>
+			</View>
+		</SafeAreaView>
+	);
 }
+
+const mapStateToProps = (state) => ({
+	userData: state.auth.userData,
+});
+
+export default connect(mapStateToProps)(CashierNotification);
+
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.background.white_100,
-    },
-    filter: {
-        padding: "5%",
-        flexDirection: "row",
-        justifyContent: "space-between",
-    },
-    filterWrapper: {
-        width: "100%",
-        height: "100%",
-        flexDirection: "row",
-        justifyContent: "space-around",
-        alignItems: "center",
-    },
-    filterDetail: {
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: 8,
-        paddingVertical: isIOS ? "4%" : "2%",
-        paddingHorizontal: "6%",
-        backgroundColor: colors.background.lightGrey_10,
-        flex: 1,
-        marginRight: 10,
-    },
-    filterDetailSelected: {
-        backgroundColor: colors.background.black_100,
-    },
-    filterDetailText: {
-        color: colors.text.black_100,
-        fontFamily: "lato-bold",
-        fontSize: 14,
-    },
-    filterDetailTextSelected: {
-        color: colors.text.white_100,
-        fontFamily: "lato-bold",
-        fontSize: 14,
-    },
-    listNotification: {
-        padding: "5%",
-    },
-    allNotificationText: {
-        color: colors.text.black_100,
-        fontFamily: "lato-bold",
-        fontSize: 16,
-    },
+	container: {
+		flex: 1,
+	},
+	filter: {
+		padding: "5%",
+		flexDirection: "row",
+		justifyContent: "flex-start",
+	},
+	filterWrapper: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		width: "80%",
+		gap: 15,
+	},
+	filterDetail: {
+		paddingVertical: "2%",
+		paddingHorizontal: "5%",
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 8,
+		paddingHorizontal: "6%",
+		backgroundColor: "#FFFFFF",
+	},
+	filterDetailSelected: {
+		backgroundColor: colors.green_100,
+	},
+	filterDetailText: {
+		color: "#9D9D9D",
+		fontFamily: "lato-regular",
+		fontSize: 16,
+	},
+	filterDetailTextSelected: {
+		color: "white",
+	},
+	listNotification: {
+		height: "100%",
+		padding: "5%",
+	},
+	allNotificationText: {
+		color: "black",
+		fontFamily: "lato-bold",
+		fontSize: 16,
+	},
 });

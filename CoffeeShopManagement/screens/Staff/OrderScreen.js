@@ -8,14 +8,15 @@ import {
 } from "react-native";
 import React from "react";
 import ProductCard from "../../components/Staff/ProductCard";
+import Section from "../../components/Client/Section";
 import { doc, updateDoc } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import { db } from "../../services/firebaseService";
+import { colors } from "../../assets/colors/colors";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function OrderScreen({ route }) {
 	const selectedOrder = route.params.selectedOrder;
-
-	console.log(selectedOrder.products);
 
 	const navigation = useNavigation();
 
@@ -27,6 +28,21 @@ export default function OrderScreen({ route }) {
 		navigation.goBack();
 	};
 
+	const handleCancelOrder = async (order) => {
+		const orderDocRef = doc(db, "orders", order.orderId);
+		await updateDoc(orderDocRef, {
+			orderState: 5,
+		});
+		navigation.goBack();
+	};
+
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
+	};
+
 	const renderAcceptButton = (order) => {
 		if (order.orderState === 1) {
 			return (
@@ -35,13 +51,16 @@ export default function OrderScreen({ route }) {
 						onPress={() => handleAcceptOrder(selectedOrder)}
 						style={styles.acceptButton}
 					>
-						<Text style={styles.acceptText}>Nhận đơn ⋅ 59.000đ</Text>
+						<Text style={styles.acceptText}>
+							Nhận đơn ⋅ {formatCurrency(order.orderTotalPrice)}
+						</Text>
 					</TouchableOpacity>
-					<TouchableOpacity style={styles.deleteButton}>
-						<Image
-							source={require("../../assets/trash.png")}
-							style={{ height: 40, width: 40 }}
-						/>
+					<TouchableOpacity
+						onPress={() => handleCancelOrder(selectedOrder)}
+						style={styles.deleteButton}
+					>
+						<Ionicons name="trash" size={24} color={colors.error} />
+						<Text style={styles.deleteText}>Huỷ đơn</Text>
 					</TouchableOpacity>
 				</View>
 			);
@@ -60,45 +79,28 @@ export default function OrderScreen({ route }) {
 						renderItem={({ item }) => <ProductCard item={item} />}
 					/>
 				</View>
-				<View>
-					<Text style={styles.topText}>Thông tin đơn hàng</Text>
+				<Section title="Thông tin giao hàng">
 					<View style={styles.deliInforWrapper}>
-						<View style={{ flexDirection: "column" }}>
-							<Text style={styles.orderText}>
-								<Text>Người nhận: </Text>
-								<Text style={{ fontFamily: "lato-bold" }}>
-									{selectedOrder.orderOwner}
-								</Text>
+						<View style={styles.rowContainer}>
+							<Text style={styles.label}>Người nhận: </Text>
+							<Text style={{ fontFamily: "lato-bold" }}>
+								{selectedOrder.deliveryAddress.name}
 							</Text>
-							<Text style={styles.orderText}>
-								<Text>SDT người nhận: </Text>
-								<Text style={{ fontFamily: "lato-bold" }}>
-									{selectedOrder.orderOwnerPhone}
-								</Text>
+						</View>
+						<View style={styles.rowContainer}>
+							<Text style={styles.label}>SDT người nhận: </Text>
+							<Text style={{ fontFamily: "lato-bold" }}>
+								{selectedOrder.deliveryAddress.phoneNumber}
 							</Text>
-							<Text style={styles.orderText}>
-								<Text>Trạng thái: </Text>
-								<Text style={{ fontFamily: "lato-bold" }}>
-									{selectedOrder.orderState}
-								</Text>
-							</Text>
-							<Text style={styles.orderText}>
-								<Text>Trạng thái thanh toán: </Text>
-								<Text
-									style={{
-										fontFamily: "lato-bold",
-										color:
-											selectedOrder.orderPaymentState === "Chưa thanh toán"
-												? "#f61a3d"
-												: "#4ecb71",
-									}}
-								>
-									{selectedOrder.orderPaymentState}
-								</Text>
+						</View>
+						<View style={styles.rowContainer}>
+							<Text style={styles.label}>Trạng thái: </Text>
+							<Text style={{ fontFamily: "lato-bold" }}>
+								{selectedOrder.orderState}
 							</Text>
 						</View>
 					</View>
-				</View>
+				</Section>
 			</View>
 			{renderAcceptButton(selectedOrder)}
 		</View>
@@ -109,6 +111,7 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	bodyApp: {
+		flex: 1,
 		padding: "5%",
 	},
 	topText: {
@@ -122,44 +125,53 @@ const styles = StyleSheet.create({
 	},
 	inforText: {},
 	deliInforWrapper: {
-		flexDirection: "row",
-		fontSize: 14,
-		fontWeight: "600",
-		padding: "3%",
-		justifyContent: "space-between",
-		alignItems: "center",
-		backgroundColor: "#fff",
+		flexDirection: "column",
+		padding: "4%",
+		marginTop: "2%",
+		backgroundColor: colors.white_100,
 		borderRadius: 10,
+	},
+	rowContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginBottom: "2%",
+	},
+	label: {
+		fontFamily: "lato-regular",
 	},
 	bottomApp: {
 		backgroundColor: "rgba(255, 255, 255, 1)",
-		bottom: 0,
-		left: 0,
-		right: 0,
-		position: "absolute",
-		alignItems: "center",
-		justifyContent: "space-between",
-		flexDirection: "row",
-		padding: "5%",
+		padding: "4%",
 	},
 	acceptButton: {
-		backgroundColor: "#006c5e",
-		width: "80%",
-		height: "auto",
+		backgroundColor: colors.green_100,
 		justifyContent: "center",
 		alignItems: "center",
-		padding: "5%",
-		borderRadius: 10,
+		padding: "4%",
+		borderRadius: 12,
+		marginBottom: "2%",
+		elevation: 2,
 	},
 	acceptText: {
-		color: "rgba(255, 255, 255, 1)",
-		fontSize: 18,
+		color: colors.white_100,
+		fontSize: 16,
+		fontFamily: "lato-bold",
 	},
 	deleteButton: {
-		borderRadius: 20,
+		flexDirection: "row",
+		justifyContent: "center",
+		alignItems: "center",
+		borderRadius: 12,
 		borderWidth: 1,
-		borderColor: "#CCCCCC",
-		padding: 10,
+		backgroundColor: colors.white_100,
+		borderColor: colors.grey_50,
+		elevation: 2,
+	},
+	deleteText: {
+		color: colors.error,
+		fontSize: 16,
+		fontFamily: "lato-bold",
+		padding: "4%",
 	},
 	orderText: {
 		fontFamily: "lato-regular",
