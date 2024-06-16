@@ -37,20 +37,15 @@ const ProductCard = ({ item }) => {
 				<Text style={styles.title}>{item.productName}</Text>
 				<Text style={styles.price}>{formatCurrency(item.productPrice)}</Text>
 				{item.toppings && item.toppings.length > 0 && (
-					<Text>{renderToppingsList(item.toppings)}</Text>
-				)}
-				{item.options && item.options.length > 0 && (
-					<Text style={{ fontSize: 14, color: "rgba(58, 58, 58, 0.5)" }}>
-						{renderOptionList(item.options)}
+					<Text style={styles.options}>
+						{renderToppingsList(item.toppings)}
 					</Text>
 				)}
+				{item.options && item.options.length > 0 && (
+					<Text style={styles.options}>{renderOptionList(item.options)}</Text>
+				)}
 			</View>
-			<View style={{ justifyContent: "center" }}>
-				<Text style={{ fontSize: 16 }}>
-					<Text>SL: </Text>
-					<Text>{item.quantity}</Text>
-				</Text>
-			</View>
+			<Text style={styles.quantity}>SL: {item.quantity}</Text>
 		</View>
 	);
 };
@@ -61,22 +56,31 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		flexDirection: "row",
 		justifyContent: "space-between",
-		padding: "2%",
-		marginBottom: "5%",
-		width: "100%",
+		alignItems: "center",
+		padding: "4%",
+		marginBottom: "2%",
 	},
 	productDetailsContainer: {
 		flex: 1,
-		padding: "2%",
 	},
 	title: {
 		fontSize: 16,
 		fontFamily: "lato-bold",
 	},
-
 	price: {
 		color: colors.black_100,
 		fontSize: 14,
+		fontFamily: "lato-regular",
+	},
+	options: {
+		color: colors.black_100,
+		fontSize: 14,
+		lineHeight: 20,
+		fontFamily: "lato-regular",
+		marginVertical: "2%",
+	},
+	quantity: {
+		fontSize: 16,
 		fontFamily: "lato-regular",
 	},
 });

@@ -6,22 +6,23 @@ import { colors } from "../../assets/colors/colors";
 const OrderCard1 = ({
 	orderId,
 	orderTime,
-	orderType,
 	orderOwner,
 	orderState,
-	orderPaymentState,
 	handleDetailOrder,
+	onLongPress,
 }) => {
-	const getColorForState = (state) => {
+	const getTitleForState = (state) => {
 		switch (state) {
-			case "Đã hoàn thành":
-				return "#4ecb71";
-			case "Chờ xác nhận":
-				return "#FFA730";
-			case "Đang làm":
-				return "#f61a3d";
-			default:
-				return "#FFA730"; // Màu mặc định
+			case 1:
+				return "Chờ xác nhận";
+			case 2:
+				return "Đang thực hiện";
+			case 3:
+				return "Đang giao";
+			case 4:
+				return "Đã hoàn thành";
+			case 5:
+				return "Đã huỷ";
 		}
 	};
 
@@ -30,6 +31,7 @@ const OrderCard1 = ({
 			activeOpacity={0.8}
 			onPress={handleDetailOrder}
 			style={styles.orderDetail}
+			onLongPress={onLongPress}
 		>
 			<Text style={styles.orderId}>
 				Mã đơn hàng: FiveD-{orderId.substring(0, 5)}
@@ -45,9 +47,13 @@ const OrderCard1 = ({
 				<Text style={styles.details}>{orderOwner}</Text>
 			</View>
 			<View style={styles.textContainer}>
+				<Text style={styles.label}>Trạng thái đơn hàng: </Text>
+				<Text style={styles.details}>{getTitleForState(orderState)}</Text>
+			</View>
+			{/* <View style={styles.textContainer}>
 				<Text style={styles.label}>Trạng thái thanh toán: </Text>
 				<Text style={styles.details}>{orderPaymentState}</Text>
-			</View>
+			</View> */}
 		</TouchableOpacity>
 	);
 };
@@ -78,11 +84,11 @@ const styles = StyleSheet.create({
 		flex: 1,
 		color: colors.black_100,
 		fontSize: 14,
-		fontFamily: "lato-bold",
+		fontFamily: "lato-regular",
 	},
 	details: {
 		fontSize: 14,
-		fontFamily: "lato-regular",
+		fontFamily: "lato-bold",
 	},
 });
 

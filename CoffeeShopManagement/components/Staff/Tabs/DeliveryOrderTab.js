@@ -1,62 +1,29 @@
-import {
-	View,
-	Text,
-	SafeAreaView,
-	StyleSheet,
-	TextInput,
-	FlatList,
-	TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-import Icon from "react-native-vector-icons/Entypo";
-import OrderCard1 from "../../components/Staff/OrderCard1";
-import SearchBar from "../../components/Client/SearchBar";
-import { useNavigation } from "@react-navigation/native";
 import unidecode from "unidecode";
 import {
 	collection,
 	doc,
 	onSnapshot,
-	orderBy,
 	query,
 	updateDoc,
 	where,
 } from "firebase/firestore";
-import { db } from "../../services/firebaseService";
-import Toast from "react-native-toast-message";
+import { db } from "../../../services/firebaseService";
+import { useNavigation } from "@react-navigation/native";
 
-export default function CashierBillingScreen() {
+import SearchBar from "../../Client/SearchBar";
+import OrderCard1 from "../OrderCard1";
+import Section from "../../Client/Section";
+
+export default function DeliveryOrderTab() {
 	const [orderData, setOrderData] = useState([]);
-	const [searchQuery, setSearchQuery] = useState("");
-	const [filteredProductList, setFilteredProductList] = useState([]);
+
 	const navigation = useNavigation();
 
-	const handleDetailOrder = (item) => {
-		navigation.navigate("OrderScreen", { selectedOrder: item });
-	};
+	const [searchQuery, setSearchQuery] = useState("");
 
-	const handleUpdateOrderState = async (order) => {
-		const orderDocRef = doc(db, "orders", order.orderId);
-		await updateDoc(orderDocRef, {
-			orderState: order.orderState + 1,
-		});
-		Toast.show({
-			type: "success",
-			text1: "Đơn hàng đang được giao",
-			text1Style: { fontSize: 16 },
-		});
-	};
-
-	const handleSearch = (text) => {
-		setSearchQuery(text);
-		const normalizedSearchText = unidecode(text.toLowerCase().trim());
-		const filteredList = orderData.filter(
-			(item) =>
-				item.orderId &&
-				unidecode(item.orderId.toLowerCase()).includes(normalizedSearchText)
-		);
-		setFilteredProductList(filteredList);
-	};
+	const [filteredProductList, setFilteredProductList] = useState([]);
 
 	const convertTimestampToDate = (timestamp) => {
 		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
@@ -73,17 +40,29 @@ export default function CashierBillingScreen() {
 		return date.toLocaleDateString("vi-VN", options);
 	};
 
-	useEffect(() => {
-		const unsub = onSnapshot(
-			query(collection(db, "orders"), where("orderState", "==", 2)),
-			(snapshot) => {
-				const orders = snapshot.docs.map((doc) => doc.data());
-				setOrderData(orders);
-				setFilteredProductList(orders);
-			}
+	const handleUpdateOrderState = async (order) => {
+		const orderDocRef = doc(db, "orders", order.orderId);
+		if (order.orderState <= 4) {
+			await updateDoc(orderDocRef, {
+				orderState: order.orderState + 1,
+			});
+		}
+	};
+
+	const handleDetailOrder = (item) => {
+		navigation.navigate("OrderScreen", { selectedOrder: item });
+	};
+
+	const handleSearch = (text) => {
+		setSearchQuery(text);
+		const normalizedSearchText = unidecode(text.toLowerCase().trim());
+		const filteredList = orderData.filter(
+			(item) =>
+				item.orderId &&
+				unidecode(item.orderId.toLowerCase()).includes(normalizedSearchText)
 		);
-		return unsub;
-	}, []);
+		setFilteredProductList(filteredList);
+	};
 
 	const renderListOrder = () => {
 		const dataToRender = searchQuery ? filteredProductList : orderData;
@@ -121,17 +100,30 @@ export default function CashierBillingScreen() {
 							onLongPress={() => handleUpdateOrderState(item)}
 						/>
 					)}
+					contentContainerStyle={{ marginTop: "4%", paddingBottom: "25%" }}
 				/>
 			);
 		}
 	};
+
+	useEffect(() => {
+		const unsub = onSnapshot(
+			query(collection(db, "orders"), where("orderState", "==", 3)),
+			(snapshot) => {
+				setOrderData(snapshot.docs.map((doc) => doc.data()));
+			}
+		);
+		return () => unsub();
+	}, []);
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.searchBoxWrapper}>
 				<SearchBar onChangeText={handleSearch} />
 			</View>
-			{renderListOrder()}
+			<Section title={`Đơn hàng đang giao (${orderData.length})`}>
+				{renderListOrder()}
+			</Section>
 		</View>
 	);
 }
@@ -139,18 +131,11 @@ export default function CashierBillingScreen() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		paddingHorizontal: "4%",
+		padding: "4%",
 	},
 	searchBoxWrapper: {
-		marginTop: "20%",
+		marginTop: "5%",
 		marginBottom: "10%",
 		justifyContent: "center",
-	},
-	searchBox: {
-		backgroundColor: "#fff",
-		borderRadius: 10,
-		borderColor: "#ebebeb",
-		borderWidth: 1,
-		padding: "3%",
 	},
 });

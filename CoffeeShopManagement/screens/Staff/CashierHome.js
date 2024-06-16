@@ -5,17 +5,13 @@ import {
 	Image,
 	TouchableOpacity,
 	FlatList,
-	RefreshControl,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import OrderCard1 from "../../components/Staff/OrderCard1";
-import Icon from "react-native-vector-icons/FontAwesome6";
 import { useState, useEffect } from "react";
 import {
 	collection,
-	doc,
-	getDoc,
-	getDocs,
+	onSnapshot,
 	orderBy,
 	query,
 	where,
@@ -23,10 +19,24 @@ import {
 import { db } from "../../services/firebaseService";
 import { connect } from "react-redux";
 import { colors } from "../../assets/colors/colors";
+import { Ionicons } from "@expo/vector-icons";
 
 const CashierHome = ({ userData }) => {
+	const navigation = useNavigation();
+
 	const [orderData, setOrderData] = useState([]);
-	const [refreshing, setRefreshing] = useState(false);
+
+	const handleNotification = () => {
+		navigation.navigate("CashierNotification");
+	};
+	const handleDetailOrder = (item) => {
+		navigation.navigate("OrderScreen", {
+			selectedOrder: item,
+		});
+	};
+	const goToCashierInformation = () => {
+		navigation.navigate("CashierInformation");
+	};
 
 	const convertTimestampToDate = (timestamp) => {
 		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
@@ -41,55 +51,6 @@ const CashierHome = ({ userData }) => {
 			second: "2-digit",
 		};
 		return date.toLocaleDateString("vi-VN", options);
-	};
-
-	const fetchOrderData = async () => {
-		try {
-			const orderQuery = query(
-				collection(db, "orders"),
-				where("orderState", "==", 1)
-			);
-			const snapshot = await getDocs(orderQuery);
-			const orderList = [];
-			for (const docSnapshot of snapshot.docs) {
-				const order = docSnapshot.data();
-				const userDocRef = doc(db, "users", order.userId);
-				const userDocSnapshot = await getDoc(userDocRef);
-				if (userDocSnapshot.exists()) {
-					const userData = userDocSnapshot.data();
-					order.orderOwner = userData.fullName;
-					orderList.push(order);
-				}
-			}
-			orderList.sort((a, b) => a.orderDate.seconds - b.orderDate.seconds);
-
-			setOrderData(orderList);
-		} catch (error) {
-			console.error("Error fetching orders: ", error);
-		}
-	};
-
-	useEffect(() => {
-		fetchOrderData();
-	}, []);
-
-	const onRefresh = async () => {
-		setRefreshing(true);
-		await fetchOrderData();
-		setRefreshing(false);
-	};
-
-	const navigation = useNavigation();
-	const handleNotification = () => {
-		navigation.navigate("CashierNotification");
-	};
-	const handleDetailOrder = (item) => {
-		navigation.navigate("OrderScreen", {
-			selectedOrder: item,
-		});
-	};
-	const handleCashierInfor = () => {
-		navigation.navigate("CashierInformation");
 	};
 
 	const renderListOrder = () => {
@@ -119,27 +80,43 @@ const CashierHome = ({ userData }) => {
 							orderId={item.orderId}
 							orderTime={formatDate(convertTimestampToDate(item.orderDate))}
 							orderType={item.orderType}
-							orderOwner={item.orderOwner}
+							orderOwner={item.deliveryAddress.name}
 							orderOwnerPhone={item.orderOwnerPhone}
 							orderState={item.orderState}
 							orderPaymentState={item.orderPaymentState}
 							handleDetailOrder={() => handleDetailOrder(item)}
 						/>
 					)}
-					refreshControl={
-						<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-					}
 				/>
 			);
 		}
 	};
 
+	useEffect(() => {
+		const orderQuery = query(
+			collection(db, "orders"),
+			where("orderState", "==", 1),
+			orderBy("orderDate", "asc")
+		);
+
+		const unsubscribe = onSnapshot(orderQuery, (snapshot) => {
+			const orderList = [];
+			snapshot.forEach((doc) => {
+				const order = doc.data();
+				orderList.push(order);
+			});
+			setOrderData(orderList);
+		});
+
+		return () => unsubscribe();
+	}, []);
+
 	return (
 		<View style={styles.container}>
-			<View style={styles.cashierInforWrapper}>
+			<View style={styles.cashierInformationWrapper}>
 				<View style={{ flexDirection: "row" }}>
 					<TouchableOpacity
-						onPress={handleCashierInfor}
+						onPress={goToCashierInformation}
 						style={styles.imageWrapper}
 					>
 						<Image
@@ -147,17 +124,16 @@ const CashierHome = ({ userData }) => {
 							style={styles.userImage}
 						/>
 					</TouchableOpacity>
-					<View style={styles.inforTextWrapper}>
+					<View style={styles.informationTextWrapper}>
 						<Text style={styles.nameText}>{userData.name}</Text>
-						<Text style={styles.emailText}>{userData.email}</Text>
-						<Text style={styles.roleText}>{userData.role}</Text>
+						<Text style={styles.roleText}>Vai trò: Nhân viên</Text>
 					</View>
 				</View>
 				<TouchableOpacity
 					onPress={handleNotification}
-					style={styles.notiButton}
+					style={styles.notificationButton}
 				>
-					<Icon name="bell" size={20} />
+					<Ionicons name="notifications" size={24} color={colors.black_100} />
 				</TouchableOpacity>
 			</View>
 			<Text style={styles.listOrderText}>Đơn hàng chờ xác nhận</Text>
@@ -178,18 +154,19 @@ const styles = StyleSheet.create({
 		padding: "5%",
 		marginTop: "10%",
 	},
-	cashierInforWrapper: {
-		backgroundColor: "#fff",
-		padding: "3%",
+	cashierInformationWrapper: {
+		backgroundColor: colors.white_100,
+		padding: "4%",
 		flexDirection: "row",
 		borderRadius: 10,
 		justifyContent: "space-between",
 		alignItems: "center",
 		marginBottom: "5%",
+		elevation: 4,
 	},
-	inforTextWrapper: {
+	informationTextWrapper: {
 		justifyContent: "space-between",
-		marginStart: "5%",
+		marginLeft: "4%",
 	},
 	nameText: {
 		fontSize: 16,
@@ -201,15 +178,19 @@ const styles = StyleSheet.create({
 	},
 	roleText: {
 		fontSize: 14,
-		fontStyle: "italic",
+		fontFamily: "lato-light",
 	},
-	notiButton: {
+	notificationButton: {
+		minWidth: 48,
+		minHeight: 48,
 		justifyContent: "center",
 		alignItems: "center",
-		padding: "5%",
+		padding: "6%",
 		borderWidth: 1,
-		borderRadius: 30,
-		borderColor: "#CCCCCC",
+		borderRadius: 100,
+		borderColor: colors.grey_50,
+		backgroundColor: colors.white_100,
+		elevation: 4,
 	},
 	listOrderText: {
 		fontSize: 16,
