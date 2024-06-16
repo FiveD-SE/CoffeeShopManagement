@@ -34,15 +34,20 @@ const OrderCard1 = ({
 			<Text style={styles.orderId}>
 				Mã đơn hàng: FiveD-{orderId.substring(0, 5)}
 			</Text>
-			<Text style={styles.orderTime}>Đã đặt vào: {orderTime}</Text>
-			<Text style={styles.orderText}>
+			<View style={styles.textContainer}>
+				<Text style={styles.label}>Đã đặt vào: </Text>
+				<Text style={[styles.details, { color: colors.bronze }]}>
+					{orderTime}
+				</Text>
+			</View>
+			<View style={styles.textContainer}>
 				<Text style={styles.label}>Khách hàng: </Text>
-				<Text style={{ fontFamily: "lato-bold" }}>{orderOwner}</Text>
-			</Text>
-			<Text style={styles.orderText}>
+				<Text style={styles.details}>{orderOwner}</Text>
+			</View>
+			<View style={styles.textContainer}>
 				<Text style={styles.label}>Trạng thái thanh toán: </Text>
-				<Text style={{ fontFamily: "lato-bold" }}>{orderPaymentState}</Text>
-			</Text>
+				<Text style={styles.details}>{orderPaymentState}</Text>
+			</View>
 		</TouchableOpacity>
 	);
 };
@@ -60,27 +65,22 @@ const styles = StyleSheet.create({
 		elevation: 2,
 	},
 	orderId: {
+		color: colors.green_100,
 		fontSize: 16,
 		fontFamily: "lato-bold",
 	},
-	orderTime: {
-		color: "#3A3A3A",
-		fontSize: 14,
+	textContainer: {
+		flexDirection: "row",
+		alignItems: "center",
 		marginVertical: "2%",
-		fontFamily: "lato-light",
-	},
-	orderText: {
-		fontFamily: "lato-regular",
-		fontSize: 14,
-		marginBottom: "1%",
-	},
-	orderDetailText: {
-		fontFamily: "lato-regular",
-		fontSize: 14,
-		marginBottom: "1%",
 	},
 	label: {
+		flex: 1,
 		color: colors.black_100,
+		fontSize: 14,
+		fontFamily: "lato-bold",
+	},
+	details: {
 		fontSize: 14,
 		fontFamily: "lato-regular",
 	},
