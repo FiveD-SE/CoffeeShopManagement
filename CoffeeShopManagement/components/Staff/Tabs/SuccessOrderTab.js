@@ -1,15 +1,23 @@
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import unidecode from "unidecode";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import {
+	collection,
+	getDocs,
+	onSnapshot,
+	orderBy,
+	query,
+	where,
+} from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
 import { useNavigation } from "@react-navigation/native";
 
 import SearchBar from "../../Client/SearchBar";
 import OrderCard1 from "../OrderCard1";
 import Section from "../../Client/Section";
+import { connect } from "react-redux";
 
-export default function SuccessOrderTab() {
+const SuccessOrderTab = ({ userData }) => {
 	const [orderData, setOrderData] = useState([]);
 
 	const navigation = useNavigation();
@@ -17,6 +25,8 @@ export default function SuccessOrderTab() {
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const [filteredProductList, setFilteredProductList] = useState([]);
+
+	const [branchId, setBranchId] = useState(null);
 
 	const convertTimestampToDate = (timestamp) => {
 		return new Date(timestamp.seconds * 1000 + timestamp.nanoseconds / 1000000);
@@ -90,14 +100,39 @@ export default function SuccessOrderTab() {
 	};
 
 	useEffect(() => {
-		const unsub = onSnapshot(
-			query(collection(db, "orders"), where("orderState", "==", 4)),
-			(snapshot) => {
-				setOrderData(snapshot.docs.map((doc) => doc.data()));
-			}
+		const getBranchId = async () => {
+			const staffsRef = collection(db, "staffs");
+
+			const q = query(staffsRef, where("staffId", "==", userData.id));
+
+			const querySnapshot = await getDocs(q);
+
+			querySnapshot.forEach((doc) => {
+				const data = doc.data();
+				setBranchId(data.branch.branchId);
+			});
+		};
+
+		getBranchId();
+	}, [userData.id]);
+
+	useEffect(() => {
+		const ordersRef = collection(db, "orders");
+
+		const q = query(
+			ordersRef,
+			where("deliveryBranch.branchId", "==", branchId),
+			where("orderState", "==", 4),
+			orderBy("orderDate", "asc")
 		);
-		return () => unsub();
-	}, []);
+
+		const unsubscribe = onSnapshot(q, (snapshot) => {
+			setOrderData(
+				snapshot.docs.map((doc) => ({ orderId: doc.id, ...doc.data() }))
+			);
+		});
+		return () => unsubscribe();
+	}, [branchId]);
 
 	return (
 		<View style={styles.container}>
@@ -109,7 +144,13 @@ export default function SuccessOrderTab() {
 			</Section>
 		</View>
 	);
-}
+};
+
+const mapStateToProps = (state) => ({
+	userData: state.auth.userData,
+});
+
+export default connect(mapStateToProps)(SuccessOrderTab);
 
 const styles = StyleSheet.create({
 	container: {

@@ -11,6 +11,7 @@ import OrderCard1 from "../../components/Staff/OrderCard1";
 import { useState, useEffect } from "react";
 import {
 	collection,
+	getDocs,
 	onSnapshot,
 	orderBy,
 	query,
@@ -25,6 +26,8 @@ const CashierHome = ({ userData }) => {
 	const navigation = useNavigation();
 
 	const [orderData, setOrderData] = useState([]);
+
+	const [branchId, setBranchId] = useState(null);
 
 	const handleNotification = () => {
 		navigation.navigate("CashierNotification");
@@ -93,23 +96,39 @@ const CashierHome = ({ userData }) => {
 	};
 
 	useEffect(() => {
-		const orderQuery = query(
-			collection(db, "orders"),
+		const getBranchId = async () => {
+			const staffsRef = collection(db, "staffs");
+
+			const q = query(staffsRef, where("staffId", "==", userData.id));
+
+			const querySnapshot = await getDocs(q);
+
+			querySnapshot.forEach((doc) => {
+				const data = doc.data();
+				setBranchId(data.branch.branchId);
+			});
+		};
+
+		getBranchId();
+	}, [userData.id]);
+
+	useEffect(() => {
+		const ordersRef = collection(db, "orders");
+
+		const q = query(
+			ordersRef,
+			where("deliveryBranch.branchId", "==", branchId),
 			where("orderState", "==", 1),
 			orderBy("orderDate", "asc")
 		);
 
-		const unsubscribe = onSnapshot(orderQuery, (snapshot) => {
-			const orderList = [];
-			snapshot.forEach((doc) => {
-				const order = doc.data();
-				orderList.push(order);
-			});
-			setOrderData(orderList);
+		const unsubscribe = onSnapshot(q, (snapshot) => {
+			setOrderData(
+				snapshot.docs.map((doc) => ({ orderId: doc.id, ...doc.data() }))
+			);
 		});
-
 		return () => unsubscribe();
-	}, []);
+	}, [branchId]);
 
 	return (
 		<View style={styles.container}>
