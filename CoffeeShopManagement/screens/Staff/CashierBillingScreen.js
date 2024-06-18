@@ -16,6 +16,7 @@ import unidecode from "unidecode";
 import {
 	collection,
 	doc,
+	getDocs,
 	onSnapshot,
 	orderBy,
 	query,
@@ -24,11 +25,17 @@ import {
 } from "firebase/firestore";
 import { db } from "../../services/firebaseService";
 import Toast from "react-native-toast-message";
+import { connect } from "react-redux";
 
-export default function CashierBillingScreen() {
+const CashierBillingScreen = ({ userData }) => {
 	const [orderData, setOrderData] = useState([]);
+
 	const [searchQuery, setSearchQuery] = useState("");
+
 	const [filteredProductList, setFilteredProductList] = useState([]);
+
+	const [branchId, setBranchId] = useState(null);
+
 	const navigation = useNavigation();
 
 	const handleDetailOrder = (item) => {
@@ -74,16 +81,39 @@ export default function CashierBillingScreen() {
 	};
 
 	useEffect(() => {
-		const unsub = onSnapshot(
-			query(collection(db, "orders"), where("orderState", "==", 2)),
-			(snapshot) => {
-				const orders = snapshot.docs.map((doc) => doc.data());
-				setOrderData(orders);
-				setFilteredProductList(orders);
-			}
+		const getBranchId = async () => {
+			const staffsRef = collection(db, "staffs");
+
+			const q = query(staffsRef, where("staffId", "==", userData.id));
+
+			const querySnapshot = await getDocs(q);
+
+			querySnapshot.forEach((doc) => {
+				const data = doc.data();
+				setBranchId(data.branch.branchId);
+			});
+		};
+
+		getBranchId();
+	}, [userData.id]);
+
+	useEffect(() => {
+		const ordersRef = collection(db, "orders");
+
+		const q = query(
+			ordersRef,
+			where("deliveryBranch.branchId", "==", branchId),
+			where("orderState", "==", 2),
+			orderBy("orderDate", "asc")
 		);
-		return unsub;
-	}, []);
+
+		const unsubscribe = onSnapshot(q, (snapshot) => {
+			setOrderData(
+				snapshot.docs.map((doc) => ({ orderId: doc.id, ...doc.data() }))
+			);
+		});
+		return () => unsubscribe();
+	}, [branchId]);
 
 	const renderListOrder = () => {
 		const dataToRender = searchQuery ? filteredProductList : orderData;
@@ -134,7 +164,15 @@ export default function CashierBillingScreen() {
 			{renderListOrder()}
 		</View>
 	);
-}
+};
+
+const mapStateToProps = (state) => {
+	return {
+		userData: state.auth.userData,
+	};
+};
+
+export default connect(mapStateToProps)(CashierBillingScreen);
 
 const styles = StyleSheet.create({
 	container: {

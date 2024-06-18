@@ -39,7 +39,6 @@ const UserHomeScreen = ({
 	addressStatus,
 	deliveryStatus,
 }) => {
-	console.log("RENDERING UserHomeScreen");
 	const navigation = useNavigation();
 	const isFocused = useIsFocused();
 	const [modalVisible, setModalVisible] = useState(false);
@@ -116,17 +115,20 @@ const UserHomeScreen = ({
 	};
 
 	useEffect(() => {
-		const unsubscribe = onSnapshot(collection(db, "user_notifications"), (snapshot) => {
-			const unreadNotifications = [];
-			snapshot.forEach((doc) => {
-				const data = doc.data();
-				if (data.userId === userData.id && !data.notificationStatus) {
-					unreadNotifications.push(data);
-				}
-			});
-			unreadNotifications.sort((a, b) => b.buyCount - a.buyCount);
-			setUnreadNotificationCount(unreadNotifications.length);
-		});
+		const unsubscribe = onSnapshot(
+			collection(db, "user_notifications"),
+			(snapshot) => {
+				const unreadNotifications = [];
+				snapshot.forEach((doc) => {
+					const data = doc.data();
+					if (data.userId === userData.id && !data.notificationStatus) {
+						unreadNotifications.push(data);
+					}
+				});
+				unreadNotifications.sort((a, b) => b.buyCount - a.buyCount);
+				setUnreadNotificationCount(unreadNotifications.length);
+			}
+		);
 
 		return () => unsubscribe();
 	}, []);
@@ -177,9 +179,9 @@ const UserHomeScreen = ({
 						const productDocSnap = await getDoc(productDocRef);
 						return productDocSnap.exists()
 							? {
-								...productDocSnap.data(),
-								id: productDocSnap.id,
-							}
+									...productDocSnap.data(),
+									id: productDocSnap.id,
+							  }
 							: null;
 					})
 				);

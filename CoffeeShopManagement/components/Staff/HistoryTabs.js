@@ -38,8 +38,6 @@ const HistoryTabs = () => {
 			<Tab.Screen name="Đang giao" component={DeliveryOrderTab} />
 			<Tab.Screen name="Đã giao" component={SuccessOrderTab} />
 			<Tab.Screen name="Đã huỷ" component={CanceledOrderTab} />
-			{/* <Tab.Screen name="Chờ xác nhận" component={CanceledOrderTab} />
-			<Tab.Screen name="Đang thực hiện" component={CanceledOrderTab} /> */}
 		</Tab.Navigator>
 	);
 };
