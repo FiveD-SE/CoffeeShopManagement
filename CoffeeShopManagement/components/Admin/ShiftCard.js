@@ -9,7 +9,7 @@ export default function ShiftCard({ item, onPress }) {
             onPress={onPress}
             style={styles.cardWrapper}>
             <View>
-                <Text style={styles.nameShift}>{item.nameShift}</Text>
+                <Text style={styles.nameShift}>{item.shiftName}</Text>
                 <View style={{ flexDirection: 'row', marginBottom: '3%' }}>
                     <Feather name='clock' size={20} color={'#9c9c9c'} />
                     <View style={styles.timeWrapper}>
@@ -46,12 +46,15 @@ const styles = StyleSheet.create({
     nameShift: {
         fontSize: 16,
         fontWeight: '600',
-        marginBottom: '3%'
+        marginBottom: '3%',
+        fontFamily: 'lato-bold'
     },
     timeText: {
         color: '#006c5e',
+        fontFamily: 'lato-regular'
     },
     quantityText: {
-        color: '#9c9c9c'
+        color: '#9c9c9c',
+        fontFamily: 'lato-regular'
     }
 })

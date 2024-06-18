@@ -1,17 +1,19 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Entypo';
 import ShiftCard from '../../components/Admin/ShiftCard';
 import { useNavigation } from '@react-navigation/native';
-import { doc, updateDoc, setDoc, getDoc } from "firebase/firestore";
+import { doc, updateDoc, setDoc, getDoc, getDocs, query, where, collection } from "firebase/firestore";
 import { db } from "../../services/firebaseService";
-
+import { colors } from '../../assets/colors/colors';
+import SelectBranchModal from '../../components/Admin/Modal/SelectBranchModal';
 export default function ScheduleScreen() {
     const navigation = useNavigation();
-    const [selectedBranch, setSelectedBranch] = useState('H21mgNlSv8Q30Om4s043');
+    const [selectedBranch, setSelectedBranch] = useState();
     const [todaySchedule, setTodaySchedule] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [branchList, setBranchList] = useState([]);
+    const [selectBranchModalVisible, setSelectBranchModalVisible] = useState(false);
 
     const formatDate = (date) => {
         const d = new Date(date);
@@ -21,32 +23,74 @@ export default function ScheduleScreen() {
         return `${day}/${month}/${year}`;
     };
 
+    const formatTime = (timestamp) => {
+        const date = timestamp.toDate();
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    const showSelectBranchModal = () => {
+        setSelectBranchModalVisible(true);
+    };
+    const hideSelectBranchModal = () => {
+        setSelectBranchModalVisible(false);
+    };
+
     const hii = () => {
         setSelectedBranch('H21mgNlSv8Q30Om4s043');
     };
+    useEffect(() => {
+        const loadBranches = async () => {
+            try {
+                const q = query(
+                    collection(db, "branches"),
+                );
+                const querySnapshot = await getDocs(q);
+                const loadBranches = [];
+                querySnapshot.forEach((doc) => {
+                    loadBranches.push(doc.data());
+                });
+                setBranchList(loadBranches);
+            } catch (error) {
+                console.log("Error loading branches:", error);
+            }
+        };
+
+        loadBranches();
+        const unsubscribe = navigation.addListener("focus", () => {
+            loadBranches();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
 
     useEffect(() => {
         const fetchBranchSchedule = async () => {
             try {
                 if (!selectedBranch) return;
 
-                const branchId = selectedBranch;
+                const q = query(collection(db, 'shifts'), where('branch.branchId', '==', selectedBranch.branchId));
+                const querySnapshot = await getDocs(q);
+
+                const shifts = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    shifts.push({
+                        shiftId: data.shiftId,
+                        shiftName: data.shiftName,
+                        startTime: formatTime(data.startTime),
+                        endTime: formatTime(data.endTime),
+                        quantity: data.quantity || 0,
+                    });
+                });
+
+                const branchId = selectedBranch.branchId;
                 const branchScheduleRef = doc(db, 'branchSchedules', branchId);
                 const branchScheduleDoc = await getDoc(branchScheduleRef);
 
                 const todayDate = formatDate(new Date());
                 const newScheduleEntry = {
                     date: todayDate,
-                    shifts: [
-                        {
-                            idShift: '1',
-                            nameShift: 'Ca sáng',
-                            startTime: '7:00',
-                            endTime: '8:00',
-                            quantity: 100,
-                        },
-                        // Add other shifts as needed
-                    ],
+                    shifts: shifts,
                 };
 
                 if (branchScheduleDoc.exists()) {
@@ -73,7 +117,6 @@ export default function ScheduleScreen() {
                     setTodaySchedule(newScheduleEntry.shifts);
                 }
 
-                setLoading(false);
             } catch (error) {
                 console.error('Error fetching or updating branch schedule:', error);
                 // Implement error handling as needed
@@ -87,13 +130,43 @@ export default function ScheduleScreen() {
         navigation.navigate('DetailShift', { selectedShift: item });
     };
 
-    if (loading) {
-        return (
-            <View style={styles.container}>
-                <Text>Loading...</Text>
-            </View>
-        );
-    }
+    useEffect(() => {
+        console.log(selectedBranch);
+        console.log(todaySchedule)
+    })
+
+    const renderView = () => {
+        if (selectedBranch) {
+            return (
+                <View>
+                    <Text style={styles.bodyAppText}>Tên chi nhánh</Text>
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        data={todaySchedule}
+                        keyExtractor={item => item.shiftId}
+                        renderItem={({ item }) => (
+                            <ShiftCard item={item} onPress={() => goToDetailShift(item)} />
+                        )}
+                    />
+                </View>
+            );
+        } else {
+            return (
+                <View>
+                    <View style={styles.noBranchSelectContainer}>
+                        <Image
+                            source={require("../../assets/icons/coffee-shop-location-icon.png")}
+                            style={styles.noBranchSelectImage}
+                        />
+                        <Text style={styles.noBranchSelectText}>
+                            Vui lòng chọn chi nhánh trước để xem lịch làm việc!
+                        </Text>
+                    </View>
+                </View>
+            );
+        }
+    };
+
 
     return (
         <View style={styles.container}>
@@ -102,21 +175,14 @@ export default function ScheduleScreen() {
                     <FontAwesome name='calendar' size={24} />
                     <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Hôm nay | {formatDate(new Date())}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.topButton} onPress={hii}>
+                <TouchableOpacity style={styles.topButton} onPress={showSelectBranchModal}>
                     <Icon name='location-pin' size={24} color={'#d22f27'} />
                     <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Chọn chi nhánh</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.bodyApp}>
-                <Text style={styles.bodyAppText}>Tên chi nhánh</Text>
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    data={todaySchedule}
-                    keyExtractor={item => item.idShift}
-                    renderItem={({ item }) => (
-                        <ShiftCard item={item} onPress={() => goToDetailShift(item)} />
-                    )}
-                />
+                {renderView()}
+                <SelectBranchModal visible={selectBranchModalVisible} onClose={hideSelectBranchModal} branches={branchList} setBranch={setSelectedBranch} />
             </View>
         </View>
     )
@@ -148,5 +214,23 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         marginBottom: '3%',
-    }
+    },
+    noBranchSelectContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    noBranchSelectImage: {
+        width: "100%",
+        height: "20%",
+        marginBottom: 20,
+        resizeMode: "contain",
+    },
+    noBranchSelectText: {
+        textAlign: "center",
+        color: colors.grey_100,
+        fontFamily: "lato-bold",
+        fontSize: 16,
+        lineHeight: 24,
+    },
 });
