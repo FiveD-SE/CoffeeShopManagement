@@ -14,7 +14,6 @@ import { useNavigation } from "@react-navigation/native";
 const Setting = () => {
     const navigation = useNavigation();
     const handleDeleteAccount = () => {
-        // alert with input to input password
         Alert.prompt(
             "Xác nhận xóa tài khoản",
             "Nhập mật khẩu để xác nhận xóa tài khoản",
@@ -27,9 +26,6 @@ const Setting = () => {
                 {
                     text: "Xác nhận",
                     onPress: (password) => {
-                        // check password
-                        // if correct, delete account
-                        // if not, alert "Mật khẩu không đúng"
                         console.log(password);
                     },
                 },
