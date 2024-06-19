@@ -4,6 +4,7 @@ import ModalHeader from '../../Client/Header/ModalHeader';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Branch from '../Branch';
+import BranchWithoutImageCard from '../BranchWithoutImage';
 
 const SelectBranchModal = ({ visible, onClose, branches, setBranch }) => {
 
@@ -16,12 +17,11 @@ const SelectBranchModal = ({ visible, onClose, branches, setBranch }) => {
     return branches.map((item, index) => {
       const address = `${item.street}, ${item.wardName}, ${item.districtName}, ${item.provinceName}`;
       return (
-        <Branch
+        <BranchWithoutImageCard
           key={index}
           storeName="FIVED COFFEE"
           branchName={item.branchName}
           address={address}
-          image={{ uri: item.branchImage }}
           onPress={() => handleChooseBranch(item)}
           openingHour={item.openingHour}
           closingHour={item.closingHour}
