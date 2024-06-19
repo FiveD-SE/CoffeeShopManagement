@@ -1,3 +1,4 @@
+import React from "react";
 import {
     StyleSheet,
     Text,
@@ -5,36 +6,62 @@ import {
     Image,
     Pressable,
     Dimensions,
+    Animated,
 } from "react-native";
-import React from "react";
 import { colors } from "../../../assets/colors/colors";
 
 const cardHeight = 150;
 const imageWidth = 150;
 
 const RecentlyViewedItem = ({ id, name, price, imageSource, onPress }) => {
+    const scaleValue = new Animated.Value(1);
+
+    const onPressIn = () => {
+        Animated.spring(scaleValue, {
+            toValue: 0.9,
+            friction: 3,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const onPressOut = () => {
+        Animated.spring(scaleValue, {
+            toValue: 1,
+            friction: 3,
+            useNativeDriver: true,
+        }).start();
+    };
+
     return (
-        <Pressable style={styles.container} onPress={onPress}>
-            <View style={styles.imageContainer}>
-                <Image
-                    style={styles.image}
-                    source={{ uri: imageSource }}
-                    resizeMode="cover"
-                />
-            </View>
-            <View style={styles.main}>
-                <Text
-                    style={styles.title}
-                    numberOfLines={2}
-                    ellipsizeMode="tail"
-                >
-                    {name}
-                </Text>
-                <View style={styles.priceContainer}>
-                    <Text style={styles.price}>{price}</Text>
+        <Animated.View
+            style={[styles.container, { transform: [{ scale: scaleValue }] }]}
+        >
+            <Pressable
+                onPress={onPress}
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
+            >
+                <View style={styles.imageContainer}>
+                    <Image
+                        style={styles.image}
+                        source={{ uri: imageSource }}
+                        resizeMode="cover"
+                    />
                 </View>
-            </View>
-        </Pressable>
+                <View style={styles.main}>
+                    <Text
+                        style={styles.title}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                    >
+                        {name}
+                    </Text>
+                    <View style={styles.priceContainer}>
+                        <Text style={styles.price}>{price}</Text>
+                    </View>
+                </View>
+            </Pressable>
+        </Animated.View>
     );
 };
 

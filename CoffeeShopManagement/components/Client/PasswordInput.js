@@ -9,7 +9,11 @@ const InputFieldWithIcon = (props) => {
     };
     return (
         <View style={styles.inputContainer}>
-            <TextInput style={styles.input} {...props} />
+            <TextInput
+                style={styles.input}
+                {...props}
+                secureTextEntry={props.secureTextEntry && !isShowPassword}
+            />
             <Icon
                 name={isShowPassword ? "eye" : "eye-slash"}
                 onPress={toogleShowPassword}

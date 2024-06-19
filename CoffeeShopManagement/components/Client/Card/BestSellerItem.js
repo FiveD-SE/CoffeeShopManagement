@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Text,
     View,
+    Animated,
 } from "react-native";
 
 import { colors } from "../../../assets/colors/colors";
@@ -22,36 +23,66 @@ const BestSellerItem = ({
     vertical,
     horizontal,
 }) => {
+    const scaleValue = new Animated.Value(1);
+
+    const onPressIn = () => {
+        Animated.spring(scaleValue, {
+            toValue: 0.9,
+            friction: 3,
+            useNativeDriver: true,
+        }).start();
+    };
+
+    const onPressOut = () => {
+        Animated.spring(scaleValue, {
+            toValue: 1,
+            friction: 3,
+            useNativeDriver: true,
+        }).start();
+    };
+
     return (
-        <View
+        <Animated.View
             style={[
                 styles.container,
                 { marginTop: vertical ? "5%" : "0%" },
                 { marginRight: horizontal ? "1%" : "0%" },
                 { padding: vertical ? "2%" : "0%" },
+                { transform: [{ scale: scaleValue }] },
             ]}
         >
-            <View style={styles.imageContainer}>
-                <Image
-                    style={styles.image}
-                    source={{ uri: imageSource }}
-                    resizeMode="contain"
-                />
-            </View>
-            <View style={styles.main}>
-                <Text
-                    style={styles.name}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
+            <Pressable
+                onPress={onPress}
+                onPressIn={onPressIn}
+                onPressOut={onPressOut}
+            >
+                <View style={styles.imageContainer}>
+                    <Image
+                        style={styles.image}
+                        source={{ uri: imageSource }}
+                        resizeMode="contain"
+                    />
+                </View>
+                <View style={styles.main}>
+                    <Text
+                        style={styles.name}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                    >
+                        {name}
+                    </Text>
+                    <Text style={styles.price}>{price}</Text>
+                </View>
+                <Pressable
+                    style={styles.addButton}
+                    onPressIn={onPressIn}
+                    onPressOut={onPressOut}
+                    onPress={onPress}
                 >
-                    {name}
-                </Text>
-                <Text style={styles.price}>{price}</Text>
-            </View>
-            <Pressable style={styles.addButton} onPress={onPress}>
-                <Text style={styles.addButtonText}>Chọn</Text>
+                    <Text style={styles.addButtonText}>Chọn</Text>
+                </Pressable>
             </Pressable>
-        </View>
+        </Animated.View>
     );
 };
 

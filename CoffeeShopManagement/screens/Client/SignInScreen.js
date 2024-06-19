@@ -285,6 +285,7 @@ const SignInScreen = ({
                         <PasswordInput
                             placeholder="Mật khẩu"
                             onChangeText={setPassword}
+                            secureTextEntry={true}
                         />
                         <View style={styles.helperContainer}>
                             <View style={styles.rememberMeContainer}>
