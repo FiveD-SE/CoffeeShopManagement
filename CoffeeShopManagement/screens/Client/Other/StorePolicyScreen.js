@@ -63,7 +63,10 @@ const StorePolicyScreen = () => {
 
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                contentContainerStyle={styles.content}
+                showsVerticalScrollIndicator={false}
+            >
                 <Text style={styles.title}>Chính sách cửa hàng</Text>
                 {policies.map(renderPolicySection)}
             </ScrollView>

@@ -9,8 +9,8 @@ import {
     TouchableOpacity,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { auth, db } from "../../../services/firebaseService"; // Import from Firebase services file
-import { addDoc, collection } from "firebase/firestore"; // Import from Firebase firestore
+import { auth, db } from "../../../services/firebaseService"; 
+import { addDoc, collection } from "firebase/firestore"; 
 import Toast from "react-native-toast-message";
 import { colors } from "../../../assets/colors/colors";
 import { connect } from "react-redux";
@@ -20,7 +20,9 @@ const FeedbackAndHelp = ({ userData, route }) => {
     const navigation = useNavigation();
     const branch = route.params ? route.params.branch : undefined;
     const [report, setReport] = useState("");
-    const [branchName, setBranchName] = useState(branch?.branchName || "Địa chỉ");
+    const [branchName, setBranchName] = useState(
+        branch?.branchName || "Địa chỉ"
+    );
 
     const handleSubmitFeedback = async () => {
         try {
@@ -128,22 +130,24 @@ const FeedbackAndHelp = ({ userData, route }) => {
 
     const handleNavigateToBranch = () => {
         navigation.navigate("ReportBranch");
-    }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
                 <View style={styles.section}>
                     <Text style={styles.primaryText} numberOfLines={2}>
-                        Chúng mình luôn lắng nghe! Hãy cho chúng mình biết
-                        cảm nhận của bạn
+                        Chúng mình luôn lắng nghe! Hãy cho chúng mình biết cảm
+                        nhận của bạn
                     </Text>
                 </View>
 
                 <View style={styles.section}>
                     <Text style={styles.primaryText}>Chi nhánh*</Text>
                     <View style={styles.rowLabelText}>
-                        <Text style={styles.textInput}>{branch ? branchName : "Địa chỉ"}</Text>
+                        <Text style={styles.textInput}>
+                            {branch ? branchName : "Địa chỉ"}
+                        </Text>
                         <TouchableOpacity onPress={handleNavigateToBranch}>
                             <FontAwesome
                                 name="angle-right"
