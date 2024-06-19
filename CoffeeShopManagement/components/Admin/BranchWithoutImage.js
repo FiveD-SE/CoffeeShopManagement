@@ -3,10 +3,9 @@ import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import Checkbox from 'expo-checkbox';
 import { Feather } from "@expo/vector-icons";
 
-const BranchCard = ({ storeName,
+const BranchWithoutImageCard = ({ storeName,
     branchName,
     address,
-    image,
     onPress,
     openingHour,
     closingHour, }) => {
@@ -34,9 +33,6 @@ const BranchCard = ({ storeName,
 
     return (
         <Pressable style={styles.root} onPress={onPress}>
-            <View style={styles.image}>
-                <Image source={image} style={styles.image} />
-            </View>
             <View style={styles.content}>
                 <View style={styles.title}>
                     <Text style={styles.storeName}>{storeName}</Text>
@@ -55,19 +51,17 @@ const BranchCard = ({ storeName,
     )
 }
 
-export default BranchCard
+export default BranchWithoutImageCard
 
 const styles = StyleSheet.create({
     root: {
         flexDirection: "row",
         width: "100%",
-        padding: 15,
+        padding: "5%",
         alignItems: "center",
-        rowGap: 15,
-        columnGap: 15,
         borderRadius: 20,
         backgroundColor: "rgba(255, 255, 255, 1)",
-        marginBottom: 10,
+        marginBottom: "3%",
     },
     image: {
         width: 80,
@@ -114,8 +108,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontStyle: "normal",
         fontWeight: "500",
-        marginTop: "1%",
-        marginBottom: "3%",
+        marginTop: "2%",
         lineHeight: 18
     },
     timeText: {

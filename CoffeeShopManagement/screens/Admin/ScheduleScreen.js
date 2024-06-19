@@ -139,7 +139,7 @@ export default function ScheduleScreen() {
         if (selectedBranch) {
             return (
                 <View>
-                    <Text style={styles.bodyAppText}>Tên chi nhánh</Text>
+                    <Text style={styles.bodyAppText}>{selectedBranch.branchName}</Text>
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         data={todaySchedule}
