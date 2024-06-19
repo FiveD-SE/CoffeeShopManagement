@@ -72,6 +72,7 @@ export default function SignUpScreen() {
                     fullName: fullName,
                     password: password,
                     credit: 0,
+                    rankPoint: 0,
                     likedProductId: [],
                     createdAt: new Date(),
                     userImage: downloadURL,
@@ -83,7 +84,9 @@ export default function SignUpScreen() {
                     userId: userId,
                 });
 
-                const userNotificationRef = doc(collection(db, "user_notifications"));
+                const userNotificationRef = doc(
+                    collection(db, "user_notifications")
+                );
                 const user_notificationId = userNotificationRef.id;
                 const user_notification = {
                     notificationId: user_notificationId,
@@ -97,7 +100,9 @@ export default function SignUpScreen() {
                 };
                 await setDoc(userNotificationRef, user_notification);
 
-                const adminNotificationRef = doc(collection(db, "admin_notifications"));
+                const adminNotificationRef = doc(
+                    collection(db, "admin_notifications")
+                );
                 const adminNotificationId = adminNotificationRef.id;
                 const adminNotification = {
                     notificationId: adminNotificationId,
