@@ -130,7 +130,7 @@ export default function AddStaffScreen() {
     const navigation = useNavigation();
     const [name, setName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [birthday, setBirthday] = useState('');
+    const [birthday, setBirthday] = useState(new Date());
     const [date, setDate] = useState(new Date());
     const [gender, setGender] = useState('');
     const [idCard, setIdCard] = useState('');
@@ -339,7 +339,7 @@ export default function AddStaffScreen() {
             } else {
                 if (Platform.OS === 'android') {
                     toggleDatePicker();
-                    setBirthday(currentDate.toDateString());
+                    setBirthday(currentDate);
 
                 }
                 setIsBirthdayValid(true);
@@ -349,9 +349,16 @@ export default function AddStaffScreen() {
         }
     }
 
+    const formatDate = (date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
     const confirmIOSDate = () => {
         if (isBirthdayValid) {
-            setBirthday(date.toDateString());
+            setBirthday(date);
             toggleDatePicker();
         } else {
             Toast.show({
@@ -400,7 +407,7 @@ export default function AddStaffScreen() {
                     <TextBox text={'Họ và tên'} value={name} setValue={setName} handleValidInput={isValidName} />
                     <TextBox text={'Số điện thoại'} value={phoneNumber} setValue={setPhoneNumber} keyboardType={'number-pad'} handleValidInput={isValidPhoneNumber} />
                     <View style={styles.rowContainerTextBox}>
-                        <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'10%'} value={birthday} setValue={setBirthday} onPress={() => toggleDatePicker()} />
+                        <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'10%'} value={formatDate(birthday)} setValue={setBirthday} onPress={() => toggleDatePicker()} />
                         <Dropdown
                             style={[styles.dropDown]}
                             placeholder='Giới tính'
