@@ -126,7 +126,7 @@ export default function AdminPayrollScreen() {
           <TextInput placeholder='Tìm kiếm'
             style={{
               color: '#000',
-              fontFamily: 'Lato-Regular',
+              fontFamily: 'lato-regular',
               fontSize: 16,
               fontWeight: '600',
               fontStyle: 'normal',

@@ -365,6 +365,13 @@ export default function EditStaffScreen({ route }) {
         navigation.goBack();
     };
 
+    const formatDate = (date) => {
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
+
     const handleDeleteStaff = async () => {
         Alert.alert(
             "Xác nhận xóa nhân viên",
@@ -460,7 +467,7 @@ export default function EditStaffScreen({ route }) {
                             text={"Ngày sinh"}
                             iconName={"calendar"}
                             marginRate={"10%"}
-                            value={birthday.toDateString()}
+                            value={formatDate(birthday)}
                             setValue={setBirthday}
                             onPress={() => toggleDatePicker()}
                         />
