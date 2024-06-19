@@ -1,144 +1,185 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable, Platform, ScrollView, ActivityIndicator } from 'react-native'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { TextInput } from 'react-native-gesture-handler'
-import Icon from 'react-native-vector-icons/Entypo'
-import SelectBranchModal from '../../components/Admin/Modal/SelectBranchModal'
-import { Button } from 'react-native-paper'
-import { useNavigation } from '@react-navigation/native'
-import RNDateTimePicker from '@react-native-community/datetimepicker'
-import { addDoc, collection, doc, onSnapshot, query, setDoc, updateDoc } from 'firebase/firestore'
-import { auth, createUserWithEmailAndPassword, db, uploadAvatarToFirebase, uploadImageToFirebase } from '../../services/firebaseService'
-import RNPickerSelect from 'react-native-picker-select'
-import { getDownloadURL, ref } from 'firebase/storage'
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    TouchableOpacity,
+    Pressable,
+    Platform,
+    ScrollView,
+    ActivityIndicator,
+} from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { TextInput } from "react-native-gesture-handler";
+import Icon from "react-native-vector-icons/Entypo";
+import SelectBranchModal from "../../components/Admin/Modal/SelectBranchModal";
+import { Button } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+import {
+    addDoc,
+    collection,
+    doc,
+    onSnapshot,
+    query,
+    setDoc,
+    updateDoc,
+} from "firebase/firestore";
+import {
+    auth,
+    createUserWithEmailAndPassword,
+    db,
+    uploadAvatarToFirebase,
+    uploadImageToFirebase,
+} from "../../services/firebaseService";
+import RNPickerSelect from "react-native-picker-select";
+import { getDownloadURL, ref } from "firebase/storage";
 import * as ImagePicker from "expo-image-picker";
-import { sendEmailVerification } from 'firebase/auth'
+import { sendEmailVerification } from "firebase/auth";
 import { Dropdown } from "react-native-element-dropdown";
-import Toast from 'react-native-toast-message'
-import SelectRoleModal from '../../components/Admin/Modal/SelectRoleModal'
+import Toast from "react-native-toast-message";
+import SelectRoleModal from "../../components/Admin/Modal/SelectRoleModal";
 
 const TextBox = ({ text, value, setValue, keyboardType, handleValidInput }) => {
-
     return (
         <TextInput
             placeholder={text}
             style={styles.textBox}
             value={value}
             onChangeText={setValue}
-            keyboardType={keyboardType ? keyboardType : 'default'}
+            keyboardType={keyboardType ? keyboardType : "default"}
             onBlur={() => {
                 if (handleValidInput(value)) {
-
                 } else {
                     switch (text) {
-                        case 'Họ và tên': {
+                        case "Họ và tên": {
                             Toast.show({
-                                type: 'error',
-                                position: 'top',
-                                text1: 'Lỗi',
-                                text2: 'Vui lòng nhập đúng định dạng họ và tên!',
+                                type: "error",
+                                position: "top",
+                                text1: "Lỗi",
+                                text2: "Vui lòng nhập đúng định dạng họ và tên!",
                                 visibilityTime: 2000,
-                                autoHide: true
+                                autoHide: true,
                             });
                             break;
                         }
-                        case 'Số điện thoại': {
+                        case "Số điện thoại": {
                             Toast.show({
-                                type: 'error',
-                                position: 'top',
-                                text1: 'Lỗi',
-                                text2: 'Số điện thoại gồm 10 chữ số!',
+                                type: "error",
+                                position: "top",
+                                text1: "Lỗi",
+                                text2: "Số điện thoại gồm 10 chữ số!",
                                 visibilityTime: 2000,
                                 autoHide: true,
                                 swipeable: true,
                             });
                             break;
                         }
-                        case 'Số CMND/CCCD': {
+                        case "Số CMND/CCCD": {
                             Toast.show({
-                                type: 'error',
-                                position: 'top',
-                                text1: 'Lỗi',
-                                text2: 'Số CCCD gồm 12 số!',
-                                visibilityTime: 2000,
-                                autoHide: true
-                            });
-                            break;
-                        }
-                        case 'Email': {
-                            Toast.show({
-                                type: 'error',
-                                position: 'top',
-                                text1: 'Lỗi',
-                                text2: 'Vui lòng nhập đúng định dạng email!',
+                                type: "error",
+                                position: "top",
+                                text1: "Lỗi",
+                                text2: "Số CCCD gồm 12 số!",
                                 visibilityTime: 2000,
                                 autoHide: true,
-                                swipeable: true
                             });
                             break;
                         }
-                        case 'Password': {
+                        case "Email": {
                             Toast.show({
-                                type: 'error',
-                                position: 'top',
-                                text1: 'Lỗi',
-                                text2: 'Mật khẩu phải gồm 6 kí tự trở lên !',
+                                type: "error",
+                                position: "top",
+                                text1: "Lỗi",
+                                text2: "Vui lòng nhập đúng định dạng email!",
                                 visibilityTime: 2000,
-                                autoHide: true
+                                autoHide: true,
+                                swipeable: true,
+                            });
+                            break;
+                        }
+                        case "Password": {
+                            Toast.show({
+                                type: "error",
+                                position: "top",
+                                text1: "Lỗi",
+                                text2: "Mật khẩu phải gồm 6 kí tự trở lên !",
+                                visibilityTime: 2000,
+                                autoHide: true,
                             });
                         }
                     }
                 }
             }}
         />
-    )
-}
+    );
+};
 const TextBox2 = ({ text, iconName, marginRate, value, setValue, onPress }) => {
     return (
-        <View style={[styles.textBox, { flex: 1, flexDirection: 'row', justifyContent: 'space-between', marginEnd: marginRate }]}>
+        <View
+            style={[
+                styles.textBox,
+                {
+                    flex: 1,
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    marginEnd: marginRate,
+                },
+            ]}
+        >
             <TextInput
                 placeholder={text}
                 value={value}
                 onChangeText={setValue}
             />
-            <TouchableOpacity
-                style={{ alignSelf: 'center' }}
-                onPress={onPress}>
+            <TouchableOpacity style={{ alignSelf: "center" }} onPress={onPress}>
                 <Icon name={iconName} size={28} />
             </TouchableOpacity>
         </View>
-    )
-}
+    );
+};
 
 const ButtonBox = ({ text, placeholder, onPress }) => {
     return (
         <TouchableOpacity
             onPress={onPress}
-            style={[styles.textBox, { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }]}>
-            <Text style={{ fontWeight: '600' }}>{text}</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ color: '#9c9c9c' }}>{placeholder}</Text>
+            style={[
+                styles.textBox,
+                {
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                },
+            ]}
+        >
+            <Text style={{ fontWeight: "600" }}>{text}</Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Text style={{ color: "#9c9c9c" }}>{placeholder}</Text>
                 <View>
-                    <Icon name='chevron-right' size={28} color={'#9c9c9c'} />
+                    <Icon name="chevron-right" size={28} color={"#9c9c9c"} />
                 </View>
             </View>
         </TouchableOpacity>
-    )
-}
+    );
+};
 
 export default function AddStaffScreen() {
-
     const navigation = useNavigation();
-    const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [name, setName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [birthday, setBirthday] = useState(new Date());
     const [date, setDate] = useState(new Date());
-    const [gender, setGender] = useState('');
-    const [idCard, setIdCard] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [cashierImage, setCashierImage] = useState("https://firebasestorage.googleapis.com/v0/b/fived-project-cf.appspot.com/o/avatars%2Fdefault.png?alt=media&token=0fffed45-23f0-4456-a939-cc3f437a7c2f");
-    const [modalSelectBranchVisible, setModalSelectBranchVisible] = useState(false);
-    const [modalSelectRoleVisibile, setModalSelectRoleVisibile] = useState(false);
+    const [gender, setGender] = useState("");
+    const [idCard, setIdCard] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [cashierImage, setCashierImage] = useState(
+        "https://firebasestorage.googleapis.com/v0/b/fived-project-cf.appspot.com/o/avatars%2Fdefault.png?alt=media&token=0fffed45-23f0-4456-a939-cc3f437a7c2f"
+    );
+    const [modalSelectBranchVisible, setModalSelectBranchVisible] =
+        useState(false);
+    const [modalSelectRoleVisibile, setModalSelectRoleVisibile] =
+        useState(false);
     const [isShowDateTimePicker, setIsShowDateTimePicker] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [roles, setRoles] = useState([]);
@@ -179,13 +220,13 @@ export default function AddStaffScreen() {
     }, []);
 
     const isValidName = (name) => {
-        if (name === '') {
+        if (name === "") {
             setIsNameValid(false);
             return false;
         }
         setIsNameValid(true);
         return true;
-    }
+    };
 
     const isValidPhoneNumber = (phoneNumber) => {
         if (phoneNumber.length !== 10) {
@@ -194,7 +235,7 @@ export default function AddStaffScreen() {
         }
         setIsPhoneValid(true);
         return true;
-    }
+    };
 
     const isValidIdCard = (idCard) => {
         if (idCard.length !== 12) {
@@ -203,7 +244,7 @@ export default function AddStaffScreen() {
         }
         setIsIdCardValid(true);
         return true;
-    }
+    };
 
     const isValidPassword = (password) => {
         if (password.length < 6) {
@@ -212,28 +253,45 @@ export default function AddStaffScreen() {
         }
         setIsPasswordValid(true);
         return true;
-    }
+    };
 
     const isValidEmail = (email) => {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        var re =
+            /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (!re.test(email)) {
             setIsEmailValid(false);
             return false;
         }
         setIsEmailValid(true);
         return true;
-    }
+    };
 
     const handleConfirm = async () => {
-        console.log(isNameValid, isPhoneValid, isBirthdayValid, isGenderValid, isIdCardValid, isEmailValid, isPasswordValid);
+        console.log(
+            isNameValid,
+            isPhoneValid,
+            isBirthdayValid,
+            isGenderValid,
+            isIdCardValid,
+            isEmailValid,
+            isPasswordValid
+        );
         setIsLoading(true);
-        if (!isNameValid || !isPhoneValid || !isBirthdayValid || !isGenderValid || !isIdCardValid || !isEmailValid || !isPasswordValid) {
+        if (
+            !isNameValid ||
+            !isPhoneValid ||
+            !isBirthdayValid ||
+            !isGenderValid ||
+            !isIdCardValid ||
+            !isEmailValid ||
+            !isPasswordValid
+        ) {
             Toast.show({
-                type: 'error',
-                text1: 'Lỗi',
-                text2: 'Vui lòng nhập đầy đủ thông tin',
+                type: "error",
+                text1: "Lỗi",
+                text2: "Vui lòng nhập đầy đủ thông tin",
                 visibilityTime: 2000,
-                autoHide: true
+                autoHide: true,
             });
         } else {
             const userCredential = await createUserWithEmailAndPassword(
@@ -267,6 +325,7 @@ export default function AddStaffScreen() {
             await setDoc(doc(collection(db, "users"), user.uid), {
                 createdAt: new Date(),
                 credit: 0,
+                rankPoint: 0,
                 email: email,
                 fullName: name,
                 password: password,
@@ -299,7 +358,7 @@ export default function AddStaffScreen() {
             navigation.goBack();
         }
         setIsLoading(false);
-    }
+    };
     // Gọi hàm callback để thêm nhân viên mới vào DATA của ManageStaff
 
     const showSelectBranchModal = () => {
@@ -320,38 +379,37 @@ export default function AddStaffScreen() {
 
     const toggleDatePicker = () => {
         setIsShowDateTimePicker(!isShowDateTimePicker);
-    }
+    };
 
     const onChange = ({ type }, selectedDate) => {
-        if (type === 'set') {
+        if (type === "set") {
             const currentDate = selectedDate;
             setDate(currentDate);
             if (new Date().getFullYear() - currentDate.getFullYear() < 18) {
                 Toast.show({
-                    type: 'error',
+                    type: "error",
 
-                    text1: 'Lỗi',
-                    text2: 'Tuổi phải lớn hơn 18',
+                    text1: "Lỗi",
+                    text2: "Tuổi phải lớn hơn 18",
                     visibilityTime: 2000,
-                    autoHide: true
+                    autoHide: true,
                 });
                 setIsBirthdayValid(false);
             } else {
-                if (Platform.OS === 'android') {
+                if (Platform.OS === "android") {
                     toggleDatePicker();
                     setBirthday(currentDate);
-
                 }
                 setIsBirthdayValid(true);
             }
         } else {
             toggleDatePicker();
         }
-    }
+    };
 
     const formatDate = (date) => {
-        const day = date.getDate().toString().padStart(2, '0');
-        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     };
@@ -362,14 +420,14 @@ export default function AddStaffScreen() {
             toggleDatePicker();
         } else {
             Toast.show({
-                type: 'error',
-                text1: 'Lỗi',
-                text2: 'Vui lòng chọn ngày sinh hợp lệ',
+                type: "error",
+                text1: "Lỗi",
+                text2: "Vui lòng chọn ngày sinh hợp lệ",
                 visibilityTime: 2000,
-                autoHide: true
+                autoHide: true,
             });
         }
-    }
+    };
 
     const handleImagePicker = async () => {
         const { status } =
@@ -395,149 +453,251 @@ export default function AddStaffScreen() {
                 <View style={styles.imageContainer}>
                     <TouchableOpacity
                         style={styles.imageButton}
-                        onPress={() => handleImagePicker()}>
+                        onPress={() => handleImagePicker()}
+                    >
                         <Image
                             source={{ uri: cashierImage }}
-                            style={{ marginBottom: '3%', width: 100, height: 100, borderRadius: 50 }} />
+                            style={{
+                                marginBottom: "3%",
+                                width: 100,
+                                height: 100,
+                                borderRadius: 50,
+                            }}
+                        />
                         <Text style={styles.imageText}>Thêm ảnh đại diện</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.informationWrapper}>
                     <Text style={styles.topText}>Thông tin cá nhân</Text>
-                    <TextBox text={'Họ và tên'} value={name} setValue={setName} handleValidInput={isValidName} />
-                    <TextBox text={'Số điện thoại'} value={phoneNumber} setValue={setPhoneNumber} keyboardType={'number-pad'} handleValidInput={isValidPhoneNumber} />
+                    <TextBox
+                        text={"Họ và tên"}
+                        value={name}
+                        setValue={setName}
+                        handleValidInput={isValidName}
+                    />
+                    <TextBox
+                        text={"Số điện thoại"}
+                        value={phoneNumber}
+                        setValue={setPhoneNumber}
+                        keyboardType={"number-pad"}
+                        handleValidInput={isValidPhoneNumber}
+                    />
                     <View style={styles.rowContainerTextBox}>
-                        <TextBox2 text={'Ngày sinh'} iconName={'calendar'} marginRate={'10%'} value={formatDate(birthday)} setValue={setBirthday} onPress={() => toggleDatePicker()} />
+                        <TextBox2
+                            text={"Ngày sinh"}
+                            iconName={"calendar"}
+                            marginRate={"10%"}
+                            value={formatDate(birthday)}
+                            setValue={setBirthday}
+                            onPress={() => toggleDatePicker()}
+                        />
                         <Dropdown
                             style={[styles.dropDown]}
-                            placeholder='Giới tính'
+                            placeholder="Giới tính"
                             placeholderStyle={{ color: "rgba(0, 0, 0, 0.2)" }}
-                            data={[{ label: "Nam", value: 'Nam' }, { label: "Nữ", value: 'Nữ' }, { label: "Khác", value: 'Khác' }]}
+                            data={[
+                                { label: "Nam", value: "Nam" },
+                                { label: "Nữ", value: "Nữ" },
+                                { label: "Khác", value: "Khác" },
+                            ]}
                             labelField="label"
                             valueField="value"
                             value={gender}
-                            onChange={item => {
+                            onChange={(item) => {
                                 setGender(item.value);
                                 setIsGenderValid(true);
-                            }} />
+                            }}
+                        />
                     </View>
-                    {isShowDateTimePicker && Platform.OS === 'ios' &&
+                    {isShowDateTimePicker && Platform.OS === "ios" && (
                         <View>
                             <RNDateTimePicker
                                 value={date}
-                                mode='date'
-                                display='spinner'
-                                onChange={onChange} />
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '20%' }}>
+                                mode="date"
+                                display="spinner"
+                                onChange={onChange}
+                            />
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    justifyContent: "space-between",
+                                    paddingHorizontal: "20%",
+                                }}
+                            >
                                 <TouchableOpacity
-                                    style={{ marginBottom: '5%', backgroundColor: 'white', padding: '5%', borderRadius: 10 }}
-                                    onPress={toggleDatePicker}>
+                                    style={{
+                                        marginBottom: "5%",
+                                        backgroundColor: "white",
+                                        padding: "5%",
+                                        borderRadius: 10,
+                                    }}
+                                    onPress={toggleDatePicker}
+                                >
                                     <Text>Cancel</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={{ marginBottom: '5%', backgroundColor: '#006c5e', padding: '5%', borderRadius: 10 }}
-                                    onPress={confirmIOSDate}>
-                                    <Text style={{ color: 'white' }}>Confirm</Text>
+                                    style={{
+                                        marginBottom: "5%",
+                                        backgroundColor: "#006c5e",
+                                        padding: "5%",
+                                        borderRadius: 10,
+                                    }}
+                                    onPress={confirmIOSDate}
+                                >
+                                    <Text style={{ color: "white" }}>
+                                        Confirm
+                                    </Text>
                                 </TouchableOpacity>
                             </View>
-                        </View>}
-                    {isShowDateTimePicker && Platform.OS === 'android' &&
+                        </View>
+                    )}
+                    {isShowDateTimePicker && Platform.OS === "android" && (
                         <View>
                             <RNDateTimePicker
                                 value={date}
-                                mode='date'
-                                display='spinner'
+                                mode="date"
+                                display="spinner"
                                 onChange={onChange}
                             />
-                        </View>}
-                    <TextBox text={'Số CMND/CCCD'} value={idCard} keyboardType={'number-pad'} setValue={setIdCard} handleValidInput={isValidIdCard} />
-                    <TextBox text={'Email'} value={email} setValue={setEmail} handleValidInput={isValidEmail} />
-                    <TextBox text={'Password'} value={password} setValue={setPassword} handleValidInput={isValidPassword} />
+                        </View>
+                    )}
+                    <TextBox
+                        text={"Số CMND/CCCD"}
+                        value={idCard}
+                        keyboardType={"number-pad"}
+                        setValue={setIdCard}
+                        handleValidInput={isValidIdCard}
+                    />
+                    <TextBox
+                        text={"Email"}
+                        value={email}
+                        setValue={setEmail}
+                        handleValidInput={isValidEmail}
+                    />
+                    <TextBox
+                        text={"Password"}
+                        value={password}
+                        setValue={setPassword}
+                        handleValidInput={isValidPassword}
+                    />
                 </View>
                 <View>
                     <Text style={styles.topText}>Thông tin công việc</Text>
-                    <ButtonBox text={'Vai trò'} placeholder={role.roleName ? role.roleName : 'Vai Trò'} onPress={showSelectRoleModal} />
-                    <SelectRoleModal visible={modalSelectRoleVisibile} onClose={hideSelectRoleModal} roles={roles} setRole={setRole} />
-                    <ButtonBox text={'Chi nhánh làm việc'} placeholder={branch.branchName ? branch.branchName : 'Tên chi nhánh'} onPress={showSelectBranchModal} />
-                    <SelectBranchModal visible={modalSelectBranchVisible} onClose={hideSelectBranchModal} branches={branches} setBranch={setBranch} />
+                    <ButtonBox
+                        text={"Vai trò"}
+                        placeholder={role.roleName ? role.roleName : "Vai Trò"}
+                        onPress={showSelectRoleModal}
+                    />
+                    <SelectRoleModal
+                        visible={modalSelectRoleVisibile}
+                        onClose={hideSelectRoleModal}
+                        roles={roles}
+                        setRole={setRole}
+                    />
+                    <ButtonBox
+                        text={"Chi nhánh làm việc"}
+                        placeholder={
+                            branch.branchName
+                                ? branch.branchName
+                                : "Tên chi nhánh"
+                        }
+                        onPress={showSelectBranchModal}
+                    />
+                    <SelectBranchModal
+                        visible={modalSelectBranchVisible}
+                        onClose={hideSelectBranchModal}
+                        branches={branches}
+                        setBranch={setBranch}
+                    />
                 </View>
-                <View style={{ marginBottom: '10%' }}>
-                    {<Pressable
-                        onPress={handleConfirm}
-                        style={styles.acceptButton}>
-                        <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff' }}>Xác nhận</Text>
-                    </Pressable>}
+                <View style={{ marginBottom: "10%" }}>
+                    {
+                        <Pressable
+                            onPress={handleConfirm}
+                            style={styles.acceptButton}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: 16,
+                                    fontWeight: "600",
+                                    color: "#fff",
+                                }}
+                            >
+                                Xác nhận
+                            </Text>
+                        </Pressable>
+                    }
                 </View>
             </ScrollView>
             {isLoading && (
                 <View style={styles.loadingOverlay}>
-                    <ActivityIndicator size="large" color={'black'} />
+                    <ActivityIndicator size="large" color={"black"} />
                 </View>
             )}
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: '5%'
+        padding: "5%",
     },
     imageContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        marginBottom: '3%'
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        marginBottom: "3%",
     },
     imageButton: {
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
+        flexWrap: "wrap",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
     },
     imageText: {
-        color: '#33b2a0'
+        color: "#33b2a0",
     },
     informationWrapper: {
-        marginBottom: '3%'
+        marginBottom: "3%",
     },
     topText: {
         fontSize: 14,
-        fontWeight: '600',
-        marginBottom: '3%'
+        fontWeight: "600",
+        marginBottom: "3%",
     },
     textBox: {
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
         borderWidth: 1,
         borderRadius: 10,
         borderColor: "#CCCCCC",
-        marginBottom: '3%',
-        padding: '4%'
+        marginBottom: "3%",
+        padding: "4%",
     },
     inValidTextBox: {
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
         borderWidth: 1,
         borderRadius: 10,
         borderColor: "#f73755",
-        marginBottom: '3%',
-        padding: '4%'
+        marginBottom: "3%",
+        padding: "4%",
     },
     rowContainerTextBox: {
-        flexDirection: 'row',
-        width: '100%',
+        flexDirection: "row",
+        width: "100%",
     },
     acceptButton: {
-        backgroundColor: '#006c5e',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: '5%',
-        borderRadius: 20
+        backgroundColor: "#006c5e",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "5%",
+        borderRadius: 20,
     },
     loadingOverlay: {
         ...StyleSheet.absoluteFillObject,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
     dropDown: {
         marginBottom: "3%",
@@ -548,6 +708,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: "3%",
         paddingVertical: "2%",
         backgroundColor: "#ffffff",
-        flex: 1
+        flex: 1,
     },
-})
+});

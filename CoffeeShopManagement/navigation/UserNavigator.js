@@ -269,11 +269,6 @@ const HomeStack = ({ navigation, route }) => {
                     headerLeft: () => <HeaderBackButton />,
                 }}
             />
-            <Stack.Screen
-                name="PaymentWebView"
-                component={PaymentWebView}
-                options={{ headerShown: false }}
-            />
         </Stack.Navigator>
     );
 };
