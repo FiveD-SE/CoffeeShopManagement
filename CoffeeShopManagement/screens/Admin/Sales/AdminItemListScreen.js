@@ -194,6 +194,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     marginVertical: "3%",
+    fontFamily:"lato-bold"
   },
   categoryList: {
     flexDirection: "row",
@@ -213,6 +214,7 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     fontWeight: "400",
     marginTop: "5%",
+    fontFamily:"lato-regular"
   },
   listContent: {
     paddingHorizontal: "5%",

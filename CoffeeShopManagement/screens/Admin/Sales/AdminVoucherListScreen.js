@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     color: "#3a3a3a",
     fontSize: 14,
     fontWeight: "500",
+    fontFamily:"lato-bold"
   },
   headingText: {
     color: '#3a3a3a',
@@ -163,6 +164,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontStyle: 'normal',
     fontWeight: '700',
+    fontFamily:"lato-bold"
   },
   component: {
     flex: 1,
@@ -172,9 +174,10 @@ const styles = StyleSheet.create({
   selectedItem: {
     borderBottomWidth: 2,
     borderBottomColor: '#006C5E',
+    fontFamily: "lato-regular"
   },
   selectedText: {
     color: '#006C5E',
-
+    fontFamily: "lato-regular"
   },
 })

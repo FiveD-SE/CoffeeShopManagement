@@ -52,12 +52,14 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: "500",
 		lineHeight: 20,
+		fontFamily:"lato-bold"
 	},
 	price: {
 		marginTop: "5%",
 		color: "rgba(58,58,58,0.5)",
 		fontSize: 14,
 		fontWeight: "500",
+		fontFamily:"lato-regular"
 	},
 	addButton: {
 		justifyContent: "center",
