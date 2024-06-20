@@ -76,19 +76,21 @@ const styles = StyleSheet.create({
         color: "#3a3a3a",
         fontSize: 16,
         fontWeight: "500",
-        lineHeight: 20,
-        marginBottom: "6%",
+        marginBottom: "3%",
+        fontFamily:"lato-bold"
     },
     label: {
         color: "#3a3a3a",
         fontSize: 13,
         fontWeight: "500",
         marginBottom: "1%",
-        marginRight: "2%"
+        marginRight: "2%",
+        fontFamily:"lato-regular"
     },
     status: {
         fontSize: 13,
         fontWeight: "500",
-        marginBottom: "1%"
+        marginBottom: "1%",
+        fontFamily:"lato-regular"
     },
 })

@@ -141,12 +141,14 @@ const styles = StyleSheet.create({
     color: "#3a3a3a",
     fontSize: 16,
     fontWeight: "400",
+    fontFamily:"lato-regular"
   },
   header: {
     color: "#3a3a3a",
     fontSize: 18,
     fontWeight: "600",
-    marginVertical: "4%"
+    marginVertical: "4%",
+    fontFamily:"lato-bold"
   },
   toggleContainer: {
     flexDirection: "row",

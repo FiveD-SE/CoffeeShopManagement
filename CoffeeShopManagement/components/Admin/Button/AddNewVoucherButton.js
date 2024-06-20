@@ -37,7 +37,8 @@ const styles = StyleSheet.create({
         fontSize: 17,
         color: "#3a3a3a",
         fontWeight: "600",
-        marginLeft: "10%"
+        marginLeft: "10%",
+        fontFamily: "lato-bold"
     },
     titleContainer: {
         flexDirection: "row",

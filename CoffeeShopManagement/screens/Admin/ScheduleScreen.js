@@ -130,15 +130,11 @@ export default function ScheduleScreen() {
         navigation.navigate('DetailShift', { selectedShift: item });
     };
 
-    useEffect(() => {
-        console.log(selectedBranch);
-        console.log(todaySchedule)
-    })
 
     const renderView = () => {
         if (selectedBranch) {
             return (
-                <View>
+                <View style={styles.bodyApp}>
                     <Text style={styles.bodyAppText}>{selectedBranch.branchName}</Text>
                     <FlatList
                         showsVerticalScrollIndicator={false}
@@ -152,7 +148,7 @@ export default function ScheduleScreen() {
             );
         } else {
             return (
-                <View>
+                <View style={[styles.bodyApp, { justifyContent: "center" }]}>
                     <View style={styles.noBranchSelectContainer}>
                         <Image
                             source={require("../../assets/icons/coffee-shop-location-icon.png")}
@@ -180,7 +176,7 @@ export default function ScheduleScreen() {
                     <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Chọn chi nhánh</Text>
                 </TouchableOpacity>
             </View>
-            <View style={styles.bodyApp}>
+            <View style={{flex:1}}>
                 {renderView()}
                 <SelectBranchModal visible={selectBranchModalVisible} onClose={hideSelectBranchModal} branches={branchList} setBranch={setSelectedBranch} />
             </View>
@@ -208,6 +204,7 @@ const styles = StyleSheet.create({
         marginBottom: '3%'
     },
     bodyApp: {
+        flex: 1,
         paddingBottom: '20%'
     },
     bodyAppText: {
@@ -216,19 +213,18 @@ const styles = StyleSheet.create({
         marginBottom: '3%',
     },
     noBranchSelectContainer: {
-        flex: 1,
         justifyContent: "center",
         alignItems: "center",
     },
     noBranchSelectImage: {
         width: "100%",
-        height: "20%",
+        height: "40%",
         marginBottom: 20,
         resizeMode: "contain",
     },
     noBranchSelectText: {
         textAlign: "center",
-        color: colors.grey_100,
+        color: colors.black_100,
         fontFamily: "lato-bold",
         fontSize: 16,
         lineHeight: 24,
