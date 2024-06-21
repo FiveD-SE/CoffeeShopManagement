@@ -25,6 +25,8 @@ import OptionSection from "../../../components/Client/List/OptionSection";
 import ToppingButton from "../../../components/Client/Button/ToppingButton";
 import ToppingItemList from "../../../components/Client/List/ToppingItemList";
 import BottomSheet from "../../../components/Client/BottomSheet/BottomSheet";
+import CustomBuyButton from "../../../components/Client/Button/CustomBuyButton";
+import CustomAddToCartButton from "../../../components/Client/Button/CustomAddToCartButton";
 
 import { useIsOpen } from "../../../utils/IsOpenContext";
 import { connect } from "react-redux";
@@ -390,7 +392,7 @@ const ItemDetailBottomSheet = ({
 									{formatCurrency(selectedItem.productPrice)}
 								</Text>
 							</View>
-							<Pressable style={styles.favoriteButton} onPress={toggleFavorite}>
+							<Pressable onPress={toggleFavorite}>
 								{localIsFavorite ? (
 									<FontAwesome name="heart" size={24} color={"#F61A3D"} />
 								) : (
@@ -424,18 +426,12 @@ const ItemDetailBottomSheet = ({
 
 				<View style={styles.footer}>
 					<View style={styles.buttonContainer}>
-						<Pressable style={styles.buyButton} onPress={handleBuyItem}>
-							<Text style={styles.buyButtonText}>Mua hàng</Text>
-							<Icon name="ellipsis-vertical" color="#FFFFFF" size={16} />
-							<Text style={styles.buyButtonText}>
-								{formatCurrency(calculateTotalPrice())}
-							</Text>
-						</Pressable>
+						<CustomBuyButton
+							totalPrice={calculateTotalPrice()}
+							onPress={handleBuyItem}
+						/>
 
-						<Pressable style={styles.addToCartButton} onPress={handleAddToCart}>
-							<Ionicons style={styles.addToCartIcon} name="cart" size={24} />
-							<Text style={styles.addToCartText}>Thêm vào giỏ</Text>
-						</Pressable>
+						<CustomAddToCartButton onPress={handleAddToCart} />
 					</View>
 
 					<View style={styles.adjustQuantity}>
@@ -520,11 +516,10 @@ const styles = StyleSheet.create({
 	},
 	price: {
 		color: colors.grey_100,
-		fontSize: 16,
+		fontSize: 18,
 		fontFamily: "lato-regular",
 		marginTop: "5%",
 	},
-	favoriteButton: {},
 	description: {
 		color: colors.black_100,
 		fontSize: 16,
@@ -552,66 +547,9 @@ const styles = StyleSheet.create({
 		borderColor: colors.grey_50,
 		borderTopWidth: 1,
 	},
-	totalPriceContainer: {
-		flexDirection: "row",
-		justifyContent: "space-between",
-		alignItems: "center",
-	},
 	buttonContainer: {
 		flex: 1,
 		flexDirection: "column",
 		marginRight: "4%",
-	},
-	buyButton: {
-		flex: 1,
-		flexDirection: "row",
-		backgroundColor: colors.green_100,
-		justifyContent: "space-evenly",
-		alignItems: "center",
-		marginBottom: "2%",
-		paddingVertical: "4%",
-		borderRadius: 12,
-		shadowColor: colors.black_100,
-		shadowOffset: {
-			width: 0,
-			height: 5,
-		},
-		shadowOpacity: 0.2,
-		shadowRadius: 2,
-		elevation: 2,
-	},
-	buyButtonText: {
-		color: colors.white_100,
-		fontSize: 16,
-		fontFamily: "lato-bold",
-	},
-	addToCartButton: {
-		flex: 1,
-		flexDirection: "row",
-		backgroundColor: colors.grey_20,
-		borderColor: colors.grey_50,
-		borderWidth: 1,
-		paddingVertical: "4%",
-		justifyContent: "center",
-		alignItems: "center",
-		paddingHorizontal: "6%",
-		borderRadius: 12,
-		shadowColor: colors.grey_100,
-		shadowOffset: {
-			width: 0,
-			height: 5,
-		},
-		shadowOpacity: 0.2,
-		shadowRadius: 2,
-		elevation: 2,
-	},
-	addToCartIcon: {
-		color: colors.grey_100,
-	},
-	addToCartText: {
-		color: colors.black_100,
-		fontSize: 16,
-		fontFamily: "lato-bold",
-		marginLeft: "4%",
 	},
 });

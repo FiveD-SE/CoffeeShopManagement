@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, Pressable, Image } from "react-native";
+import { StyleSheet, Text, Pressable, Image, Animated } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome6";
 import ToppingModal from "../ToppingModal";
 import { colors } from "../../../assets/colors/colors";
@@ -8,6 +8,24 @@ const TOPPING_ICON = require("../../../assets/topping-icon.png");
 
 const ToppingButton = ({ onToppingsSelected }) => {
 	const [modalVisible, setModalVisible] = useState(false);
+
+	const scaleValue = React.useRef(new Animated.Value(1)).current;
+
+	const handlePressIn = () => {
+		Animated.spring(scaleValue, {
+			toValue: 0.95,
+			useNativeDriver: true,
+		}).start();
+	};
+
+	const handlePressOut = () => {
+		Animated.spring(scaleValue, {
+			toValue: 1,
+			friction: 3,
+			tension: 40,
+			useNativeDriver: true,
+		}).start();
+	};
 
 	const showToppingModal = () => {
 		setModalVisible(true);
@@ -24,10 +42,24 @@ const ToppingButton = ({ onToppingsSelected }) => {
 
 	return (
 		<>
-			<Pressable style={styles.container} onPress={showToppingModal}>
-				<Image source={TOPPING_ICON} style={styles.image} />
-				<Text style={styles.title}>Dùng thêm topping bạn nhé</Text>
-				<Icon name="chevron-right" style={styles.icon} size={16} />
+			<Pressable
+				style={{ width: "100%" }}
+				onPress={showToppingModal}
+				onPressIn={handlePressIn}
+				onPressOut={handlePressOut}
+			>
+				<Animated.View
+					style={[
+						styles.container,
+						{
+							transform: [{ scale: scaleValue }],
+						},
+					]}
+				>
+					<Image source={TOPPING_ICON} style={styles.image} />
+					<Text style={styles.title}>Dùng thêm topping bạn nhé</Text>
+					<Icon name="chevron-right" style={styles.icon} size={16} />
+				</Animated.View>
 			</Pressable>
 			<ToppingModal
 				visible={modalVisible}

@@ -1,12 +1,12 @@
 import { StyleSheet, TextInput, View } from "react-native";
 import React from "react";
-
+import { colors } from "../../assets/colors/colors";
 const SearchBar = ({ onFocus, onChangeText }) => {
 	const handleTextChange = (text) => {
 		onChangeText(text);
 	};
 	const handleBlur = () => {
-		if (typeof onBlur === 'function') {
+		if (typeof onBlur === "function") {
 			onBlur();
 		}
 	};
@@ -15,6 +15,7 @@ const SearchBar = ({ onFocus, onChangeText }) => {
 			<TextInput
 				style={styles.input}
 				placeholder="Tìm kiếm"
+				placeholderTextColor={colors.grey_100}
 				onChangeText={handleTextChange}
 				onFocus={onFocus}
 				onBlur={handleBlur}
@@ -36,12 +37,12 @@ const styles = StyleSheet.create({
 		borderColor: "#CCCCCC",
 		paddingHorizontal: "5%",
 		paddingVertical: "2%",
-		backgroundColor: "#ffffff",
+		backgroundColor: colors.grey_10,
 	},
 	input: {
 		flex: 1,
-		color: "rgba(58,58,58,0.5)",
+		color: colors.black_100,
 		fontSize: 16,
-		fontWeight: "400",
+		fontFamily: "lato-regular",
 	},
 });
