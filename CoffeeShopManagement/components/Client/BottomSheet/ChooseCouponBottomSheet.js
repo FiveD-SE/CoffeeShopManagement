@@ -16,6 +16,7 @@ import SelectCouponCard from "../Card/SelectCouponCard";
 
 import { colors } from "../../../assets/colors/colors";
 import { db } from "../../../services/firebaseService";
+import CustomButton from "../Button/CustomButton";
 
 const ChooseCouponBottomSheet = ({
 	userData,
@@ -27,7 +28,7 @@ const ChooseCouponBottomSheet = ({
 	totalProductsPrice,
 	deliveryFee,
 	isChangeAddress,
-	setIsChangeAddress
+	setIsChangeAddress,
 }) => {
 	const [productVoucherList, setProductVoucherList] = useState([]);
 	const [shipVoucherList, setShipVoucherList] = useState([]);
@@ -52,36 +53,30 @@ const ChooseCouponBottomSheet = ({
 
 	const handleSelectedDeliveryCouponChange = (selectedCoupon) => {
 		setSelectedDeliveryCoupon((prev) =>
-			prev && prev.coupon === selectedCoupon
-				? null
-				: { coupon: selectedCoupon }
+			prev && prev.coupon === selectedCoupon ? null : { coupon: selectedCoupon }
 		);
 	};
 
 	const handleSelectedDiscountCouponChange = (selectedCoupon) => {
 		setSelectedDiscountCoupon((prev) =>
-			prev && prev.coupon === selectedCoupon
-				? null
-				: { coupon: selectedCoupon }
+			prev && prev.coupon === selectedCoupon ? null : { coupon: selectedCoupon }
 		);
 	};
-
 
 	const handleChooseVoucher = (minimumOrderPrice) => {
 		if (minimumOrderPrice < totalProductsPrice) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
-	}
+	};
 
 	const handleFreeShip = () => {
 		if (deliveryFee === 0) {
 			return true;
 		}
 		return false;
-	}
+	};
 
 	const handleApplyCoupon = () => {
 		if (selectedDiscountCoupon === null && selectedDeliveryCoupon === null) {
@@ -115,17 +110,24 @@ const ChooseCouponBottomSheet = ({
 
 	const renderDeliveryFee = () => {
 		const sortedDeliveryVouchers = shipVoucherList.slice().sort((a, b) => {
-			if (handleChooseVoucher(a.minimumOrderPrice) && !handleChooseVoucher(b.minimumOrderPrice)) {
+			if (
+				handleChooseVoucher(a.minimumOrderPrice) &&
+				!handleChooseVoucher(b.minimumOrderPrice)
+			) {
 				return -1;
 			}
-			if (!handleChooseVoucher(a.minimumOrderPrice) && handleChooseVoucher(b.minimumOrderPrice)) {
+			if (
+				!handleChooseVoucher(a.minimumOrderPrice) &&
+				handleChooseVoucher(b.minimumOrderPrice)
+			) {
 				return 1;
 			}
 			return 0;
 		});
 
 		return sortedDeliveryVouchers.map((item, index) => {
-			const isChecked = selectedDeliveryCoupon && selectedDeliveryCoupon.coupon === item;
+			const isChecked =
+				selectedDeliveryCoupon && selectedDeliveryCoupon.coupon === item;
 			return (
 				<SelectCouponCard
 					key={index}
@@ -135,8 +137,14 @@ const ChooseCouponBottomSheet = ({
 					imageSource={item.voucherImage}
 					minimumOrderPrice={item.minimumOrderPrice}
 					isChecked={isChecked}
-					onPress={() => (handleChooseVoucher(item.minimumOrderPrice) && !handleFreeShip()) ? handleSelectedDeliveryCouponChange(item) : null}
-					isChooseAble={(handleChooseVoucher(item.minimumOrderPrice) && !handleFreeShip())}
+					onPress={() =>
+						handleChooseVoucher(item.minimumOrderPrice) && !handleFreeShip()
+							? handleSelectedDeliveryCouponChange(item)
+							: null
+					}
+					isChooseAble={
+						handleChooseVoucher(item.minimumOrderPrice) && !handleFreeShip()
+					}
 				/>
 			);
 		});
@@ -144,17 +152,24 @@ const ChooseCouponBottomSheet = ({
 
 	const renderDiscount = () => {
 		const sortedDiscountVouchers = productVoucherList.slice().sort((a, b) => {
-			if (handleChooseVoucher(a.minimumOrderPrice) && !handleChooseVoucher(b.minimumOrderPrice)) {
+			if (
+				handleChooseVoucher(a.minimumOrderPrice) &&
+				!handleChooseVoucher(b.minimumOrderPrice)
+			) {
 				return -1;
 			}
-			if (!handleChooseVoucher(a.minimumOrderPrice) && handleChooseVoucher(b.minimumOrderPrice)) {
+			if (
+				!handleChooseVoucher(a.minimumOrderPrice) &&
+				handleChooseVoucher(b.minimumOrderPrice)
+			) {
 				return 1;
 			}
 			return 0;
 		});
 
 		return sortedDiscountVouchers.map((item, index) => {
-			const isChecked = selectedDiscountCoupon && selectedDiscountCoupon.coupon === item;
+			const isChecked =
+				selectedDiscountCoupon && selectedDiscountCoupon.coupon === item;
 			return (
 				<SelectCouponCard
 					key={index}
@@ -164,7 +179,11 @@ const ChooseCouponBottomSheet = ({
 					imageSource={item.voucherImage}
 					minimumOrderPrice={item.minimumOrderPrice}
 					isChecked={isChecked}
-					onPress={() => handleChooseVoucher(item.minimumOrderPrice) ? handleSelectedDiscountCouponChange(item) : null}
+					onPress={() =>
+						handleChooseVoucher(item.minimumOrderPrice)
+							? handleSelectedDiscountCouponChange(item)
+							: null
+					}
 					isChooseAble={handleChooseVoucher(item.minimumOrderPrice)}
 				/>
 			);
@@ -246,9 +265,8 @@ const ChooseCouponBottomSheet = ({
 						</Section>
 					</View>
 				</ScrollView>
-				<Pressable style={styles.applyButton} onPress={handleApplyCoupon}>
-					<Text style={styles.applyButtonText}>Áp dụng</Text>
-				</Pressable>
+
+				<CustomButton text={"Áp dụng"} onPress={handleApplyCoupon} />
 			</View>
 		</BottomSheet>
 	);

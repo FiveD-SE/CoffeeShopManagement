@@ -4,16 +4,20 @@ import {
 	View,
 	StyleSheet,
 	ScrollView,
-	Pressable,
-	Text,
 	Platform,
+	Dimensions,
+	Pressable,
 } from "react-native";
 import Section from "./Section";
 import ToppingItem1 from "./ToppingItem1";
 import ModalHeader from "./Header/ModalHeader";
+import CustomButton from "./Button/CustomButton";
+
+const modalHeight = Dimensions.get("window").height * 0.8;
 
 const ToppingModal = ({ visible, onClose, onConfirm }) => {
 	const [selectedToppings, setSelectedToppings] = useState([]);
+
 	const bubbleToppingList = [
 		{ title: "Trân châu trắng", price: 5000 },
 		{ title: "Trân châu đen", price: 5000 },
@@ -82,7 +86,7 @@ const ToppingModal = ({ visible, onClose, onConfirm }) => {
 			visible={visible}
 			onRequestClose={onClose}
 		>
-			<View style={styles.modalContainer}>
+			<Pressable style={styles.modalContainer} onPress={onClose}>
 				<View style={styles.modalContent}>
 					<ModalHeader title="Chọn topping" onClose={onClose} />
 					<View style={{ paddingHorizontal: "5%" }}>
@@ -102,12 +106,11 @@ const ToppingModal = ({ visible, onClose, onConfirm }) => {
 								</Section>
 							</View>
 						</ScrollView>
-						<Pressable style={styles.confirmButton} onPress={handleConfirm}>
-							<Text style={styles.confirmButtonText}>Xác nhận</Text>
-						</Pressable>
+
+						<CustomButton text={"Xác nhận"} onPress={handleConfirm} />
 					</View>
 				</View>
-			</View>
+			</Pressable>
 		</Modal>
 	);
 };
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		borderRadius: 20,
 		width: "90%",
-		height: "80%",
+		height: modalHeight,
 	},
 	header: {
 		flexDirection: "row",
@@ -153,31 +156,5 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 		paddingHorizontal: "5%",
 		borderWidth: 1,
-	},
-	confirmButton: {
-		backgroundColor: "#00A188",
-		justifyContent: "center",
-		alignItems: "center",
-		padding: "5%",
-		borderRadius: 20,
-		marginTop: "5%",
-		...Platform.select({
-			ios: {
-				shadowColor: "#3a3a3a",
-				shadowOffset: {
-					width: 0,
-					height: 2,
-				},
-				shadowOpacity: 0.1,
-				shadowRadius: 2,
-			},
-			android: {
-				elevation: 2,
-			},
-		}),
-	},
-	confirmButtonText: {
-		color: "#FFFFFF",
-		fontWeight: "600",
 	},
 });

@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 
 import BottomSheet from "./BottomSheet";
@@ -12,9 +12,6 @@ const SelectTimeBottomSheet = ({
 	onDateSelected,
 	onTimeSelected,
 }) => {
-	const [selectedDate, setSelectedDate] = useState();
-	const [selectedTime, setSelectedTime] = useState();
-
 	const today = new Date();
 	const tomorrow = new Date(today);
 	tomorrow.setDate(today.getDate() + 1);
@@ -31,24 +28,64 @@ const SelectTimeBottomSheet = ({
 		day: "numeric",
 	});
 
-	const timeSlots = [];
-	for (let hour = 7; hour <= 22; hour++) {
-		const hourString = hour.toString().padStart(2, "0");
-		timeSlots.push({ label: `${hourString}:00`, value: `${hourString}:00` });
-		if (hour !== 22) {
-			timeSlots.push({ label: `${hourString}:30`, value: `${hourString}:30` });
-		}
+	const currentHour = today.getHours();
+	const currentMinute = today.getMinutes();
+
+	let startHour = currentHour;
+	let startMinute = currentMinute + 30;
+
+	if (startMinute >= 60) {
+		startHour += 1;
+		startMinute = startMinute - 60;
 	}
+
+	const startTime = `${startHour.toString().padStart(2, "0")}:${startMinute
+		.toString()
+		.padStart(2, "0")}`;
+
+	const generateTimeSlots = (selectedDate) => {
+		const slots = [];
+		const startTimeToCompare =
+			selectedDate === todayFormatted ? startTime : "07:00";
+
+		for (let hour = 7; hour <= 22; hour++) {
+			const hourString = hour.toString().padStart(2, "0");
+			const time00 = `${hourString}:00`;
+			const time30 = `${hourString}:30`;
+
+			if (time00 >= startTimeToCompare) {
+				slots.push({ label: time00, value: time00 });
+			}
+			if (time30 >= startTimeToCompare && hour !== 22) {
+				slots.push({ label: time30, value: time30 });
+			}
+		}
+		return slots;
+	};
+
+	const initialTimeSlots = generateTimeSlots(todayFormatted);
+	const [selectedDate, setSelectedDate] = useState(todayFormatted);
+	const [selectedTime, setSelectedTime] = useState(initialTimeSlots[0]?.value);
+
+	const timeSlots = generateTimeSlots(selectedDate);
 
 	const handleDateChange = (itemValue) => {
 		setSelectedDate(itemValue);
+		const newTimeSlots = generateTimeSlots(itemValue);
+		setSelectedTime(newTimeSlots[0]?.value);
 		onDateSelected(itemValue);
+		onTimeSelected(newTimeSlots[0]?.value);
 	};
 
 	const handleTimeChange = (itemValue) => {
 		setSelectedTime(itemValue);
 		onTimeSelected(itemValue);
 	};
+
+	useEffect(() => {
+		onDateSelected(selectedDate);
+		onTimeSelected(selectedTime);
+	}, []);
 
 	return (
 		<BottomSheet
