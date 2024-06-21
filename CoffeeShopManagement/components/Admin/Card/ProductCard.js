@@ -8,30 +8,30 @@ const ProductCard = ({
   }
   return (
     <View style={styles.container}>
-        <View style={styles.imageContainer}>
-          <Image style={styles.image} source={imageSource} resizeMode="cover" />
-        </View>
-        <View style={styles.main}>
-          <Text style={styles.name}>{name}</Text>
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <View>
-              <Text style={styles.label}>Số lượng:</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={styles.label}>{quantity}</Text>
-              <Text style={styles.label}> {unit}</Text>
-            </View>
+      <View style={styles.imageContainer}>
+        <Image style={styles.image} source={imageSource} resizeMode="cover" />
+      </View>
+      <View style={styles.main}>
+        <Text style={styles.name}>{name}</Text>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <View>
+            <Text style={styles.label}>Số lượng:</Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-            <View>
-              <Text style={styles.label}>Giá nhập:</Text>
-            </View>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={styles.label}>{formatVND(Number(price))} VND</Text>
-              <Text style={styles.label}>/{unit}</Text>
-            </View>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.label}>{quantity}</Text>
+            <Text style={styles.label}> {unit}</Text>
           </View>
         </View>
+        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+          <View>
+            <Text style={styles.label}>Giá nhập:</Text>
+          </View>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={styles.label}>{formatVND(Number(price))} VND</Text>
+            <Text style={styles.label}>/{unit}</Text>
+          </View>
+        </View>
+      </View>
     </View>
   )
 }
@@ -72,10 +72,12 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     lineHeight: 20,
     marginBottom: "10%",
+    fontFamily: "lato-bold",
   },
   label: {
     color: "rgba(58,58,58,0.5)",
     fontSize: 16,
     fontWeight: "500",
+    fontFamily: "lato-regular",
   },
 });

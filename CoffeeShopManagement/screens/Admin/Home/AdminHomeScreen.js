@@ -137,13 +137,11 @@ const AdminHomeScreen = ({ userData }) => {
 
       <View style={styles.body}>
         <View style={styles.peopleDataContainer}>
-          <View style={[styles.dataContainer, { marginLeft: "3%", marginRight: "2%" }]}>
+          <Pressable onPress={() => navigation.navigate("StaffHome")} style={[styles.dataContainer, { marginLeft: "3%", marginRight: "2%" }]}>
             <View>
               <View style={styles.dataHeader}>
                 <Text style={styles.dataTitle}>NHÂN VIÊN</Text>
-                <Pressable onPress={() => navigation.navigate("StaffHome")}>
-                  <Ionicons name="arrow-forward" size={20} color="#3A3A3A" />
-                </Pressable>
+                <Ionicons name="arrow-forward" size={20} color="#3A3A3A" />
               </View>
               <View style={[styles.data, { padding: "7%" }]}>
                 <View style={[styles.iconComponentContainer, { alignSelf: "flex-start", padding: "13%", backgroundColor: "#F0F5FF" }]}>
@@ -153,15 +151,13 @@ const AdminHomeScreen = ({ userData }) => {
                 <Text style={[styles.dataName, { marginTop: "3%" }]}>Tổng nhân viên</Text>
               </View>
             </View>
-          </View>
+          </Pressable>
 
-          <View style={[styles.dataContainer, { marginLeft: "2%", marginRight: "3%" }]}>
+          <Pressable onPress={() => navigation.navigate("ClientHome")} style={[styles.dataContainer, { marginLeft: "2%", marginRight: "3%" }]}>
             <View>
               <View style={styles.dataHeader}>
                 <Text style={styles.dataTitle}>KHÁCH HÀNG</Text>
-                <Pressable onPress={() => navigation.navigate("ClientHome")}>
-                  <Ionicons name="arrow-forward" size={20} color="#3A3A3A" />
-                </Pressable>
+                <Ionicons name="arrow-forward" size={20} color="#3A3A3A" />
               </View>
               <View style={[styles.data, { padding: "7%" }]}>
                 <View style={[styles.iconComponentContainer, { alignSelf: "flex-start", padding: "13%", backgroundColor: "#EEFAF1" }]}>
@@ -171,15 +167,15 @@ const AdminHomeScreen = ({ userData }) => {
                 <Text style={[styles.dataName, { marginTop: "3%" }]}>Tổng khách hàng</Text>
               </View>
             </View>
-          </View>
+          </Pressable>
         </View>
 
-        <View style={[styles.dataContainer, { marginTop: "3%", marginHorizontal: "3%" }]}>
+        <Pressable onPress={() => navigation.navigate("Revenue")} style={[styles.dataContainer, { marginTop: "3%", marginHorizontal: "3%" }]}>
           <View style={styles.dataHeader}>
             <Text style={styles.dataTitle}>DOANH THU</Text>
-            <Pressable onPress={() => navigation.navigate("Revenue")}>
-              <Ionicons name="arrow-forward" size={20} color="#3A3A3A" />
-            </Pressable>
+
+            <Ionicons name="arrow-forward" size={20} color="#3A3A3A" />
+
           </View>
           <View style={[styles.data, { flex: 1, justifyContent: "center", alignItems: "center", padding: "3%" }]}>
             <View style={[styles.iconComponentContainer, { padding: "6%", backgroundColor: "#FFFAE6" }]}>
@@ -195,7 +191,7 @@ const AdminHomeScreen = ({ userData }) => {
             <Text style={[styles.dataNumber, { marginTop: "3%" }]}>{formatCurrency(Number(totalGrowthAmount))}</Text>
             <Text style={[styles.dataName, { marginTop: "1%" }]}>Tăng trưởng</Text>
           </View>
-        </View>
+        </Pressable>
       </View>
     </ScrollView>
   );
@@ -238,11 +234,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "600",
     color: "#292929",
+    fontFamily: "lato-bold"
   },
   profileRole: {
     fontSize: 16,
     fontWeight: "400",
     color: "#858585",
+    fontFamily: "lato-regular"
   },
   iconContainer: {
     justifyContent: "center",
@@ -279,6 +277,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     color: "#3A3A3A",
+    fontFamily: "lato-bold"
   },
   data: {
     marginTop: "2%",
@@ -292,12 +291,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#3A3A3A",
     marginTop: "3%",
+    fontFamily: "lato-bold"
   },
   dataName: {
     fontSize: 16,
     fontWeight: "500",
     color: "#3A3A3A",
     marginTop: "1%",
+    fontFamily: "lato-regular"
   },
   notificationCount: {
     position: 'absolute',

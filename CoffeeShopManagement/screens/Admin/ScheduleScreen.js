@@ -167,10 +167,10 @@ export default function ScheduleScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.topApp}>
-                <TouchableOpacity style={[styles.topButton, { marginEnd: '2%' }]}>
+                <View style={[styles.topButton, { marginEnd: '2%' }]}>
                     <FontAwesome name='calendar' size={24} />
                     <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Hôm nay | {formatDate(new Date())}</Text>
-                </TouchableOpacity>
+                </View>
                 <TouchableOpacity style={styles.topButton} onPress={showSelectBranchModal}>
                     <Icon name='location-pin' size={24} color={'#d22f27'} />
                     <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Chọn chi nhánh</Text>

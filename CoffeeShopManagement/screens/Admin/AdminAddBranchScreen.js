@@ -305,7 +305,7 @@ const AdminBranchEditScreen = ({ navigation, route }) => {
                 <Dropdown
                     style={[styles.dropDown]}
                     placeholder='Tỉnh/Thành Phố'
-                    placeholderStyle={{ color: "#3a3a3a" }}
+                    placeholderStyle={{ color: "#3a3a3a", fontFamily: "lato-regular" }}
                     data={provinceList}
                     labelField="label"
                     valueField="value"
@@ -322,7 +322,7 @@ const AdminBranchEditScreen = ({ navigation, route }) => {
                 <Dropdown
                     style={[styles.dropDown]}
                     placeholder='Quận/Huyện'
-                    placeholderStyle={{ color: "#3a3a3a" }}
+                    placeholderStyle={{ color: "#3a3a3a", fontFamily: "lato-regular" }}
                     data={districtList}
                     labelField="label"
                     valueField="value"
@@ -337,7 +337,7 @@ const AdminBranchEditScreen = ({ navigation, route }) => {
                 <Dropdown
                     style={[styles.dropDown]}
                     placeholder='Xã/Phường/Thị Trấn'
-                    placeholderStyle={{ color: "#3a3a3a" }}
+                    placeholderStyle={{ color: "#3a3a3a", fontFamily: "lato-regular" }}
                     data={wardList}
                     labelField="label"
                     valueField="value"
@@ -449,18 +449,20 @@ const styles = StyleSheet.create({
         color: "#3a3a3a",
         fontSize: 16,
         fontWeight: "500",
+        fontFamily: "lato-regular"
     },
     header: {
         color: "#3a3a3a",
         fontSize: 18,
         fontWeight: "600",
         marginVertical: "3%",
+        fontFamily: "lato-bold"
     },
     locationContainer: {
         marginBottom: 8,
     },
     label: {
-        fontWeight: "bold",
+        fontFamily: "lato-bold",
         fontSize: 16,
         marginBottom: 8,
     },
@@ -525,11 +527,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: "3%",
         paddingVertical: "2%",
         backgroundColor: "#ffffff",
+        fontFamily: "lato-regular"
     },
     selectedText: {
         color: "#00A188",
         fontSize: 14,
         fontWeight: "500",
+        fontFamily: "lato-regular"
     },
 });
 
