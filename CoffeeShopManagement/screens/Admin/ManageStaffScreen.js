@@ -105,8 +105,9 @@ export default function ManageStaffScreen({ route }) {
                     <Text
                         style={{
                             fontWeight: "600",
-                            fontSize: 16,
+                            fontSize: 18,
                             marginBottom: "3%",
+                            fontFamily: "lato-bold"
                         }}
                     >
                         Danh sách nhân viên
@@ -121,7 +122,10 @@ export default function ManageStaffScreen({ route }) {
                             <Icon1 name="search" size={24} />
                         </TouchableOpacity>
                     </View>
-                    <ScrollView style={styles.listStaff}>
+                    <ScrollView
+                        style={styles.listStaff}
+                        showsVerticalScrollIndicator={false}
+                    >
                         <View>
                             {cashiers.map((item, index) => (
                                 <StaffCard
@@ -140,9 +144,10 @@ export default function ManageStaffScreen({ route }) {
                             <Ionicons name="add" size={24} />
                             <Text
                                 style={{
-                                    fontSize: 14,
+                                    fontSize: 16,
                                     fontWeight: "600",
                                     marginStart: "3%",
+                                    fontFamily: "lato-bold"
                                 }}
                             >
                                 Thêm nhân viên
@@ -179,6 +184,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "600",
         paddingStart: "4%",
+        fontFamily: "lato-bold"
     },
     roleButton: {
         backgroundColor: "#006c5e",
@@ -189,7 +195,7 @@ const styles = StyleSheet.create({
         padding: "3%",
     },
     content: {
-        padding: "5%",
+        padding: "3%",
     },
     searchBox: {
         width: "100%",

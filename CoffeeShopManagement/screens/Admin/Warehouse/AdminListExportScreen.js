@@ -67,7 +67,7 @@ const AdminListExportScreen = ({ route, warehouseItemList }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Danh sách xuất hàng hàng</Text>
+      <Text style={styles.title}>Danh sách xuất hàng</Text>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
         {renderExportGoodsList()}
       </ScrollView>
@@ -83,9 +83,9 @@ const AdminListExportScreen = ({ route, warehouseItemList }) => {
 }
 
 const mapStateToProps = (state) => {
-	return {
+  return {
     warehouseItemList: state.admin.warehouseItemList,
-	};
+  };
 };
 
 export default connect(mapStateToProps)(AdminListExportScreen);
@@ -104,7 +104,8 @@ const styles = StyleSheet.create({
     color: "#3a3a3a",
     fontSize: 16,
     fontWeight: "600",
-    marginTop: "3%"
+    marginTop: "3%",
+    fontFamily: "lato-bold"
   },
   goodListContainer: {
     flex: 1,
@@ -118,13 +119,13 @@ const styles = StyleSheet.create({
   },
   costname: {
     color: "#3a3a3a",
-    fontSize: 25,
-    fontWeight: "600",
+    fontSize: 23,
+    fontFamily: "lato-bold"
   },
   cost: {
     color: "#F61A3D",
-    fontSize: 25,
-    fontWeight: "700",
+    fontSize: 23,
+    fontFamily: "lato-bold"
   },
   colorButton: {
     borderRadius: 15,
@@ -138,13 +139,15 @@ const styles = StyleSheet.create({
   textButton: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#ffffff"
+    color: "#ffffff",
+    fontFamily: "lato-bold"
   },
   title: {
     color: "#3a3a3a",
     fontSize: 18,
     fontWeight: "600",
     marginTop: "3%",
-    marginStart: "2%"
+    marginStart: "2%",
+    fontFamily: "lato-bold"
   },
 })

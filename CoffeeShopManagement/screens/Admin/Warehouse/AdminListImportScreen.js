@@ -74,7 +74,7 @@ const AdminListImportScreen = ({ route, goodsList }) => {
             goodsImage: item.goodsImage,
           });
         }
-      }));    
+      }));
 
       await Promise.all(importGoodsList.map(async item => {
         const goodsQuery = query(collection(db, 'goods'), where('goodsId', '==', item.goodsId));
@@ -120,9 +120,9 @@ const AdminListImportScreen = ({ route, goodsList }) => {
 };
 
 const mapStateToProps = (state) => {
-	return {
-		goodsList: state.admin.goodsList,
-	};
+  return {
+    goodsList: state.admin.goodsList,
+  };
 };
 
 export default connect(mapStateToProps)(AdminListImportScreen);
@@ -141,7 +141,8 @@ const styles = StyleSheet.create({
     color: "#3a3a3a",
     fontSize: 16,
     fontWeight: "600",
-    marginTop: "3%"
+    marginTop: "3%",
+    fontFamily: "lato-bold"
   },
   goodListContainer: {
     flex: 1,
@@ -149,19 +150,20 @@ const styles = StyleSheet.create({
   },
   costContaner: {
     marginVertical: "3%",
-    marginHorizontal: "3%",
     flexDirection: "row",
     justifyContent: "space-between"
   },
   costname: {
     color: "#3a3a3a",
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: "600",
+    fontFamily: "lato-bold"
   },
   cost: {
     color: "#F61A3D",
-    fontSize: 25,
+    fontSize: 22,
     fontWeight: "700",
+    fontFamily: "lato-bold"
   },
   colorButton: {
     borderRadius: 15,
@@ -175,6 +177,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#ffffff"
+    color: "#ffffff",
+    fontFamily: "lato-bold"
   }
 });
