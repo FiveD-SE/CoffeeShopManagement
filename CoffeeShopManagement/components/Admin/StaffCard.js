@@ -61,7 +61,7 @@ const StaffCard = ({
 const styles = StyleSheet.create({
     staffItem: {
         backgroundColor: "#fff",
-        padding: "3%",
+        padding: "5%",
         flexDirection: "row",
         justifyContent: "space-between",
         borderRadius: 10,

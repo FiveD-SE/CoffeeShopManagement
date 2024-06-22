@@ -119,7 +119,6 @@ export default function ScheduleScreen() {
 
             } catch (error) {
                 console.error('Error fetching or updating branch schedule:', error);
-                // Implement error handling as needed
             }
         };
 
@@ -127,7 +126,7 @@ export default function ScheduleScreen() {
     }, [selectedBranch]);
 
     const goToDetailShift = (item) => {
-        navigation.navigate('DetailShift', { selectedShift: item });
+        navigation.navigate('DetailShiftScreen', { selectedShift: item });
     };
 
 

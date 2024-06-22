@@ -164,7 +164,8 @@ const styles = StyleSheet.create({
     color: "#3a3a3a",
     fontSize: 16,
     fontWeight: "600",
-    marginTop: "3%"
+    marginTop: "3%",
+    fontFamily:"lato-bold"
   },
   searchBar: {
     flexDirection: "row",
@@ -186,11 +187,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     marginRight: "2%",
+    fontFamily:"lato-bold"
   },
   importNumber: {
     color: "#00A188",
-    fontSize: 25,
+    fontSize: 23,
     fontWeight: "700",
+    fontFamily:"lato-bold"
   }, 
   colorButton: {
     borderRadius: 15,
@@ -203,6 +206,7 @@ const styles = StyleSheet.create({
   nameText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#ffffff"
+    color: "#ffffff",
+    fontFamily:"lato-bold"
   }
 });

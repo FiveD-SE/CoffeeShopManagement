@@ -40,9 +40,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     title: {
-        fontSize: 17,
+        color: "#3a3a3a",
+        fontSize: 18,
         fontWeight: "600",
-        marginLeft: "10%"
+        marginLeft: "10%",
+        fontFamily: "lato-bold"
     },
     titleContainer: {
         flexDirection: "row",

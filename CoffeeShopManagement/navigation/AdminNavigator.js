@@ -320,7 +320,7 @@ const OtherStack = ({ navigation, route }) => {
                 }}
             />
             <Stack.Screen
-                name="DetailShift"
+                name="DetailShiftScreen"
                 component={DetailShiftScreen}
                 options={{
                     headerTitle: "Tên ca",

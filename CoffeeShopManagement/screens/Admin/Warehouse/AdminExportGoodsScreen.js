@@ -38,7 +38,7 @@ const AdminExportGoodsScreen = ({ warehouseItemList, warehouseItemListSave }) =>
   const hideExportGoodModal = () => {
     setModalVisible(false);
   };
-  
+
   useEffect(() => {
     const fetchGoods = async () => {
       const goodsCollection = collection(db, 'warehouse');
@@ -55,7 +55,7 @@ const AdminExportGoodsScreen = ({ warehouseItemList, warehouseItemListSave }) =>
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (query) {
-      const filteredList = warehouseItemList.filter(item => 
+      const filteredList = warehouseItemList.filter(item =>
         item.goodsName.toLowerCase().includes(query.toLowerCase())
       );
       setFilteredGoodsList(filteredList);
@@ -71,7 +71,7 @@ const AdminExportGoodsScreen = ({ warehouseItemList, warehouseItemListSave }) =>
       setExportGoodsList([...exportGoodsList, exportGoods]);
     }
     setTotalExportGoods(Number(totalExportGoods) + Number(exportGoods.goodsQuantity));
-  
+
     const updatedGoodsList = filteredGoodsList.map(item => {
       if (item.goodsId === exportGoods.goodsId) {
         return {
@@ -102,8 +102,8 @@ const AdminExportGoodsScreen = ({ warehouseItemList, warehouseItemListSave }) =>
     ));
   };
 
-  
-  
+
+
   return (
     <View style={styles.container}>
       <View style={styles.bar}>
@@ -116,7 +116,7 @@ const AdminExportGoodsScreen = ({ warehouseItemList, warehouseItemListSave }) =>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>
         {renderGoodsList()}
       </ScrollView>
-      <ExportGoodModal visible={modalVisible} onClose={hideExportGoodModal} selectedGoods={selectedGoods} onMinus={handleExportGoods}/>
+      <ExportGoodModal visible={modalVisible} onClose={hideExportGoodModal} selectedGoods={selectedGoods} onMinus={handleExportGoods} />
       <View style={styles.buttonContainer}>
         <View style={{ flexDirection: "column" }}>
           <Text style={styles.importName}>Số mặt hàng xuất kho:</Text>
@@ -124,7 +124,7 @@ const AdminExportGoodsScreen = ({ warehouseItemList, warehouseItemListSave }) =>
         </View>
         <TouchableOpacity style={styles.colorButton} onPress={goToListExport}>
           <Text style={styles.titleText}>Xuất hàng</Text>
-        </TouchableOpacity>      
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -150,7 +150,8 @@ const styles = StyleSheet.create({
     color: "#3a3a3a",
     fontSize: 16,
     fontWeight: "600",
-    marginTop: "3%"
+    marginTop: "3%",
+    fontFamily: "lato-bold"
   },
   bar: {
     flexDirection: "row",
@@ -176,12 +177,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "700",
     marginRight: "2%",
+    fontFamily: "lato-bold"
   },
   importNumber: {
     color: "#00A188",
     fontSize: 25,
     fontWeight: "700",
-  }, 
+    fontFamily: "lato-regular"
+  },
   colorButton: {
     borderRadius: 15,
     backgroundColor: "#00A188",
@@ -193,6 +196,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#ffffff"
+    color: "#ffffff",
+    fontFamily:"lato-bold"
   }
 });

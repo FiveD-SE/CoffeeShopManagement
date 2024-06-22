@@ -82,11 +82,13 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         lineHeight: 20,
         marginBottom: "10%",
+        fontFamily:"lato-bold"
     },
     label: {
         color: "rgba(58,58,58,0.5)",
         fontSize: 13,
         fontWeight: "500",
+        fontFamily:"lato-regular"
     },
     IconButton: {
 
