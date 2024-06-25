@@ -6,14 +6,16 @@ import {
     Pressable,
     ScrollView,
     SafeAreaView,
+    RefreshControl,
 } from "react-native";
 import {
     collection,
     query,
-    onSnapshot,
     getDocs,
-    doc, updateDoc,
-    where
+    doc,
+    updateDoc,
+    where,
+    onSnapshot,
 } from "firebase/firestore";
 import NotificationCard from "../../../components/Staff/NotificationCard";
 import { db } from "../../../services/firebaseService";
@@ -25,21 +27,38 @@ function UserNotification({ userData }) {
     const navigation = useNavigation();
     const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
     const [notifications, setNotifications] = useState([]);
-
+    const [refreshing, setRefreshing] = useState(false);
     const selectionButtons = ["Tất cả", "Chưa đọc", "Đã đọc"];
 
-    useEffect(() => {
-        const fetchNotifications = async () => {
-            const notificationCollection = collection(db, 'user_notifications');
-            const notificationQuery = query(notificationCollection, where("userId", "==", userData.id));
+    const fetchNotifications = async () => {
+        try {
+            const notificationCollection = collection(db, "user_notifications");
+            const notificationQuery = query(
+                notificationCollection,
+                where("userId", "==", userData.id)
+            );
             const notificationSnapshot = await getDocs(notificationQuery);
-            const notificationListData = notificationSnapshot.docs.map((doc) => ({
-                ...doc.data(),
-            }));
+            const notificationListData = notificationSnapshot.docs.map(
+                (doc) => ({
+                    ...doc.data(),
+                })
+            );
             setNotifications(notificationListData);
-        };
+            setRefreshing(false);
+        } catch (error) {
+            console.error("Error fetching notifications: ", error);
+            setRefreshing(false);
+        }
+    };
+
+    useEffect(() => {
         fetchNotifications();
-    }, [notifications]);
+    }, [userData.id]);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchNotifications();
+    }, [userData.id]);
 
     const getFilteredNotifications = () => {
         let filteredNotifications;
@@ -60,36 +79,56 @@ function UserNotification({ userData }) {
         return filteredNotifications.sort((a, b) => b.createdAt - a.createdAt);
     };
 
-    const renderNotificationKinds = () => (
+    const renderNotificationKinds = () =>
         selectionButtons.map((buttonTitle, index) => (
-            <Pressable key={index} style={[styles.filterDetail, selectedButtonIndex === index && styles.filterDetailSelected,]} onPress={() => setSelectedButtonIndex(index)}>
-                <Text style={[styles.filterDetailText, selectedButtonIndex === index && styles.filterDetailTextSelected]}>
+            <Pressable
+                key={index}
+                style={[
+                    styles.filterDetail,
+                    selectedButtonIndex === index &&
+                        styles.filterDetailSelected,
+                ]}
+                onPress={() => setSelectedButtonIndex(index)}
+            >
+                <Text
+                    style={[
+                        styles.filterDetailText,
+                        selectedButtonIndex === index &&
+                            styles.filterDetailTextSelected,
+                    ]}
+                >
                     {buttonTitle}
                 </Text>
             </Pressable>
-        ))
-    );
+        ));
 
     const handleOnPressNotification = async (item) => {
         try {
-            const notificationRef = doc(db, 'user_notifications', item.notificationId);
+            const notificationRef = doc(
+                db,
+                "user_notifications",
+                item.notificationId
+            );
 
             await updateDoc(notificationRef, { notificationStatus: true });
 
-            const invoicesCollection = collection(db, 'orders');
+            const invoicesCollection = collection(db, "orders");
             const invoiceQuery = query(invoicesCollection);
 
             if (item.notificationType === 2) {
-                const unsubscribe = onSnapshot(invoiceQuery, (querySnapshot) => {
-                    const docs = querySnapshot.docs;
-                    docs.forEach((doc) => {
-                        if (doc.id === item.orderId) {
-                            navigation.navigate("DetailBilling", {
-                                orderData: doc.data(),
-                            });
-                        }
-                    });
-                });
+                const unsubscribe = onSnapshot(
+                    invoiceQuery,
+                    (querySnapshot) => {
+                        const docs = querySnapshot.docs;
+                        docs.forEach((doc) => {
+                            if (doc.id === item.orderId) {
+                                navigation.navigate("DetailBilling", {
+                                    orderData: doc.data(),
+                                });
+                            }
+                        });
+                    }
+                );
 
                 return unsubscribe;
             }
@@ -98,16 +137,14 @@ function UserNotification({ userData }) {
         }
     };
 
-
-    const renderNotificationList = () => (
+    const renderNotificationList = () =>
         getFilteredNotifications().map((notification, index) => (
             <NotificationCard
                 key={index}
                 item={notification}
                 onPress={() => handleOnPressNotification(notification)}
             />
-        ))
-    );
+        ));
 
     return (
         <SafeAreaView style={styles.container}>
@@ -118,7 +155,14 @@ function UserNotification({ userData }) {
             </View>
             <View style={styles.listNotification}>
                 <Text style={styles.allNotificationText}>Tất cả thông báo</Text>
-                <ScrollView>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                        />
+                    }
+                >
                     {renderNotificationList()}
                 </ScrollView>
             </View>
@@ -135,7 +179,7 @@ export default connect(mapStateToProps)(UserNotification);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F7FA'
+        backgroundColor: "#F8F7FA",
     },
     filter: {
         padding: "5%",
@@ -144,37 +188,33 @@ const styles = StyleSheet.create({
     },
     filterWrapper: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        width: "80%",
-        gap: 15,
+        width: "100%",
     },
     filterDetail: {
+        flex: 1,
         paddingVertical: "2%",
-        paddingHorizontal: "5%",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 8,
-        paddingHorizontal: "6%",
-        backgroundColor: '#FFFFFF',
+        backgroundColor: "#FFFFFF",
     },
     filterDetailSelected: {
-        backgroundColor: '#006C5E'
+        backgroundColor: "#006C5E",
     },
     filterDetailText: {
-        color: '#9D9D9D',
+        color: "#9D9D9D",
         fontFamily: "lato-regular",
         fontSize: 16,
     },
     filterDetailTextSelected: {
-        color: 'white',
+        color: "white",
     },
     listNotification: {
         height: "100%",
         padding: "5%",
     },
     allNotificationText: {
-        color: 'black',
+        color: "black",
         fontFamily: "lato-bold",
         fontSize: 16,
     },
