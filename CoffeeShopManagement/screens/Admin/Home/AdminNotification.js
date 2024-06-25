@@ -137,18 +137,16 @@ const styles = StyleSheet.create({
     },
     filterWrapper: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
         width: "100%",
+        gap: 10,
     },
     filterDetail: {
+        flex: 1,
         paddingVertical: "2%",
-        paddingHorizontal: "5%",
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 8,
-        paddingHorizontal: "6%",
-        backgroundColor: '#FFFFFF',
+        backgroundColor: "#FFFFFF",
     },
     filterDetailSelected: {
         backgroundColor: '#006C5E'
