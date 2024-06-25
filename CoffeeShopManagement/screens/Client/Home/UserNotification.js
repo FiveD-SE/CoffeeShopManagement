@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import {
     View,
     Text,
@@ -55,11 +55,6 @@ function UserNotification({ userData }) {
         fetchNotifications();
     }, [userData.id]);
 
-    const onRefresh = useCallback(() => {
-        setRefreshing(true);
-        fetchNotifications();
-    }, [userData.id]);
-
     const getFilteredNotifications = () => {
         let filteredNotifications;
         switch (selectedButtonIndex) {
@@ -86,7 +81,7 @@ function UserNotification({ userData }) {
                 style={[
                     styles.filterDetail,
                     selectedButtonIndex === index &&
-                        styles.filterDetailSelected,
+                    styles.filterDetailSelected,
                 ]}
                 onPress={() => setSelectedButtonIndex(index)}
             >
@@ -94,7 +89,7 @@ function UserNotification({ userData }) {
                     style={[
                         styles.filterDetailText,
                         selectedButtonIndex === index &&
-                            styles.filterDetailTextSelected,
+                        styles.filterDetailTextSelected,
                     ]}
                 >
                     {buttonTitle}
@@ -155,14 +150,7 @@ function UserNotification({ userData }) {
             </View>
             <View style={styles.listNotification}>
                 <Text style={styles.allNotificationText}>Tất cả thông báo</Text>
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={onRefresh}
-                        />
-                    }
-                >
+                <ScrollView>
                     {renderNotificationList()}
                 </ScrollView>
             </View>
@@ -189,6 +177,7 @@ const styles = StyleSheet.create({
     filterWrapper: {
         flexDirection: "row",
         width: "100%",
+        gap: 10,
     },
     filterDetail: {
         flex: 1,
