@@ -31,6 +31,7 @@ function UserNotification({ userData }) {
     const selectionButtons = ["Tất cả", "Chưa đọc", "Đã đọc"];
 
     const fetchNotifications = async () => {
+        setRefreshing(true);
         try {
             const notificationCollection = collection(db, "user_notifications");
             const notificationQuery = query(
@@ -44,11 +45,10 @@ function UserNotification({ userData }) {
                 })
             );
             setNotifications(notificationListData);
-            setRefreshing(false);
         } catch (error) {
             console.error("Error fetching notifications: ", error);
-            setRefreshing(false);
         }
+        setRefreshing(false);
     };
 
     useEffect(() => {
@@ -81,7 +81,7 @@ function UserNotification({ userData }) {
                 style={[
                     styles.filterDetail,
                     selectedButtonIndex === index &&
-                    styles.filterDetailSelected,
+                        styles.filterDetailSelected,
                 ]}
                 onPress={() => setSelectedButtonIndex(index)}
             >
@@ -89,7 +89,7 @@ function UserNotification({ userData }) {
                     style={[
                         styles.filterDetailText,
                         selectedButtonIndex === index &&
-                        styles.filterDetailTextSelected,
+                            styles.filterDetailTextSelected,
                     ]}
                 >
                     {buttonTitle}
@@ -150,7 +150,14 @@ function UserNotification({ userData }) {
             </View>
             <View style={styles.listNotification}>
                 <Text style={styles.allNotificationText}>Tất cả thông báo</Text>
-                <ScrollView>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={fetchNotifications}
+                        />
+                    }
+                >
                     {renderNotificationList()}
                 </ScrollView>
             </View>
