@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {
-    View,
-    Text,
     SafeAreaView,
     StyleSheet,
-    Pressable,
     ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { connect } from "react-redux";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
-import { FontAwesome5 } from "@expo/vector-icons";
+import UserOrderCard from "../../../components/Client/Card/UserOrderCard";
 
 const OrderHistory = ({ userData }) => {
     const navigation = useNavigation();
@@ -38,105 +35,23 @@ const OrderHistory = ({ userData }) => {
         navigation.navigate("DetailBilling", { orderData });
     };
 
-    const setOrderStatus = (status) => {
-        switch (status) {
-            case 1:
-                return "Chờ xác nhận";
-            case 2:
-                return "Đang thực hiện";
-            case 3:
-                return "Đang giao";
-            case 4:
-                return "Đã hoàn thành";
-            case 5:
-                return "Đã huỷ";
-            default:
-                return;
-        }
-    };
-
-
-    const setOrderStatusIcon = (status) => {
-        switch (status) {
-            case 1:
-                return "hourglass-start";
-            case 2:
-                return "pause-circle";
-            case 3:
-                return "shipping-fast";
-            case 4:
-                return "check-circle";
-            case 5:
-                return "times-circle";
-            default:
-                return "";
-        }
-    };
-
-    const getStatusColors = (status) => {
-        let backgroundColor, textColor;
-
-        switch (status) {
-            case 1:
-                backgroundColor = '#C6EBC5';
-                textColor = '#799351';
-                break;
-            case 2:
-                backgroundColor = '#FFE8C5';
-                textColor = '#A3A3A3';
-                break;
-            case 3:
-                backgroundColor = '#B2EBF2';
-                textColor = '#006989';
-                break;
-            case 4:
-                backgroundColor = '#F9E8D9';
-                textColor = '#EE7214';
-                break;
-            case 5:
-                backgroundColor = '#FFCAC2';
-                textColor = '#C81912';
-                break;
-            default:
-                break;
-        }
-
-        return { backgroundColor, textColor };
-    };
-
-    const formatCurrency = (price) => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    };
-
-    const renderItem = () => (
-        orderHistoryData.map(item => {
-            const date = new Date(item.orderDate.seconds * 1000).toLocaleDateString("en-US");
-            const { backgroundColor, textColor } = getStatusColors(item.orderState);
-            return (
-                <Pressable style={styles.labelItem} key={item.orderId} onPress={() => handleGoToDetail(item)}>
-                    <View style={styles.row}>
-                        <Text style={styles.itemId}>#{item.orderId.substring(0, 6).toUpperCase()}</Text>
-                        <View style={[styles.labelStatus, { backgroundColor }]}>
-                            <FontAwesome5 name={setOrderStatusIcon(item.orderState)} size={20} color={textColor} />
-                            <Text style={[styles.itemStatus, { color: textColor }]}>  {setOrderStatus(item.orderState)}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.row}>
-                        <Text style={styles.itemDate}>{date}</Text>
-                        <View style={styles.priceContainer}>
-                            <Text style={styles.itemPrice}>{formatCurrency(Number(item.orderTotalPrice))}</Text>
-                            <Text style={styles.currency}> VNĐ</Text>
-                        </View>
-                    </View>
-                </Pressable>
-            );
-        })
-    );
+    const renderOrderData = () =>
+		orderHistoryData.map((order, index) => (
+			<UserOrderCard
+				key={index}
+				orderId={order.orderId}
+				status={order.orderState}
+				total={order.orderTotalPrice}
+                date={order.orderDate}
+				onPress={() => handleGoToDetail(order)}
+			/>
+		)
+	);
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView>
-                {renderItem()}
+                {renderOrderData()}
             </ScrollView>
         </SafeAreaView>
     );

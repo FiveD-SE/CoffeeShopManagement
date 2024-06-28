@@ -50,6 +50,7 @@ const UserOrderScreen = ({ userData }) => {
             orderData: item,
         });
     };
+
 	const renderOrderData = () =>
 		orderData.map((order, index) => (
 			<UserOrderCard
@@ -57,9 +58,11 @@ const UserOrderScreen = ({ userData }) => {
 				orderId={order.orderId}
 				status={order.orderState}
 				total={order.orderTotalPrice}
+				date={order.orderDate}
 				onPress={() => handleOpenOrderDetail(order)}
 			/>
-		));
+		)
+	);
 
 	return (
 		<View style={styles.container}>

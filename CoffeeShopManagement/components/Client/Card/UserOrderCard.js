@@ -11,7 +11,7 @@ import Icon from "react-native-vector-icons/FontAwesome6";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { colors } from "../../../assets/colors/colors";
 
-const UserOrderCard = ({ orderId, status, total, onPress }) => {
+const UserOrderCard = ({ orderId, status, total, date , onPress }) => {
 	const setOrderStatus = (status) => {
 		switch (status) {
 			case 1:
@@ -79,10 +79,12 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 	};
 
 	const formatCurrency = (amount) => {
-		return new Intl.NumberFormat("vi-VN", {
-			style: "currency",
-			currency: "VND",
-		}).format(amount);
+		return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+	};
+
+	const formatDate = (date) => {
+		const formatedDate = new Date(date.seconds * 1000).toLocaleDateString("en-US");
+		return formatedDate;
 	};
 
 	const { backgroundColor, textColor } = getStatusColors(status);
@@ -120,8 +122,8 @@ const UserOrderCard = ({ orderId, status, total, onPress }) => {
 				</View>
 
 				<View style={styles.orderTotal}>
-					<Text style={styles.orderTotalText}>Tổng tiền:</Text>
-					<Text style={styles.orderTotalValue}>{formatCurrency(total)}</Text>
+					<Text style={styles.orderDate}>{formatDate(date)}</Text>
+					<Text style={styles.orderTotalValue}>{formatCurrency(total)} <Text style={styles.currency}>VND</Text></Text>
 				</View>
 			</View>
 			<Icon name="chevron-right" size={14} color={colors.grey_100} />
@@ -192,25 +194,31 @@ const styles = StyleSheet.create({
 	statusText: {
 		color: "#FFA730",
 		fontFamily: "lato-regular",
-		fontSize: 12,
+		fontSize: 13,
 		marginLeft: "2%",
 	},
 	orderTotal: {
 		flexDirection: "row",
 		alignItems: "center",
+		justifyContent: "space-between",
 		marginTop: "5%",
 	},
-	orderTotalText: {
+	orderDate: {
 		color: colors.grey_100,
 		fontFamily: "lato-bold",
-		fontSize: 14,
+		fontSize: 18,
 	},
 	orderTotalValue: {
 		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 14,
+		fontSize: 18,
 		marginLeft: "4%",
 	},
+	currency: {
+		color: colors.grey_100,
+		fontFamily: "lato-bold",
+		fontSize: 20,
+	}
 });
 
 export default UserOrderCard;
