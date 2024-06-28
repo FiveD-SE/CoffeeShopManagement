@@ -51,7 +51,7 @@ const RecentlyViewedItem = ({ id, name, price, imageSource, onPress }) => {
                 <View style={styles.main}>
                     <Text
                         style={styles.title}
-                        numberOfLines={2}
+                        numberOfLines={1}
                         ellipsizeMode="tail"
                     >
                         {name}
