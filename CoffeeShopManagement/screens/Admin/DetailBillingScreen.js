@@ -1,256 +1,240 @@
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
-import React from 'react';
+import React from "react";
+import {
+    View,
+    Text,
+    StyleSheet,
+    ScrollView,
+    Image,
+    Pressable,
+} from "react-native";
+import { colors } from "../../assets/colors/colors";
 
 export default function DetailBillingScreen({ route }) {
-  const { orderData } = route.params;
+    const { orderData } = route.params;
+    const totalPrice =
+        orderData.orderTotalPrice +
+        orderData.deliveryFee -
+        orderData.orderTotalDiscount;
 
-  const totalPrice = orderData.orderTotalPrice + orderData.deliveryFee - orderData.orderTotalDiscount;
+    const formatCurrency = (price) => {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
 
-  const formatCurrency = (price) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-  };
+    const orderDate = new Date(orderData.orderDate.seconds * 1000);
+    const formattedOrderDate = orderDate.toLocaleDateString("vi-VN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
 
-  return (
-    <View style={styles.container}>
-      <ScrollView style={styles.section} showsVerticalScrollIndicator={false}>
-        <View style={styles.sectionContainer}>
-          {orderData.products.map((item, index) => {
-            let itemStyle = styles.itemIndex;
-            if (orderData.products.length === 1) {
-              itemStyle = styles.item;
-            } else if (index === orderData.products.length - 1) {
-              itemStyle = styles.itemIndexEnd;
-            } else {
-              itemStyle = styles.itemIndexStart;
-            }
+    return (
+        <ScrollView contentContainerStyle={styles.container}>
+            <View style={styles.header}>
+                <Image
+                    source={{ uri: orderData.deliveryBranch.branchImage }}
+                    style={styles.branchImage}
+                />
+                <Text style={styles.title}>Chi tiết đơn hàng</Text>
+            </View>
 
-            return (
-              <View key={index} style={itemStyle}>
-                <View style={styles.itemDetails}>
-                  <Image source={{ uri: item.productImage }} style={styles.productImage} />
-                  <View style={styles.productInfo}>
-                    <Text style={styles.productName}>x{item.quantity} {item.productName}</Text>
-                    <Text style={styles.productSize}>{item.size}</Text>
-                  </View>
+            <View style={styles.sectionContainer}>
+                <Text style={styles.sectionText}>Sản phẩm</Text>
+                {orderData.products.map((item, index) => (
+                    <View key={index} style={styles.item}>
+                        <View style={styles.itemDetails}>
+                            <Image
+                                source={{ uri: item.productImage }}
+                                style={styles.productImage}
+                            />
+                            <View style={styles.productInfo}>
+                                <Text style={styles.productName}>
+                                    x{item.quantity} {item.productName}
+                                </Text>
+                                <Text style={styles.productSize}>
+                                    Size: {item.size}
+                                </Text>
+                            </View>
+                        </View>
+                        <Text style={styles.itemPrice}>
+                            {formatCurrency(item.totalPrice)} VND
+                        </Text>
+                    </View>
+                ))}
+            </View>
+
+            <View style={styles.sectionContainer}>
+                <Text style={styles.sectionText}>Thông tin khách hàng</Text>
+                <View style={styles.infoWrapper}>
+                    <View style={styles.infoItem}>
+                        <Text style={styles.titleText}>Người nhận: </Text>
+                        <Text style={styles.contentText}>
+                            {orderData.deliveryAddress.name}
+                        </Text>
+                    </View>
+                    <View style={styles.infoItem}>
+                        <Text style={styles.titleText}>Số điện thoại:</Text>
+                        <Text style={styles.contentText}>
+                            {orderData.deliveryAddress.phoneNumber}
+                        </Text>
+                    </View>
+                    <View style={styles.infoItem}>
+                        <Text style={styles.titleText}>Địa chỉ: </Text>
+                        <Text style={styles.contentText}>
+                            {orderData.deliveryAddress.street},{" "}
+                            {orderData.deliveryAddress.wardName},{" "}
+                            {orderData.deliveryAddress.districtName},{" "}
+                            {orderData.deliveryAddress.provinceName}
+                        </Text>
+                    </View>
                 </View>
-                <Text style={styles.itemPrice}>{formatCurrency(item.totalPrice)} VND</Text>
-              </View>
-            );
-          })}
-        </View>
-        <View style={styles.sectionContainer}>
-          <View style={styles.sectionHeader}>
-            <Image source={require('../../assets/person_icon.png')} />
-            <Text style={styles.sectionText}>Thông tin khách hàng</Text>
-          </View>
-          <View style={styles.infoWrapper}>
-            <Text style={styles.infoItem}>
-              <Text style={styles.titleText}>Người nhận:  </Text>
-              <Text style={styles.contentText}>{orderData.deliveryAddress.name}</Text>
-            </Text>
-            <View style={styles.infoItem}>
-              <Text style={styles.titleText}>Số điện thoại:  </Text>
-              <Text style={styles.contentText}>{orderData.deliveryAddress.phoneNumber}</Text>
             </View>
-            <View style={styles.infoItem}>
-              <Text style={styles.titleText}>Địa chỉ:  </Text>
-              <Text style={styles.contentText} numberOfLines={3}>
-                {orderData.deliveryAddress.street}, {orderData.deliveryAddress.wardName}, {orderData.deliveryAddress.districtName}, {orderData.deliveryAddress.provinceName}
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.sectionContainer}>
-          <View style={styles.sectionHeader}>
-            <Image source={require('../../assets/delivery_icon.png')} />
-            <Text style={styles.sectionText}>Thông tin đơn hàng</Text>
-          </View>
-          <View style={styles.infoWrapper}>
-            {orderData.deliveryFee !== 0 ? (
-              <>
-                <View style={styles.infoItem}>
-                  <Text style={styles.titleText}>Người giao:  </Text>
-                  <Text style={styles.contentText}>Nguyễn Quốc Thắng</Text>
-                </View>
-                <View style={styles.infoItem}>
-                  <Text style={styles.titleText}>Số điện thoại:  </Text>
-                  <Text style={styles.contentText}>0123456789</Text>
-                </View>
-              </>
-            ) : null}
-            <View style={styles.infoItem}>
-              <Text style={styles.titleText}>Mã gửi hàng:  </Text>
-              <Text style={styles.contentText}>#####</Text>
-            </View>
-            <View style={styles.infoItem}>
-              <Text style={styles.titleText}>Mã phiếu gửi:  </Text>
-              <Text style={styles.contentText}>#####</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.sectionContainer}>
-          <View style={styles.sectionHeader}>
-            <Image source={require('../../assets/person_icon.png')} />
-            <Text style={styles.sectionText}>Chi tiết thanh toán</Text>
-          </View>
-          <View style={styles.infoWrapper}>
-            <View style={styles.totalItem}>
-              <Text style={styles.titleText}>Tổng tiền hàng:  </Text>
-              <Text style={styles.contentText}>{formatCurrency(orderData.orderTotalPrice)} VND</Text>
-            </View>
-            <View style={styles.totalItem}>
-              <Text style={styles.titleText}>Tổng tiền phí vận chuyển:  </Text>
-              <Text style={styles.contentText}>{formatCurrency(orderData.deliveryFee)} VND</Text>
-            </View>
-            <View style={styles.totalItem}>
-              <Text style={styles.titleText}>Giảm giá phí vận chuyển:  </Text>
-              <Text style={styles.contentText}>{formatCurrency(orderData.orderTotalDiscount)} VND</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.totalContainer}>
-          <Text style={styles.totalAmount}>Tổng tiền:</Text>
-          <Text style={styles.totalAmount}>{formatCurrency(totalPrice)} VND</Text>
-        </View>
 
-      </ScrollView>
-    </View>
-  );
+            <View style={styles.sectionContainer}>
+                <Text style={styles.sectionText}>Thông tin đơn hàng</Text>
+                <View style={styles.infoWrapper}>
+                    <View style={styles.totalItem}>
+                        <Text style={styles.titleText}>Ngày đặt hàng:</Text>
+                        <Text style={styles.contentText}>
+                            {formattedOrderDate}
+                        </Text>
+                    </View>
+                    <View style={styles.totalItem}>
+                        <Text style={styles.titleText}>Tổng tiền hàng:</Text>
+                        <Text style={styles.contentText}>
+                            {formatCurrency(orderData.orderTotalPrice)} VND
+                        </Text>
+                    </View>
+                    <View style={styles.totalItem}>
+                        <Text style={styles.titleText}>Phí vận chuyển:</Text>
+                        <Text style={styles.contentText}>
+                            {formatCurrency(orderData.deliveryFee)} VND
+                        </Text>
+                    </View>
+                    <View style={styles.totalItem}>
+                        <Text style={styles.titleText}>Giảm giá: </Text>
+                        <Text style={styles.contentText}>
+                            {formatCurrency(orderData.orderTotalDiscount)} VND
+                        </Text>
+                    </View>
+                </View>
+            </View>
+
+            <View style={styles.totalContainer}>
+                <Text style={styles.totalAmountTitle}>Tổng cộng:</Text>
+                <Text style={styles.totalAmount}>
+                    {formatCurrency(totalPrice)} VND
+                </Text>
+            </View>
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F7FA',
-  },
-  section: {
-    flex: 1,
-    paddingVertical: '5%',
-    paddingHorizontal: '2%',
-  },
-  sectionContainer: {
-    marginBottom: '5%',
-  },
-  itemDetails: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  productImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-  },
-  productInfo: {
-    justifyContent: 'space-between',
-    marginStart: '5%',
-  },
-  productName: {
-    fontSize: 16,
-    fontFamily: 'lato-bold',
-    color: '#151515',
-  },
-  productSize: {
-    color: '#808080',
-    fontSize: 16,
-    fontFamily: 'lato-bold',
-  },
-  itemPrice: {
-    fontSize: 20,
-    fontFamily: 'lato-bold',
-    color: '#151515',
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  infoWrapper: {
-    padding: '3%',
-  },
-  infoItem: {
-    paddingBottom: '1%',
-    flexDirection: 'row',
-  },
-  titleText: {
-    fontSize: 18,
-    fontFamily: 'lato-bold',
-    color: '#151515',
-  },
-  contentText: {
-    fontSize: 18,
-    fontFamily: 'lato-regular',
-    color: '#A3A3A3',
-    width: '80%',
-    height: '100%',
-  },
-  sectionText: {
-    fontSize: 18,
-    fontFamily: 'lato-bold',
-    color: '#151515',
-    marginStart: '3%',
-  },
-  totalItem: {
-    paddingBottom: '1%',
-    justifyContent: 'space-between',
-    width: '100%',
-    flexDirection: 'row',
-  },
-  totalContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: '10%',
-  },
-  totalAmount: {
-    fontSize: 25,
-    fontFamily: 'lato-bold',
-    color: '#151515',
-  },
-  itemIndexStart: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: '5%',
-    paddingVertical: '3%',
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-    borderWidth: 1,
-    borderColor: '#A3A3A3A3',
-  },
-  itemIndex: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: '5%',
-    paddingVertical: '3%',
-    borderColor: '#A3A3A3A3',
-    borderBottomWidth: 1,
-    borderRightWidth: 1,
-    borderLeftWidth: 1,
-  },
-  itemIndexEnd: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: '5%',
-    paddingVertical: '3%',
-    borderBottomRightRadius: 20,
-    borderBottomLeftRadius: 20,
-    borderColor: '#A3A3A3A3',
-    borderBottomWidth: 1,
-    borderRightWidth: 1,
-    borderLeftWidth: 1,
-  },
-  item: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: '5%',
-    paddingVertical: '3%',
-    backgroundColor: '#FFFFFF',
-    borderColor: '#A3A3A3A3',
-    borderWidth: 1,
-    borderRadius: 20,
-  }
+    container: {
+        flexGrow: 1,
+        backgroundColor: "#F8F7FA",
+        paddingHorizontal: 20,
+        paddingBottom: 20,
+    },
+    header: {
+        alignItems: "center",
+        marginTop: 20,
+        marginBottom: 20,
+    },
+    branchImage: {
+        width: 100,
+        height: 100,
+        marginBottom: 10,
+        borderRadius: 20,
+    },
+    title: {
+        fontSize: 24,
+        fontFamily: "lato-bold",
+        color: "#333",
+        marginBottom: 20,
+    },
+    sectionContainer: {
+        marginVertical: 10,
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        padding: 15,
+    },
+    sectionText: {
+        fontSize: 18,
+        fontFamily: "lato-bold",
+        color: "#333",
+        marginBottom: 10,
+    },
+    itemDetails: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    productImage: {
+        width: 80,
+        height: 80,
+        borderRadius: 10,
+        marginRight: 10,
+    },
+    productInfo: {
+        flex: 1,
+        justifyContent: "center",
+    },
+    productName: {
+        fontSize: 16,
+        fontFamily: "lato-bold",
+        color: "#333",
+    },
+    productSize: {
+        fontSize: 14,
+        fontFamily: "lato-regular",
+        color: "#666",
+    },
+    itemPrice: {
+        fontSize: 16,
+        fontFamily: "lato-bold",
+        color: "#333",
+    },
+    infoWrapper: {
+        padding: 10,
+    },
+    infoItem: {
+        marginBottom: 5,
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    titleText: {
+        fontSize: 16,
+        fontFamily: "lato-bold",
+        color: "#333",
+    },
+    contentText: {
+        fontSize: 16,
+        fontFamily: "lato-regular",
+        color: "#666",
+        flexShrink: 1,
+    },
+    totalItem: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    totalContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        padding: 10,
+        marginTop: 5,
+        backgroundColor: "#FFFFFF",
+        borderRadius: 10,
+    },
+    totalAmountTitle: {
+        fontSize: 20,
+        fontFamily: "lato-bold",
+        color: "#333",
+    },
+    totalAmount: {
+        fontSize: 20,
+        fontFamily: "lato-bold",
+        color: "#333",
+    },
 });
