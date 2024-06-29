@@ -328,7 +328,6 @@ const OtherStack = ({ navigation, route }) => {
                         paddingLeft: "5%",
                     },
                     headerLeft: () => <HeaderBackButton />,
-                    headerRight: () => <AddStaffButton />,
                 }}
             />
             <Stack.Screen

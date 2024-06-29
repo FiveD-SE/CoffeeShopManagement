@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#fff',
-        borderRadius: 20,
+        borderRadius: 15,
         padding: '3%',
         width: '50%'
     },
@@ -210,6 +210,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         marginBottom: '3%',
+        fontFamily: "lato-bold",
     },
     noBranchSelectContainer: {
         justifyContent: "center",
