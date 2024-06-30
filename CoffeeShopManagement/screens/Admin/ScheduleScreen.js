@@ -35,9 +35,6 @@ export default function ScheduleScreen() {
         setSelectBranchModalVisible(false);
     };
 
-    const hii = () => {
-        setSelectedBranch('H21mgNlSv8Q30Om4s043');
-    };
     useEffect(() => {
         const loadBranches = async () => {
             try {
@@ -126,7 +123,7 @@ export default function ScheduleScreen() {
     }, [selectedBranch]);
 
     const goToDetailShift = (item) => {
-        navigation.navigate('DetailShiftScreen', { selectedShift: item });
+        navigation.navigate('DetailShiftScreen', { selectedShift: item, selectedBranch: selectedBranch });
     };
 
 
@@ -175,7 +172,7 @@ export default function ScheduleScreen() {
                     <Text style={{ fontSize: 13, marginStart: '2%', fontWeight: '600' }}>Chọn chi nhánh</Text>
                 </TouchableOpacity>
             </View>
-            <View style={{flex:1}}>
+            <View style={{ flex: 1 }}>
                 {renderView()}
                 <SelectBranchModal visible={selectBranchModalVisible} onClose={hideSelectBranchModal} branches={branchList} setBranch={setSelectedBranch} />
             </View>

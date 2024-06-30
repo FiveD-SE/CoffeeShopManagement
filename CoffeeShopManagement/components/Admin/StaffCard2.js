@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native"; // Import các thành phần cần thiết từ react-native
 import Checkbox from "expo-checkbox";
 
-const StaffCard2 = ({ item, onPress }) => {
+const StaffCard2 = ({item, onPress }) => {
     const [toggleCheckBox, setToggleCheckBox] = useState(true)
     return (
         <TouchableOpacity
             onPress={onPress}
-            key={item.id} style={styles.staffItem}>
+            style={styles.staffItem}>
             <View style={{ flexDirection: "row" }}>
                 <View
                     style={{
@@ -24,10 +24,10 @@ const StaffCard2 = ({ item, onPress }) => {
                     }}
                 >
                     <Text style={{ fontSize: 16, fontWeight: "600" }}>
-                        {item.name}
+                        {item.fullName}
                     </Text>
                     <Text style={{ fontSize: 14, color: "#808080" }}>
-                        {item.SDT}
+                        {item.phoneNumber}
                     </Text>
                     <View
                         style={{
@@ -41,7 +41,7 @@ const StaffCard2 = ({ item, onPress }) => {
                         <Text
                             style={{ color: "#5bcf7c", fontSize: 14 }}
                         >
-                            {item.role}
+                            {item.role.roleName}
                         </Text>
                     </View>
                 </View>
