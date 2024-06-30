@@ -24,6 +24,7 @@
     "@react-navigation/stack": "^6.3.29",
     "@reduxjs/toolkit": "^2.2.3",
     "axios": "^1.6.8",
+    "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "expo": "^51.0.12",
     "expo-checkbox": "~3.0.0",
