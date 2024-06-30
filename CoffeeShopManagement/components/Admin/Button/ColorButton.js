@@ -9,7 +9,7 @@ const ColorButton = (
         OnPress
     }) => {
     return (
-        <TouchableOpacity style={[styles.colorButton, { backgroundColor: color }]}  onPress={OnPress}>
+        <TouchableOpacity style={[styles.colorButton, { backgroundColor: color }]} onPress={OnPress}>
             <Text style={[styles.title, { color: textColor }]}>{text}</Text>
         </TouchableOpacity>
     )
@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: "10%",
         justifyContent: "center",
         alignItems: "center",
+        marginBottom: "3%"
     },
     title: {
         fontSize: 16,
