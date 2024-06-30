@@ -3,7 +3,7 @@ import React from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import Icon from 'react-native-vector-icons/Entypo'
 
-export default function ShiftCard({ item, onPress }) {
+export default function ShiftCard({ item, onPress, quantity }) {
     return (
         <TouchableOpacity
             onPress={onPress}
@@ -16,7 +16,7 @@ export default function ShiftCard({ item, onPress }) {
                         <Text style={styles.timeText}>{item.startTime} - {item.endTime}</Text>
                     </View>
                 </View>
-                <Text style={styles.quantityText}>Số nhân viên trong ca: {item.quantity}</Text>
+                <Text style={styles.quantityText}>Số nhân viên trong ca: {quantity}</Text>
             </View>
             <Icon name='chevron-small-right' size={32} color={'#9c9c9c'} />
         </TouchableOpacity>
