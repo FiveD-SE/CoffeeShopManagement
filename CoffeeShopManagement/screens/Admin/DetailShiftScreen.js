@@ -1,34 +1,59 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import Icon1 from "react-native-vector-icons/Feather";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from '@react-navigation/native';
 import StaffCard2 from '../../components/Admin/StaffCard2';
+import { doc, updateDoc, setDoc, getDoc, getDocs, query, where, collection } from "firebase/firestore";
+import { db } from "../../services/firebaseService";
+import { FlatList } from 'react-native-gesture-handler';
 
 const DetailShiftScreen = ({ route }) => {
-
-    const staffList = route.params.selectedStaff;
-    console.log(staffList);
+    const [staffList, setStaffList] = useState([]);
+    const selectedShift = route.params.selectedShift;
+    const selectedBranch = route.params.selectedBranch;
+    console.log(selectedShift, selectedBranch);
     const navigation = useNavigation();
+    useEffect(() => {
+        const fetchStaffs = async () => {
+            try {
+                const q = query(collection(db, "staffs"), where("branch.branchId", "==", selectedBranch.branchId));
+                const querySnapshot = await getDocs(q);
+
+                const staffData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                console.log('Fetched Staff Data:', staffData);
+                setStaffList(staffData);
+            } catch (error) {
+                console.log("Error fetching staff data: ", error);
+            }
+        };
+
+        fetchStaffs();
+    }, [selectedBranch.branchId]);
+
+    const renderStaffList = () => {
+        return (
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                data={staffList}
+                keyExtractor={item => item.staffId}
+                renderItem={({ item }) => (
+                    <StaffCard2 item={item} />
+                )}
+            />
+        )
+    }
 
     return (
         <View style={styles.container}>
             <Text style={styles.titleText}>Danh sách nhân viên trong ca</Text>
-            <View style={styles.searchBox}>
-                <TextInput
-                    placeholder="Tìm kiếm theo tên nhân viên, số điện thoại"
-                    placeholderTextColor={"#9c9c9c"}
-                    style={{ width: '90%' }}
-                />
-                <TouchableOpacity>
-                    <Icon1 name="search" size={24} />
-                </TouchableOpacity>
+
+            <View style={styles.listStaff}>
+                {renderStaffList()}
             </View>
-            <ScrollView style={styles.listStaff}>
-                {/* {staffList.map((item) => (
-                    <StaffCard2 key={item.id} item={item} />
-                ))} */}
-            </ScrollView>
         </View>
     )
 }
@@ -46,35 +71,14 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginBottom: '3%'
     },
-    searchBox: {
-        width: "100%",
-        borderRadius: 10,
-        borderWidth: 1,
-        paddingVertical: "1%",
-        paddingStart: "3%",
-        backgroundColor: "#fff",
-        borderColor: "#e5e4e7",
-        marginBottom: "5%",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        paddingEnd: "3%",
-        alignItems: "center",
-    },
-    deleteShiftButton: {
-        backgroundColor: "#fff",
-        padding: "3%",
-        borderRadius: 10,
-        alignItems: "center",
-        flexDirection: "row",
-        justifyContent: 'center',
-    },
     listStaff: {
+        flex: 1,
         marginBottom: '5%'
     },
     titleText: {
         color: "#3a3a3a",
         fontSize: 18,
         fontWeight: "600",
-        fontFamily:"lato-bold"
+        fontFamily: "lato-bold"
     },
 })
