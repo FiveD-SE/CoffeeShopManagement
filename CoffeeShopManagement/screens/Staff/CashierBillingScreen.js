@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		paddingHorizontal: "4%",
+		backgroundColor: "#FFFFFF",
 	},
 	searchBoxWrapper: {
 		marginTop: "20%",

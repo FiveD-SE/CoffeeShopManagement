@@ -5,6 +5,7 @@ import {
 	Image,
 	TouchableOpacity,
 	FlatList,
+	PixelRatio,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import OrderCard1 from "../../components/Staff/OrderCard1";
@@ -21,6 +22,9 @@ import { db } from "../../services/firebaseService";
 import { connect } from "react-redux";
 import { colors } from "../../assets/colors/colors";
 import { Ionicons } from "@expo/vector-icons";
+
+const fontScale = PixelRatio.getFontScale();
+const getFontSize = (size) => size / fontScale;
 
 const CashierHome = ({ userData }) => {
 	const navigation = useNavigation();
@@ -133,27 +137,31 @@ const CashierHome = ({ userData }) => {
 	return (
 		<View style={styles.container}>
 			<View style={styles.cashierInformationWrapper}>
-				<View style={{ flexDirection: "row" }}>
+				<View style={styles.imageWrapper}>
+					<Image
+						source={{ uri: userData.userImage }}
+						style={styles.userImage}
+					/>
+				</View>
+				<View style={styles.informationTextWrapper}>
+					<Text style={styles.nameText}>{userData.name}</Text>
+					<Text style={styles.roleText}>Nhân viên</Text>
+				</View>
+				<View style={styles.buttonContainer}>
+					<TouchableOpacity onPress={handleNotification} style={styles.button}>
+						<Ionicons name="notifications" size={24} color={colors.black_100} />
+					</TouchableOpacity>
 					<TouchableOpacity
 						onPress={goToCashierInformation}
-						style={styles.imageWrapper}
+						style={styles.button}
 					>
-						<Image
-							source={{ uri: userData.userImage }}
-							style={styles.userImage}
+						<Ionicons
+							name="settings-sharp"
+							size={24}
+							color={colors.black_100}
 						/>
 					</TouchableOpacity>
-					<View style={styles.informationTextWrapper}>
-						<Text style={styles.nameText}>{userData.name}</Text>
-						<Text style={styles.roleText}>Vai trò: Nhân viên</Text>
-					</View>
 				</View>
-				<TouchableOpacity
-					onPress={handleNotification}
-					style={styles.notificationButton}
-				>
-					<Ionicons name="notifications" size={24} color={colors.black_100} />
-				</TouchableOpacity>
 			</View>
 			<Text style={styles.listOrderText}>Đơn hàng chờ xác nhận</Text>
 			{renderListOrder()}
@@ -170,46 +178,41 @@ export default connect(mapStateToProps)(CashierHome);
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		padding: "5%",
-		marginTop: "10%",
+		paddingHorizontal: "4%",
+		marginTop: "12%",
 	},
 	cashierInformationWrapper: {
-		backgroundColor: colors.white_100,
-		padding: "4%",
 		flexDirection: "row",
-		borderRadius: 10,
-		justifyContent: "space-between",
-		alignItems: "center",
-		marginBottom: "5%",
-		elevation: 4,
+		marginBottom: "4%",
+		borderRadius: 20,
+		backgroundColor: colors.white_100,
+		borderWidth: 1,
+		borderColor: colors.grey_50,
 	},
 	informationTextWrapper: {
+		flex: 1,
 		justifyContent: "space-between",
-		marginLeft: "4%",
+		paddingVertical: "2%",
 	},
 	nameText: {
-		fontSize: 16,
+		fontSize: getFontSize(16),
 		fontFamily: "lato-bold",
 	},
-	emailText: {
-		fontFamily: "lato-regular",
-		fontSize: 14,
-	},
 	roleText: {
-		fontSize: 14,
-		fontFamily: "lato-light",
+		color: colors.grey_100,
+		fontSize: getFontSize(14),
+		fontFamily: "lato-regular",
 	},
-	notificationButton: {
+	buttonContainer: {
+		flexDirection: "row",
+		backgroundColor: colors.grey_10,
+		borderRadius: 20,
+	},
+	button: {
 		minWidth: 48,
 		minHeight: 48,
 		justifyContent: "center",
 		alignItems: "center",
-		padding: "6%",
-		borderWidth: 1,
-		borderRadius: 100,
-		borderColor: colors.grey_50,
-		backgroundColor: colors.white_100,
-		elevation: 4,
 	},
 	listOrderText: {
 		fontSize: 16,
@@ -219,14 +222,17 @@ const styles = StyleSheet.create({
 	imageWrapper: {
 		width: 64,
 		height: 64,
+		flex: 0.4,
 		justifyContent: "center",
 		alignItems: "center",
 		marginRight: "5%",
+		backgroundColor: colors.grey_10,
+		borderRadius: 20,
+		elevation: 2,
 	},
 	userImage: {
-		width: "80%",
-		height: "80%",
-		borderRadius: 100,
-		aspectRatio: 1,
+		width: "100%",
+		height: "100%",
+		borderRadius: 20,
 	},
 });
