@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Entypo';
 import ShiftCard from '../../components/Admin/ShiftCard';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { doc, updateDoc, setDoc, getDoc, getDocs, query, where, collection } from "firebase/firestore";
 import { db } from "../../services/firebaseService";
 import { colors } from '../../assets/colors/colors';
@@ -14,6 +14,7 @@ export default function ScheduleScreen() {
     const [todaySchedule, setTodaySchedule] = useState([]);
     const [branchList, setBranchList] = useState([]);
     const [selectBranchModalVisible, setSelectBranchModalVisible] = useState(false);
+    const [staffList, setStaffList] = useState([]);
 
     const formatDate = (date) => {
         const d = new Date(date);
@@ -60,71 +61,95 @@ export default function ScheduleScreen() {
         return unsubscribe;
     }, [navigation]);
 
-    useEffect(() => {
-        const fetchBranchSchedule = async () => {
-            try {
-                if (!selectedBranch) return;
+    const fetchBranchSchedule = async () => {
+        try {
+            if (!selectedBranch) return;
 
-                const q = query(collection(db, 'shifts'), where('branch.branchId', '==', selectedBranch.branchId));
-                const querySnapshot = await getDocs(q);
+            const q = query(collection(db, 'shifts'), where('branch.branchId', '==', selectedBranch.branchId));
+            const querySnapshot = await getDocs(q);
 
-                const shifts = [];
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    shifts.push({
-                        shiftId: data.shiftId,
-                        shiftName: data.shiftName,
-                        startTime: formatTime(data.startTime),
-                        endTime: formatTime(data.endTime),
-                        quantity: data.quantity || 0,
-                    });
+            const shifts = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                shifts.push({
+                    shiftId: data.shiftId,
+                    shiftName: data.shiftName,
+                    startTime: formatTime(data.startTime),
+                    endTime: formatTime(data.endTime),
+                    staffList: staffList,
                 });
+            });
 
-                const branchId = selectedBranch.branchId;
-                const branchScheduleRef = doc(db, 'branchSchedules', branchId);
-                const branchScheduleDoc = await getDoc(branchScheduleRef);
+            const branchId = selectedBranch.branchId;
+            const branchScheduleRef = doc(db, 'branchSchedules', branchId);
+            const branchScheduleDoc = await getDoc(branchScheduleRef);
 
-                const todayDate = formatDate(new Date());
-                const newScheduleEntry = {
-                    date: todayDate,
-                    shifts: shifts,
-                };
+            const todayDate = formatDate(new Date());
+            const newScheduleEntry = {
+                date: todayDate,
+                shifts: shifts,
+            };
 
-                if (branchScheduleDoc.exists()) {
-                    const branchScheduleData = branchScheduleDoc.data();
-                    const dayList = branchScheduleData.dayList || [];
+            if (branchScheduleDoc.exists()) {
+                const branchScheduleData = branchScheduleDoc.data();
+                const dayList = branchScheduleData.dayList || [];
 
-                    const existingEntryIndex = dayList.findIndex((day) => day.date === todayDate);
+                const existingEntryIndex = dayList.findIndex((day) => day.date === todayDate);
 
-                    if (existingEntryIndex !== -1) {
-                        // Entry for today already exists
-                        setTodaySchedule(dayList[existingEntryIndex].shifts);
-                    } else {
-                        // Entry for today does not exist, add new entry to dayList
-                        dayList.push(newScheduleEntry);
-                        await updateDoc(branchScheduleRef, { dayList });
-                        setTodaySchedule(newScheduleEntry.shifts);
-                    }
+                if (existingEntryIndex !== -1) {
+                    // Entry for today already exists
+                    setTodaySchedule(dayList[existingEntryIndex].shifts);
                 } else {
-                    // No existing schedule document, create new with today's entry
-                    await setDoc(branchScheduleRef, {
-                        branchId: branchId,
-                        dayList: [newScheduleEntry],
-                    });
+                    // Entry for today does not exist, add new entry to dayList
+                    dayList.push(newScheduleEntry);
+                    await updateDoc(branchScheduleRef, { dayList });
                     setTodaySchedule(newScheduleEntry.shifts);
                 }
-
-            } catch (error) {
-                console.error('Error fetching or updating branch schedule:', error);
+            } else {
+                // No existing schedule document, create new with today's entry
+                await setDoc(branchScheduleRef, {
+                    branchId: branchId,
+                    dayList: [newScheduleEntry],
+                });
+                setTodaySchedule(newScheduleEntry.shifts);
             }
-        };
 
-        fetchBranchSchedule();
-    }, [selectedBranch]);
+        } catch (error) {
+            console.error('Error fetching or updating branch schedule:', error);
+        }
+    };
+
+    useEffect(() => {
+            fetchBranchSchedule();
+    }, [selectedBranch, staffList]);
 
     const goToDetailShift = (item) => {
         navigation.navigate('DetailShiftScreen', { selectedShift: item, selectedBranch: selectedBranch });
     };
+
+    useFocusEffect(
+        React.useCallback(() => {
+            if (selectedBranch) {
+                fetchBranchSchedule();
+            }
+        }, [selectedBranch])
+    );
+
+    useEffect(() => {
+        const fetchStaffs = async () => {
+            try {
+                const q = query(collection(db, "staffs"), where("branch.branchId", "==", selectedBranch.branchId));
+                const querySnapshot = await getDocs(q);
+
+                const staffData = querySnapshot.docs.map(doc => doc.id);
+                setStaffList(staffData);
+            } catch (error) {
+                console.log("Error fetching staff data: ", error);
+            }
+        };
+
+        fetchStaffs();
+    }, [selectedBranch]);
 
 
     const renderView = () => {
@@ -136,10 +161,13 @@ export default function ScheduleScreen() {
                         showsVerticalScrollIndicator={false}
                         data={todaySchedule}
                         keyExtractor={item => item.shiftId}
-                        renderItem={({ item }) => (
-                            <ShiftCard item={item} onPress={() => goToDetailShift(item)} />
-                        )}
+                        renderItem={({ item }) => {
+                            return (
+                                <ShiftCard item={item} onPress={() => goToDetailShift(item)} quantity={item.staffList.length} />
+                            );
+                        }}
                     />
+
                 </View>
             );
         } else {

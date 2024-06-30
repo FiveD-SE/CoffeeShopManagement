@@ -1,68 +1,111 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native"; // Import các thành phần cần thiết từ react-native
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native"; // Import các thành phần cần thiết từ react-native
 import Checkbox from "expo-checkbox";
-
-const StaffCard2 = ({item, onPress }) => {
+import { doc, updateDoc, setDoc, getDoc, getDocs, query, where, collection } from "firebase/firestore";
+import { db } from "../../services/firebaseService";
+import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome } from '@expo/vector-icons';
+import { colors } from "../../assets/colors/colors";
+const StaffCard2 = ({ item, onPress }) => {
     const [toggleCheckBox, setToggleCheckBox] = useState(true)
+    const [staffData, setStaffData] = useState(null);
+    useEffect(() => {
+        const fetchStaffData = async () => {
+            try {
+                const staffRef = doc(db, "staffs", item);
+                const staffSnapshot = await getDoc(staffRef);
+
+                if (staffSnapshot.exists()) {
+                    const staffInfo = staffSnapshot.data();
+                    setStaffData(staffInfo);
+                } else {
+                    console.log("Staff not found");
+                }
+            } catch (error) {
+                console.error("Error fetching staff data:", error);
+            }
+        };
+
+        fetchStaffData();
+    }, [item]);
+
     return (
-        <TouchableOpacity
-            onPress={onPress}
-            style={styles.staffItem}>
-            <View style={{ flexDirection: "row" }}>
-                <View
-                    style={{
-                        width: 80,
-                        height: 80,
-                        backgroundColor: "#cbcbd4",
-                        borderRadius: 10,
-                    }}
-                ></View>
-                <View
-                    style={{
-                        marginStart: "5%",
-                        justifyContent: "space-between",
-                    }}
-                >
-                    <Text style={{ fontSize: 16, fontWeight: "600" }}>
-                        {item.fullName}
-                    </Text>
-                    <Text style={{ fontSize: 14, color: "#808080" }}>
-                        {item.phoneNumber}
-                    </Text>
-                    <View
-                        style={{
-                            backgroundColor: "#edfaf1",
-                            borderRadius: 15,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            padding: "5%",
-                        }}
-                    >
-                        <Text
-                            style={{ color: "#5bcf7c", fontSize: 14 }}
-                        >
-                            {item.role.roleName}
-                        </Text>
-                    </View>
-                </View>
+        <View style={styles.container}>
+            <View style={styles.imageContainer}>
+                <Image style={styles.image} source={{ uri: staffData?.staffImage }} resizeMode="cover" />
             </View>
-            <Checkbox
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={(newValue) => setToggleCheckBox(newValue)} />
-        </TouchableOpacity>
+            <View style={styles.main}>
+                <Text style={styles.name}>{staffData?.fullName}</Text>
+                <Text style={styles.phoneNumber}>{staffData?.phoneNumber}</Text>
+
+                <Text
+                    style={styles.role}
+                >
+                    {staffData?.role.roleName}</Text>
+            </View>
+                <FontAwesome name="trash" size={28} color="red" onPress={onPress}/>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
-    staffItem: {
-        backgroundColor: "#fff",
-        padding: "3%",
+    container: {
         flexDirection: "row",
-        justifyContent: "space-between",
-        borderRadius: 10,
         alignItems: "center",
-        marginBottom: "3%",
+        marginVertical: "2%",
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#D8D8D8",
+        padding: "2%",
+        backgroundColor: "#FFFFFF",
+    },
+    imageContainer: {
+        borderWidth: 1,
+        borderColor: "#D8D8D8",
+        borderRadius: 10,
+        overflow: "hidden",
+    },
+    image: {
+        width: "100%",
+        height: 100,
+        aspectRatio: 1,
+    },
+    main: {
+        flex: 1,
+        paddingHorizontal: "5%",
+    },
+    name: {
+        width: "100%",
+        color: "#3a3a3a",
+        fontSize: 16,
+        fontWeight: "500",
+        lineHeight: 20,
+        marginTop: "1%",
+        fontFamily: "lato-bold"
+    },
+    phoneNumber: {
+        marginTop: "5%",
+        color: "rgba(58,58,58,0.5)",
+        fontSize: 14,
+        fontWeight: "500",
+        fontFamily: "lato-regular"
+    },
+    role: {
+        color: colors.green_100,
+        fontSize: 14,
+        fontWeight: "500",
+        marginTop: "2%",
+        fontFamily: "lato-regular"
+    },
+    roleContainer: {
+
+    },
+    addButton: {
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "2%",
+        backgroundColor: "#00A188",
+        borderRadius: 100,
     },
 });
 

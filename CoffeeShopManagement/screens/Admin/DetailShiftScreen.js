@@ -1,47 +1,92 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react';
-import Icon1 from "react-native-vector-icons/Feather";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, FlatList, Alert } from 'react-native';
 import StaffCard2 from '../../components/Admin/StaffCard2';
-import { doc, updateDoc, setDoc, getDoc, getDocs, query, where, collection } from "firebase/firestore";
+import { useNavigation } from '@react-navigation/native';
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../services/firebaseService";
-import { FlatList } from 'react-native-gesture-handler';
+import AddStaffButton from '../../components/Admin/Button/AddStaffButton';
 
 const DetailShiftScreen = ({ route }) => {
-    const [staffList, setStaffList] = useState([]);
     const selectedShift = route.params.selectedShift;
     const selectedBranch = route.params.selectedBranch;
-    console.log(selectedShift, selectedBranch);
     const navigation = useNavigation();
+
+    const [staffList, setStaffList] = useState([]);
+
     useEffect(() => {
-        const fetchStaffs = async () => {
-            try {
-                const q = query(collection(db, "staffs"), where("branch.branchId", "==", selectedBranch.branchId));
-                const querySnapshot = await getDocs(q);
+        if (selectedShift && selectedShift.staffList) {
+            setStaffList(selectedShift.staffList);
+        }
+    }, [selectedShift]);
 
-                const staffData = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                console.log('Fetched Staff Data:', staffData);
-                setStaffList(staffData);
-            } catch (error) {
-                console.log("Error fetching staff data: ", error);
-            }
-        };
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+    };
 
-        fetchStaffs();
-    }, [selectedBranch.branchId]);
+    const removeFromShift = async (shiftId, staffIdToRemove) => {
+        try {
+            // Display alert confirmation
+            Alert.alert(
+                'Xác nhận xóa nhân viên',
+                'Bạn có chắc chắn muốn xóa nhân viên này khỏi ca làm việc?',
+                [
+                    {
+                        text: 'Hủy',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'Xóa',
+                        onPress: async () => {
+                            console.log('Removing staff from shift:', shiftId, staffIdToRemove);
+                            const branchId = selectedBranch.branchId;
+                            const branchScheduleRef = doc(db, 'branchSchedules', branchId);
+                            const branchScheduleDoc = await getDoc(branchScheduleRef);
+
+                            if (branchScheduleDoc.exists()) {
+                                const branchScheduleData = branchScheduleDoc.data();
+                                const dayList = branchScheduleData.dayList || [];
+                                const todayDate = formatDate(new Date());
+
+                                const existingEntryIndex = dayList.findIndex((day) => day.date === todayDate);
+
+                                if (existingEntryIndex !== -1) {
+                                    const updatedShifts = dayList[existingEntryIndex].shifts.map(shift => {
+                                        if (shift.shiftId === shiftId) {
+                                            const updatedStaffList = shift.staffList.filter(staffId => staffId !== staffIdToRemove);
+                                            return { ...shift, staffList: updatedStaffList };
+                                        }
+                                        return shift;
+                                    });
+
+                                    dayList[existingEntryIndex].shifts = updatedShifts;
+                                    await updateDoc(branchScheduleRef, { dayList });
+
+                                    // Update local state
+                                    setStaffList(updatedShifts.find(shift => shift.shiftId === shiftId).staffList);
+                                }
+                            }
+                        },
+                    },
+                ],
+                { cancelable: true }
+            );
+        } catch (error) {
+            console.error('Error removing staff from shift:', error);
+        }
+    };
 
     const renderStaffList = () => {
         return (
             <FlatList
                 showsVerticalScrollIndicator={false}
                 data={staffList}
-                keyExtractor={item => item.staffId}
+                keyExtractor={item => item}
                 renderItem={({ item }) => (
-                    <StaffCard2 item={item} />
+                    <StaffCard2 item={item} onPress={() => removeFromShift(selectedShift.shiftId, item)} />
                 )}
             />
         )
@@ -49,6 +94,7 @@ const DetailShiftScreen = ({ route }) => {
 
     return (
         <View style={styles.container}>
+            <AddStaffButton />
             <Text style={styles.titleText}>Danh sách nhân viên trong ca</Text>
 
             <View style={styles.listStaff}>
@@ -76,9 +122,10 @@ const styles = StyleSheet.create({
         marginBottom: '5%'
     },
     titleText: {
+        marginTop: "3%",
         color: "#3a3a3a",
         fontSize: 18,
         fontWeight: "600",
         fontFamily: "lato-bold"
     },
-})
+});
