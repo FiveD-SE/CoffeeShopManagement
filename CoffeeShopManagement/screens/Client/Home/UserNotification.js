@@ -53,7 +53,7 @@ function UserNotification({ userData }) {
 
     useEffect(() => {
         fetchNotifications();
-    }, [userData.id]);
+    }, []);
 
     const getFilteredNotifications = () => {
         let filteredNotifications;

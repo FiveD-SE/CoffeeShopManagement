@@ -33,10 +33,9 @@ function AdminNotification() {
     const fetchNotifications = async () => {
         setRefreshing(true);
         try {
-            const notificationCollection = collection(db, "user_notifications");
+            const notificationCollection = collection(db, "admin_notifications");
             const notificationQuery = query(
                 notificationCollection,
-                where("userId", "==", userData.id),
                 orderBy("notificationCreatedDate", "desc")
             );
             const notificationSnapshot = await getDocs(notificationQuery);
