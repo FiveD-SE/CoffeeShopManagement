@@ -202,7 +202,7 @@ export default function AdminBillingScreen() {
             </Text>
           </View>
         </View>
-        <View style={styles.selectionButtonContainer}>
+        {/* <View style={styles.selectionButtonContainer}>
           {selectionButtons.map((item) => (
             <TouchableOpacity
               key={item.id}
@@ -214,8 +214,8 @@ export default function AdminBillingScreen() {
               ]}>{item.title}</Text>
             </TouchableOpacity>
           ))}
-        </View>
-        <ScrollView showsVerticalScrollIndicator={false} style={{ height: "73%" }}>
+        </View> */}
+        <ScrollView showsVerticalScrollIndicator={false} style={{ height: "82%" }}>
           {renderOrdersList()}
         </ScrollView>
       </View>
