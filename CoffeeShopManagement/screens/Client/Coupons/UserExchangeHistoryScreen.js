@@ -34,7 +34,7 @@ const UserExchangeHistoryScreen = ({ userData }) => {
 	useEffect(() => {
 		const fetchUserVouchers = async () => {
 			const q = query(
-				collection(db, "userVouchers"),
+				collection(db, "userHistoryVouchers"),
 				where("userId", "==", userData.id)
 			);
 			const querySnapshot = await getDocs(q);
