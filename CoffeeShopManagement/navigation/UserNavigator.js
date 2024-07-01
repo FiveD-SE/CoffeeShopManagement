@@ -8,6 +8,7 @@ import UserExchangeVoucherScreen from "../screens/Client/Home/UserExchangeVouche
 import UserVoucherDetailsScreen from "../screens/Client/Home/UserVoucherDetailsScreen";
 import UserSearchScreen from "../screens/Client/Home/UserSearchScreen";
 import UserBestSellerScreen from "../screens/Client/Home/UserBestSellerScreen";
+import UserMustTryItemScreen from "../screens/Client/Home/UserMustTryItemScreen";
 import UserFavoriteItemScreen from "../screens/Client/Home/UserFavoriteItemScreen";
 import UserPlaceOrderScreen from "../screens/Client/PlaceOrder/UserPlaceOrderScreen";
 import EditProfileDetail from "../screens/Client/Other/UserEditProfileScreen";
@@ -355,7 +356,7 @@ const OrderStack = ({ navigation, route }) => {
 			/>
 			<Stack.Screen
 				name="UserMustTryItemScreen"
-				component={UserBestSellerScreen}
+				component={UserMustTryItemScreen}
 				options={{
 					headerTitle: "Món mới phải thử",
 					headerLeftContainerStyle: {

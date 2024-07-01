@@ -51,14 +51,26 @@ const UserPlaceOrderScreen = ({ addressStatus }) => {
 	};
 
 	const renderProductList = (productType) => {
-		const filteredProductList = productList.filter(
-			(item) => item.productType === productType
-		);
-
-		const sortedProductList = filteredProductList.sort(
-			(a, b) => a.productPrice - b.productPrice
-		);
-
+		let filteredProductList = [];
+	
+		if (productType === "New") {
+			const fifteenDaysAgo = new Date();
+			fifteenDaysAgo.setDate(fifteenDaysAgo.getDate() - 30);
+	
+			filteredProductList = productList.filter(item => {
+				const productDate = new Date(item.dateCreated.seconds * 1000 + item.dateCreated.nanoseconds / 1000000);
+				return productDate.getTime() > fifteenDaysAgo.getTime();
+			}).sort((a, b) => {
+				const dateA = new Date(a.dateCreated.seconds * 1000 + a.dateCreated.nanoseconds / 1000000);
+				const dateB = new Date(b.dateCreated.seconds * 1000 + b.dateCreated.nanoseconds / 1000000);
+				return dateB - dateA;
+			}).slice(0, 5);
+		} else {
+			filteredProductList = productList.filter(item => item.productType === productType);
+		}
+	
+		const sortedProductList = filteredProductList.sort((a, b) => a.productPrice - b.productPrice);
+	
 		return sortedProductList.map((item, index) => (
 			<ProductCardHorizontal
 				key={index}
@@ -70,7 +82,7 @@ const UserPlaceOrderScreen = ({ addressStatus }) => {
 			/>
 		));
 	};
-
+	
 	const showRequestAddressModal = () => {
 		setModalVisible(true);
 	};
@@ -176,7 +188,7 @@ const UserPlaceOrderScreen = ({ addressStatus }) => {
 				onLayout={(event) => handleSectionLayout(event, category)}
 			>
 				<Section title={title}>
-					<ScrollView contentContainerStyle={styles.mustTryList}>
+					<ScrollView contentContainerStyle={styles.mustTryList} showsVerticalScrollIndicator={false}>
 						{renderProductList(category)}
 					</ScrollView>
 				</Section>
@@ -233,9 +245,9 @@ const UserPlaceOrderScreen = ({ addressStatus }) => {
 							subtitle="Xem thêm"
 							onPressSubtitle={goToMustTryItemList}
 						>
-							<ScrollView contentContainerStyle={styles.mustTryList}>
-								{renderProductList()}
-							</ScrollView>
+							<View style={styles.mustTryList}>
+								{renderProductList("New")}
+							</View>
 						</Section>
 					</View>
 
