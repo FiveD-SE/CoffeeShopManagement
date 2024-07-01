@@ -2,19 +2,22 @@ import { Dimensions, FlatList, StyleSheet, View } from "react-native";
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import BestSellerItem from "../../../components/Client/Card/BestSellerItem";
 import ItemDetailBottomSheet from "../PlaceOrder/ItemDetailBottomSheet";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../../services/firebaseService";
+import {
+    collection,
+    getDocs,
+    doc,
+    getDoc,
+    updateDoc,
+} from "firebase/firestore";
+import { db, auth } from "../../../services/firebaseService";
 
 const UserBestSellerScreen = () => {
     const [selectedItem, setSelectedItem] = useState(null);
-
     const [isItemDetailVisible, setIsItemDetailVisible] = useState(false);
-
     const itemDetailSnapPoints = useMemo(() => ["85%"]);
-
     const itemDetailBottomSheetRef = useRef(null);
-
     const [productList, setProductList] = useState([]);
+    const [recentlyViewedList, setRecentlyViewedList] = useState([]);
 
     const formatCurrency = (amount) => {
         return new Intl.NumberFormat("vi-VN", {
@@ -25,7 +28,7 @@ const UserBestSellerScreen = () => {
 
     const renderBestSellerItemList = ({ item }) => (
         <BestSellerItem
-            id={item._id}
+            id={item.productId}
             name={item.productName}
             price={
                 item.productPrice ? formatCurrency(item.productPrice) : "N/A"
@@ -36,9 +39,34 @@ const UserBestSellerScreen = () => {
         />
     );
 
-    const handleOpenItemDetail = (item) => {
+    const handleOpenItemDetail = async (item) => {
         setSelectedItem(item);
         setIsItemDetailVisible(true);
+
+        try {
+            const userDocRef = doc(db, "users", auth.currentUser.uid);
+            const userDocSnap = await getDoc(userDocRef);
+            if (!userDocSnap.exists()) {
+                console.error("User document does not exist!");
+                return;
+            }
+
+            let updatedRecentlyViewedItems =
+                userDocSnap.data().recentlyViewedItems || [];
+            updatedRecentlyViewedItems = updatedRecentlyViewedItems.filter(
+                (pid) => pid !== item.productId
+            );
+            updatedRecentlyViewedItems.unshift(item.productId);
+            updatedRecentlyViewedItems = updatedRecentlyViewedItems.slice(0, 5);
+
+            await updateDoc(userDocRef, {
+                recentlyViewedItems: updatedRecentlyViewedItems,
+            });
+
+            setRecentlyViewedList(updatedRecentlyViewedItems);
+        } catch (error) {
+            console.error("Error updating recently viewed items:", error);
+        }
     };
 
     const handleCloseItemDetail = () => setIsItemDetailVisible(false);

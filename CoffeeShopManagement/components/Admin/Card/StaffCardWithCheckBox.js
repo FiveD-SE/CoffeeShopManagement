@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native"; // Import các thành phần cần thiết từ react-native
+import { View, Text, TouchableOpacity, StyleSheet, Image, Pressable } from "react-native"; // Import các thành phần cần thiết từ react-native
 import Checkbox from "expo-checkbox";
 import { doc, updateDoc, setDoc, getDoc, getDocs, query, where, collection } from "firebase/firestore";
-import { db } from "../../services/firebaseService";
+import { db } from "../../../services/firebaseService";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome } from '@expo/vector-icons';
-import { colors } from "../../assets/colors/colors";
-const StaffCard2 = ({ item, onPress }) => {
-    const [toggleCheckBox, setToggleCheckBox] = useState(true)
+import { colors } from "../../../assets/colors/colors";
+const StaffCardWithCheckBox = ({ item, onToggleSelect, isSelected }) => {
     const [staffData, setStaffData] = useState(null);
+
     useEffect(() => {
         const fetchStaffData = async () => {
             try {
@@ -22,7 +22,7 @@ const StaffCard2 = ({ item, onPress }) => {
                     console.log("Staff not found");
                 }
             } catch (error) {
-                console.error("Error fetching staff data:", error);
+                console.log("Error fetching staff data:", error);
             }
         };
 
@@ -30,24 +30,25 @@ const StaffCard2 = ({ item, onPress }) => {
     }, [item]);
 
     return (
-        <View style={styles.container}>
+        <Pressable style={styles.container} onPress={() => onToggleSelect(item)}>
             <View style={styles.imageContainer}>
                 <Image style={styles.image} source={{ uri: staffData?.staffImage }} resizeMode="cover" />
             </View>
             <View style={styles.main}>
                 <Text style={styles.name}>{staffData?.fullName}</Text>
                 <Text style={styles.phoneNumber}>{staffData?.phoneNumber}</Text>
-
-                <Text
-                    style={styles.role}
-                >
-                    {staffData?.role.roleName}</Text>
+                <Text style={styles.role}>{staffData?.role.roleName}</Text>
             </View>
-                <FontAwesome name="trash" size={28} color="red" onPress={onPress}/>
-        </View>
+            <View>
+                <MaterialIcons
+                    name={isSelected ? "radio-button-checked" : "radio-button-unchecked"}
+                    size={24}
+                    color={isSelected ? "#006C5E" : "#3a3a3a"}
+                />
+            </View>
+        </Pressable>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
@@ -109,4 +110,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default StaffCard2;
+export default StaffCardWithCheckBox;

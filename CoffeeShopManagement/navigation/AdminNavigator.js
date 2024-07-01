@@ -323,12 +323,11 @@ const OtherStack = ({ navigation, route }) => {
                 name="DetailShiftScreen"
                 component={DetailShiftScreen}
                 options={{
-                    headerTitle: "Tên ca",
+                    headerTitle: "Chi tiết ca",
                     headerLeftContainerStyle: {
                         paddingLeft: "5%",
                     },
                     headerLeft: () => <HeaderBackButton />,
-                    headerRight: () => <AddStaffButton />,
                 }}
             />
             <Stack.Screen

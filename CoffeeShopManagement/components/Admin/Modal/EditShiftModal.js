@@ -137,7 +137,7 @@ const EditShiftModal = ({ visible, onClose, shift }) => {
         }
         Alert.alert(
             "Xác nhận xóa ca làm việc này không",
-            "Bạn có chắc chắn muốn xóa ca làm việc này không?",
+            "Bạn có chắc chắn muốn xóa ca làm việc này không? (Lưu ý việc xóa ca này không ảnh hưởng đến lịch biểu hôm nay)",
             [
                 {
                     text: "Hủy",

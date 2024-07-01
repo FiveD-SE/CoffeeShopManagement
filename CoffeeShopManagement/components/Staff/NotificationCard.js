@@ -4,6 +4,16 @@ import { colors } from "../../assets/colors";
 import { Ionicons } from "@expo/vector-icons";
 
 const NotificationCard = ({ item, onPress }) => {
+    const date = new Date(item.notificationCreatedDate.seconds * 1000);
+    const formattedDate = date.toLocaleDateString("vi-VN", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+    });
+
     return (
         <Pressable
             onPress={onPress}
@@ -17,12 +27,20 @@ const NotificationCard = ({ item, onPress }) => {
             ]}
         >
             <View style={styles.textContainer}>
-                <Text style={styles.title} numberOfLines={1}>{item.notificationTitle}</Text>
+                <Text style={styles.title} numberOfLines={1}>
+                    {item.notificationTitle}
+                </Text>
                 <Text style={styles.content} numberOfLines={2}>
                     {item.notificationContent}
                 </Text>
+
+                <Text style={styles.date}>{formattedDate}</Text>
             </View>
-            {item.notificationStatus ? <></> : <Ionicons name="ellipse" color="#FFC567" style={styles.icon} />}
+            {item.notificationStatus ? (
+                <></>
+            ) : (
+                <Ionicons name="ellipse" color="#FFC567" style={styles.icon} />
+            )}
         </Pressable>
     );
 };
@@ -43,10 +61,8 @@ const styles = StyleSheet.create({
         width: "85%",
         flexDirection: "column",
         marginLeft: "2%",
-        gap: 10,
     },
     title: {
-        width: "85%",
         fontSize: 18,
         fontFamily: "lato-bold",
         color: colors.text.black_100,
@@ -55,10 +71,15 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: colors.text.grey_100,
     },
+    date: {
+        fontSize: 14,
+        color: colors.text.grey_100,
+        marginTop: 5,
+    },
     icon: {
-        alignSelf: 'center',
-        justifyContent: 'right',
-    }
+        alignSelf: "center",
+        justifyContent: "right",
+    },
 });
 
 export default NotificationCard;

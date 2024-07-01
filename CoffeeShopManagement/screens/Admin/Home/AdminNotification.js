@@ -6,13 +6,17 @@ import {
     Pressable,
     ScrollView,
     SafeAreaView,
+    RefreshControl,
 } from "react-native";
 import {
     collection,
     query,
-    onSnapshot,
     getDocs,
-    doc, updateDoc
+    doc,
+    updateDoc,
+    onSnapshot,
+    where,
+    orderBy,
 } from "firebase/firestore";
 import NotificationCard from "../../../components/Staff/NotificationCard";
 import { db } from "../../../services/firebaseService";
@@ -22,23 +26,38 @@ function AdminNotification() {
     const navigation = useNavigation();
     const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
     const [notifications, setNotifications] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
 
     const selectionButtons = ["Tất cả", "Chưa đọc", "Đã đọc"];
 
-    useEffect(() => {
-        const fetchNotifications = (async () => {
-            const notificationCollection = collection(db, 'admin_notifications');
-            const notificationSnapshot = await getDocs(query(notificationCollection));
-            const notificationListData = notificationSnapshot.docs.map((doc) => ({
-                ...doc.data(),
-            }));
+    const fetchNotifications = async () => {
+        setRefreshing(true);
+        try {
+            const notificationCollection = collection(db, "user_notifications");
+            const notificationQuery = query(
+                notificationCollection,
+                where("userId", "==", userData.id),
+                orderBy("notificationCreatedDate", "desc")
+            );
+            const notificationSnapshot = await getDocs(notificationQuery);
+            const notificationListData = notificationSnapshot.docs.map(
+                (doc) => ({
+                    ...doc.data(),
+                    id: doc.id,
+                })
+            );
             setNotifications(notificationListData);
-        });
+        } catch (error) {
+            console.error("Error fetching notifications: ", error);
+        }
+        setRefreshing(false);
+    };
 
+    useEffect(() => {
         fetchNotifications();
-    }, [notifications]);
+    }, []);
 
-    const getFilteredNotifications = () => {
+    const getFilteredNotifications = useCallback(() => {
         let filteredNotifications;
         switch (selectedButtonIndex) {
             case 1:
@@ -55,67 +74,92 @@ function AdminNotification() {
                 filteredNotifications = notifications;
         }
         return filteredNotifications.sort((a, b) => b.createdAt - a.createdAt);
-    };
-
-    const renderNotificationKinds = () => (
-        selectionButtons.map((buttonTitle, index) => (
-            <Pressable key={index} style={[styles.filterDetail, selectedButtonIndex === index && styles.filterDetailSelected,]} onPress={() => setSelectedButtonIndex(index)}>
-                <Text style={[styles.filterDetailText, selectedButtonIndex === index && styles.filterDetailTextSelected]}>
-                    {buttonTitle}
-                </Text>
-            </Pressable>
-        ))
-    );
+    }, [selectedButtonIndex, notifications]);
 
     const handleOnPressNotification = async (item) => {
         try {
-            const notificationRef = doc(db, 'admin_notifications', item.notificationId);
-
+            const notificationRef = doc(
+                db,
+                "admin_notifications",
+                item.notificationId
+            );
             await updateDoc(notificationRef, { notificationStatus: true });
 
-            const invoicesCollection = collection(db, 'orders');
-            const invoiceQuery = query(invoicesCollection);
-
             if (item.notificationType === 2) {
-                const unsubscribe = onSnapshot(invoiceQuery, (querySnapshot) => {
-                    const docs = querySnapshot.docs;
-                    docs.forEach((doc) => {
-                        if (doc.id === item.orderId) {
-                            navigation.navigate("DetailBillingScreen", {
-                                orderData: doc.data(),
-                            });
-                        }
-                    });
+                const ordersCollection = collection(db, "orders");
+                const orderQuery = query(
+                    ordersCollection,
+                    where("orderId", "==", item.orderId)
+                );
+
+                const unsubscribe = onSnapshot(orderQuery, (querySnapshot) => {
+                    const orderData = querySnapshot.docs.map((doc) =>
+                        doc.data()
+                    );
+                    if (orderData.length) {
+                        navigation.navigate("DetailBillingScreen", {
+                            orderData: orderData[0],
+                        });
+                    }
                 });
 
-                return unsubscribe;
+                return () => unsubscribe();
             }
         } catch (error) {
             console.error("Error updating notification status: ", error);
         }
     };
 
-
-    const renderNotificationList = () => (
-        getFilteredNotifications().map((notification, index) => (
-            <NotificationCard
-                key={index}
-                item={notification}
-                onPress={() => handleOnPressNotification(notification)}
-            />
-        ))
+    const renderNotificationList = useCallback(
+        () =>
+            getFilteredNotifications().map((notification, index) => (
+                <NotificationCard
+                    key={index}
+                    item={notification}
+                    onPress={() => handleOnPressNotification(notification)}
+                />
+            )),
+        [getFilteredNotifications]
     );
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.filter}>
                 <View style={styles.filterWrapper}>
-                    {renderNotificationKinds()}
+                    {selectionButtons.map((buttonTitle, index) => (
+                        <Pressable
+                            key={index}
+                            style={[
+                                styles.filterDetail,
+                                selectedButtonIndex === index &&
+                                    styles.filterDetailSelected,
+                            ]}
+                            onPress={() => setSelectedButtonIndex(index)}
+                        >
+                            <Text
+                                style={[
+                                    styles.filterDetailText,
+                                    selectedButtonIndex === index &&
+                                        styles.filterDetailTextSelected,
+                                ]}
+                            >
+                                {buttonTitle}
+                            </Text>
+                        </Pressable>
+                    ))}
                 </View>
             </View>
             <View style={styles.listNotification}>
                 <Text style={styles.allNotificationText}>Tất cả thông báo</Text>
-                <ScrollView showsVerticalScrollIndicator={false}>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={fetchNotifications}
+                        />
+                    }
+                >
                     {renderNotificationList()}
                 </ScrollView>
             </View>
@@ -128,7 +172,7 @@ export default AdminNotification;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F8F7FA'
+        backgroundColor: "#F8F7FA",
     },
     filter: {
         padding: "5%",
@@ -149,15 +193,15 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFFFFF",
     },
     filterDetailSelected: {
-        backgroundColor: '#006C5E'
+        backgroundColor: "#006C5E",
     },
     filterDetailText: {
-        color: '#9D9D9D',
+        color: "#9D9D9D",
         fontFamily: "lato-regular",
         fontSize: 16,
     },
     filterDetailTextSelected: {
-        color: 'white',
+        color: "white",
         fontFamily: "lato-bold",
         fontSize: 16,
     },
@@ -166,7 +210,7 @@ const styles = StyleSheet.create({
         padding: "5%",
     },
     allNotificationText: {
-        color: 'black',
+        color: "black",
         fontFamily: "lato-bold",
         fontSize: 16,
     },
