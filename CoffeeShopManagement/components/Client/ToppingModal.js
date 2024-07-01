@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
 	},
 	main: {
 		paddingHorizontal: "5%",
-		marginBottom: "10%",
+		marginBottom: "2%",
 	},
 	itemListContainer: {
 		marginTop: "5%",
