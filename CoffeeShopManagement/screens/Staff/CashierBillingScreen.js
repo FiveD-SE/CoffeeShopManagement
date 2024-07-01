@@ -1,14 +1,5 @@
-import {
-	View,
-	Text,
-	SafeAreaView,
-	StyleSheet,
-	TextInput,
-	FlatList,
-	TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
-import Icon from "react-native-vector-icons/Entypo";
 import OrderCard1 from "../../components/Staff/OrderCard1";
 import SearchBar from "../../components/Client/SearchBar";
 import { useNavigation } from "@react-navigation/native";
@@ -178,18 +169,10 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		paddingHorizontal: "4%",
-		backgroundColor: "#FFFFFF",
 	},
 	searchBoxWrapper: {
 		marginTop: "20%",
 		marginBottom: "10%",
 		justifyContent: "center",
-	},
-	searchBox: {
-		backgroundColor: "#fff",
-		borderRadius: 10,
-		borderColor: "#ebebeb",
-		borderWidth: 1,
-		padding: "3%",
 	},
 });
