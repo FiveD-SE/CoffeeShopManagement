@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, SafeAreaView, Pressable, FlatList } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import { View, Text, StyleSheet, SafeAreaView, Pressable, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { useNavigation } from '@react-navigation/native';
@@ -18,27 +18,44 @@ const AdminClientScreen = () => {
 
   const date30DaysAgo = new Date();
   date30DaysAgo.setDate(date30DaysAgo.getDate() - 30);
+
   const handleNavigateToClientDetail = (item) => {
-    console.log(item)
+    console.log(item);
     navigation.navigate("ClientDetailHome", {
       selectedUser: item,
     });
   };
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const fetchUsersAndOrders = async () => {
       const usersCollection = collection(db, 'users');
       const userQuery = query(usersCollection, where('role', '==', 'user'));
       const usersSnapshot = await getDocs(userQuery);
-      let usersListData = usersSnapshot.docs.map(doc => doc.data());
-    
-      usersListData = usersListData.sort((a, b) => b.credit - a.credit);
-      
+      let usersListData = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+      const ordersCollection = collection(db, 'orders');
+      const ordersSnapshot = await getDocs(ordersCollection);
+      const ordersListData = ordersSnapshot.docs.map(doc => doc.data());
+
+      const salesData = {};
+      ordersListData.forEach(order => {
+        const userId = order.userId;
+        if (!salesData[userId]) {
+          salesData[userId] = 0;
+        }
+        salesData[userId] += order.orderTotalPrice;
+      });
+
+      usersListData = usersListData.map(user => ({
+        ...user,
+        sales: salesData[user.userId] || 0,
+      }));
+
       const date30DaysAgo = new Date();
       date30DaysAgo.setDate(date30DaysAgo.getDate() - 30);
       const date60DaysAgo = new Date();
       date60DaysAgo.setDate(date60DaysAgo.getDate() - 60);
-    
+
       const newUserThisMonth = usersListData.filter(user => {
         const userCreatedDate = new Date(user.createdAt.seconds * 1000);
         return userCreatedDate >= date30DaysAgo;
@@ -55,16 +72,17 @@ const AdminClientScreen = () => {
       } else {
         totalNewUsersTrending = ((newUserThisMonth.length - newUserLastMonth.length) / newUserLastMonth.length) * 100;
       }
-      
+
+      usersListData = usersListData.sort((a, b) => b.sales - a.sales);
+
       setUsersData(usersListData);
       setFilteredUsersData(usersListData);
       setTotalUsers(usersListData.length);
       setTotalNewUsersPercentage(totalNewUsersTrending);
       setTotalNewUsers(newUserThisMonth.length);
     };
-    
-    fetchUsers();
 
+    fetchUsersAndOrders();
   }, []);
 
   const splitName = (name) => {
@@ -72,7 +90,7 @@ const AdminClientScreen = () => {
   }
 
   const handleSearch = (query) => {
-    const filteredList = usersData.filter(item => 
+    const filteredList = usersData.filter(item =>
       item.fullName.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredUsersData(filteredList);
@@ -89,34 +107,34 @@ const AdminClientScreen = () => {
             <Text style={styles.text}>{splitName(item.fullName)}</Text>
           </View>
           <View style={{ width: '30%', alignItems: 'center' }}>
-            <Text style={styles.text}>{item.credit}</Text>
+            <Text style={styles.text}>{item.sales.toLocaleString()} đ</Text>
           </View>
         </Pressable>
     )))
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
-      <SearchBar onChangeText={handleSearch}/>
+      <SearchBar onChangeText={handleSearch} />
       <View style={styles.section}>
         <View style={styles.label}>
           <View style={styles.row}>
             <Ionicons name="people" size={35} color="#000" />
           </View>
           <View style={styles.row}>
-          <Text style={styles.clientKind}>Tổng số khách{'\n'}hàng</Text>
+            <Text style={styles.clientKind}>Tổng số khách{'\n'}hàng</Text>
             <Text style={styles.amount}>{totalUsers}</Text>
           </View>
         </View>
         <View style={styles.label}>
           <View style={styles.row}>
             <MaterialIcons name="fiber-new" size={35} color="#000" />
-              <Text style={totalNewUsersPercentage > 0 ? styles.uptrendicon : styles.downtrendicon}>
-                <Ionicons name={totalNewUsersPercentage > 0 ? "trending-up" : "trending-down"} size={30} style={totalNewUsersPercentage > 0 ? styles.uptrendicon : styles.downtrendicon}/> {Math.abs(Number(totalNewUsersPercentage.toFixed(1)))}%
-              </Text>
+            <Text style={totalNewUsersPercentage > 0 ? styles.uptrendicon : styles.downtrendicon}>
+              <Ionicons name={totalNewUsersPercentage > 0 ? "trending-up" : "trending-down"} size={30} style={totalNewUsersPercentage > 0 ? styles.uptrendicon : styles.downtrendicon} /> {Math.abs(Number(totalNewUsersPercentage.toFixed(1)))}%
+            </Text>
           </View>
           <View style={styles.row}>
-          <Text style={styles.clientKind}>Khách hàng mới{'\n'}</Text>
+            <Text style={styles.clientKind}>Khách hàng mới{'\n'}</Text>
             <Text style={styles.amount}>{totalNewUsers}</Text>
           </View>
         </View>
@@ -149,13 +167,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
-  section:{
+  section: {
     flexDirection: 'row',
     marginVertical: 10,
     justifyContent: 'space-between',
   },
   labelOptions: {
-    flexDirection: "row",   
+    flexDirection: "row",
     width: '25%',
     alignItems: "center",
     justifyContent: 'space-between',
@@ -193,7 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     alignItems: 'center',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     paddingHorizontal: 5,
     paddingVertical: 5,
   },
@@ -210,7 +228,7 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderBottomWidth: 1,
