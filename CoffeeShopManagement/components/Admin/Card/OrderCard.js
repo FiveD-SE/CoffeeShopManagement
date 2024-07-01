@@ -11,7 +11,7 @@ import Icon from "react-native-vector-icons/FontAwesome6";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { colors } from "../../../assets/colors/colors";
 
-const UserOrderCard = ({ orderId, status, total, date, onPress }) => {
+const OrderCard = ({ orderId, status, total, date }) => {
 	const setOrderStatus = (status) => {
 		switch (status) {
 			case 1:
@@ -102,11 +102,7 @@ const UserOrderCard = ({ orderId, status, total, date, onPress }) => {
 	const { backgroundColor, textColor } = getStatusColors(status);
 
 	return (
-		<TouchableOpacity
-			style={styles.orderContainer}
-			onPress={onPress}
-			activeOpacity={0.6}
-		>
+		<View style={styles.orderContainer}>
 			<View style={styles.orderDetails}>
 				<View style={styles.orderId}>
 					<View style={{ flex: 1, flexDirection: "row" }}>
@@ -138,8 +134,7 @@ const UserOrderCard = ({ orderId, status, total, date, onPress }) => {
 					<Text style={styles.orderTotalValue}>{formatCurrency(total)} </Text>
 				</View>
 			</View>
-			<Icon name="chevron-right" size={14} color={colors.grey_100} />
-		</TouchableOpacity>
+		</View>
 	);
 };
 
@@ -155,7 +150,6 @@ const styles = StyleSheet.create({
 	},
 	orderDetails: {
 		flex: 1,
-		marginRight: "4%",
 	},
 	orderId: {
 		flexDirection: "row",
@@ -220,4 +214,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default UserOrderCard;
+export default OrderCard;
