@@ -11,7 +11,7 @@ import Icon from "react-native-vector-icons/FontAwesome6";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { colors } from "../../../assets/colors/colors";
 
-const UserOrderCard = ({ orderId, status, total, date , onPress }) => {
+const UserOrderCard = ({ orderId, status, total, date, onPress }) => {
 	const setOrderStatus = (status) => {
 		switch (status) {
 			case 1:
@@ -21,14 +21,15 @@ const UserOrderCard = ({ orderId, status, total, date , onPress }) => {
 			case 3:
 				return "Đang giao";
 			case 4:
-				return "Đã hoàn thành";
+				return "Đã giao";
 			case 5:
 				return "Đã huỷ";
+			case 6:
+				return "Đã nhận hàng";
 			default:
 				return;
 		}
 	};
-
 
 	const setOrderStatusIcon = (status) => {
 		switch (status) {
@@ -42,6 +43,8 @@ const UserOrderCard = ({ orderId, status, total, date , onPress }) => {
 				return "check-circle";
 			case 5:
 				return "times-circle";
+			case 6:
+				return "money-bill-alt";
 			default:
 				return "";
 		}
@@ -52,24 +55,28 @@ const UserOrderCard = ({ orderId, status, total, date , onPress }) => {
 
 		switch (status) {
 			case 1:
-				backgroundColor = '#C6EBC5';
-				textColor = '#799351';
+				backgroundColor = "#FFF9D0";
+				textColor = "#FFC100";
 				break;
 			case 2:
-				backgroundColor = '#FFE8C5';
-				textColor = '#A3A3A3';
+				backgroundColor = "#FFE8C5";
+				textColor = "#A3A3A3";
 				break;
 			case 3:
-				backgroundColor = '#B2EBF2';
-				textColor = '#006989';
+				backgroundColor = "#B2EBF2";
+				textColor = "#006989";
 				break;
 			case 4:
-				backgroundColor = '#F9E8D9';
-				textColor = '#EE7214';
+				backgroundColor = "#F9E8D9";
+				textColor = "#EE7214";
 				break;
 			case 5:
-				backgroundColor = '#FFCAC2';
-				textColor = '#C81912';
+				backgroundColor = "#FFCAC2";
+				textColor = "#C81912";
+				break;
+			case 6:
+				backgroundColor = "#D9F8C4";
+				textColor = "#3EC70B";
 				break;
 			default:
 				break;
@@ -79,11 +86,16 @@ const UserOrderCard = ({ orderId, status, total, date , onPress }) => {
 	};
 
 	const formatCurrency = (amount) => {
-		return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
 	};
 
 	const formatDate = (date) => {
-		const formatedDate = new Date(date.seconds * 1000).toLocaleDateString("en-US");
+		const formatedDate = new Date(date.seconds * 1000).toLocaleDateString(
+			"vi-VN"
+		);
 		return formatedDate;
 	};
 
@@ -93,7 +105,7 @@ const UserOrderCard = ({ orderId, status, total, date , onPress }) => {
 		<TouchableOpacity
 			style={styles.orderContainer}
 			onPress={onPress}
-			activeOpacity={0.9}
+			activeOpacity={0.6}
 		>
 			<View style={styles.orderDetails}>
 				<View style={styles.orderId}>
@@ -123,7 +135,7 @@ const UserOrderCard = ({ orderId, status, total, date , onPress }) => {
 
 				<View style={styles.orderTotal}>
 					<Text style={styles.orderDate}>{formatDate(date)}</Text>
-					<Text style={styles.orderTotalValue}>{formatCurrency(total)} <Text style={styles.currency}>VND</Text></Text>
+					<Text style={styles.orderTotalValue}>{formatCurrency(total)} </Text>
 				</View>
 			</View>
 			<Icon name="chevron-right" size={14} color={colors.grey_100} />
@@ -134,25 +146,12 @@ const UserOrderCard = ({ orderId, status, total, date , onPress }) => {
 const styles = StyleSheet.create({
 	orderContainer: {
 		backgroundColor: "#FFFFFF",
-		padding: "4%",
-		borderRadius: 16,
+		padding: "6%",
+		borderRadius: 12,
 		flexDirection: "row",
 		alignItems: "center",
 		marginBottom: "4%",
-		...Platform.select({
-			ios: {
-				shadowColor: colors.black_100,
-				shadowOffset: {
-					width: 0,
-					height: 2,
-				},
-				shadowOpacity: 0.1,
-				shadowRadius: 2,
-			},
-			android: {
-				elevation: 2,
-			},
-		}),
+		elevation: 2,
 	},
 	orderDetails: {
 		flex: 1,
@@ -193,8 +192,8 @@ const styles = StyleSheet.create({
 	},
 	statusText: {
 		color: "#FFA730",
-		fontFamily: "lato-regular",
-		fontSize: 13,
+		fontFamily: "lato-bold",
+		fontSize: 12,
 		marginLeft: "2%",
 	},
 	orderTotal: {
@@ -206,19 +205,19 @@ const styles = StyleSheet.create({
 	orderDate: {
 		color: colors.grey_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
+		fontSize: 16,
 	},
 	orderTotalValue: {
 		color: colors.black_100,
 		fontFamily: "lato-bold",
-		fontSize: 18,
+		fontSize: 16,
 		marginLeft: "4%",
 	},
 	currency: {
 		color: colors.grey_100,
 		fontFamily: "lato-bold",
 		fontSize: 20,
-	}
+	},
 });
 
 export default UserOrderCard;

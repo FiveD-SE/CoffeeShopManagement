@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
+import { colors } from "../../../assets/colors/colors";
 
 const OrderedItem = ({ title, price, quantity, imageSource }) => (
 	<View style={styles.orderedItemContainer}>
@@ -17,12 +18,13 @@ export default OrderedItem;
 const styles = StyleSheet.create({
 	orderedItemContainer: {
 		marginVertical: "2%",
-		padding: "5%",
+		padding: "4%",
 		borderRadius: 20,
 		borderWidth: 1,
-		borderColor: "rgba(58, 58, 58, 0.10)",
+		borderColor: colors.grey_50,
 		flexDirection: "row",
 		alignItems: "center",
+		backgroundColor: colors.white_100,
 	},
 	itemImage: {
 		width: 80,
@@ -38,19 +40,19 @@ const styles = StyleSheet.create({
 	},
 	itemName: {
 		color: "#3A3A3A",
-		fontSize: 14,
-		fontWeight: "500",
+		fontSize: 16,
+		fontFamily: "lato-bold",
 	},
 	itemPrice: {
 		color: "rgba(58, 58, 58, 0.50)",
-		fontSize: 12,
-		fontWeight: "600",
-		marginTop: "5%",
+		fontSize: 14,
+		fontFamily: "lato-regular",
+		marginTop: "4%",
 	},
 	itemQuantity: {
 		color: "#3A3A3A",
-		fontSize: 12,
-		fontWeight: "600",
+		fontSize: 14,
+		fontFamily: "lato-regular",
 		lineHeight: 12,
 	},
 });

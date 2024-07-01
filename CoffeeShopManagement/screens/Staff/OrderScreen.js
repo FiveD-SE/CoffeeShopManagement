@@ -43,6 +43,21 @@ export default function OrderScreen({ route }) {
 		}).format(amount);
 	};
 
+	const getTitleForState = (state) => {
+		switch (state) {
+			case 1:
+				return "Chờ xác nhận";
+			case 2:
+				return "Đang thực hiện";
+			case 3:
+				return "Đang giao";
+			case 4:
+				return "Đã giao";
+			case 5:
+				return "Đã huỷ";
+		}
+	};
+
 	const renderAcceptButton = (order) => {
 		if (order.orderState === 1) {
 			return (
@@ -96,7 +111,7 @@ export default function OrderScreen({ route }) {
 						<View style={styles.rowContainer}>
 							<Text style={styles.label}>Trạng thái: </Text>
 							<Text style={{ fontFamily: "lato-bold" }}>
-								{selectedOrder.orderState}
+								{getTitleForState(selectedOrder.orderState)}
 							</Text>
 						</View>
 					</View>

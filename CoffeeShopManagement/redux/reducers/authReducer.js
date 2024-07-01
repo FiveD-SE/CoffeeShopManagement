@@ -52,6 +52,7 @@ const authReducer = (state = initialState, action) => {
 				},
 			};
 		case types.UPDATE_USER_CREDIT: {
+			console.log("action.payload", action.payload);
 			return {
 				...state,
 				userData: {

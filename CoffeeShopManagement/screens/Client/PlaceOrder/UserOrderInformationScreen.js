@@ -6,19 +6,54 @@ import OrderedItem from "../../../components/Client/Card/OrderedItem";
 import StatusInfo from "../../../components/Client/StatusInfo";
 import RouteDetails from "../../../components/Client/RouteDetails";
 import SectionWithBackground from "../../../components/Client/SectionWithBackground";
-import RatingModal from "./RatingModal";
 import { colors } from "../../../assets/colors/colors";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../../services/firebaseService";
+import Toast from "react-native-toast-message";
+import { useNavigation } from "@react-navigation/native";
+import { updateUserCredit } from "../../../redux/actions/userActions";
+import { connect } from "react-redux";
 
-const UserOrderInformationScreen = ({ route }) => {
+const UserOrderInformationScreen = ({ route, updateUserCredit }) => {
+	const navigation = useNavigation();
 	const { orderData } = route.params;
 	const [currentPage, setCurrentPage] = useState(
 		orderData.orderState === 5 ? 0 : orderData.orderState - 1
 	);
-	const [modalVisible, setModalVisible] = useState(false);
 
-	const handleReceiveOrder = () => {
+	const handleReceiveOrder = async () => {
+		if (orderData.orderState === 6) {
+			Toast.show({
+				type: "error",
+				position: "bottom",
+				text1: "Đơn hàng đã được xác nhận",
+				text2: "Vui lòng kiểm tra lại",
+			});
+			return;
+		}
 		setCurrentPage(4);
-		setModalVisible(true);
+
+		const userDocRef = doc(db, "users", orderData.userId);
+		const userDoc = await getDoc(userDocRef);
+		const userDocData = userDoc.data();
+		const newCredit = parseFloat(
+			(userDocData.credit + orderData.orderTotalPrice * 0.0001).toFixed(2)
+		);
+		updateUserCredit(newCredit);
+		await updateDoc(userDocRef, {
+			credit: newCredit,
+		});
+		const orderDocRef = doc(db, "orders", orderData.orderId);
+		await updateDoc(orderDocRef, {
+			orderState: 6,
+		});
+		Toast.show({
+			type: "success",
+			position: "bottom",
+			text1: "Nhận hàng thành công",
+			text2: "Đơn hàng đã được nhận",
+		});
+		navigation.goBack();
 	};
 
 	const renderOrderedItem = () =>
@@ -35,15 +70,15 @@ const UserOrderInformationScreen = ({ route }) => {
 			/>
 		));
 
-	const showToppingModal = () => {
-		setModalVisible(true);
-	};
-
-	const hideToppingModal = () => {
-		setModalVisible(false);
+	const formatCurrency = (amount) => {
+		return new Intl.NumberFormat("vi-VN", {
+			style: "currency",
+			currency: "VND",
+		}).format(amount);
 	};
 
 	const deliveryAddress = orderData.deliveryAddress;
+
 	const deliveryBranch = orderData.deliveryBranch;
 
 	return (
@@ -53,18 +88,15 @@ const UserOrderInformationScreen = ({ route }) => {
 				style={styles.scrollViewContainer}
 			>
 				<View style={styles.container}>
-					<SectionWithBackground title="Sẽ xong lúc 10:50 SA">
-						<Text style={styles.subTitleText}>Đang thực hiện</Text>
-						<View style={{ marginTop: "5%" }}>
-							<OrderProgressBar
-								currentPage={currentPage}
-								setCurrentPage={setCurrentPage}
-							/>
-						</View>
-					</SectionWithBackground>
+					<View style={{ marginTop: "5%" }}>
+						<OrderProgressBar
+							currentPage={currentPage}
+							setCurrentPage={setCurrentPage}
+						/>
+					</View>
 					<SectionWithBackground title={deliveryBranch.branchName}>
 						<Text style={styles.infoText}>
-							{`${deliveryBranch.street}, ${deliveryBranch.districtName}, ${deliveryBranch.provinceName}, Việt Nam`}
+							{`${deliveryBranch.street}, ${deliveryBranch.districtName}, ${deliveryBranch.provinceName}`}
 						</Text>
 					</SectionWithBackground>
 
@@ -92,14 +124,7 @@ const UserOrderInformationScreen = ({ route }) => {
 						<View style={styles.totalContainer}>
 							<Text style={styles.titleText}>Tổng cộng:</Text>
 							<Text style={styles.titleText}>
-								{(
-									orderData.orderTotalPrice +
-									orderData.deliveryFee -
-									orderData.orderTotalDiscount
-								).toLocaleString("vi-VN", {
-									style: "currency",
-									currency: "VND",
-								})}
+								{formatCurrency(orderData.orderTotalPrice)}
 							</Text>
 						</View>
 					</SectionWithBackground>
@@ -114,7 +139,6 @@ const UserOrderInformationScreen = ({ route }) => {
 					<Text style={styles.buttonText}>Đã nhận hàng</Text>
 				</Pressable>
 			</View>
-			<RatingModal visible={modalVisible} onClose={hideToppingModal} />
 		</>
 	);
 };
@@ -179,4 +203,8 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default UserOrderInformationScreen;
+const mapDispatchToProps = {
+	updateUserCredit,
+};
+
+export default connect(null, mapDispatchToProps)(UserOrderInformationScreen);

@@ -1,11 +1,4 @@
-import {
-	View,
-	Text,
-	StyleSheet,
-	TouchableOpacity,
-	Animated,
-	Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, Animated, Pressable } from "react-native";
 import React from "react";
 
 import { colors } from "../../assets/colors/colors";
@@ -45,7 +38,7 @@ const OrderCard1 = ({
 			case 3:
 				return "Đang giao";
 			case 4:
-				return "Đã hoàn thành";
+				return "Đã giao";
 			case 5:
 				return "Đã huỷ";
 		}
