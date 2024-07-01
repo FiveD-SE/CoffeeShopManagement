@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, ScrollView, Text, Image } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
+import UserOrderCard from "../../../components/Client/Card/UserOrderCard";
+
 const EMPTY_ORDER = require("../../../assets/images/empty_order.png");
 
 const ClientDetailHomeScreen = ({ route }) => {
@@ -21,29 +22,18 @@ const ClientDetailHomeScreen = ({ route }) => {
     }, []);
 
     const renderOrdersList = () => (
-        userOrdersData.map((item, index) => {
-            const date = new Date(item.orderDate.seconds * 1000).toLocaleDateString("en-US");
-            return (
-                <View style={styles.labelItem} key={index}>
-                    <View style={styles.row}>
-                        <Text style={styles.itemId}>#{(item.orderId.substring(0, 6)).toUpperCase()}</Text>
-                        <Text style={styles.itemDate}>{date}</Text>
-                    </View>
-
-                    <View style={styles.row}>
-                        <View style={styles.labelStatus}>
-                            <FontAwesome5 name={setOrderStatusIcon(item.orderState)} size={20} color={textColor} />
-                            <Text style={[styles.itemStatus, { color: textColor }]}>  {setOrderStatus(item.orderState)}</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text style={styles.itemPrice}>{item.price}</Text>
-                            <Text style={styles.currency}> VNĐ</Text>
-                        </View>
-                    </View>
-                </View>
-            )
-        })
+        userOrdersData.map((order, index) => (
+            <UserOrderCard
+                key={index}
+                orderId={order.orderId}
+                status={order.orderState}
+                total={order.orderTotalPrice}
+                date={order.orderDate}
+            />
+        ))
     )
+
+    console.log("ORDER DATA: ", userOrdersData.at(0));
 
     return (
         <View style={styles.container}>
