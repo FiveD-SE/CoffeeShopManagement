@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, ScrollView, Text, Image } from "react-native";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
-import UserOrderCard from "../../../components/Client/Card/UserOrderCard";
+import OrderCard from "../../../components/Admin/Card/OrderCard";
 
 const EMPTY_ORDER = require("../../../assets/images/empty_order.png");
 
@@ -23,7 +23,7 @@ const ClientDetailHomeScreen = ({ route }) => {
 
     const renderOrdersList = () => (
         userOrdersData.map((order, index) => (
-            <UserOrderCard
+            <OrderCard
                 key={index}
                 orderId={order.orderId}
                 status={order.orderState}
@@ -32,8 +32,6 @@ const ClientDetailHomeScreen = ({ route }) => {
             />
         ))
     )
-
-    console.log("ORDER DATA: ", userOrdersData.at(0));
 
     return (
         <View style={styles.container}>
