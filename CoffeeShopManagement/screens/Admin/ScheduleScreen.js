@@ -8,6 +8,7 @@ import { doc, updateDoc, setDoc, getDoc, getDocs, query, where, collection } fro
 import { db } from "../../services/firebaseService";
 import { colors } from '../../assets/colors/colors';
 import SelectBranchModal from '../../components/Admin/Modal/SelectBranchModal';
+import Toast from 'react-native-toast-message';
 export default function ScheduleScreen() {
     const navigation = useNavigation();
     const [selectedBranch, setSelectedBranch] = useState();
@@ -32,6 +33,7 @@ export default function ScheduleScreen() {
     const showSelectBranchModal = () => {
         setSelectBranchModalVisible(true);
     };
+
     const hideSelectBranchModal = () => {
         setSelectBranchModalVisible(false);
     };
@@ -97,7 +99,27 @@ export default function ScheduleScreen() {
                 const existingEntryIndex = dayList.findIndex((day) => day.date === todayDate);
 
                 if (existingEntryIndex !== -1) {
-                    // Entry for today already exists
+                    const existingShifts = dayList[existingEntryIndex].shifts;
+
+                    // Calculate working hours for staff members
+                    existingShifts.forEach(shift => {
+                        shift.staffList.forEach(staffId => {
+                            const staffIndex = staffList.findIndex(staff => staff.staffId === staffId);
+                            if (staffIndex !== -1) {
+                                const shiftDuration = calculateShiftDuration(shift.startTime, shift.endTime);
+                                const updatedWorkingHours = staffList[staffIndex].workingHours + shiftDuration;
+
+                                // Update working hours in staffList
+                                const updatedStaffList = [...staffList];
+                                updatedStaffList[staffIndex] = {
+                                    ...updatedStaffList[staffIndex],
+                                    workingHours: updatedWorkingHours,
+                                };
+                                setStaffList(updatedStaffList);
+                            }
+                        });
+                    });
+                    
                     setTodaySchedule(dayList[existingEntryIndex].shifts);
                 } else {
                     // Entry for today does not exist, add new entry to dayList
@@ -120,11 +142,51 @@ export default function ScheduleScreen() {
     };
 
     useEffect(() => {
-            fetchBranchSchedule();
+        fetchBranchSchedule();
     }, [selectedBranch, staffList]);
 
+    const calculateShiftDuration = (startTime, endTime) => {
+        const start = parseTime(startTime);
+        const end = parseTime(endTime);
+        const durationInMillis = end.getTime() - start.getTime();
+        const durationInHours = durationInMillis / (1000 * 60 * 60); // Convert milliseconds to hours
+        return durationInHours;
+    };
+
     const goToDetailShift = (item) => {
-        navigation.navigate('DetailShiftScreen', { selectedShift: item, selectedBranch: selectedBranch });
+        const currentTime = new Date();
+
+        const parseTime = (timeString) => {
+            const [hours, minutes] = timeString.split(':').map(Number);
+            const date = new Date();
+            date.setHours(hours);
+            date.setMinutes(minutes);
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+            return date;
+        };
+
+        const shiftStartTime = parseTime(item.startTime);
+        const shiftEndTime = parseTime(item.endTime);
+
+        console.log(shiftStartTime);
+        console.log(shiftEndTime);
+
+        if (currentTime >= shiftStartTime && currentTime <= shiftEndTime) {
+            Toast.show({
+                type: "info",
+                text1: "Thông báo",
+                text2: "Đang trong ca làm việc, không thể chỉnh sửa",
+            });
+        } else if (currentTime > shiftEndTime) {
+            Toast.show({
+                type: "info",
+                text1: "Thông báo",
+                text2: "Ca làm việc đã kết thúc, không thể chỉnh sửa",
+            });
+        } else if (currentTime < shiftStartTime) {
+            navigation.navigate('DetailShiftScreen', { selectedShift: item, selectedBranch: selectedBranch });
+        }
     };
 
     useFocusEffect(

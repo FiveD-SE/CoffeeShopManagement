@@ -92,7 +92,12 @@ const DetailShiftScreen = ({ route }) => {
                 text2: "Nhân viên đã được thêm thành công",
             });
         } catch (error) {
-            console.error('Error adding staff to shift:', error);
+            Toast.show({
+                type: "error",
+                text1: "Lỗi",
+                text2: "Có lỗi xảy ra",
+            });
+            console.log('Error adding staff to shift:', error);
         }
     };
 
