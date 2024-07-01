@@ -102,7 +102,7 @@ const AdminListImportScreen = ({ route, goodsList }) => {
   return (
     <View style={styles.container}>
       <View style={styles.bar}>
-        <BranchSelectBar branchName="Branch 1" />
+        <BranchSelectBar branchName="Chi nhánh trung tâm" />
       </View>
       <Text style={styles.name}>Danh sách nhập hàng</Text>
       <ScrollView style={styles.goodListContainer} showsVerticalScrollIndicator={false}>

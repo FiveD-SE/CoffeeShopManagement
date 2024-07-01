@@ -107,7 +107,7 @@ const AdminExportGoodsScreen = ({ warehouseItemList, warehouseItemListSave }) =>
   return (
     <View style={styles.container}>
       <View style={styles.bar}>
-        <BranchSelectBar branchName="ThanhTai1" />
+        <BranchSelectBar branchName="Chi nhánh trung tâm" />
       </View>
       <Text style={styles.title}>Các mặt hàng sẵn có</Text>
       <View style={styles.searchBar}>

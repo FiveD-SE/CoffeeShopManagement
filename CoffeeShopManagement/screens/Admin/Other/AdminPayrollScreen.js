@@ -63,11 +63,12 @@ export default function AdminPayrollScreen() {
       });
       return total;
     }
+
     return (
       <View style={styles.item}>
         <View style={styles.row}>
           <View style={styles.column}>
-            <Text style={[styles.textPrimary, { marginBottom: 15 }]}>Mã bảng lương: {item.payrollId}</Text>
+            <Text style={[styles.textPrimary, { marginBottom: 15 }]}>Mã bảng lương: {item.payrollId.substring(0, 6).toUpperCase()}</Text>
             <Text style={[styles.textSecondary, { marginBottom: 15 }]}>{formatDate(item.startDate.toDate())}-{formatDate(item.endDate.toDate())}</Text>
             <Text style={styles.textSecondary}>Ngày tạo: {formatDateWithTime(item.createdAt.toDate())}</Text>
           </View>
@@ -153,10 +154,12 @@ const styles = StyleSheet.create({
   heading: {
     flexDirection: 'row',
     width: '100%',
-    height: 60,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'space-between',
+    backgroundColor: '#fff',
+    paddingTop: 10,
+    marginBottom: 10
   },
   headingLabel: {
     flex: 1,
@@ -246,13 +249,13 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   statusText: {
-    fontFamily: 'lato-regular',
+    fontFamily: 'lato-bold',
     fontSize: 16,
     textAlign: 'center'
   },
   textPrimary: {
     fontFamily: 'lato-bold',
-    fontSize: 16,
+    fontSize: 18,
     color: '#000',
     textAlign: 'center',
   },
