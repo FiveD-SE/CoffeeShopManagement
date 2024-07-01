@@ -19,11 +19,17 @@
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
-            }
+            },
+            "package": "com.fived.coffee"
         },
         "web": {
             "favicon": "./assets/favicon.png"
         },
-        "plugins": ["expo-font"]
+        "plugins": ["expo-font"],
+        "extra": {
+            "eas": {
+                "projectId": "18f4b2ac-5a6b-471d-84cd-a5a5e0fda9e2"
+            }
+        }
     }
 }
