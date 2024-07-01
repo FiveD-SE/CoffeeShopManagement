@@ -1,11 +1,9 @@
-import { Image, TouchableOpacity, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, Pressable } from "react-native";
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/FontAwesome6";
 import { MaterialIcons } from "@expo/vector-icons";
-const ItemCard = ({ title, price, imageSource, OnPress }) => {
+const ItemCard = ({ title, price, imageSource, onPress, enablePress }) => {
 	return (
-		<TouchableOpacity style={styles.container} onPress={OnPress}>
+		<Pressable style={styles.container} onPress={onPress}>
 			<View style={styles.imageContainer}>
 				<Image style={styles.image} source={imageSource} resizeMode="cover" />
 			</View>
@@ -13,8 +11,14 @@ const ItemCard = ({ title, price, imageSource, OnPress }) => {
 				<Text style={styles.title}>{title}</Text>
 				<Text style={styles.price}>{price}</Text>
 			</View>
-			<MaterialIcons name="keyboard-arrow-right" size={30} color="rgba(58,58,58,0.5)" />
-		</TouchableOpacity>
+			{enablePress && (
+				<MaterialIcons
+					name="keyboard-arrow-right"
+					size={30}
+					color="rgba(58,58,58,0.5)"
+				/>
+			)}
+		</Pressable>
 	);
 };
 
@@ -24,8 +28,8 @@ const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
 		alignItems: "center",
-		marginVertical: "2%",
-		borderRadius: 10,
+		marginVertical: "1%",
+		borderRadius: 12,
 		borderWidth: 1,
 		borderColor: "#D8D8D8",
 		padding: "2%",
@@ -50,16 +54,14 @@ const styles = StyleSheet.create({
 		width: "100%",
 		color: "#3a3a3a",
 		fontSize: 16,
-		fontWeight: "500",
 		lineHeight: 20,
-		fontFamily:"lato-bold"
+		fontFamily: "lato-bold",
 	},
 	price: {
 		marginTop: "5%",
 		color: "rgba(58,58,58,0.5)",
-		fontSize: 14,
-		fontWeight: "500",
-		fontFamily:"lato-regular"
+		fontSize: 16,
+		fontFamily: "lato-regular",
 	},
 	addButton: {
 		justifyContent: "center",
