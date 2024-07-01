@@ -282,13 +282,16 @@ const UserHomeScreen = ({
 				</View>
 				<View style={{ marginTop: "5%" }}>
 					<Section title="Đã Xem Gần Đây">
-						<ScrollView
-							horizontal
-							showsHorizontalScrollIndicator={false}
-							contentContainerStyle={styles.itemList}
-						>
-							{renderRecentlyViewedItemList()}
-						</ScrollView>
+					<ScrollView
+						horizontal
+						showsHorizontalScrollIndicator={false}
+						contentContainerStyle={[
+							styles.itemList,
+							{ width: recentlyViewedList.length * 160 },
+						]}
+					>
+						{renderRecentlyViewedItemList()}
+					</ScrollView>
 					</Section>
 				</View>
 			</ScrollView>
