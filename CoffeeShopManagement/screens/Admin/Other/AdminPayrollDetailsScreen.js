@@ -117,7 +117,7 @@ export default function AdminPayrollDetailsScreen({ route }) {
                     <View style={styles.payroll}>
                         <View style={styles.row}>
                             <Text style={styles.textPrimary}>
-                                Mã bảng lương: {payrollId}
+                                Mã bảng lương: {payrollId.substring(0, 6).toUpperCase()}
                             </Text>
                         </View>
 
