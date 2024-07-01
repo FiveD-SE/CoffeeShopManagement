@@ -17,16 +17,22 @@ import StaffCard from "../../components/Admin/StaffCard";
 import RoleListScreen from "./RoleListScreen";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../../services/firebaseService";
+import SearchBar from "../../components/Client/SearchBar";
+import AddNewStaffButton from "../../components/Admin/Button/AddNewStaffButton";
 
 export default function ManageStaffScreen({ route }) {
     const [cashiers, setCashiers] = useState([]);
     const [roles, setRoles] = useState([]);
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [filteredCashiers, setFilteredCashiers] = useState([]);
 
     useEffect(() => {
         const unsub = onSnapshot(
             query(collection(db, "staffs")),
             (snapshot) => {
-                setCashiers(snapshot.docs.map((doc) => doc.data()));
+                const staffData = snapshot.docs.map((doc) => doc.data());
+                setCashiers(staffData);
+                setFilteredCashiers(staffData);
             }
         );
 
@@ -43,6 +49,22 @@ export default function ManageStaffScreen({ route }) {
         return () => unsub();
     }, []);
 
+    useEffect(() => {
+        handleSearch(searchKeyword);
+    }, [cashiers, searchKeyword]);
+
+    const handleSearch = (query) => {
+        setSearchKeyword(query);
+        if (query) {
+            const filteredList = cashiers.filter(cashier =>
+                cashier.fullName.toLowerCase().includes(query.toLowerCase())
+            );
+            setFilteredCashiers(filteredList);
+        } else {
+            setFilteredCashiers(cashiers);
+        }
+    };
+
     const [isOpen, setIsOpen] = useState(false);
     const chooseRoleListSnapPoints = useMemo(() => ["60%"], []);
     const chooseRoleListBottomSheetRef = useRef(null);
@@ -54,22 +76,6 @@ export default function ManageStaffScreen({ route }) {
 
     const navigation = useNavigation();
 
-    // useEffect(() => {
-    //     // Update DATA with the updatedData received from EditStaffScreen
-    //     setDATA(prevData => {
-    //         // Find the index of the item to be updated
-    //         const index = prevData.findIndex(item => item.id === updatedData.id);
-    //         if (index !== -1) {
-    //             // Replace the old item with the updatedData
-    //             const newData = [...prevData];
-    //             newData[index] = updatedData;
-    //             return newData;
-    //         }
-    //         // If the item is not found, return the previous data
-    //         return prevData;
-    //     });
-    // }, [updatedData]);
-
     const handleback = () => {
         navigation.goBack();
     };
@@ -79,6 +85,7 @@ export default function ManageStaffScreen({ route }) {
     const goToEditStaff = (staffs) => {
         navigation.navigate("EditStaff", { staffs: staffs });
     };
+
     return (
         <>
             <View style={styles.container}>
@@ -96,63 +103,43 @@ export default function ManageStaffScreen({ route }) {
                         style={styles.roleButton}
                     >
                         <Icon name="list" size={20} color={"#fff"} />
-                        <Text style={{ paddingStart: "2%", color: "#fff" }}>
+                        <Text style={{ paddingStart: "2%", color: "#fff", fontFamily: "lato-bold", fontSize: 18 }}>
                             Danh sách vai trò
                         </Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.content}>
+                    <AddNewStaffButton onPress={() => goToAddStaff()} />
                     <Text
                         style={{
                             fontWeight: "600",
                             fontSize: 18,
-                            marginBottom: "3%",
+                            marginVertical: "3%",
                             fontFamily: "lato-bold"
+
                         }}
                     >
                         Danh sách nhân viên
                     </Text>
-                    <View style={styles.searchBox}>
-                        <TextInput
-                            placeholder="Tìm kiếm theo tên nhân viên, số điện thoại"
-                            placeholderTextColor={"#9c9c9c"}
-                            style={{ width: "90%" }}
-                        />
-                        <TouchableOpacity>
-                            <Icon1 name="search" size={24} />
-                        </TouchableOpacity>
-                    </View>
+                    <SearchBar
+                        onChangeText={(query) => handleSearch(query)}
+                    />
                     <ScrollView
                         style={styles.listStaff}
                         showsVerticalScrollIndicator={false}
                     >
                         <View>
-                            {cashiers.map((item, index) => (
+                            {filteredCashiers.map((item, index) => (
                                 <StaffCard
                                     key={index}
                                     cashierName={item.fullName}
                                     cashierPhone={item.phoneNumber}
                                     cashierImage={item.staffImage}
+                                    role={item.role?.roleName}
                                     onPress={() => goToEditStaff(item)}
                                 />
                             ))}
                         </View>
-                        <TouchableOpacity
-                            onPress={() => goToAddStaff()}
-                            style={styles.addStaffButton}
-                        >
-                            <Ionicons name="add" size={24} />
-                            <Text
-                                style={{
-                                    fontSize: 16,
-                                    fontWeight: "600",
-                                    marginStart: "3%",
-                                    fontFamily: "lato-bold"
-                                }}
-                            >
-                                Thêm nhân viên
-                            </Text>
-                        </TouchableOpacity>
                     </ScrollView>
                 </View>
             </View>
@@ -165,7 +152,6 @@ export default function ManageStaffScreen({ route }) {
         </>
     );
 }
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -181,7 +167,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
     },
     topAppText: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: "600",
         paddingStart: "4%",
         fontFamily: "lato-bold"
@@ -212,7 +198,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     listStaff: {
-        marginBottom: "50%",
+        marginTop: "3%",
+        marginBottom: "58%",
     },
     staffItem: {
         backgroundColor: "#fff",

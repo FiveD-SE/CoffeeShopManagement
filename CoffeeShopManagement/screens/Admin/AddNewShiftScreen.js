@@ -1,4 +1,4 @@
-import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity, Keyboard } from 'react-native'
+import { View, Text, Modal, StyleSheet, TextInput, TouchableOpacity, Keyboard, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
@@ -157,35 +157,53 @@ const AddNewShiftScreen = () => {
             });
             return;
         }
+        Alert.alert(
+            "Xác nhận thêm ca làm việc",
+            "Bạn có chắc chắn muốn thêm ca làm việc này không? (Lưu ý việc thêm ca này không ảnh hưởng đến lịch biểu hôm nay)",
+            [
+                {
+                    text: "Hủy",
+                    style: "cancel",
+                },
+                {
+                    text: "Đồng ý",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            const docRef = await addDoc(collection(db, "shifts"), {
+                                shiftName: shiftName,
+                                startTime: startTime,
+                                endTime: endTime,
+                                branch: selectedBranch,
+                                dateCreated: new Date(),
+                            });
+                            const shiftId = docRef.id;
 
-        try {
-            const docRef = await addDoc(collection(db, "shifts"), {
-                shiftName: shiftName,
-                startTime: startTime,
-                endTime: endTime,
-                branch: selectedBranch,
-                dateCreated: new Date(),
-            });
-            const shiftId = docRef.id;
+                            await updateDoc(doc(collection(db, "shifts"), shiftId), {
+                                shiftId: shiftId,
+                            });
 
-            await updateDoc(doc(collection(db, "shifts"), shiftId), {
-                shiftId: shiftId,
-            });
+                            Toast.show({
+                                type: "success",
+                                text1: "Thành công",
+                                text2: "Ca làm việc đã được thêm mới",
+                            });
+                            navigation.goBack();
+                        } catch (error) {
+                            console.log(error);
+                            Toast.show({
+                                type: "error",
+                                text1: "Lỗi",
+                                text2: "Có lỗi xảy ra khi thêm ca làm",
+                            });
+                        }
+                    },
+                },
+            ],
+            { cancelable: false }
+        );
 
-            Toast.show({
-                type: "success",
-                text1: "Thành công",
-                text2: "Ca làm việc đã được thêm mới",
-            });
-            navigation.goBack();
-        } catch (error) {
-            console.log(error);
-            Toast.show({
-                type: "error",
-                text1: "Lỗi",
-                text2: "Có lỗi xảy ra khi thêm ca làm",
-            });
-        }
+
     };
 
     const isShiftWithinOperatingHours = (startTime, endTime, openingHour, closingHour) => {
@@ -391,7 +409,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: "500",
         fontFamily: "lato-regular",
-        lineHeight:20
+        lineHeight: 20
     },
     branchInfoContainer: {
         backgroundColor: colors.green_10,

@@ -1,11 +1,13 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native"; // Import các thành phần cần thiết từ react-native
 import Icon from "react-native-vector-icons/Entypo";
+import { colors } from "../../assets/colors/colors";
 
 const StaffCard = ({
     cashierName,
     cashierPhone,
     cashierImage,
+    role,
     onPress }) => {
     return (
         <TouchableOpacity
@@ -34,23 +36,11 @@ const StaffCard = ({
                     <Text style={{ fontSize: 14, color: "#808080" }}>
                         {cashierPhone}
                     </Text>
-                    <View
-                        style={{
-                            backgroundColor: "#edfaf1",
-                            borderRadius: 15,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            paddingVertical: "5%",
-                            width: 100,
-                            height: 30
-                        }}
+                    <Text
+                        style={styles.role}
                     >
-                        <Text
-                            style={{ color: "#5bcf7c", fontSize: 14 }}
-                        >
-                            Nhân viên
-                        </Text>
-                    </View>
+                        {role}
+                    </Text>
                 </View>
             </View>
             <Icon name="chevron-right" size={32} />
@@ -67,6 +57,13 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: "center",
         marginBottom: "3%",
+    },
+    role: {
+        color: colors.green_100,
+        fontSize: 14,
+        fontWeight: "500",
+        marginTop: "2%",
+        fontFamily: "lato-regular"
     },
 });
 
