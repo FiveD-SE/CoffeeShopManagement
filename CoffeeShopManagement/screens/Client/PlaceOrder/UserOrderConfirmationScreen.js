@@ -501,11 +501,11 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
                     await createOrder();
                     showSuccessModal();
                 } else {
-                    console.error("Payment link is not confirmed");
+                    console.log("Payment link is not confirmed");
                     Toast.show({
                         type: "error",
                         text1: "Lỗi",
-                        text2: "Thanh toán chưa được xác nhận",
+                        text2: "Thanh toán chưa thành công",
                         text1Style: {
                             fontSize: 16,
                             fontFamily: "lato-bold",
@@ -513,7 +513,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
                         text2Style: {
                             fontSize: 12,
                             fontFamily: "lato-bold",
-                            color: colors.text.black_50,
+                            color: colors.grey_100,
                         },
                     });
                 }
