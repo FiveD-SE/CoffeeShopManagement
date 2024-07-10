@@ -19,7 +19,7 @@
 
 ## GIỚI THIỆU MÔN HỌC
 
--   **Tên môn học:** Nhập môn Công nghệ phần mềm
+-   **Tên môn học:** Nhập môn Công nghệ phần mềm 
 -   **Mã môn học:** SE104
 -   **Mã lớp:** SE104.O25
 -   **Năm học:** HK2 (2023 - 2024)
