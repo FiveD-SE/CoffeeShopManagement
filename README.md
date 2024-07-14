@@ -21,6 +21,6 @@
 
 -   **Tên môn học:** Nhập môn Công nghệ phần mềm 
 -   **Mã môn học:** SE104
--   **Mã lớp:** SE104.O25
+-   **Mã lớp:** SE104.O25 
 -   **Năm học:** HK2 (2023 - 2024)
 -   **Giảng viên**: TS.Nguyễn Thị Xuân Hương, giảng viên Khoa Công Nghệ Phần Mềm, trường Đại học Công nghệ Thông tin, Đại học Quốc gia Thành phố Hồ Chí Minh
