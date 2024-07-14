@@ -51,6 +51,22 @@ const UserHomeScreen = ({
         userData.recentlyViewedItems || []
     );
     const [unreadNotificationCount, setUnreadNotificationCount] = useState(0);
+    const [userCredit, setUserCredit] = useState(0);
+
+    useEffect(() => {
+        const userRef = doc(db, "users", userData.id);
+
+        const unsubscribe = onSnapshot(userRef, (doc) => {
+            if (doc.exists()) {
+                const userData = doc.data();
+                setUserCredit(userData.credit || 0);
+            } else {
+                console.error("User document does not exist!");
+            }
+        });
+
+        return () => unsubscribe();
+    }, [userData.id]);
 
     const handleOpenItemDetail = async (item) => {
         if (addressStatus === false) {
@@ -137,7 +153,7 @@ const UserHomeScreen = ({
         );
 
         return () => unsubscribe();
-    }, []);
+    }, [userData.id]);
 
     useEffect(() => {
         const unsubscribe = onSnapshot(
@@ -266,6 +282,7 @@ const UserHomeScreen = ({
                     onPressBean={goToExchangeVoucher}
                     onPressNotify={goToNotificationScreen}
                     unreadNotificationCount={unreadNotificationCount}
+                    userCredit={userCredit}
                 />
                 <View style={styles.searchBarContainer}>
                     <SearchBar onFocus={goToSearchScreen} />

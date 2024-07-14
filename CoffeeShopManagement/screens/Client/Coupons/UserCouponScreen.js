@@ -137,12 +137,11 @@ function UserCouponScreen({ userData }) {
     };
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            const userDocRef = doc(db, "users", auth.currentUser.uid);
-            const userDoc = await getDoc(userDocRef);
+        const userRef = doc(db, "users", auth.currentUser.uid);
 
-            if (userDoc.exists()) {
-                const data = userDoc.data();
+        const unsubscribeUser = onSnapshot(userRef, (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
                 setBeanTotal(data.credit);
                 let rank = "Chưa tích điểm";
                 const rankPoints = data.rankPoint;
@@ -168,7 +167,7 @@ function UserCouponScreen({ userData }) {
             } else {
                 console.log("User document does not exist.");
             }
-        };
+        });
 
         const fetchVoucherData = async () => {
             const voucherList = [];
@@ -211,7 +210,7 @@ function UserCouponScreen({ userData }) {
                     collection(db, "userVouchers"),
                     where("userId", "==", userData.id)
                 );
-                const unsubscribe = onSnapshot(
+                const unsubscribeUserVouchers = onSnapshot(
                     userVouchersQuery,
                     async (snapshot) => {
                         userVoucherRefs.length = 0;
@@ -261,7 +260,7 @@ function UserCouponScreen({ userData }) {
                     }
                 );
 
-                return () => unsubscribe();
+                return () => unsubscribeUserVouchers();
             } catch (error) {
                 console.error(error);
             }
@@ -269,7 +268,8 @@ function UserCouponScreen({ userData }) {
 
         fetchUserVoucherData();
         fetchVoucherData();
-        fetchUserData();
+
+        return () => unsubscribeUser();
     }, [userData.credit]);
 
     return (
@@ -285,9 +285,7 @@ function UserCouponScreen({ userData }) {
                     >
                         <Text style={styles.headerTitle}>Ưu đãi của bạn</Text>
                         <View style={styles.beanContainer}>
-                            <Text style={styles.beanText}>
-                                {userData.credit}
-                            </Text>
+                            <Text style={styles.beanText}>{beanTotal}</Text>
                             <Image
                                 source={COFFEE_BEAN_ICONS}
                                 style={{

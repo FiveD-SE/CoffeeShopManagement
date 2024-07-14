@@ -19,15 +19,18 @@ const ProfileDetails = ({ userData }) => {
     const flag = require("../../../assets/vietnam.png");
 
     const formatPhoneNumber = (phoneNumber) => {
-        if (phoneNumber.startsWith('0')) {
+        if (!phoneNumber) {
+            return "";
+        }
+        if (phoneNumber.startsWith("0")) {
             phoneNumber = phoneNumber.substring(1);
         }
         return phoneNumber.replace(/(\d{2})(\d{3})(\d{3})/, "$1 $2 $3");
-    }
+    };
 
     const handleTogglePressed = () => {
         setIsToggled(!isToggled);
-    }
+    };
 
     useEffect(() => {
         console.log("isToggled: ", isToggled);

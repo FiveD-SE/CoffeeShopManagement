@@ -201,6 +201,31 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
         }
     };
 
+    const calculateAndUpdateUserCredit = async (totalPrice) => {
+        try {
+            const creditToAdd = Math.round(totalPrice * 0.0005);
+            const userRef = doc(db, "users", userData.id);
+            const userSnap = await getDoc(userRef);
+
+            if (userSnap.exists()) {
+                const currentCredit = userSnap.data().credit || 0;
+                const currentRankPoint = userSnap.data().rankPoint || 0;
+
+                const newCredit = currentCredit + creditToAdd;
+                const newRankPoint = currentRankPoint + creditToAdd;
+
+                await updateDoc(userRef, {
+                    credit: newCredit,
+                    rankPoint: newRankPoint,
+                });
+            } else {
+                console.error("User document does not exist!");
+            }
+        } catch (error) {
+            console.error("Error updating user credit: ", error);
+        }
+    };
+
     const handleChooseCoupon = () => {
         chooseCouponBottomSheetRef.current?.present();
         setIsOpen(true);
@@ -398,6 +423,7 @@ const UserOrderConfirmationScreen = ({ route, userData }) => {
             };
 
             await setDoc(adminNotificationRef, admin_notification);
+            await calculateAndUpdateUserCredit(totalPrice);
         } catch (error) {
             console.error("Error adding document: ", error);
         }
