@@ -1,11 +1,18 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
-import React, { useState } from 'react'
-import { useNavigation } from '@react-navigation/native';
-import OptionModal from '../Modal/OptionModal';
-const VoucherCard = ({ itemName, imageSource, status, expiryDate, minimumPrice }) => {
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import OptionModal from "../Modal/OptionModal";
 
+const VoucherCard = ({
+    itemName,
+    imageSource,
+    status,
+    expiryDate,
+    minimumPrice,
+}) => {
     const statusColor = status ? "#00A188" : "#F61A3D";
     const [optionModalVisible, setOptionModalVisible] = useState(false);
+
     const showOptionModal = () => {
         setOptionModalVisible(true);
     };
@@ -13,6 +20,7 @@ const VoucherCard = ({ itemName, imageSource, status, expiryDate, minimumPrice }
     const hideOptionModal = () => {
         setOptionModalVisible(false);
     };
+
     const formatPrice = (price) => {
         const formatter = new Intl.NumberFormat("vi-VN", {
             style: "currency",
@@ -20,32 +28,59 @@ const VoucherCard = ({ itemName, imageSource, status, expiryDate, minimumPrice }
         });
         return formatter.format(price);
     };
-    
+
     return (
         <View>
-            <View style={styles.container} onLongPress={showOptionModal}>
+            <TouchableOpacity
+                style={styles.container}
+                onLongPress={showOptionModal}
+                testID="voucherCard"
+            >
                 <View style={styles.imageContainer}>
-                    <Image style={styles.image} source={imageSource} />
+                    <Image
+                        style={styles.image}
+                        source={{ uri: imageSource }}
+                        testID="voucherImage"
+                    />
                 </View>
                 <View style={styles.main}>
-                    <Text style={styles.title}>{itemName}</Text>
-                    <Text style={styles.label}>Đơn tối thiểu: {formatPrice(minimumPrice)}</Text>
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Text style={styles.title} testID="voucherName">
+                        {itemName}
+                    </Text>
+                    <Text style={styles.label} testID="voucherMinimumPrice">
+                        Đơn tối thiểu: {formatPrice(minimumPrice)}
+                    </Text>
+                    <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                    >
                         <Text style={styles.label}>Trạng thái:</Text>
-                        <Text style={[styles.status, { color: statusColor }]}>{status ? "Hoạt động" : "Không hoạt động"}</Text>
+                        <Text
+                            style={[styles.status, { color: statusColor }]}
+                            testID="voucherStatus"
+                        >
+                            {status ? "Hoạt động" : "Không hoạt động"}
+                        </Text>
                     </View>
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
+                    >
                         <Text style={styles.label}>Hết hạn:</Text>
-                        <Text style={styles.label}>{expiryDate}</Text>
+                        <Text style={styles.label} testID="voucherExpiryDate">
+                            {expiryDate}
+                        </Text>
                     </View>
                 </View>
-            </View>
-            <OptionModal visible={optionModalVisible} onClose={hideOptionModal} />
+            </TouchableOpacity>
+            <OptionModal
+                visible={optionModalVisible}
+                onClose={hideOptionModal}
+                testID="optionModal"
+            />
         </View>
-    )
-}
+    );
+};
 
-export default VoucherCard
+export default VoucherCard;
 
 const styles = StyleSheet.create({
     container: {
@@ -58,10 +93,8 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         borderWidth: 1,
         borderColor: "#D8D8D8",
-
     },
-    imageContainer: {
-    },
+    imageContainer: {},
     image: {
         width: "100%",
         height: 100,
@@ -77,7 +110,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: "500",
         marginBottom: "3%",
-        fontFamily:"lato-bold"
+        fontFamily: "lato-bold",
     },
     label: {
         color: "#3a3a3a",
@@ -85,12 +118,12 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         marginBottom: "1%",
         marginRight: "2%",
-        fontFamily:"lato-regular"
+        fontFamily: "lato-regular",
     },
     status: {
         fontSize: 13,
         fontWeight: "500",
         marginBottom: "1%",
-        fontFamily:"lato-regular"
+        fontFamily: "lato-regular",
     },
-})
+});

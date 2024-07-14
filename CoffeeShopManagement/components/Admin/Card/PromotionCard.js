@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 
 const PromotionCard = ({
     promotionName,
@@ -8,18 +8,25 @@ const PromotionCard = ({
     imageSource,
 }) => {
     return (
-        <View style={styles.container}>
+        <View style={styles.container} testID="promotionCard">
             <View style={styles.imageContainer}>
                 <Image
                     style={styles.image}
                     source={{ uri: imageSource }}
                     resizeMode="cover"
+                    testID="promotionImage"
                 />
             </View>
             <View style={styles.main}>
-                <Text style={styles.name}>{promotionName}</Text>
-                <Text style={styles.description}>{promotionContent}</Text>
-                <Text style={styles.date}>Ngày tạo: {dateCreated}</Text>
+                <Text style={styles.name} testID="promotionName">
+                    {promotionName}
+                </Text>
+                <Text style={styles.description} testID="promotionContent">
+                    {promotionContent}
+                </Text>
+                <Text style={styles.date} testID="promotionDate">
+                    Ngày tạo: {dateCreated}
+                </Text>
             </View>
         </View>
     );
@@ -28,11 +35,6 @@ const PromotionCard = ({
 export default PromotionCard;
 
 const styles = StyleSheet.create({
-    appContainer: {
-        padding: 10,
-        backgroundColor: "#f5f5f5",
-        alignItems: "center",
-    },
     container: {
         width: "100%",
         alignItems: "center",
@@ -45,7 +47,7 @@ const styles = StyleSheet.create({
     },
     imageContainer: {
         width: "100%",
-        aspectRatio: 3 / 1, // 3:1 aspect ratio
+        aspectRatio: 3 / 1,
         borderRadius: 10,
         overflow: "hidden",
     },

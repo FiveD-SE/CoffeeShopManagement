@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
-
+import React from "react";
 import Icon from "react-native-vector-icons/FontAwesome6";
+
 const CategoryItem = ({
     index,
     backgroundColor,
@@ -26,15 +26,22 @@ const CategoryItem = ({
                 },
             ]}
             onPress={handlePress}
+            testID="categoryItemButton"
         >
             <View>
                 {icon ? (
-                    <Image source={icon} />
+                    <Image
+                        source={icon}
+                        style={styles.icon}
+                        testID="iconImage"
+                    />
                 ) : (
-                    <Icon name="ellipsis" size={24} />
+                    <Icon name="ellipsis" size={24} testID="defaultIcon" />
                 )}
             </View>
-            <Text style={styles.categoryItemText}>{title}</Text>
+            <Text style={styles.categoryItemText} testID="categoryItemText">
+                {title}
+            </Text>
         </TouchableOpacity>
     );
 };
@@ -58,5 +65,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: "600",
         marginTop: "5%",
+    },
+    icon: {
+        width: 24,
+        height: 24,
     },
 });

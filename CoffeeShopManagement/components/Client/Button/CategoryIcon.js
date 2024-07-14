@@ -4,14 +4,21 @@ import { colors } from "../../../assets/colors/colors";
 
 const CategoryIcon = ({ iconSource, size, name, onPress }) => {
     return (
-        <View style={styles.container}>
+        <View style={styles.container} testID="categoryIcon">
             <TouchableOpacity
                 onPress={onPress}
                 style={[styles.iconButton, { width: size, height: size }]}
+                testID="iconButton"
             >
-                <Image source={iconSource} style={styles.icon} />
+                <Image
+                    source={iconSource}
+                    style={styles.icon}
+                    testID="iconImage"
+                />
             </TouchableOpacity>
-            <Text style={styles.title}>{name}</Text>
+            <Text style={styles.title} testID="iconTitle">
+                {name}
+            </Text>
         </View>
     );
 };
