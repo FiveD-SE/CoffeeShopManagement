@@ -20,6 +20,7 @@ const UserHomeScreenHeader = ({
     onPressBean,
     onPressNotify,
     unreadNotificationCount,
+    userCredit,
 }) => {
     return (
         <View style={styles.header}>
@@ -43,10 +44,14 @@ const UserHomeScreenHeader = ({
                     onPress={onPressBean}
                 >
                     <Image source={COFFEE_BEAN_ICONS} style={styles.icon} />
-                    <Text style={styles.iconText}>{totalPoint}</Text>
+                    <Text style={styles.iconText}>{userCredit}</Text>
                 </Pressable>
                 <Pressable style={styles.iconContainer} onPress={onPressNotify}>
-                    {unreadNotificationCount > 0 && <Text style={styles.notificationCount}>{unreadNotificationCount}</Text>}
+                    {unreadNotificationCount > 0 && (
+                        <Text style={styles.notificationCount}>
+                            {unreadNotificationCount}
+                        </Text>
+                    )}
                     <Icon name="bell" size={20} />
                 </Pressable>
             </View>
@@ -122,17 +127,17 @@ const styles = StyleSheet.create({
         marginLeft: "4%",
     },
     notificationCount: {
-        position: 'absolute',
+        position: "absolute",
         right: 0,
         top: -4,
-        backgroundColor: '#C80036',
-        color: 'white',
+        backgroundColor: "#C80036",
+        color: "white",
         borderRadius: 10,
         width: 20,
         height: 20,
-        textAlign: 'center',
+        textAlign: "center",
         fontSize: 12,
         lineHeight: 19,
-        fontWeight: 'bold',
+        fontWeight: "bold",
     },
 });
