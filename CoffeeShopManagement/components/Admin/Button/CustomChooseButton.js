@@ -1,14 +1,23 @@
-import { Text, StyleSheet, TextInput, View, TouchableOpacity } from "react-native";
+import { Text, StyleSheet, View, TouchableOpacity } from "react-native";
 import React from "react";
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from "@expo/vector-icons";
 
-const CustomChooseButton = ({ onFocus, OnPress, title }) => {
+const CustomChooseButton = ({ onFocus, onPress, title }) => {
     return (
-        <TouchableOpacity style={styles.container} onPress={OnPress}>
+        <TouchableOpacity
+            style={styles.container}
+            onPress={onPress}
+            testID="customChooseButton"
+        >
             <View style={{ flexDirection: "row" }}>
                 <Text style={styles.title}>{title}</Text>
             </View>
-            <MaterialIcons name="keyboard-arrow-right" size={30} color="#3a3a3a" />
+            <MaterialIcons
+                name="keyboard-arrow-right"
+                size={30}
+                color="#3a3a3a"
+                testID="arrowIcon"
+            />
         </TouchableOpacity>
     );
 };
@@ -20,7 +29,7 @@ const styles = StyleSheet.create({
         color: "#3a3a3a",
         fontSize: 16,
         fontWeight: "400",
-        marginRight: "10%"
+        marginRight: "10%",
     },
     container: {
         flex: 1,
@@ -30,7 +39,6 @@ const styles = StyleSheet.create({
         paddingVertical: "3%",
         borderRadius: 10,
         backgroundColor: "#ffffff",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
-
 });

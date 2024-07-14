@@ -1,36 +1,43 @@
-import React, {useState}from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
-import Checkbox from 'expo-checkbox';
+import Checkbox from "expo-checkbox";
 
-const BranchCard = ({ storeName,
-    branchName,
-    distance,
-    image,
-    onPress, }) => {
+const BranchCard = ({ storeName, branchName, distance, image, onPress }) => {
     const [isShipChecked, setShipChecked] = useState(false);
     return (
-        <View style={styles.root}>
+        <View style={styles.root} testID="branchCard">
             <View style={styles.image}>
-                <Image source={image} style={styles.image} />
+                <Image
+                    source={image}
+                    style={styles.image}
+                    testID="branchImage"
+                />
             </View>
             <View style={styles.content}>
                 <View style={styles.title}>
-                    <Text style={styles.storeName}>{storeName}</Text>
-                    <Text style={styles.branchName}>{branchName}</Text>
+                    <Text style={styles.storeName} testID="storeName">
+                        {storeName}
+                    </Text>
+                    <Text style={styles.branchName} testID="branchName">
+                        {branchName}
+                    </Text>
                 </View>
-                <Text style={styles.distance}>Cách đây {distance} km</Text>
+                <Text style={styles.distance} testID="distance">
+                    Cách đây {distance} km
+                </Text>
             </View>
             <Checkbox
                 style={styles.checkbox}
                 value={isShipChecked}
                 onValueChange={setShipChecked}
-                color={isShipChecked ? '#00A188' : undefined}
+                color={isShipChecked ? "#00A188" : undefined}
+                testID="shipCheckbox"
             />
         </View>
-    )
-}
+    );
+};
 
-export default BranchCard
+export default BranchCard;
 
 const styles = StyleSheet.create({
     root: {

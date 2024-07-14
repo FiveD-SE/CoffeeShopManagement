@@ -1,5 +1,5 @@
-import React, { useState, useRef, useMemo } from "react";
-import { Text, StyleSheet, Image } from "react-native";
+import React from "react";
+import { StyleSheet } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -10,12 +10,14 @@ export default function AddVoucherButton() {
     const goToAddVoucherScreen = () => {
         navigation.navigate("AdminAddVoucher");
     };
+
     return (
         <TouchableOpacity
             style={styles.addButton}
             onPress={goToAddVoucherScreen}
+            testID="addVoucherButton"
         >
-            <Ionicons name="add" size={24} color="#006C5E" />
+            <Ionicons name="add" size={24} color="#006C5E" testID="addIcon" />
         </TouchableOpacity>
     );
 }
@@ -29,7 +31,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         border: "1px solid rgba(58, 58, 58, 0.10)",
-        boxShadow: "1px 3px 2px 0px rgba(0, 0, 0, 0.05)",
         shadowColor: "#000",
         shadowOffset: {
             width: 0,

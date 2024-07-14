@@ -1,7 +1,7 @@
-import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
-import React, { useState } from 'react'
-import { Entypo, MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const AddNewItemButton = () => {
     const navigation = useNavigation();
@@ -9,20 +9,29 @@ const AddNewItemButton = () => {
     const goToAddItemScreen = () => {
         navigation.navigate("AdminAddItem");
     };
+
     return (
         <View>
-            <TouchableOpacity style={styles.container} onPress={goToAddItemScreen}>
+            <TouchableOpacity
+                style={styles.container}
+                onPress={goToAddItemScreen}
+                testID="addIcon"
+            >
                 <View style={styles.titleContainer}>
                     <MaterialIcons name="add-box" size={30} color="#FFA730" />
                     <Text style={styles.title}>Thêm sản phẩm mới</Text>
                 </View>
-                <MaterialIcons name="keyboard-arrow-right" size={36} color="#3a3a3a" />
+                <MaterialIcons
+                    name="keyboard-arrow-right"
+                    size={36}
+                    color="#3a3a3a"
+                />
             </TouchableOpacity>
         </View>
-    )
-}
+    );
+};
 
-export default AddNewItemButton
+export default AddNewItemButton;
 
 const styles = StyleSheet.create({
     container: {
@@ -38,10 +47,10 @@ const styles = StyleSheet.create({
         color: "#3a3a3a",
         fontWeight: "600",
         marginLeft: "10%",
-        fontFamily: "lato-bold"
+        fontFamily: "lato-bold",
     },
     titleContainer: {
         flexDirection: "row",
         alignItems: "center",
-    }
+    },
 });

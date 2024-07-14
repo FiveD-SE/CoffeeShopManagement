@@ -15,6 +15,7 @@ export default function AddItemButton() {
         <TouchableOpacity
             style={styles.addButton}
             onPress={goToAddItemScreen}
+            testID="add-button"
         >
             <Ionicons name="add" size={24} color="#006C5E" />
         </TouchableOpacity>
