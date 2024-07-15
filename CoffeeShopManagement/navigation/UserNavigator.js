@@ -187,7 +187,7 @@ const HomeStack = ({ navigation, route }) => {
 			/>
 			<Stack.Screen
 				name="UserOrderScreen"
-				component={OrderHistory}
+				component={UserOrderScreen}
 				options={{
 					headerTitle: "Danh sách đơn hàng",
 					headerLeftContainerStyle: {
@@ -315,7 +315,7 @@ const OrderStack = ({ navigation, route }) => {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
-		} else if (routeName === "DetailBilling") {
+		} else if (routeName === "UserOrderInformationScreen") {
 			navigation.setOptions({
 				tabBarStyle: { display: "none" },
 			});
@@ -432,8 +432,8 @@ const OrderStack = ({ navigation, route }) => {
 				}}
 			/>
 			<Stack.Screen
-				name="DetailBilling"
-				component={DetailBilling}
+				name="UserOrderInformationScreen"
+				component={UserOrderInformationScreen}
 				options={{
 					headerTitle: "Chi tiết đơn hàng",
 					headerLeftContainerStyle: {
