@@ -16,7 +16,6 @@ describe("DeleteButton", () => {
         expect(button).toBeTruthy();
         expect(buttonText).toBeTruthy();
 
-        // Check if the icon is present by using queryByTestId or directly by the component type
         expect(button.findByType(MaterialIcons)).toBeTruthy();
     });
 
