@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image, Pressable } from "react-native"; // Import các thành phần cần thiết từ react-native
-import Checkbox from "expo-checkbox";
-import { doc, updateDoc, setDoc, getDoc, getDocs, query, where, collection } from "firebase/firestore";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../../services/firebaseService";
 import { MaterialIcons } from "@expo/vector-icons";
-import { FontAwesome } from '@expo/vector-icons';
 import { colors } from "../../../assets/colors/colors";
+
 const StaffCardWithCheckBox = ({ item, onToggleSelect, isSelected }) => {
     const [staffData, setStaffData] = useState(null);
 
@@ -30,18 +29,37 @@ const StaffCardWithCheckBox = ({ item, onToggleSelect, isSelected }) => {
     }, [item]);
 
     return (
-        <Pressable style={styles.container} onPress={() => onToggleSelect(item)}>
+        <Pressable
+            style={styles.container}
+            onPress={() => onToggleSelect(item)}
+            testID="staffCard"
+        >
             <View style={styles.imageContainer}>
-                <Image style={styles.image} source={{ uri: staffData?.staffImage }} resizeMode="cover" />
+                <Image
+                    style={styles.image}
+                    source={{ uri: staffData?.staffImage }}
+                    resizeMode="cover"
+                    testID="staffImage"
+                />
             </View>
             <View style={styles.main}>
-                <Text style={styles.name}>{staffData?.fullName}</Text>
-                <Text style={styles.phoneNumber}>{staffData?.phoneNumber}</Text>
-                <Text style={styles.role}>{staffData?.role.roleName}</Text>
+                <Text style={styles.name} testID="staffName">
+                    {staffData?.fullName}
+                </Text>
+                <Text style={styles.phoneNumber} testID="staffPhoneNumber">
+                    {staffData?.phoneNumber}
+                </Text>
+                <Text style={styles.role} testID="staffRole">
+                    {staffData?.role.roleName}
+                </Text>
             </View>
-            <View>
+            <View testID="checkboxIcon">
                 <MaterialIcons
-                    name={isSelected ? "radio-button-checked" : "radio-button-unchecked"}
+                    name={
+                        isSelected
+                            ? "radio-button-checked"
+                            : "radio-button-unchecked"
+                    }
                     size={24}
                     color={isSelected ? "#006C5E" : "#3a3a3a"}
                 />
@@ -49,6 +67,7 @@ const StaffCardWithCheckBox = ({ item, onToggleSelect, isSelected }) => {
         </Pressable>
     );
 };
+
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",
@@ -82,31 +101,21 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         lineHeight: 20,
         marginTop: "1%",
-        fontFamily: "lato-bold"
+        fontFamily: "lato-bold",
     },
     phoneNumber: {
         marginTop: "5%",
         color: "rgba(58,58,58,0.5)",
         fontSize: 14,
         fontWeight: "500",
-        fontFamily: "lato-regular"
+        fontFamily: "lato-regular",
     },
     role: {
         color: colors.green_100,
         fontSize: 14,
         fontWeight: "500",
         marginTop: "2%",
-        fontFamily: "lato-regular"
-    },
-    roleContainer: {
-
-    },
-    addButton: {
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "2%",
-        backgroundColor: "#00A188",
-        borderRadius: 100,
+        fontFamily: "lato-regular",
     },
 });
 

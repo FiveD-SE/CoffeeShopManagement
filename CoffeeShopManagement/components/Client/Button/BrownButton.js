@@ -1,5 +1,6 @@
 import { StyleSheet, Text, Pressable, Animated } from "react-native";
 import React from "react";
+
 const BrownButton = ({ text, onPress }) => {
     const scaleValue = React.useRef(new Animated.Value(1)).current;
 
@@ -18,11 +19,13 @@ const BrownButton = ({ text, onPress }) => {
             useNativeDriver: true,
         }).start();
     };
+
     return (
         <Pressable
             onPress={onPress}
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
+            testID="brownButton"
         >
             <Animated.View
                 style={[
@@ -31,8 +34,11 @@ const BrownButton = ({ text, onPress }) => {
                         transform: [{ scale: scaleValue }],
                     },
                 ]}
+                testID="animatedView"
             >
-                <Text style={styles.brownButtonText}>{text}</Text>
+                <Text style={styles.brownButtonText} testID="buttonText">
+                    {text}
+                </Text>
             </Animated.View>
         </Pressable>
     );

@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Animated, Dimensions } from "react-native";
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 
 function TabBarIcon({ focused, name, color }) {
     const [isPressed, setIsPressed] = useState(false);

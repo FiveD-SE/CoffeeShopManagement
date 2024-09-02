@@ -1,20 +1,26 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React from 'react'
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import React from "react";
+import { MaterialIcons } from "@expo/vector-icons";
 
-const DeleteButton = (
-    {
-        OnPress
-    }) => {
+const DeleteButton = ({ onPress }) => {
     return (
-        <TouchableOpacity style={[styles.buttonContainer]} onPress={OnPress}>
-            <MaterialIcons name="delete-forever" size={24} color="#F61A3D" />
-            <Text style={[styles.title]}>Xóa</Text>
+        <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={onPress}
+            testID="deleteButton"
+        >
+            <MaterialIcons
+                name="delete-forever"
+                size={24}
+                color="#F61A3D"
+                testID="deleteIcon"
+            />
+            <Text style={styles.title}>Xóa</Text>
         </TouchableOpacity>
-    )
-}
+    );
+};
 
-export default DeleteButton
+export default DeleteButton;
 
 const styles = StyleSheet.create({
     buttonContainer: {
@@ -26,15 +32,14 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderWidth: 1,
-        borderRadius: 15,
         borderColor: "#CCCCCC",
-        flexDirection: "row"
+        flexDirection: "row",
     },
     title: {
         marginLeft: "2%",
         fontSize: 16,
         fontWeight: "700",
         color: "#F61A3D",
-        fontFamily: "lato-bold"
-    }
+        fontFamily: "lato-bold",
+    },
 });
