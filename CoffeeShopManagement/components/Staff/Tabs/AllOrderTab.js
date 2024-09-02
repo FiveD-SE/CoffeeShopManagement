@@ -134,7 +134,7 @@ const AllOrderTab = ({ userData }) => {
 		const q = query(
 			ordersRef,
 			where("deliveryBranch.branchId", "==", branchId),
-			where("orderState", "in", [3, 4, 5]),
+			where("orderState", "in", [3, 4, 5, 6]),
 			orderBy("orderDate", "desc")
 		);
 
