@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - name: Install dependencies
-              run: npm install
+            - name: Go to the CoffeeShopManagement directory
+              run: cd CoffeeShopManagement
             - name: Run tests
               run: npm run test
